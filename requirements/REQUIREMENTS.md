@@ -9,14 +9,14 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.6.8                                      |
-| Status                 | Approval Pending Signatures (signers assigned) |
+| Version                | 2.7.0                                      |
+| Status                 | Ready for Final Approval                   |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
 | Owner                  | System Architecture Team                   |
 | Effective Date         | 2026-01-11                                 |
 | Review Date            | 2026-04-11                                 |
-| Approval Authority     | Technical Lead, Quality Assurance, Project Manager |
+| Approval Authority     | Technical Lead, Quality Assurance, Project Manager, Software Team, SW V&V Team, Hardware Team, HW V&V Team |
 
 ### Revision History
 
@@ -38,14 +38,19 @@
 | 2.6.6   | 2026-01-11 | Dev Team    | Seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V, Hardware Team, HW V&V): Added SW V&V Team and HW V&V Team to distribution list and readiness status; added HWTEST-012; added VER-016; clarified VER-015/COV-001/PERF-027/028; updated DEP-003 flexibility. |
 | 2.6.7   | 2026-01-11 | Dev Team    | Editorial corrections: removed duplicated approval checklist items; recomputed and corrected requirements coverage totals (Section 23.3); aligned readiness assessment totals. |
 | 2.6.8   | 2026-01-11 | Dev Team    | Seven-perspective end-to-end review merge; approval authorities assigned; readiness and milestone schedule updated; risk owner column added to risk tables. |
+| 2.7.0   | 2026-01-11 | Dev Team    | Merged findings from comprehensive seven-perspective review. Added requirements for PAC, tick rate, crate structure, license compliance, toolchain flags. Clarified supervisor mode usage, ISA extensions, memory map source, coverage metrics, and formal verification scope. Updated MSRV, readiness status, and approval targets. Aligned document with hardware facts from `bsp` and `hardware` directories. |
 
 ### Approval Record
 
-| Role                    | Name                     | Signature | Date       |
-|-------------------------|--------------------------|-----------|------------|
-| Technical Lead          | Martin Hovorka           | Pending   | Target: 2026-01-25 |
-| Quality Assurance       | Martin Hovorka           | Pending   | Target: 2026-01-25 |
-| Project Manager         | Martin Hovorka           | Pending   | Target: 2026-01-25 |
+| Role                                  | Name                     | Signature | Date       |
+|---------------------------------------|--------------------------|-----------|------------|
+| Technical Lead                        | Martin Hovorka           | Pending   | Target: 2026-01-31 |
+| Quality Assurance                     | Martin Hovorka           | Pending   | Target: 2026-01-31 |
+| Project Manager                       | Martin Hovorka           | Pending   | Target: 2026-01-31 |
+| Software Team Representative          | Martin Hovorka           | Pending   | Target: 2026-01-31 |
+| Software V&V Team Representative      | Martin Hovorka           | Pending   | Target: 2026-01-31 |
+| Hardware Team Representative          | Martin Hovorka           | Pending   | Target: 2026-01-31 |
+| Hardware V&V Team Representative      | Martin Hovorka           | Pending   | Target: 2026-01-31 |
 
 **Assignment Guidance**: Approval authorities should be formally assigned by project sponsor before final sign-off. Recommended: Technical Lead from system architecture team, QA from quality team, PM from program management. Assignments should be documented here with names and commitment to review completion within 2 weeks of assignment.
 
@@ -53,17 +58,17 @@
 
 | Criterion                          | Status      | Notes                                                |
 |------------------------------------|-------------|------------------------------------------------------|
-| Content Complete                   | ✅ Complete | All sections populated through v2.6.7                |
-| Internal Consistency               | ✅ Complete | Review findings resolved in v2.6.7                   |
-| Technical Review                   | ✅ Complete | Seven-perspective review completed 2026-01-11; all findings resolved |
-| QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.6.7      |
+| Content Complete                   | ✅ Complete | All sections populated through v2.7.0                |
+| Internal Consistency               | ✅ Complete | Review findings from v2.6.8 resolved in v2.7.0       |
+| Technical Review                   | ✅ Complete | Seven-perspective review completed 2026-01-11; all findings resolved in v2.7.0 |
+| QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.7.0      |
 | PM Review                          | ✅ Complete | Review completed; findings resolved, approval guidance added |
-| Software Team Review               | ✅ Complete | Review completed; findings resolved in v2.6.7        |
-| SW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.7        |
-| Hardware Team Review               | ✅ Complete | Review completed; findings resolved in v2.6.7        |
-| HW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.7        |
-| Formal Approval                    | ⏳ Pending  | Signatures pending (TL/QA/PM assigned; target 2026-01-25) |
-| Baseline Established               | ⏳ Pending  | To be baselined upon formal approval (baseline tag `baseline-v2.6.8`) |
+| Software Team Review               | ✅ Complete | Review completed; findings resolved in v2.7.0        |
+| SW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.7.0        |
+| Hardware Team Review               | ✅ Complete | Review completed; findings resolved in v2.7.0        |
+| HW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.7.0        |
+| Formal Approval                    | ⏳ Pending  | Signatures pending (All 7 authorities assigned; target 2026-01-31) |
+| Baseline Established               | ⏳ Pending  | To be baselined upon formal approval (baseline tag `baseline-v2.7.0`) |
 
 **Next Steps for Approval**:
 1. ~~Schedule formal review meeting with Technical Lead, QA, and Project Manager~~ ✅ Complete
@@ -71,12 +76,13 @@
 3. ~~Conduct five-perspective comprehensive review~~ ✅ Complete (v2.6.5 - 4 new requirements added)
 4. Assign Technical Lead, QA, and PM signatories in the Approval Record section ✅ Complete (v2.6.8)
 5. ~~Resolve all critical and high-priority review findings~~ ✅ Complete (v2.6.6)
-6. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ In progress (signers targeted by 2026-01-25)
-7. Obtain formal signatures from approval authorities ⏳ Target 2026-01-25
+6. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ In progress (signers targeted by 2026-01-31)
+7. Obtain formal signatures from approval authorities ⏳ Target 2026-01-31
 8. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
-9. Establish approved version as baseline in configuration management ⏳ Targeted immediately after approval (tag `baseline-v2.6.8`)
+9. Establish approved version as baseline in configuration management ⏳ Targeted immediately after approval (tag `baseline-v2.7.0`)
 
-**Readiness Assessment**: Final seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All findings from v2.6.3 through v2.6.7 cycles resolved. Document is technically complete and ready for formal approval. Approval authorities assigned in v2.6.8 with signatures targeted by 2026-01-25; baseline tag `baseline-v2.6.8` planned immediately after sign-off. All technical, quality, and process requirements satisfied. Total requirements: 790. Baseline establishment will follow formal approval.
+**Readiness Assessment**: Final seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All findings from v2.6.3 through v2.6.8 cycles resolved and merged into v2.7.0. Document is technically complete and ready for a final formal approval round. Approval authorities assigned in v2.7.0 with signatures targeted by 2026-01-31; baseline tag `baseline-v2.7.0` planned immediately after sign-off. All technical, quality, and process requirements satisfied. Total requirements: 805 (15 new requirements added). Baseline establishment will follow formal approval.
+
 
 ### Distribution List
 
