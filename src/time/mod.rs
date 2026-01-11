@@ -27,12 +27,14 @@ pub fn ticks() -> u32 {
 
 /// Convert ticks to milliseconds
 pub fn ticks_to_ms(ticks: u32) -> u32 {
-    ticks * 1000 / TICK_FREQ_HZ
+    // Use 64-bit arithmetic to prevent overflow
+    ((ticks as u64 * 1000) / TICK_FREQ_HZ as u64) as u32
 }
 
 /// Convert milliseconds to ticks
 pub fn ms_to_ticks(ms: u32) -> u32 {
-    ms * TICK_FREQ_HZ / 1000
+    // Use 64-bit arithmetic to prevent overflow
+    ((ms as u64 * TICK_FREQ_HZ as u64) / 1000) as u32
 }
 
 /// Delay for specified number of ticks

@@ -20,8 +20,14 @@ unsafe impl<T: Send, const N: usize> Sync for MessageQueue<T, N> {}
 impl<T, const N: usize> MessageQueue<T, N> {
     /// Create a new message queue
     pub const fn new() -> Self {
+        // Helper to create array of MaybeUninit
+        const fn make_array<T, const N: usize>() -> [MaybeUninit<T>; N] {
+            // SAFETY: MaybeUninit<T> does not require initialization
+            unsafe { MaybeUninit::<[MaybeUninit<T>; N]>::uninit().assume_init() }
+        }
+        
         Self {
-            buffer: UnsafeCell::new(unsafe { MaybeUninit::uninit().assume_init() }),
+            buffer: UnsafeCell::new(make_array()),
             head: AtomicUsize::new(0),
             tail: AtomicUsize::new(0),
             count: AtomicUsize::new(0),
@@ -106,6 +112,13 @@ impl<T, const N: usize> MessageQueue<T, N> {
 impl<T, const N: usize> Drop for MessageQueue<T, N> {
     fn drop(&mut self) {
         // Drop all messages still in the queue
-        while let Some(_) = self.receive() {}
+        // Limit iterations to prevent infinite loop
+        let mut iterations = 0;
+        while iterations < N {
+            if self.receive().is_none() {
+                break;
+            }
+            iterations += 1;
+        }
     }
 }

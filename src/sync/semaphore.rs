@@ -40,13 +40,20 @@ impl Semaphore {
 
     /// Try to wait on the semaphore (non-blocking)
     pub fn try_wait(&self) -> bool {
-        let current = self.count.load(Ordering::Acquire);
-        if current > 0 {
-            self.count
-                .compare_exchange(current, current - 1, Ordering::Acquire, Ordering::Relaxed)
-                .is_ok()
-        } else {
-            false
+        loop {
+            let current = self.count.load(Ordering::Acquire);
+            if current > 0 {
+                if self
+                    .count
+                    .compare_exchange(current, current - 1, Ordering::Acquire, Ordering::Relaxed)
+                    .is_ok()
+                {
+                    return true;
+                }
+                // Retry if CAS failed due to concurrent modification
+            } else {
+                return false;
+            }
         }
     }
 

@@ -59,20 +59,22 @@ pub fn add_task(task: &mut TaskControlBlock) {
 
 /// Get the next task to run
 fn get_next_task() -> *mut TaskControlBlock {
-    // Find highest priority non-empty queue
-    for priority in (0..MAX_PRIORITY as usize).rev() {
-        unsafe {
-            let queue = &mut READY_QUEUES[priority];
-            if !queue.is_null() {
-                let task = *queue;
-                *queue = (*task).next;
-                (*task).next = ptr::null_mut();
-                return task;
+    critical_section::with(|_| {
+        // Find highest priority non-empty queue
+        for priority in (0..MAX_PRIORITY as usize).rev() {
+            unsafe {
+                let queue = &mut READY_QUEUES[priority];
+                if !queue.is_null() {
+                    let task = *queue;
+                    *queue = (*task).next;
+                    (*task).next = ptr::null_mut();
+                    return task;
+                }
             }
         }
-    }
-    
-    ptr::null_mut()
+        
+        ptr::null_mut()
+    })
 }
 
 /// Perform a context switch
