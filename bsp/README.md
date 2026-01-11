@@ -230,11 +230,11 @@ All peripherals are accessed via AXI4-Lite interconnect (SmartConnect):
 | 0x40040000 - 0x4004FFFF | 64 KB | GPIO LED 4-bits | gpio v4.12 | No |
 | 0x40050000 - 0x4005FFFF | 64 KB | GPIO RGB LEDs | gpio v4.12 | No |
 | 0x40060000 - 0x4006FFFF | 64 KB | GPIO I2C Pullups | gpio v4.12 | No |
-| 0x40600000 - 0x4060FFFF | 64 KB | AXI UART Lite | uartlite v2.0 | Yes (IRQ 2) |
-| 0x40800000 - 0x4080FFFF | 64 KB | AXI IIC (I2C) | iic v3.14 | Yes (IRQ 8) |
-| 0x40E00000 - 0x40E0FFFF | 64 KB | AXI Ethernet Lite MAC | emaclite v4.12 | Yes (IRQ 0) |
+| 0x40600000 - 0x4060FFFF | 64 KB | AXI UART Lite | uartlite v3.12 | Yes (IRQ 2) |
+| 0x40800000 - 0x4080FFFF | 64 KB | AXI IIC (I2C) | iic v3.14 | Yes (IRQ 10) |
+| 0x40E00000 - 0x40E0FFFF | 64 KB | AXI Ethernet Lite MAC | emaclite v4.12 | Yes (IRQ 8) |
 | 0x41200000 - 0x4120FFFF | 64 KB | AXI Interrupt Controller | intc v3.21 | N/A |
-| 0x41A00000 - 0x41A0FFFF | 64 KB | AXI Timebase WDT | wdttb v3.0 | Yes (IRQ 1, 10) |
+| 0x41A00000 - 0x41A0FFFF | 64 KB | AXI Timebase WDT | wdttb v5.11 | Yes (IRQ 1) |
 | 0x44A00000 - 0x44A0FFFF | 64 KB | AXI Quad SPI Flash | spi v4.15 | Yes (IRQ 3) |
 | 0x44A10000 - 0x44A1FFFF | 64 KB | AXI Quad SPI | spi v4.15 | Yes (IRQ 9) |
 
@@ -250,17 +250,19 @@ All peripherals are accessed via AXI4-Lite interconnect (SmartConnect):
 
 | IRQ # | Peripheral | Signal | Type |
 |||||
-| 0 | Ethernet Lite | ip2intc_irpt | Rising Edge |
-| 1 | Watchdog Timer | wdt_interrupt | Rising & Level |
+| 0 | FIT Timer 1ms | fit_timer_interrupt | Rising Edge |
+| 1 | Watchdog Timer | wdt_interrupt | Level |
 | 2 | UART Lite | interrupt | Rising Edge |
 | 3 | Quad SPI Flash | ip2intc_irpt | Rising Edge |
-| 4 | GPIO Shield 0-19 | ip2intc_irpt | Rising Edge |
-| 5 | GPIO Shield 26-41 | ip2intc_irpt | Rising Edge |
-| 6 | GPIO Push Buttons | ip2intc_irpt | Rising Edge |
-| 7 | GPIO DIP Switches | ip2intc_irpt | Rising Edge |
-| 8 | I2C (IIC) | iic2intc_irpt | Rising Edge |
+| 4 | GPIO Shield 0-19 | ip2intc_irpt | Level |
+| 5 | GPIO Shield 26-41 | ip2intc_irpt | Level |
+| 6 | GPIO Push Buttons | ip2intc_irpt | Level |
+| 7 | GPIO DIP Switches | ip2intc_irpt | Level |
+| 8 | Ethernet Lite | ip2intc_irpt | Rising Edge |
 | 9 | Quad SPI | ip2intc_irpt | Rising Edge |
-| 10 | Watchdog Timer | wdt_interrupt (second) | Level |
+| 10 | I2C (IIC) | iic2intc_irpt | Level |
+
+**Note:** IRQ assignments are defined by the hardware design and match the device tree (`mbv_microblaze_v_baremetal.dts`).
 
 **Interrupt Controller Configuration:**
 
@@ -304,7 +306,7 @@ All drivers are located in: `libsrc/<driver_name>/src/`
 - `XGpio_InterruptEnable()` - Enable pin interrupts
 - `XGpio_InterruptGetStatus()` - Read interrupt status
 
-#### 2. UART Lite Driver (uartlite v2.0)
+#### 2. UART Lite Driver (uartlite v3.12)
 
 **Header Files:**
 
@@ -412,7 +414,7 @@ All drivers are located in: `libsrc/<driver_name>/src/`
 
 **Configuration:**
 
-- **MAC Address:** 00:0A:35:00:01:02 (default, configurable)
+- **MAC Address:** 00:0A:23:00:00:00 (device tree default, configurable at runtime via `XEmacLite_SetMacAddress()`)
 - **Speed:** 10/100 Mbps auto-negotiation
 - **Interface:** MII (Media Independent Interface)
 - **Ping/Pong Buffers:** Enabled (for concurrent TX/RX)
@@ -461,7 +463,7 @@ All drivers are located in: `libsrc/<driver_name>/src/`
 - Maps to external interrupts on RISC-V core
 - See `riscv_interface.h` for low-level RISC-V interrupt handling
 
-#### 7. Watchdog Timer Driver (wdttb v3.0)
+#### 7. Watchdog Timer Driver (wdttb v5.11)
 
 **Header Files:**
 
@@ -486,12 +488,40 @@ All drivers are located in: `libsrc/<driver_name>/src/`
 - `XWdtTb_GetTbValue()` - Read current timer value
 - `XWdtTb_SetOptions()` - Configure watchdog options
 
-**Interrupts:**
+**Interrupt:**
 
-- IRQ 1: First window timeout warning
-- IRQ 10: Second window timeout (reset imminent)
+- IRQ 1: Watchdog timeout interrupt (only one IRQ is connected in this hardware design)
 
-#### 8. BRAM Controller (lmb_bram_if_cntlr v4.0)
+#### 8. Fixed Interval Timer (FIT Timer)
+
+**Description:** Hardware timer that generates periodic interrupts at a fixed interval.
+
+**Instance:** mbv_fixed_interval_timer_1_millisecond (direct connection, no AXI interface)
+
+**Configuration:**
+
+- **Clock Source:** 75 MHz system clock
+- **Number of Clocks:** 75000 (generates 1 ms interval)
+- **Interrupt Rate:** 1 kHz (1000 interrupts per second)
+
+**Interrupt:**
+
+- IRQ 0: Periodic 1 ms timer interrupt
+
+**Usage Notes:**
+
+- This timer has no software-accessible registers (hardware-only configuration)
+- Used as the system tick source for RTOS implementations
+- Interrupt occurs every 1 ms (75000 clock cycles at 75 MHz)
+- Ideal for time-slicing, periodic task scheduling, and software timers
+
+**RTOS Integration:**
+
+- Configure as the kernel tick source
+- Each tick = 1 ms
+- Use for task delays, timeouts, and time-slicing
+
+#### 9. BRAM Controller (bram v4.13)
 
 **Header Files:**
 
