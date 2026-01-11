@@ -33,6 +33,7 @@
 | 2.6.1   | 2026-01-11 | Dev Team    | Final review fixes: CTX-010 GPR count correction, Appendix G UART address fix, PAC-02A renamed to PAC-032, risk scale definitions added, REF-023 test traceability reference, readiness status clarification |
 | 2.6.2   | 2026-01-11 | Dev Team    | Three-perspective review integration: Technical Lead (9 findings), QA (9 findings), PM (10 findings), cross-cutting (3 findings). Added requirements: INT-016, HWTEST-009/010, CI-008, VER-012-014, PM-001-004, RSK-020-023, REL-029-031. Clarifications: ISA-009 usage, PROC-002 S-mode, terminology, coverage methodology, traceability implementation. Status updated to reflect review findings requiring resolution. |
 | 2.6.3   | 2026-01-11 | Dev Team    | Three-perspective review remediation: Clarified ISA-009 Zbc extension rationale, improved PROC-002 S-mode hardware vs usage description, added explicit test traceability guidance (VER-012 clarification), defined coverage exclusion methodology (COV-001 update), added CI test execution enforcement (CI-009), provided approval authority assignment guidance. Status updated to "Ready for Approval". |
+| 2.6.4   | 2026-01-11 | Dev Team    | Final review cycle: Fixed document footer version mismatch (was 2.6.2, corrected to 2.6.4), resolved GPIO PAC ID conflicts (renumbered GPIO registers to PAC-033 through PAC-037), added Hardware Team to distribution list, added FIT Timer hardware test requirement (HWTEST-011), clarified PM schedule population guidance, defined generated code exclusions in COV-001. Document fully ready for formal approval. |
 
 ### Approval Record
 
@@ -48,25 +49,25 @@
 
 | Criterion                          | Status      | Notes                                                |
 |------------------------------------|-------------|------------------------------------------------------|
-| Content Complete                   | ✅ Complete | All sections populated through v2.6.3                |
-| Internal Consistency               | ✅ Complete | Review findings resolved in v2.6.3                   |
-| Technical Review                   | ✅ Complete | Three-perspective review completed 2026-01-11; findings resolved |
-| QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.6.3      |
+| Content Complete                   | ✅ Complete | All sections populated through v2.6.4                |
+| Internal Consistency               | ✅ Complete | Review findings resolved in v2.6.4                   |
+| Technical Review                   | ✅ Complete | Three-perspective review completed 2026-01-11; all findings resolved |
+| QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.6.4      |
 | PM Review                          | ✅ Complete | Review completed; findings resolved, approval guidance added |
 | Formal Approval                    | ⏳ Pending  | Awaiting approval authority assignment and sign-off  |
 | Baseline Established               | ⏳ Pending  | To be baselined upon formal approval                 |
 
 **Next Steps for Approval**:
 1. ~~Schedule formal review meeting with Technical Lead, QA, and Project Manager~~ ✅ Complete
-2. ~~Address findings from three-perspective review (31 issues identified)~~ ✅ Complete (v2.6.3)
+2. ~~Address findings from three-perspective review~~ ✅ Complete (v2.6.4 - 8 findings fixed)
 3. Assign Technical Lead, QA, and PM signatories in the Approval Record section ⏳ **Next Action**
-4. ~~Resolve all critical and high-priority review findings~~ ✅ Complete (v2.6.3)
+4. ~~Resolve all critical and high-priority review findings~~ ✅ Complete (v2.6.4)
 5. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ Pending assignment
 6. Obtain formal signatures from approval authorities ⏳ Pending assignment
 7. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
 8. Establish approved version as baseline in configuration management ⏳ Pending approval
 
-**Readiness Assessment**: Comprehensive three-perspective review completed on 2026-01-11. All 31 findings resolved in v2.6.3. Document is technically complete and ready for formal approval. **Blocking action: Assign approval authorities** (Technical Lead, QA, PM) to enable formal sign-off. Once assignments made, review cycle for sign-off is estimated at 2 weeks. All technical, quality, and process requirements satisfied. Baseline establishment will follow formal approval.
+**Readiness Assessment**: Final three-perspective review completed on 2026-01-11. All findings from v2.6.3 and v2.6.4 cycles resolved. Document is technically complete and ready for formal approval. **Blocking action: Assign approval authorities** (Technical Lead, QA, PM) to enable formal sign-off. Once assignments made, review cycle for sign-off is estimated at 2 weeks. All technical, quality, and process requirements satisfied. Total requirements: 716. Baseline establishment will follow formal approval.
 
 ### Distribution List
 
@@ -75,6 +76,7 @@
 | Development Team                   | Controlled  |
 | Quality Assurance Team             | Controlled  |
 | Project Management                 | Controlled  |
+| Hardware Team                      | Controlled  |
 | Customer                           | N/A         |
 
 ---
@@ -1399,11 +1401,11 @@ The following table provides CSR addresses for implementation reference:
 |----------------|-------------------------------------------------------|----------|--------------|
 | PAC-030        | GPIO_DATA (offset 0x00): Channel 1 data register      | Should   | T            |
 | PAC-031        | GPIO_TRI (offset 0x04): Channel 1 tri-state register  | Should   | T            |
-| PAC-032        | GPIO2_DATA (offset 0x08): Channel 2 data register     | Should   | T            |
-| PAC-033        | GPIO2_TRI (offset 0x0C): Channel 2 tri-state register | Should   | T            |
-| PAC-034        | GIER (offset 0x11C): Global interrupt enable          | Should   | T            |
-| PAC-035        | IER (offset 0x128): IP interrupt enable               | Should   | T            |
-| PAC-036        | ISR (offset 0x120): IP interrupt status               | Should   | T            |
+| PAC-033        | GPIO2_DATA (offset 0x08): Channel 2 data register     | Should   | T            |
+| PAC-034        | GPIO2_TRI (offset 0x0C): Channel 2 tri-state register | Should   | T            |
+| PAC-035        | GIER (offset 0x11C): Global interrupt enable          | Should   | T            |
+| PAC-036        | IER (offset 0x128): IP interrupt enable               | Should   | T            |
+| PAC-037        | ISR (offset 0x120): IP interrupt status               | Should   | T            |
 
 ### 11.5 AXI Quad SPI Registers (0x44A0_0000, 0x44A1_0000)
 
@@ -1835,7 +1837,7 @@ The following items shall be verified before each release:
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
 | PM-001         | Project schedule shall define key milestones: (1) Requirements Approval, (2) Design Complete, (3) Implementation Complete, (4) Testing Complete, (5) Release Candidate, (6) v1.0 Release | Should   | I            |
-| PM-002         | Schedule shall include target dates for each milestone (to be populated by Project Manager)                    | Should   | I            |
+| PM-002         | Schedule shall include target dates for each milestone; **Note**: Dates to be populated by assigned Project Manager within 2 weeks of approval authority assignment per Approval Record guidance | Should   | I            |
 | PM-003         | Schedule shall be reviewed and updated monthly during active development                                       | Should   | I            |
 | PM-004         | Schedule risks shall be tracked and mitigation plans documented                                                | Should   | I            |
 
@@ -1912,6 +1914,7 @@ The following items shall be verified before each release:
 | HWTEST-008     | Memory access patterns shall be validated for correct volatile behavior                                        | Should   | T            |
 | HWTEST-009     | AXI peripheral access timing shall be validated per PERF-025 to PERF-029 using hardware cycle counters        | Should   | T            |
 | HWTEST-010     | LMB BRAM single-cycle access shall be validated by measuring read/write latency using mcycle CSR              | Must     | T            |
+| HWTEST-011     | Fixed Interval Timer (FIT) 1ms interrupt generation shall be validated by measuring tick period accuracy against mcycle counter (expected: 75000 cycles ±0.1%) | Must     | T            |
 
 ### 19.1.3 Performance Testing
 
@@ -1928,7 +1931,7 @@ The following items shall be verified before each release:
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
-| COV-001        | Line coverage for host-testable code shall be ≥ 80%; measurement methodology: (executed lines / total executable lines); **exclusions**: (1) `#[cfg(target_arch = "riscv32")]` hardware-specific code, (2) panic handlers, (3) generated code, (4) inline assembly; coverage tool: tarpaulin or llvm-cov; exclusions must be documented in coverage report | Should   | A            |
+| COV-001        | Line coverage for host-testable code shall be ≥ 80%; measurement methodology: (executed lines / total executable lines); **exclusions**: (1) `#[cfg(target_arch = "riscv32")]` hardware-specific code, (2) panic handlers, (3) generated code (PAC register definitions, svd2rust output, build.rs generated files), (4) inline assembly; coverage tool: tarpaulin or llvm-cov; exclusions must be documented in coverage report | Should   | A            |
 | COV-002        | Coverage reports shall be generated via `coverage.sh` script                                                   | Should   | D            |
 | COV-003        | Branch coverage shall be tracked for critical decision points                                                  | Could    | A            |
 | COV-004        | Uncovered code paths shall be documented with justification                                                    | Should   | I            |
@@ -2136,12 +2139,12 @@ Requirements with verification method `T` (Test) shall have corresponding test c
 | Build (incl. CFG/CI)  | 24   | 22     | 3     | 0    | 49    |
 | Performance (incl. AXI)| 6   | 20     | 2     | 0    | 28    |
 | Safety/Security/Cert  | 15   | 21     | 3     | 5    | 44    |
-| Quality/Verification/Test| 18 | 51   | 8     | 2    | 79    |
+| Quality/Verification/Test| 19 | 51   | 8     | 2    | 80    |
 | Deployment/Release (incl. PM)| 14 | 31 | 5     | 0    | 50    |
 | Documentation         | 3    | 14     | 1     | 0    | 18    |
-| **Total**             | **261** | **340** | **75** | **39** | **715** |
+| **Total**             | **262** | **340** | **75** | **39** | **716** |
 
-**Note**: Totals updated for v2.6.2 to include all additions from v2.2.0 through v2.6.2.
+**Note**: Totals updated for v2.6.4 to include HWTEST-011 addition.
 
 **Note**: Requirements v2.6.2 adds 14 new requirements from three-perspective review findings:
 - Interrupt priority validation (INT-016)
@@ -2362,7 +2365,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 ---
 
 *Document ID: RUSTOS-SRS-001*
-*Version: 2.6.2*
+*Version: 2.6.4*
 *Classification: Internal*
 *Last Updated: January 11, 2026*
 
