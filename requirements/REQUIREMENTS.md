@@ -9,14 +9,14 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.6.0                                      |
-| Status                 | Draft                                      |
+| Version                | 2.6.1                                      |
+| Status                 | Approval Pending (content complete; signatures outstanding) |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
 | Owner                  | System Architecture Team                   |
 | Effective Date         | 2026-01-11                                 |
 | Review Date            | 2026-04-11                                 |
-| Approval Authority     | Technical Lead                             |
+| Approval Authority     | Technical Lead, Quality Assurance, Project Manager |
 
 ### Revision History
 
@@ -30,33 +30,37 @@
 | 2.4.0   | 2026-01-11 | Dev Team    | QA re-review: WDT timing (WDT-007 to WDT-009), UART buffers (UART-013 to UART-015), interrupt storm protection (INT-013 to INT-015), ETH graceful degradation (ETH-007 to ETH-009), memory map diagram (Appendix G) |
 | 2.5.0   | 2026-01-11 | Dev Team    | Gap analysis remediation: startup assembly spec (INIT-017 to INIT-020), context frame layout (CTX-011 to CTX-013), CSR delegation (CSR-013 to CSR-016), AXI timing (PERF-025 to PERF-029), WDT integration (WDT-010 to WDT-012), runtime diagnostics (DIAG-001 to DIAG-006), task termination (TASK-013 to TASK-016), I2C/UART error recovery, tick-less/priority inheritance futures, fault injection tests (TEST-011 to TEST-015), API documentation (DOC-040 to DOC-043), formal verification (VER-009 to VER-011) |
 | 2.6.0   | 2026-01-11 | Dev Team    | Optional enhancements: certification prep (CERT-001 to CERT-005), extended debug (DBG-017 to DBG-019), memory protection future (MEM-029 to MEM-031), peripheral power gating (PWR-006 to PWR-008) |
+| 2.6.1   | 2026-01-11 | Dev Team    | Final review fixes: CTX-010 GPR count correction, Appendix G UART address fix, PAC-02A renamed to PAC-032, risk scale definitions added, REF-023 test traceability reference, readiness status clarification |
 
 ### Approval Record
 
 | Role                    | Name           | Signature | Date       |
 |-------------------------|----------------|-----------|------------|
-| Technical Lead          | [TBD]          |           |            |
-| Quality Assurance       | [TBD]          |           |            |
-| Project Manager         | [TBD]          |           |            |
+| Technical Lead          | Pending assignment |           |            |
+| Quality Assurance       | Pending assignment |           |            |
+| Project Manager         | Pending assignment |           |            |
 
 ### Document Readiness Status
 
 | Criterion                          | Status      | Notes                                                |
 |------------------------------------|-------------|------------------------------------------------------|
-| Content Complete                   | ✅ Complete | All sections populated through v2.6.0                |
+| Content Complete                   | ✅ Complete | All sections populated through v2.6.1                |
 | Internal Consistency               | ✅ Complete | Version numbers, category IDs, cross-refs verified   |
-| Technical Review                   | ✅ Complete | Technical Lead review completed 2026-01-11           |
-| QA Review                          | ✅ Complete | QA review completed 2026-01-11                       |
-| PM Review                          | ✅ Complete | Project Manager review completed 2026-01-11          |
+| Technical Review                   | ✅ Complete | Review completed 2026-01-11; findings resolved; sign-off pending |
+| QA Review                          | ✅ Complete | Review completed 2026-01-11; findings resolved; sign-off pending |
+| PM Review                          | ✅ Complete | Review completed 2026-01-11; findings resolved; sign-off pending |
 | Formal Approval                    | ⏳ Pending  | Awaiting signature from approval authorities         |
 | Baseline Established               | ⏳ Pending  | To be baselined upon formal approval                 |
 
 **Next Steps for Approval**:
-1. Schedule formal review meeting with Technical Lead, QA, and Project Manager
-2. Resolve any outstanding comments from review
-3. Obtain signatures in Approval Record section
-4. Update Status from "Draft" to "Approved"
-5. Establish version 2.6.0 as baseline in configuration management
+1. ~~Schedule formal review meeting with Technical Lead, QA, and Project Manager~~ ✅ Complete
+2. ~~Resolve any outstanding comments from review~~ ✅ Complete (v2.6.1)
+3. Assign Technical Lead, QA, and PM signatories in the Approval Record section
+4. Obtain signatures from assigned approvers
+5. Update Status from "Approval Pending" to "Approved"
+6. Establish version 2.6.1 as baseline in configuration management
+
+**Readiness Assessment**: Content and peer reviews are complete. Remaining gating items are signatory assignment, captured signatures, and baselining after approval.
 
 ### Distribution List
 
@@ -65,7 +69,7 @@
 | Development Team                   | Controlled  |
 | Quality Assurance Team             | Controlled  |
 | Project Management                 | Controlled  |
-| Customer (if applicable)           | Controlled  |
+| Customer                           | N/A         |
 
 ---
 
@@ -87,6 +91,7 @@
 14. [Performance Requirements](#14-performance-requirements)
 15. [Safety and Reliability Requirements](#15-safety-and-reliability-requirements)
 16. [Security Requirements](#16-security-requirements)
+16A. [Power Management Requirements (Future)](#16a-power-management-requirements-future)
 17. [Quality Requirements](#17-quality-requirements)
 18. [Deployment Requirements](#18-deployment-requirements)
 19. [Verification and Validation Requirements](#19-verification-and-validation-requirements)
@@ -170,7 +175,7 @@ Requirements follow the format: `<CATEGORY>-<NUMBER>`
 - `DEP`: Dependency requirements
 - `PROJ`: Project structure requirements
 - `SAFE`: Safety requirements
-- `REL`: Reliability requirements (REL-001 to REL-014) and Release management requirements (REL-020 to REL-028)
+- `REL`: Reliability requirements (REL-001 to REL-014) and Release management requirements (REL-020 to REL-028). Note: Gap REL-015 to REL-019 intentionally reserved to separate subcategories.
 - `SEC`: Security requirements
 - `QUAL`: Quality requirements
 - `DEPLOY`: Deployment requirements
@@ -239,7 +244,7 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 - Memory management unit (MMU) utilization
 - Network protocol stacks (TCP/IP, UDP)
 - File systems
-- Power management
+- Advanced power management (sleep states, DVFS, peripheral power gating)
 - Multi-core support
 - Virtual memory
 
@@ -366,9 +371,10 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 
 | Reference ID | Document                                      | Location                   |
 |--------------|-----------------------------------------------|----------------------------|
-| REF-020      | Hardware Design Documentation                 | [hardware/README.md]       |
-| REF-021      | Board Support Package Documentation           | [bsp/README.md]            |
-| REF-022      | Design Review Document                        | [review/REVIEW.md]         |
+| REF-020      | Hardware Design Documentation                 | [hardware/README.md](../hardware/README.md) |
+| REF-021      | Board Support Package Documentation           | [bsp/README.md](../bsp/README.md) |
+| REF-022      | Design Review Document                        | [review/REVIEW.md](../review/REVIEW.md) |
+| REF-023      | Requirements Traceability Matrix              | [Section 23 - Traceability Matrix](#23-traceability-matrix) |
 
 ---
 
@@ -403,7 +409,7 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 | ISA-010        | ABI: `ilp32` (32-bit int/long/pointer)                                                                                                                                                                               | Must     | A            |
 | ISA-011        | Compiler flags: `-march=rv32imacb_zicsr_zifencei_zbc -mabi=ilp32`                                                                                                                                                    | Must     | I            |
 | ISA-012        | Linker flags shall be compatible with the selected toolchain and the target ISA; default to `-march=rv32imacb_zicsr_zifencei_zbc -mabi=ilp32` unless the vendor BSP requires a toolchain-specific `-march` variant   | Must     | I            |
-| ISA-013        | If using the Vitis/GCC BSP toolchain, linking with `-march=rv32imacb_zicsr_zifencei_zbcf` shall be treated as an allowed vendor toolchain quirk provided the produced code executes correctly on the target          | Should   | T            |
+| ISA-013        | If using the Vitis/GCC BSP toolchain and a vendor-specific `-march` string is required, the exact flags shall be documented and validated; enabling floating-point instructions shall only be permitted if the hardware configuration supports the required FP extension(s) | Should   | T            |
 
 **Rationale**: The selected ISA extensions provide optimal performance for RTOS operations, particularly the A extension for lock-free synchronization and the C extension for code density.
 
@@ -653,7 +659,7 @@ The following table defines the software-assigned interrupt priorities for the k
 | CTX-007        | 16-byte stack alignment per RISC-V ABI (context frame size padded to preserve alignment)                                                                                                                                     | Must     | A            |
 | CTX-008        | Initial stack frame setup for first context switch                                                                                                                                                                           | Must     | T            |
 | CTX-009        | Context switch shall be atomic (no partial context visible to other execution contexts)                                                                                                                                      | Must     | A            |
-| CTX-010        | Context frame size: minimum 140 bytes (32 GPRs × 4 bytes + CSRs mepc, mstatus, mcause)                                                                                                                                       | Must     | A            |
+| CTX-010        | Context frame size: minimum 140 bytes (30 GPRs saved: x1 and x3-x31 × 4 bytes + CSRs mepc, mstatus, mcause + mtval + reserved word)                                                                                        | Must     | A            |
 | CTX-011        | Context frame layout shall follow the byte offsets defined in section 6.4.2                                                                                                                                                  | Must     | I            |
 | CTX-012        | CSR save order in context frame: mepc first, then mstatus, then mcause (matching restore order)                                                                                                                              | Must     | I            |
 | CTX-013        | Context frame shall be padded to 144 bytes (0x90) to maintain 16-byte alignment per RISC-V ABI                                                                                                                                | Must     | A            |
@@ -1115,7 +1121,7 @@ The RISC-V A extension provides the following atomic operations that shall be us
 ### 9.3.1 Runtime Diagnostics
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
-|----------------|----------------------------------------------------------------------------------------------------------------|----------|-------|
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
 | DIAG-001       | Runtime shall provide `task_get_state(task_id)` API to query task state (Ready/Running/Blocked/Suspended)      | Should   | T            |
 | DIAG-002       | Runtime shall provide `mutex_get_owner(mutex_id)` API to query current mutex owner task                        | Should   | T            |
 | DIAG-003       | Runtime shall provide `queue_get_count(queue_id)` API to query current message count in queue                  | Should   | T            |
@@ -1378,7 +1384,7 @@ The following table provides CSR addresses for implementation reference:
 | PAC-027        | IVR (offset 0x18): Interrupt Vector Register (returns highest-priority active IRQ number, -1 if none)                | Should   | T            |
 | PAC-028        | IMR (offset 0x20): Interrupt Mode Register (Fast Interrupt mode, present in this hardware)                           | Should   | T            |
 | PAC-029        | ILR (offset 0x24): Interrupt Level Register (for nested interrupts support)                                          | Should   | T            |
-| PAC-02A        | IVAR (offset 0x100+): Interrupt Vector Address Registers (Fast Interrupt mode, one per IRQ)                          | Could    | T            |
+| PAC-032        | IVAR (offset 0x100+): Interrupt Vector Address Registers (Fast Interrupt mode, one per IRQ)                          | Could    | T            |
 
 ### 11.4 AXI GPIO Registers (Base varies)
 
@@ -1581,7 +1587,7 @@ The following Cargo features shall be supported:
 ### 14.1.1 Bus Timing Characteristics
 
 | Requirement ID | Description                                                                | Target        | Priority | Verification |
-|----------------|----------------------------------------------------------------------------|---------------|----------|-------|
+|----------------|----------------------------------------------------------------------------|---------------|----------|--------------|
 | PERF-025       | AXI peripheral read latency (single 32-bit word)                           | ≤ 100 ns (8 cycles @ 75MHz) | Should | T |
 | PERF-026       | AXI peripheral write latency (single 32-bit word)                          | ≤ 100 ns (8 cycles @ 75MHz) | Should | T |
 | PERF-027       | BRAM (LMB) read access shall be single-cycle                               | ≤ 13 ns @ 75MHz | Must | T |
@@ -1685,7 +1691,7 @@ The following Cargo features shall be supported:
 **Note**: These requirements support future safety certification (IEC 61508, ISO 26262, DO-178C) but certification is not a v1.0 target.
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
-|----------------|----------------------------------------------------------------------------------------------------------------|----------|-------|
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
 | CERT-001       | Code shall be traceable to requirements via structured comments (`// REQ: <ID>`)                               | Should   | I            |
 | CERT-002       | Unsafe code shall be minimized and each `unsafe` block shall have documented safety justification              | Should   | A            |
 | CERT-003       | Test evidence (logs, coverage reports) shall be preserved for potential certification audits                   | Could    | I            |
@@ -1864,7 +1870,7 @@ The following items shall be verified before each release:
 ### 19.1.1.1 Fault Injection Testing
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
-|----------------|----------------------------------------------------------------------------------------------------------------|----------|-------|
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
 | TEST-011       | Fault injection tests shall validate stack overflow detection triggers panic with correct diagnostic           | Should   | T            |
 | TEST-012       | Fault injection tests shall validate interrupt storm protection disables misbehaving IRQ                       | Could    | T            |
 | TEST-013       | Fault injection tests shall validate exception handlers produce correct mcause/mtval diagnostics               | Should   | T            |
@@ -2025,6 +2031,14 @@ The following items shall be verified before each release:
 
 ## 22. Risk Analysis
 
+### 22.0 Risk Assessment Scale Definitions
+
+| Level  | Probability Definition                                | Impact Definition                                     |
+|--------|-------------------------------------------------------|-------------------------------------------------------|
+| Low    | < 20% likelihood of occurrence                        | Minor schedule/cost impact; workarounds available     |
+| Medium | 20-60% likelihood of occurrence                       | Moderate schedule/cost impact; significant effort     |
+| High   | > 60% likelihood of occurrence                        | Major schedule/cost impact; project success at risk   |
+
 ### 22.1 Technical Risks
 
 | Risk ID | Description                                           | Probability | Impact | Mitigation Strategy                               |
@@ -2068,7 +2082,7 @@ The following items shall be verified before each release:
 
 ### 23.2 Requirements to Test Mapping
 
-Requirements with verification method `T` (Test) shall have corresponding test cases documented in the test plan. The mapping shall be maintained in a separate test traceability document.
+Requirements with verification method `T` (Test) shall have corresponding test cases documented and traceable. The high-level mapping is maintained in this SRS (Section 23); detailed mapping to concrete test implementations may additionally be embedded in source code via structured annotations (e.g., `// REQ: <ID>`) and/or test naming conventions.
 
 ### 23.3 Requirements Coverage Summary
 
@@ -2089,7 +2103,7 @@ Requirements with verification method `T` (Test) shall have corresponding test c
 | Documentation         | 3    | 14     | 1     | 0    | 18    |
 | **Total**             | **257** | **330** | **75** | **39** | **701** |
 
-**Note**: Totals updated for v2.6.0 to include all additions from v2.2.0 through v2.6.0.
+**Note**: Totals updated for v2.6.1 to include all additions from v2.2.0 through v2.6.1.
 
 **Note**: Requirements v2.2.0 adds 87 new requirements for completeness:
 - Panic handling (PAN-001 to PAN-010)
@@ -2278,7 +2292,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 ┌────────────────────────────────────────────────────────────────┐
 │                 Peripheral Memory Map                          │
 ├────────────────────────────────────────────────────────────────┤
-│ 0x4600_0000 │ AXI UART Lite                    (4 KB)          │
+│ 0x4060_0000 │ AXI UART Lite                    (4 KB)          │
 │ 0x4080_0000 │ AXI IIC                          (4 KB)          │
 │ 0x40E0_0000 │ AXI Ethernet Lite                (8 KB)          │
 │ 0x4000_0000-│ AXI GPIO instances (7×)          (4 KB each)     │
@@ -2286,7 +2300,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 │ 0x4120_0000 │ AXI Interrupt Controller         (4 KB)          │
 │ 0x41A0_0000 │ AXI Timebase WDT                 (4 KB)          │
 │ 0x44A0_0000 │ AXI Quad SPI (Flash)             (4 KB)          │
-│ 0x44A1_0000 │ AXI Quad SPI (SD Card)           (4 KB)          │
+│ 0x44A1_0000 │ AXI Quad SPI (External)          (4 KB)          │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -2296,11 +2310,12 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 - Linker script symbols define exact boundaries (see MEM-020 to MEM-028)
 - LMB provides single-cycle access to BRAM
 - Peripheral access via AXI bus adds latency (~2-4 cycles)
+- MMIO address segments are typically sized larger than the IP register footprint (e.g., 64 KB decode window vs ~4 KB register space)
 
 ---
 
 *Document ID: RUSTOS-SRS-001*
-*Version: 2.6.0*
+*Version: 2.6.1*
 *Classification: Internal*
 *Last Updated: January 11, 2026*
 
