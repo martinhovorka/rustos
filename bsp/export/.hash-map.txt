@@ -1,0 +1,1 @@
+{"generate.platform":[{"uri":"C:\\rustos\\bsp\\vitis-comp.json","md5":"0a024ac80644c0c258995d824c96a34c"},{"uri":"C:\\rustos\\bsp\\mbv_microblaze_v\\standalone_mbv_microblaze_v\\bsp\\bsp.yaml","md5":"606fe47d8e39c1b44692abd07e396181"}]}
