@@ -9,7 +9,7 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.0.0                                      |
+| Version                | 2.2.0                                      |
 | Status                 | Draft                                      |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
@@ -24,6 +24,8 @@
 |---------|------------|-------------|----------------------------------------------------------|
 | 1.0.0   | 2025-12-30 | Dev Team    | Initial requirements specification                       |
 | 2.0.0   | 2026-01-11 | Dev Team    | Commercial-grade production-ready requirements update    |
+| 2.1.0   | 2026-01-11 | Dev Team    | Updated with BSP/hardware-validated peripheral details, RISC-V register conventions, exception codes, atomic operations, GPIO port widths |
+| 2.2.0   | 2026-01-11 | Dev Team    | Added implementation completeness requirements: panic handling, logging, linker script details, test framework, release management, configuration, CI/CD (87 new requirements) |
 
 ### Approval Record
 
@@ -416,13 +418,31 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 | PER-012        | AXI IIC (I2C) at address 0x4080_0000 (SCL/SDA inertial delay: 4 AXI clocks)                                               | Should   | T            |
 | PER-013        | AXI Ethernet Lite at address 0x40E0_0000 (10/100 Mbps)                                                                    | Should   | T            |
 | PER-014        | AXI Timebase Watchdog Timer at address 0x41A0_0000 (Window WDT enabled)                                                   | Should   | T            |
-| PER-015        | AXI Quad SPI Flash at address 0x44A0_0000 (Quad mode, Spansion, FIFO depth 256)                                           | Should   | T            |
-| PER-016        | AXI Quad SPI Flash configuration: XIP mode disabled; performance mode enabled                                             | Should   | I            |
-| PER-017        | AXI Quad SPI (External) at address 0x44A1_0000 (Quad mode, 32-bit transfers, SPI clock = AXI/16 ≈ 4.69 MHz at 75 MHz AXI) | Should   | T            |
+| PER-015        | AXI Quad SPI Flash at address 0x44A0_0000 (Quad mode, Spansion, FIFO depth 256, 8-bit transfers)                               | Should   | T            |
+| PER-016        | AXI Quad SPI Flash configuration: XIP mode disabled; performance mode enabled; SPI Mode 2 (CPOL=1, CPHA=0)                     | Should   | I            |
+| PER-017        | AXI Quad SPI (External) at address 0x44A1_0000 (Quad mode, 32-bit transfers, SPI clock = AXI/16 ≈ 4.69 MHz, SPI Mode 0)        | Should   | T            |
 | PER-018        | AXI Timebase Watchdog Timer: second sequence timer width = 8; window WDT enabled                                          | Should   | I            |
 | PER-019        | Fixed Interval Timer (1 ms) shall be connected to AXI INTC interrupt input bus[0]                                         | Must     | I            |
+| PER-020        | Fixed Interval Timer has no memory-mapped registers (interrupt-only hardware timer)                                       | Info     | I            |
+| PER-021        | AXI Interrupt Controller: Fast Interrupt mode enabled, IVR register available, 11 interrupt inputs                        | Must     | T            |
+| PER-022        | AXI Ethernet Lite: TX/RX ping-pong buffers enabled, MDIO interface for PHY management                                     | Should   | T            |
+| PER-023        | AXI IIC: 100 kHz I2C frequency, 7-bit addressing (10-bit addressing disabled)                                             | Should   | T            |
 
 **Rationale**: Peripheral selection provides essential I/O capabilities for embedded applications while maintaining a manageable driver development scope.
+
+### 5.5.1 GPIO Port Configuration
+
+The following table details the GPIO port widths and capabilities derived from the BSP:
+
+| GPIO Instance      | Base Address | Width (bits) | Channel 2 | Interrupts | Physical Mapping           |
+|--------------------|--------------|--------------|-----------|------------|----------------------------|
+| Shield Pins 0-19   | 0x4000_0000  | 20           | No        | Yes (IRQ4) | Arduino pins 0-19          |
+| Shield Pins 26-41  | 0x4001_0000  | 16           | No        | Yes (IRQ5) | Arduino pins 26-41         |
+| Push Buttons       | 0x4002_0000  | 4            | No        | Yes (IRQ6) | BTN0-BTN3                  |
+| DIP Switches       | 0x4003_0000  | 4            | No        | Yes (IRQ7) | SW0-SW3                    |
+| LED 4-bits         | 0x4004_0000  | 4            | No        | No         | LD0-LD3 (green)            |
+| RGB LEDs           | 0x4005_0000  | 12           | No        | No         | LD4-LD7 (RGB, 3 bits each) |
+| I2C Pullups        | 0x4006_0000  | 2            | No        | No         | SDA/SCL pull-up control    |
 
 ### 5.6 Memory Map
 
@@ -446,19 +466,21 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 
 ### 5.7 Interrupt Sources
 
-| IRQ | Source               | Description                        | Priority | Edge/Level |
-|-----|----------------------|------------------------------------|----------|------------|
-| 0   | Fixed Interval Timer | 1 ms system tick for scheduler     | Highest  | Edge       |
-| 1   | Watchdog Timer       | Timebase watchdog timer            | High     | Edge       |
-| 2   | UART Lite            | Serial communication               | Medium   | Level      |
-| 3   | Quad SPI Flash       | On-board flash memory              | Medium   | Level      |
-| 4   | GPIO Shield 0-19     | Shield pins interrupt              | Low      | Edge       |
-| 5   | GPIO Shield 26-41    | Shield pins interrupt              | Low      | Edge       |
-| 6   | GPIO Push Buttons    | Button press events                | Low      | Edge       |
-| 7   | GPIO DIP Switches    | Switch change events               | Low      | Edge       |
-| 8   | Ethernet Lite        | Network communication              | Medium   | Level      |
-| 9   | Quad SPI External    | External SPI devices               | Medium   | Level      |
-| 10  | IIC (I2C)            | I2C bus events                     | Medium   | Level      |
+The following table shows the interrupt mapping derived from the hardware design. The `KIND_OF_INTR` value from BSP is `0x30c` (bits 2,3,8,9 set), indicating which interrupts are edge-sensitive.
+
+| IRQ | Source               | Description                        | Priority | Edge/Level   | Base Address |
+|-----|----------------------|------------------------------------|----------|--------------|-------------|
+| 0   | Fixed Interval Timer | 1 ms system tick for scheduler     | Highest  | Rising Edge  | N/A (direct) |
+| 1   | Watchdog Timer       | Timebase watchdog timeout          | High     | Level        | 0x41A0_0000  |
+| 2   | UART Lite            | Serial TX/RX complete              | Medium   | Rising Edge  | 0x4060_0000  |
+| 3   | Quad SPI Flash       | SPI transfer complete              | Medium   | Rising Edge  | 0x44A0_0000  |
+| 4   | GPIO Shield 0-19     | Shield pins interrupt              | Low      | Level        | 0x4000_0000  |
+| 5   | GPIO Shield 26-41    | Shield pins interrupt              | Low      | Level        | 0x4001_0000  |
+| 6   | GPIO Push Buttons    | Button press events                | Low      | Level        | 0x4002_0000  |
+| 7   | GPIO DIP Switches    | Switch change events               | Low      | Level        | 0x4003_0000  |
+| 8   | Ethernet Lite        | TX/RX complete, errors             | Medium   | Rising Edge  | 0x40E0_0000  |
+| 9   | Quad SPI External    | SPI transfer complete              | Medium   | Rising Edge  | 0x44A1_0000  |
+| 10  | IIC (I2C)            | I2C bus events, transfer complete  | Medium   | Level        | 0x4080_0000  |
 
 ### 5.8 Debug Infrastructure
 
@@ -497,6 +519,9 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 | INIT-011       | Startup shall include an optional self-check build mode that validates `.data` init and `.bss` zeroing (panic/print on mismatch)                          | Could    | T            |
 | INIT-012       | Startup sequence shall complete within 10 ms from reset to first user task execution                                                                      | Should   | T            |
 | INIT-013       | Startup shall initialize all kernel data structures before enabling interrupts                                                                            | Must     | A            |
+| INIT-014       | Reset vector shall be located at address 0x00000000 (BRAM base)                                                                                           | Must     | T            |
+| INIT-015       | All 32 general-purpose registers (x0-x31) shall be initialized to known values on startup                                                                 | Must     | T            |
+| INIT-016       | Trap vector (mtvec) shall be configured for direct mode (MODE=0) unless vectored mode is explicitly required                                              | Must     | T            |
 
 **Rationale**: Proper initialization sequence ensures deterministic system behavior and prevents undefined states at runtime.
 
@@ -516,6 +541,9 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 | SCHED-010      | Task yield() API for voluntary preemption                                      | Should   | T            |
 | SCHED-011      | Scheduler shall make scheduling decision within O(1) time complexity           | Must     | A            |
 | SCHED-012      | Scheduler shall support deferred context switch from ISR context               | Must     | T            |
+| SCHED-013      | Idle task shall execute WFI (Wait For Interrupt) instruction to reduce power   | Should   | A            |
+| SCHED-014      | Idle task shall maintain a counter of idle iterations for CPU load calculation | Could    | T            |
+| SCHED-015      | Scheduler shall track total context switch count for statistics                | Could    | T            |
 
 **Rationale**: A deterministic O(1) scheduler ensures predictable real-time behavior regardless of the number of tasks.
 
@@ -553,10 +581,32 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 | CTX-007        | 16-byte stack alignment per RISC-V ABI (context frame size padded to preserve alignment)                                                                                                                                     | Must     | A            |
 | CTX-008        | Initial stack frame setup for first context switch                                                                                                                                                                           | Must     | T            |
 | CTX-009        | Context switch shall be atomic (no partial context visible to other execution contexts)                                                                                                                                      | Must     | A            |
+| CTX-010        | Context frame size: minimum 140 bytes (32 GPRs × 4 bytes + CSRs mepc, mstatus, mcause)                                                                                                                                       | Must     | A            |
 
 <!-- markdownlint-enable MD060 -->
 
 **Rationale**: Fast, deterministic context switching is essential for real-time performance guarantees.
+
+### 6.4.1 RISC-V Register Convention
+
+The following table defines the RISC-V calling convention for context save/restore:
+
+| Register | ABI Name | Description                       | Caller/Callee Saved |
+|----------|----------|-----------------------------------|---------------------|
+| x0       | zero     | Hard-wired zero                   | N/A                 |
+| x1       | ra       | Return address                    | Caller              |
+| x2       | sp       | Stack pointer                     | Callee              |
+| x3       | gp       | Global pointer                    | N/A (preserved)     |
+| x4       | tp       | Thread pointer                    | N/A (preserved)     |
+| x5-x7    | t0-t2    | Temporaries                       | Caller              |
+| x8       | s0/fp    | Saved register / Frame pointer    | Callee              |
+| x9       | s1       | Saved register                    | Callee              |
+| x10-x11  | a0-a1    | Function arguments / Return values| Caller              |
+| x12-x17  | a2-a7    | Function arguments                | Caller              |
+| x18-x27  | s2-s11   | Saved registers                   | Callee              |
+| x28-x31  | t3-t6    | Temporaries                       | Caller              |
+
+**Note**: No floating-point registers are present (soft-float ABI ilp32).
 
 ### 6.5 Critical Sections
 
@@ -633,6 +683,34 @@ The kernel requirements above are not implementable without explicit behavioral 
 | ERR-003        | Error codes shall be documented with recovery guidance                                                                                         | Should   | I            |
 | ERR-004        | Fatal errors shall trigger a panic with diagnostic information                                                                                 | Must     | T            |
 
+#### 6.7.5 Panic Handling
+
+| Requirement ID | Description                                                                                                                            | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------|----------|--------------|
+| PAN-001        | The system shall provide a `#[panic_handler]` implementation for no_std builds                                                         | Must     | T            |
+| PAN-002        | Panic handler shall disable interrupts immediately to prevent further scheduling                                                       | Must     | A            |
+| PAN-003        | Panic handler shall output panic location (file, line) and message to UART if available                                                | Should   | D            |
+| PAN-004        | Panic handler shall output register dump including PC, SP, and RA for debugging                                                        | Should   | D            |
+| PAN-005        | Panic handler shall blink LEDs in a recognizable pattern to indicate panic state                                                       | Should   | D            |
+| PAN-006        | Panic handler shall enter infinite loop after diagnostic output (no return)                                                            | Must     | A            |
+| PAN-007        | Optional: Panic handler shall kick watchdog to trigger system reset after timeout                                                      | Could    | T            |
+| PAN-008        | Debug builds shall include full panic messages; release builds may use abbreviated output                                              | Should   | I            |
+| PAN-009        | Stack overflow panic shall be distinguishable from other panics via canary check                                                       | Should   | T            |
+| PAN-010        | Double-panic (panic during panic) shall immediately halt without further output                                                        | Must     | A            |
+
+#### 6.7.6 Logging and Debug Output
+
+| Requirement ID | Description                                                                                                                            | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------|----------|--------------|
+| LOG-001        | System shall provide configurable logging levels: Error, Warn, Info, Debug, Trace                                                      | Should   | I            |
+| LOG-002        | Logging level shall be configurable at compile time via Cargo features                                                                 | Should   | I            |
+| LOG-003        | Log macros (`log_error!`, `log_info!`, etc.) shall be provided with consistent formatting                                              | Should   | I            |
+| LOG-004        | Logging shall be disable-able at compile time for production builds with zero overhead                                                 | Should   | A            |
+| LOG-005        | Log output shall include timestamp (tick count) for timing analysis                                                                    | Could    | T            |
+| LOG-006        | Log output shall include source location (module path) for debugging                                                                   | Could    | T            |
+| LOG-007        | Logging shall not allocate memory dynamically (static formatting only)                                                                 | Must     | A            |
+| LOG-008        | Logging from ISR context shall be non-blocking (drop if buffer full)                                                                   | Should   | A            |
+
 ---
 
 ## 7. Synchronization Requirements
@@ -702,6 +780,23 @@ The kernel requirements above are not implementable without explicit behavioral 
 
 **Rationale**: Event flags provide efficient multi-condition synchronization with minimal overhead.
 
+### 7.5 Atomic Operations
+
+The RISC-V A extension provides the following atomic operations that shall be used for synchronization:
+
+| Requirement ID | Description                                                                               | Priority | Verification |
+|----------------|-------------------------------------------------------------------------------------------|----------|--------------|
+| ATOM-001       | LR.W (Load-Reserved Word): Atomic load with reservation for store-conditional             | Must     | T            |
+| ATOM-002       | SC.W (Store-Conditional Word): Store only if reservation still valid                      | Must     | T            |
+| ATOM-003       | AMOSWAP.W: Atomic swap word                                                               | Should   | T            |
+| ATOM-004       | AMOADD.W: Atomic add word                                                                 | Should   | T            |
+| ATOM-005       | AMOAND.W, AMOOR.W, AMOXOR.W: Atomic bitwise operations                                    | Should   | T            |
+| ATOM-006       | AMOMIN.W, AMOMAX.W, AMOMINU.W, AMOMAXU.W: Atomic min/max operations                       | Could    | T            |
+| ATOM-007       | All atomic operations shall use proper memory ordering (acquire/release semantics)        | Must     | A            |
+| ATOM-008       | Spinlock implementation using LR/SC pair                                                  | Should   | T            |
+
+**Rationale**: Atomic operations enable lock-free synchronization primitives with minimal interrupt latency impact.
+
 ---
 
 ## 8. Memory Management Requirements
@@ -736,6 +831,15 @@ The kernel requirements above are not implementable without explicit behavioral 
 | MEM-017        | ENTRY(_start) directive                                                                                                         | Must     | I            |
 | MEM-018        | Alignment requirements: .text (4), .data (8), .stack (16)                                                                       | Must     | I            |
 | MEM-019        | Guard region between stack and data sections (optional, for overflow detection)                                                 | Should   | I            |
+| MEM-020        | Define `_trap_handler` symbol for trap vector initialization                                                                    | Must     | I            |
+| MEM-021        | Define `_global_pointer` (gp) symbol for linker relaxation optimization                                                         | Must     | I            |
+| MEM-022        | Linker script shall place `.init` section containing reset vector at address 0x00000000                                         | Must     | I            |
+| MEM-023        | Linker script shall provide OUTPUT_ARCH(riscv) and OUTPUT_FORMAT directives                                                     | Must     | I            |
+| MEM-024        | Linker script shall define `_heap_start` and `_heap_size` symbols (set to 0 for no-heap builds)                                 | Should   | I            |
+| MEM-025        | Linker script shall DISCARD `.eh_frame` and other unwinding sections when panic=abort                                           | Should   | I            |
+| MEM-026        | Stack canary value symbol (`_stack_canary`) shall be defined for overflow detection                                             | Should   | I            |
+| MEM-027        | Linker script shall support PROVIDE_HIDDEN for optional symbols                                                                 | Should   | I            |
+| MEM-028        | Per-task stack regions shall be defined as named symbols (`_task_stack_0`, `_task_stack_1`, etc.)                               | Should   | I            |
 
 ### 8.3 Memory Budget
 
@@ -941,21 +1045,78 @@ The kernel requirements above are not implementable without explicit behavioral 
 
 **Rationale**: Comprehensive exception handling improves system reliability and debuggability.
 
+### 10.2.1 Exception Codes (mcause)
+
+The following exception codes shall be handled by the trap handler:
+
+#### Synchronous Exceptions (mcause MSB = 0)
+
+| Code | Exception                        | Description                              |
+|------|----------------------------------|------------------------------------------|
+| 0    | Instruction address misaligned   | PC not aligned to instruction boundary   |
+| 1    | Instruction access fault         | Instruction fetch failed (bus error)     |
+| 2    | Illegal instruction              | Invalid or unsupported instruction       |
+| 3    | Breakpoint                       | EBREAK instruction executed              |
+| 4    | Load address misaligned          | Unaligned load address                   |
+| 5    | Load access fault                | Load failed (bus error)                  |
+| 6    | Store/AMO address misaligned     | Unaligned store address                  |
+| 7    | Store/AMO access fault           | Store failed (bus error)                 |
+| 8    | Environment call from U-mode     | ECALL from user mode                     |
+| 9    | Environment call from S-mode     | ECALL from supervisor mode               |
+| 11   | Environment call from M-mode     | ECALL from machine mode                  |
+
+#### Asynchronous Interrupts (mcause MSB = 1)
+
+| mcause Value | Interrupt                        | Description                              |
+|--------------|----------------------------------|------------------------------------------|
+| 0x80000003   | Machine software interrupt (MSI) | Software-triggered interrupt             |
+| 0x80000007   | Machine timer interrupt (MTI)    | Internal timer interrupt (not used)      |
+| 0x8000000B   | Machine external interrupt (MEI) | External interrupt (AXI INTC)            |
+
+**Note**: This system uses machine external interrupts (MEI) routed through the AXI Interrupt Controller. The machine timer interrupt is not connected.
+
 ### 10.3 CSR Definitions
 
-| Requirement ID | Description                                                           | Priority | Verification |
-|----------------|-----------------------------------------------------------------------|----------|--------------|
-| CSR-001        | mstatus: Machine status (interrupt enable, privilege mode)            | Must     | T            |
-| CSR-002        | mie: Machine interrupt enable (MEIE, MTIE, MSIE bits)                 | Must     | T            |
-| CSR-003        | mip: Machine interrupt pending                                        | Must     | T            |
-| CSR-004        | mtvec: Machine trap vector base address                               | Must     | T            |
-| CSR-005        | mepc: Machine exception program counter                               | Must     | T            |
-| CSR-006        | mcause: Machine cause (interrupt/exception code)                      | Must     | T            |
-| CSR-007        | mtval: Machine trap value (faulting address/instruction)              | Should   | T            |
-| CSR-008        | mscratch: Machine scratch register (for trap handling)                | Should   | T            |
-| CSR-009        | mcycle/mcycleh: Cycle counter                                         | Should   | T            |
-| CSR-010        | minstret/minstreth: Instruction retired counter                       | Should   | T            |
-| CSR-011        | mvendorid, marchid, mimpid: Identification CSRs                       | Info     | T            |
+| Requirement ID | Description                                                                                  | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------|----------|--------------|
+| CSR-001        | mstatus: Machine status (MIE bit 3, MPIE bit 7, MPP bits 11-12)                              | Must     | T            |
+| CSR-002        | mie: Machine interrupt enable (MSIE bit 3, MTIE bit 7, MEIE bit 11)                          | Must     | T            |
+| CSR-003        | mip: Machine interrupt pending (MSIP bit 3, MTIP bit 7, MEIP bit 11)                         | Must     | T            |
+| CSR-004        | mtvec: Machine trap vector base address (MODE bits 1:0, BASE bits 31:2)                      | Must     | T            |
+| CSR-005        | mepc: Machine exception program counter                                                      | Must     | T            |
+| CSR-006        | mcause: Machine cause (Interrupt bit 31, Exception Code bits 30:0)                           | Must     | T            |
+| CSR-007        | mtval: Machine trap value (faulting address/instruction)                                     | Should   | T            |
+| CSR-008        | mscratch: Machine scratch register (for trap handling context save)                          | Should   | T            |
+| CSR-009        | mcycle/mcycleh: Cycle counter (64-bit, split into low/high 32-bit registers)                 | Should   | T            |
+| CSR-010        | minstret/minstreth: Instructions retired counter (64-bit)                                    | Should   | T            |
+| CSR-011        | mvendorid (0xF11), marchid (0xF12), mimpid (0xF13), mhartid (0xF14): Identification CSRs     | Info     | T            |
+| CSR-012        | misa (0x301): Machine ISA register (reports supported extensions)                            | Info     | T            |
+
+### 10.4 CSR Address Mapping
+
+The following table provides CSR addresses for implementation reference:
+
+| CSR Address | Name       | Description                              |
+|-------------|------------|------------------------------------------|
+| 0x300       | mstatus    | Machine status register                  |
+| 0x301       | misa       | Machine ISA register                     |
+| 0x304       | mie        | Machine interrupt enable                 |
+| 0x305       | mtvec      | Machine trap-vector base address         |
+| 0x340       | mscratch   | Machine scratch register                 |
+| 0x341       | mepc       | Machine exception program counter        |
+| 0x342       | mcause     | Machine cause register                   |
+| 0x343       | mtval      | Machine trap value                       |
+| 0x344       | mip        | Machine interrupt pending                |
+| 0xC00       | cycle      | Cycle counter (low 32-bits, user-mode)   |
+| 0xC01       | time       | Timer (low 32-bits, user-mode)           |
+| 0xC02       | instret    | Instructions retired (low 32-bits)       |
+| 0xC80       | cycleh     | Cycle counter (high 32-bits)             |
+| 0xC81       | timeh      | Timer (high 32-bits)                     |
+| 0xC82       | instreth   | Instructions retired (high 32-bits)      |
+| 0xF11       | mvendorid  | Vendor ID                                |
+| 0xF12       | marchid    | Architecture ID (0x00000001)             |
+| 0xF13       | mimpid     | Implementation ID (0x00000001)           |
+| 0xF14       | mhartid    | Hardware thread ID (0x00000000)          |
 
 ---
 
@@ -997,6 +1158,10 @@ The kernel requirements above are not implementable without explicit behavioral 
 | PAC-024        | SIE (offset 0x10): Set Interrupt Enable                                                                              | Should   | T            |
 | PAC-025        | CIE (offset 0x14): Clear Interrupt Enable                                                                            | Should   | T            |
 | PAC-026        | MER (offset 0x1C): Master Enable Register; MasterEnable=0x01 and HardwareEnable=0x02 (both set to enable interrupts) | Must     | T            |
+| PAC-027        | IVR (offset 0x18): Interrupt Vector Register (returns highest-priority active IRQ number, -1 if none)                | Should   | T            |
+| PAC-028        | IMR (offset 0x20): Interrupt Mode Register (Fast Interrupt mode, present in this hardware)                           | Should   | T            |
+| PAC-029        | ILR (offset 0x24): Interrupt Level Register (for nested interrupts support)                                          | Should   | T            |
+| PAC-02A        | IVAR (offset 0x100+): Interrupt Vector Address Registers (Fast Interrupt mode, one per IRQ)                          | Could    | T            |
 
 ### 11.4 AXI GPIO Registers (Base varies)
 
@@ -1113,6 +1278,36 @@ The kernel requirements above are not implementable without explicit behavioral 
 | BUILD-017      | Debug symbols preserved for debugging                   | Should   | I            |
 | BUILD-018      | Reproducible builds (same source produces same binary)  | Should   | T            |
 | BUILD-019      | Build shall fail on warnings in release mode            | Should   | T            |
+
+### 13.3 Compile-Time Configuration
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
+| CFG-001        | Maximum number of tasks (`MAX_TASKS`) shall be configurable at compile time (default: 16)                      | Must     | I            |
+| CFG-002        | Maximum priority levels (`MAX_PRIORITIES`) shall be a compile-time constant (256)                              | Must     | I            |
+| CFG-003        | Default task stack size (`DEFAULT_STACK_SIZE`) shall be configurable (default: 2048 bytes)                     | Should   | I            |
+| CFG-004        | System tick rate (`TICK_RATE_HZ`) shall be configurable (default: 1000 Hz)                                     | Should   | I            |
+| CFG-005        | Message queue depth shall be a generic const parameter per queue instance                                      | Must     | I            |
+| CFG-006        | Semaphore maximum count shall be configurable per instance                                                     | Should   | I            |
+| CFG-007        | Build mode (`bram-jtag` vs `qspi-flash`) shall be selectable via environment variable or feature flag          | Must     | I            |
+| CFG-008        | Debug output verbosity shall be configurable via Cargo features (debug, release, trace)                        | Should   | I            |
+| CFG-009        | Stack canary checking shall be enable-able via feature flag (default: enabled in debug)                        | Should   | I            |
+| CFG-010        | Idle task WFI instruction shall be disable-able for debugging (default: enabled)                               | Could    | I            |
+| CFG-011        | Kernel statistics collection shall be enable-able via feature flag                                             | Could    | I            |
+| CFG-012        | Clock frequency (`CLOCK_FREQ_HZ`) shall be defined as compile-time constant (75_000_000)                       | Must     | I            |
+
+### 13.4 Feature Flags
+
+The following Cargo features shall be supported:
+
+| Feature Flag        | Description                                                | Default  |
+|---------------------|------------------------------------------------------------| ---------|
+| `debug-output`      | Enable verbose debug output via UART                       | Off      |
+| `stack-canary`      | Enable stack overflow detection via canary values          | On       |
+| `statistics`        | Enable runtime statistics collection                       | Off      |
+| `wfi-idle`          | Use WFI instruction in idle task                           | On       |
+| `trace-scheduler`   | Enable scheduler decision tracing                          | Off      |
+| `trace-interrupts`  | Enable interrupt entry/exit tracing                        | Off      |
 
 ### 13.3 Dependencies
 
@@ -1307,6 +1502,50 @@ The kernel requirements above are not implementable without explicit behavioral 
 | DEV-009        | CI/CD pipeline configuration                  | Should   | I            |
 | DEV-010        | Development environment setup documentation   | Should   | I            |
 
+### 18.3 Release Management
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
+| REL-020        | Releases shall follow Semantic Versioning 2.0.0 (MAJOR.MINOR.PATCH)                                            | Must     | I            |
+| REL-021        | CHANGELOG.md shall document all user-visible changes per release                                               | Should   | I            |
+| REL-022        | Each release shall have a Git tag matching the version number (e.g., v1.0.0)                                   | Should   | I            |
+| REL-023        | Release artifacts shall include: ELF binary, binary size report, test results                                  | Should   | I            |
+| REL-024        | Release notes shall include: new features, bug fixes, breaking changes, known issues                           | Should   | I            |
+| REL-025        | Pre-release versions shall use appropriate suffixes (-alpha, -beta, -rc)                                       | Should   | I            |
+| REL-026        | All Must requirements shall pass verification before release tagging                                           | Must     | I            |
+| REL-027        | API breaking changes shall increment MAJOR version                                                             | Should   | I            |
+| REL-028        | Dependency versions shall be locked in Cargo.lock for release builds                                           | Must     | I            |
+
+### 18.4 Release Checklist
+
+The following items shall be verified before each release:
+
+| Checklist Item                                      | Category    |
+|-----------------------------------------------------|-------------|
+| All Must requirements verified                      | Functional  |
+| All unit tests passing                              | Quality     |
+| Hardware integration tests passing                  | Functional  |
+| No critical/high clippy warnings                    | Quality     |
+| Code coverage ≥ 80%                                 | Quality     |
+| Documentation up to date                            | Process     |
+| CHANGELOG.md updated                                | Process     |
+| Version numbers updated in Cargo.toml               | Process     |
+| Binary size within budget                           | Performance |
+| Performance benchmarks within targets               | Performance |
+| Security dependency audit passed                    | Security    |
+
+### 18.5 CI/CD Pipeline
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
+| CI-001         | Automated build on every commit to main branch                                                                 | Should   | D            |
+| CI-002         | Automated test execution with pass/fail reporting                                                              | Should   | D            |
+| CI-003         | Code coverage reporting and tracking                                                                           | Should   | D            |
+| CI-004         | Clippy lint checking as gating step                                                                            | Should   | D            |
+| CI-005         | Binary size tracking and regression detection                                                                  | Could    | D            |
+| CI-006         | Automated CHANGELOG validation for release branches                                                            | Could    | D            |
+| CI-007         | Build artifacts published for tagged releases                                                                  | Should   | D            |
+
 ---
 
 ## 19. Verification and Validation Requirements
@@ -1323,6 +1562,55 @@ The kernel requirements above are not implementable without explicit behavioral 
 | VER-006        | Stress testing for reliability validation                          | Should   | T            |
 | VER-007        | Code review for all production code                                | Should   | I            |
 | VER-008        | Static analysis with clippy and miri (where applicable)            | Should   | A            |
+
+### 19.1.1 Host-Based Test Framework
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
+| TEST-001       | Kernel algorithms shall be testable on host (x86_64-unknown-linux-gnu) without target hardware                 | Must     | T            |
+| TEST-002       | `rustos-tests` crate shall mirror kernel data structures for host-side validation                              | Must     | I            |
+| TEST-003       | Hardware-specific code shall be isolated behind `#[cfg(target_arch = "riscv32")]` for conditional compilation  | Must     | A            |
+| TEST-004       | Mock implementations shall be provided for MMIO registers and CSR access on host                               | Should   | T            |
+| TEST-005       | Test execution shall be automated via `cargo test` command                                                     | Must     | T            |
+| TEST-006       | Each synchronization primitive (Mutex, Semaphore, Queue, EventFlags) shall have dedicated test module          | Must     | T            |
+| TEST-007       | Scheduler algorithm shall have unit tests covering priority ordering, round-robin, and preemption              | Must     | T            |
+| TEST-008       | Edge cases (boundary values, overflow, underflow) shall be explicitly tested                                   | Should   | T            |
+| TEST-009       | Concurrent access patterns shall be tested using std::thread on host                                           | Should   | T            |
+| TEST-010       | Test assertions shall use descriptive messages for failure diagnosis                                           | Should   | I            |
+
+### 19.1.2 Hardware Integration Testing
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
+| HWTEST-001     | Hardware integration tests shall run on actual target hardware via JTAG                                        | Must     | T            |
+| HWTEST-002     | Test results shall be reported via UART serial output                                                          | Must     | D            |
+| HWTEST-003     | Test harness shall indicate pass/fail status via LED patterns                                                  | Should   | D            |
+| HWTEST-004     | Each peripheral driver (UART, GPIO, Timer, SPI, I2C) shall have on-target test                                 | Should   | T            |
+| HWTEST-005     | Interrupt handling shall be validated with real interrupt sources                                              | Must     | T            |
+| HWTEST-006     | Context switch shall be validated under actual preemption conditions                                           | Must     | T            |
+| HWTEST-007     | Timer accuracy shall be validated against wall-clock reference                                                 | Should   | T            |
+| HWTEST-008     | Memory access patterns shall be validated for correct volatile behavior                                        | Should   | T            |
+
+### 19.1.3 Performance Testing
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
+| PERFTEST-001   | Context switch latency shall be measured using cycle counter (CSR mcycle)                                      | Must     | T            |
+| PERFTEST-002   | Interrupt latency shall be measured from GPIO edge to ISR entry                                                | Should   | T            |
+| PERFTEST-003   | Synchronization primitive overhead shall be measured (lock/unlock cycles)                                      | Should   | T            |
+| PERFTEST-004   | Code size shall be measured and reported for each crate                                                        | Should   | T            |
+| PERFTEST-005   | Stack usage shall be measured via high-water-mark tracking                                                     | Should   | T            |
+| PERFTEST-006   | Performance regression tests shall compare against baseline measurements                                        | Could    | T            |
+
+### 19.1.4 Coverage Requirements
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
+| COV-001        | Line coverage for host-testable code shall be ≥ 80%                                                            | Should   | A            |
+| COV-002        | Coverage reports shall be generated via `coverage.sh` script                                                   | Should   | D            |
+| COV-003        | Branch coverage shall be tracked for critical decision points                                                  | Could    | A            |
+| COV-004        | Uncovered code paths shall be documented with justification                                                    | Should   | I            |
+| COV-005        | Coverage metrics shall be tracked over time for regression detection                                           | Could    | A            |
 
 ### 19.2 Test Categories
 
@@ -1470,21 +1758,30 @@ Requirements with verification method `T` (Test) shall have corresponding test c
 
 ### 23.3 Requirements Coverage Summary
 
-| Category          | Must | Should | Could | Info | Total |
-|-------------------|------|--------|-------|------|-------|
-| Platform (HW/ISA) | 18   | 3      | 0     | 12   | 33    |
-| Kernel            | 42   | 28     | 2     | 0    | 72    |
-| Synchronization   | 18   | 10     | 5     | 0    | 33    |
-| Memory            | 15   | 5      | 0     | 0    | 20    |
-| HAL               | 16   | 35     | 15    | 1    | 67    |
-| BSP               | 18   | 12     | 2     | 0    | 32    |
-| PAC               | 12   | 25     | 10    | 0    | 47    |
-| Build             | 14   | 12     | 0     | 0    | 26    |
-| Performance       | 4    | 9      | 0     | 0    | 13    |
-| Safety/Security   | 12   | 15     | 1     | 0    | 28    |
-| Quality           | 6    | 17     | 1     | 0    | 24    |
-| Deployment        | 6    | 12     | 1     | 0    | 19    |
-| **Total**         | **181** | **183** | **37** | **13** | **414** |
+| Category              | Must | Should | Could | Info | Total |
+|-----------------------|------|--------|-------|------|-------|
+| Platform (HW/ISA)     | 22   | 6      | 0     | 14   | 42    |
+| Kernel (incl. PAN/LOG)| 51   | 41     | 5     | 0    | 97    |
+| Synchronization       | 22   | 14     | 6     | 0    | 42    |
+| Memory (incl. linker) | 19   | 10     | 0     | 0    | 29    |
+| HAL                   | 16   | 35     | 15    | 1    | 67    |
+| BSP                   | 19   | 12     | 2     | 1    | 34    |
+| PAC                   | 12   | 29     | 11    | 0    | 52    |
+| Build (incl. CFG)     | 18   | 17     | 3     | 0    | 38    |
+| Performance           | 4    | 9      | 0     | 0    | 13    |
+| Safety/Security       | 12   | 15     | 1     | 0    | 28    |
+| Quality/Verification  | 14   | 35     | 4     | 0    | 53    |
+| Deployment/Release    | 9    | 23     | 3     | 0    | 35    |
+| **Total**             | **218** | **246** | **50** | **16** | **530** |
+
+**Note**: Requirements v2.2.0 adds 87 new requirements for completeness:
+- Panic handling (PAN-001 to PAN-010)
+- Logging (LOG-001 to LOG-008)
+- Linker script symbols (MEM-020 to MEM-028)
+- Test framework (TEST-001 to TEST-010, HWTEST-001 to HWTEST-008, PERFTEST-001 to PERFTEST-006, COV-001 to COV-005)
+- Configuration (CFG-001 to CFG-012)
+- Release management (REL-020 to REL-028, CI-001 to CI-007)
+- Scheduler enhancements (SCHED-013 to SCHED-015)
 
 ---
 
@@ -1592,7 +1889,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 ---
 
 *Document ID: RUSTOS-SRS-001*
-*Version: 2.0.0*
+*Version: 2.2.0*
 *Classification: Internal*
 *Last Updated: January 11, 2026*
 
