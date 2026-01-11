@@ -1,0 +1,7 @@
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> Clocking wizard demonstration testbench
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> This demonstration testbench instantiates the example design for the 
+<=: comment :>   clocking wizard. Input clocks are toggled, which cause the clocking
+<=: comment :>   network to lock and the counters to increment.
+<=: comment :>----------------------------------------------------------------------------

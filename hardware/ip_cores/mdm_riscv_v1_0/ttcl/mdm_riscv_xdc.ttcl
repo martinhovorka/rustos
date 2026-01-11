@@ -1,0 +1,218 @@
+<: setFileProcessingOrder late :>
+<: set CompName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName $CompName :>
+<: setFileExtension ".xdc" :>
+# file: <=: CompName :>.xdc
+<: getDisclaimer "#" :>
+<: set family [getProjectFamily] :>
+<: set exclusive_groups "" :>
+<: set use_bscan [getIntValue "c_use_bscan"] :>
+<: if {$use_bscan == 0} { :>
+<:   if {[string first plus $family] > 0} { :>
+create_clock -period 33.333 [get_pins Use*.BSCAN*/*/INTERNAL_TCK]
+create_generated_clock -source [get_pins Use*.BSCAN*/*/INTERNAL_TCK] -divide_by 2 [get_pins Use*.BSCAN*/*/UPDATE]
+create_generated_clock -source [get_pins Use*.BSCAN*/*/INTERNAL_TCK] -divide_by 1 [get_pins Use*.BSCAN*/*/TCK]
+create_generated_clock -source [get_pins Use*.BSCAN*/*/INTERNAL_TCK] -divide_by 2 [get_pins */*/*.BUFG_UPDATE/*/O]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins "Use*.BSCAN*/*/INTERNAL_TCK"]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins "Use*.BSCAN*/*/UPDATE"]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins "Use*.BSCAN*/*/TCK"]]
+set_clock_groups -asynchronous -group [get_clocks -quiet -of_objects [get_pins */*/*.BUFG_UPDATE/*/O]]
+<:   } else { :>
+<:     append exclusive_groups { -group [get_clocks -of_objects [get_pins "Use*.BSCAN*/*/TCK"]]} :>
+<:     append exclusive_groups { -group [get_clocks -of_objects [get_pins "Use*.BSCAN*/*/UPDATE"]]} :>
+<:     append exclusive_groups { -group [get_clocks -of_objects [get_pins */*/*.BUFG_UPDATE/*/O]]} :>
+create_clock -period 33.333 [get_pins {Use*.BSCAN*/*/TCK}]
+create_clock -period 33.333 [get_pins {Use*.BSCAN*/*/UPDATE}]
+create_generated_clock -source [get_pins {Use*.BSCAN*/*/TCK}] -divide_by 2 [get_pins */*/*.BUFG_UPDATE/*/O]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins "Use*.BSCAN*/*/TCK"]]
+set_clock_groups -asynchronous -group [get_clocks -of_objects [get_pins "Use*.BSCAN*/*/UPDATE"]]
+set_clock_groups -asynchronous -group [get_clocks -quiet -of_objects [get_pins */*/*.BUFG_UPDATE/*/O]]
+set_false_path -through [get_pins "Use*.BSCAN*/*/CAPTURE"]
+set_false_path -through [get_pins "Use*.BSCAN*/*/SEL"]
+set_false_path -through [get_pins "Use*.BSCAN*/*/SHIFT"]
+set_false_path -through [get_pins "Use*.BSCAN*/*/TDI"]
+set_false_path -through [get_pins "Use*.BSCAN*/*/TMS"]
+<:   } :>
+<: } :>
+<: if {[string length $exclusive_groups] > 0} { :>
+set_clock_groups -logically_exclusive <=: $exclusive_groups :>
+<: } :>
+<: set dbg_reg_access [getIntValue "c_dbg_reg_access"] :>
+<: set debug_interface [getIntValue "c_debug_interface"] :>
+<: set use_jtag_bscan [getIntValue "c_use_jtag_bscan"] :>
+<: set use_bscan_switch [getIntValue "c_use_bscan_switch"] :>
+<: if {($use_bscan == 2 || $use_bscan == 4) && $use_jtag_bscan > 0 && $use_bscan_switch == 0 && $dbg_reg_access == 0 && [string first versal $family] < 0} { :>
+create_generated_clock -source [get_ports -scoped_to_current_instance bscan_ext_tck] -divide_by 1 [get_pins */*/*.BUFG_DRCK/Using_FPGA*.Native/O]
+create_generated_clock -source [get_ports -scoped_to_current_instance bscan_ext_tck] -divide_by 2 [get_pins */*/*.update_unbuf_reg/Q]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_pins */*/*.BUFG_DRCK/Using_FPGA*.Native/O]]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_pins */*/*.update_unbuf_reg/Q]]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_pins *.BUFG_JTAG_TCK*/*/O]]
+<: } :>
+<: if {($use_bscan == 2 || $use_bscan == 4) && $use_jtag_bscan == 0  && $use_bscan_switch > 0 && $dbg_reg_access == 0 && [string first versal $family] < 0} { :>
+create_generated_clock -source [get_ports -scoped_to_current_instance bscan_ext_tck] -divide_by 1 [get_pins */*/*.BUFG_DRCK/Using_FPGA*.Native/O]
+create_generated_clock -source [get_ports -scoped_to_current_instance bscan_ext_tck] -divide_by 2 [get_pins */*/*.update_unbuf_reg/Q]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_pins */*/*.BUFG_DRCK/Using_FPGA*.Native/O]]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_pins */*/*.update_unbuf_reg/Q]]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_pins *.BUFG_JTAG_TCK*/*/O]]
+<: } :>
+<: if {($use_bscan == 2 || $use_bscan == 4) && $use_jtag_bscan > 0 && $use_bscan_switch == 0 && $dbg_reg_access == 0 && [string first versal $family] >= 0} { :>
+create_generated_clock -source [get_ports -scoped_to_current_instance bscan_ext_tck] -divide_by 2 [get_pins */*/*.update_unbuf_reg/Q]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_pins */*/*.update_unbuf_reg/Q]]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_nets bscan_ext_tck]]
+<: } :>
+<: if {($use_bscan == 2 || $use_bscan == 4) && $use_jtag_bscan == 0 && $use_bscan_switch > 0 && $dbg_reg_access == 0 && [string first versal $family] >= 0} { :>
+create_generated_clock -source [get_ports -scoped_to_current_instance bscan_ext_tck] -divide_by 2 [get_pins */*/*.update_unbuf_reg/Q]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_pins */*/*.update_unbuf_reg/Q]]
+set_clock_groups -quiet -asynchronous -group [get_clocks -quiet -of_objects [get_nets bscan_ext_tck]]
+<: } :>
+<: # SLR Device Constraint :>
+<: set SLRs [get_device_data D_SLR_COUNT] :>
+<: if {$use_bscan == 0 && $SLRs > 1} { :>
+
+set_property -quiet USER_SLR_ASSIGNMENT SLR1 [get_cells -filter {IS_PRIMITIVE==0} -hierarchical *]
+<: } :>
+<: :>
+<: # Waivers :>
+<: set opt "-internal -user mdm_riscv -tags IPCPG-503" :>
+<: set msg "Debug protocol ensures stable signals" :>
+<: set c  "MDM_Core_I1/" :>
+<: set cj "${c}JTAG_CONTROL_I/" :>
+<: if {$debug_interface == 0 || ($debug_interface == 1 && $use_bscan != 3)} { :>
+
+create_waiver <=:$opt:> -type CDC -id CDC-10 -description "<=:$msg:>" -from [get_pins -quiet <=:$cj:>*/C]
+<: } :>
+<: if {$debug_interface == 0 && $use_bscan == 3} { :>
+
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$cj:>*/C]
+<: } :>
+<: if {$use_bscan == 0} { :>
+
+# Methodology waivers for internal BSCAN clock constraints
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-54 \
+  -object [get_clocks -quiet -of_objects [get_pins "Use*.BSCAN*/*/UPDATE"]] \
+  -description "Avoid warning for valid UPDATE clock constraint"
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-54 \
+  -object [get_clocks -quiet -of_objects [get_pins "Use*.BSCAN*/*/TCK"]] \
+  -description "Avoid warning for valid TCK clock constraint"
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-54 \
+  -object [get_clocks -quiet -of_objects [get_pins */*/*.BUFG_UPDATE/*/O]] \
+  -description "Avoid warning for valid UPDATE clock constraint"
+<: } :>
+<: if {($use_bscan == 2 || $use_bscan == 4) && $dbg_reg_access == 0 && [string first versal $family] >= 0} { :>
+
+# Methodology waivers for external BSCAN
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-54 \
+  -object [get_clocks -quiet -of_objects [get_pins */*/*.update_unbuf_reg/Q]] \
+  -description "Avoid warning for valid UPDATE clock constraint"
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-54 \
+  -object [get_clocks -quiet -of_objects [get_nets bscan_ext_tck]] \
+  -description "Avoid warning for valid TCK clock constraint"
+<: } :>
+<: if {$use_bscan != 3 && $dbg_reg_access == 0 && [string first versal $family] >= 0} { :>
+
+# Methodology waivers for BSCAN
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-14 \
+  -object [get_cells *.BUFG_JTAG_TCK/Using_FPGA_VERSAL.*] \
+  -description "Avoid warning for LUT on the clock tree needed for Versal timing"
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-14 \
+  -object [get_cells <=:$cj:>Test_Access_Port.BUFG_DRCK/Using_FPGA_VERSAL.*] \
+  -description "Avoid warning for LUT on the clock tree needed for Versal timing"
+<: } :>
+<: if {($use_bscan == 2 || $use_bscan == 4) && $dbg_reg_access == 0 && [string first versal $family] < 0} { :>
+
+# Methodology waivers for external BSCAN
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-54 \
+  -object [get_clocks -quiet -of_objects [get_pins */*/*.BUFG_DRCK/Using_FPGA*.Native/O]] \
+  -description "Avoid warning for valid DRCK clock constraint"
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-54 \
+  -object [get_clocks -quiet -of_objects [get_pins */*/*.update_unbuf_reg/Q]] \
+  -description "Avoid warning for valid UPDATE clock constraint"
+create_waiver -internal -scoped -user mdm_riscv -tags IPCPG-503 -type METHODOLOGY -id TIMING-54 \
+  -object [get_clocks -quiet -of_objects [get_nets bscan_ext_tck]] \
+  -description "Avoid warning for valid TCK clock constraint"
+<: } :>
+<: if {($use_bscan == 2 || $use_bscan == 4) && $use_jtag_bscan > 0 && $dbg_reg_access == 0} { :>
+<: set cb "${c}Use_BSCAN." :>
+
+# Waivers for external BSCAN
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$cb:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$cb:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$cb:>*/C]
+<: } :>
+<: if {$use_bscan != 3} { :>
+<: set e  "Use_E2.BSCAN_I/Use_E2.BSCANE2_I" :>
+<: set jb "Use_JTAG_BSCAN." :>
+
+# Waivers for BSCAN
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$cj:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/INTERNAL_TDI]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/INTERNAL_TCK]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/UPDATE]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -to [get_pins -quiet <=:$cj:>*/CE]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -to [get_pins -quiet <=:$cj:>*/D]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -to [get_pins -quiet <=:$cj:>*/R]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -to [get_pins -quiet <=:$jb:>*/CE]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -to [get_pins -quiet <=:$jb:>*/D]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -to [get_pins -quiet <=:$jb:>*/R]
+create_waiver <=:$opt:> -type CDC -id CDC-2  -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/INTERNAL_TCK]
+create_waiver <=:$opt:> -type CDC -id CDC-7  -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/INTERNAL_TCK]
+create_waiver <=:$opt:> -type CDC -id CDC-10 -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/INTERNAL_TCK]
+create_waiver <=:$opt:> -type CDC -id CDC-11 -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/INTERNAL_TCK]
+create_waiver <=:$opt:> -type CDC -id CDC-13 -description "<=:$msg:>" -from [get_pins -quiet <=:$cj:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-13 -description "<=:$msg:>" -from [get_pins -quiet <=:$jb:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-13 -description "<=:$msg:>" -from [get_pins -quiet <=:$cj:>*/*/O]
+create_waiver <=:$opt:> -type CDC -id CDC-13 -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/INTERNAL_TDI]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$cj:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/INTERNAL_TDI]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/INTERNAL_TCK]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$e:>/UPDATE]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -to [get_pins -quiet <=:$cj:>*/R]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -to [get_pins -quiet <=:$jb:>*/R]
+
+<: } :>
+<: set bscanid [getIntValue "c_bscanid"] :>
+<: if {($use_bscan != 2 && $use_bscan != 3 && $use_bscan != 4) || (($use_bscan == 2 || $use_bscan == 4) && $bscanid == 0)} { :>
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -to [get_pins -quiet Internal_BSCANID.bscanid*reg/D]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -to [get_pins -quiet Internal_BSCANID.bscanid*reg/CE]
+
+<: } :>
+<: if {$debug_interface == 1 && $use_bscan != 3} { :>
+<:   set cpb "${c}Use_Parallel_Access.Use_BSCAN." :>
+
+# Waivers for BSCAN with parallel debug interface
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$c:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$cj:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$cpb:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-10 -description "<=:$msg:>" -from [get_pins -quiet <=:$cj:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-13 -description "<=:$msg:>" -from [get_pins -quiet <=:$cpb:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$c:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$cj:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$cpb:>*/C]
+<: } :>
+<: set dbg_mem_access [getIntValue "c_dbg_mem_access"] :>
+<: if {$dbg_mem_access == 1 && ($debug_interface == 0 || $use_bscan != 3)} { :>
+<:   set cjm "${cj}Use_Dbg_Mem_Access." :>
+
+# Waivers for memory access from debug
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$cjm:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-13 -description "<=:$msg:>" -from [get_pins -quiet <=:$cjm:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$cjm:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-17 -description "<=:$msg:>" -from [get_pins -quiet <=:$cjm:>*/C]
+<: } :>
+<: if {$dbg_reg_access == 1 && ($debug_interface == 0 || $use_bscan != 3)} { :>
+<:   set cr  "${c}Use_Dbg_Reg_Access."  :>
+<:   set cjr "${cj}Use_Dbg_Reg_Access." :>
+
+# Waivers for debug register access
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$cr:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$cr:>*/Q]
+create_waiver <=:$opt:> -type CDC -id CDC-1  -description "<=:$msg:>" -from [get_pins -quiet <=:$cjr:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-7  -description "<=:$msg:>" -from [get_pins -quiet <=:$cr:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-8  -description "<=:$msg:>" -from [get_pins -quiet <=:$cr:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-10 -description "<=:$msg:>" -from [get_pins -quiet <=:$cr:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-11 -description "<=:$msg:>" -from [get_pins -quiet <=:$cr:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-13 -description "<=:$msg:>" -from [get_pins -quiet <=:$cr:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$cr:>*/C]
+create_waiver <=:$opt:> -type CDC -id CDC-15 -description "<=:$msg:>" -from [get_pins -quiet <=:$cjr:>*/C*]
+<: } :>

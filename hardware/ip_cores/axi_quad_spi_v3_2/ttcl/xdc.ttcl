@@ -1,0 +1,134 @@
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName $ComponentName :>
+<: setFileExtension ".xdc" :>
+<: set c_family [getStringValue "C_FAMILY"] :>
+<: set enable_sync [getIntValue "Async_Clk"] :>
+<: set xip_mode [getIntValue "C_XIP_MODE"] :>
+<: set sck_ratio [get_property PARAM_VALUE.C_SCK_RATIO ] :>
+<: set spi_mode [get_property PARAM_VALUE.C_SPI_MODE ] :>
+<: set uc_family [get_property PARAM_VALUE.UC_FAMILY ] :>
+<: set enh_mode [getIntValue "C_TYPE_OF_AXI4_INTERFACE"] :>
+<: set fifo_exists [get_property PARAM_VALUE.FIFO_INCLUDED ] :>
+<: set start_up [get_property PARAM_VALUE.C_USE_STARTUP ] :>
+<: set start_up_int [get_property PARAM_VALUE.C_USE_STARTUP_INT ] :>
+<: set dual_mode [get_property PARAM_VALUE.C_DUAL_QUAD_MODE ] :>
+<: set start_up_ext [get_property MODELPARAM_VALUE.C_USE_STARTUP_EXT ] :>
+<: set axi4_intf [getIntValue "C_TYPE_OF_AXI4_INTERFACE"] :>
+<: if {($c_family == "virtexuplus" || $c_family == "kintexuplus" || $c_family == "zynquplus" || $c_family == "zynquplusrfsoc" || $c_family == "virtexuplusHBM")} { :>
+<: set is_usp_device 1 :>
+<: } else { :>
+<: set is_usp_device 0 :>
+<: } :>
+<: set enable_fifo_xdc 0 :>
+# file: <=: ComponentName :>.xdc
+# (c) Copyright 2009 - 2023 Advanced Micro Devices, Inc. All rights reserved.
+# 
+# This file contains confidential and proprietary information
+# of Advanced Micro Devices, Inc. and is protected under U.S. and
+# international copyright and other intellectual property
+# laws.
+# 
+# DISCLAIMER
+# This disclaimer is not a license and does not grant any
+# rights to the materials distributed herewith. Except as
+# otherwise provided in a valid license issued to you by
+# AMD, and to the maximum extent permitted by applicable
+# law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+# WITH ALL FAULTS, AND AMD HEREBY DISCLAIMS ALL WARRANTIES
+# AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+# BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+# INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+# (2) AMD shall not be liable (whether in contract or tort,
+# including negligence, or under any other theory of
+# liability) for any loss or damage of any kind or nature
+# related to, arising under or in connection with these
+# materials, including for any direct, or any indirect,
+# special, incidental, or consequential loss or damage
+# (including loss of data, profits, goodwill, or any type of
+# loss or damage suffered as a result of any action brought
+# by a third party) even if such damage or loss was
+# reasonably foreseeable or AMD had been advised of the
+# possibility of the same.
+# 
+# CRITICAL APPLICATIONS
+# AMD products are not designed or intended to be fail-
+# safe, or for use in any application requiring fail-safe
+# performance, such as life-support or safety devices or
+# systems, Class III medical devices, nuclear facilities,
+# applications related to the deployment of airbags, or any
+# other applications that could lead to death, personal
+# injury, or severe property or environmental damage
+# (individually and collectively, "Critical
+# Applications"). Customer assumes the sole risk and
+# liability of any use of AMD products in Critical
+# Applications, subject only to applicable laws and
+# regulations governing limitations on product liability.
+# 
+# THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+# PART OF THIS FILE AT ALL TIMES.
+create_waiver -scope -internal -user "axi_quad_spi" -type CDC -id CDC-10 -description "waiving off" \
+-from [get_pins -quiet -filter {REF_PIN_NAME=~*C} -of_objects [get_cells -hierarchical -filter {NAME =~*CDC*}]] \
+-to   [get_pins -quiet -filter {REF_PIN_NAME=~*D} -of_objects [get_cells -hierarchical -filter {NAME =~*CDC*}]]
+
+
+<: if { ($axi4_intf == 0 ) || (($axi4_intf == 1) && ($xip_mode == 0)) || (($axi4_intf == 1) && ($xip_mode == 1))} { :>
+create_waiver -scope -internal -user "axi_quad_spi" -type CDC -id CDC-10 -description "waiving off" \
+-from [get_pins -quiet -filter {REF_PIN_NAME=~*C} -of_objects [get_cells -hierarchical -filter {NAME =~*_reg*}]] \
+-to   [get_pins -quiet -filter {REF_PIN_NAME=~*D} -of_objects [get_cells -hierarchical -filter {NAME =~*syncstages_ff_reg*}]]
+
+create_waiver -scope -internal -user "axi_quad_spi" -type CDC -id CDC-10 -description "waiving off" \
+-to   [get_pins -quiet -filter {REF_PIN_NAME=~*D} -of_objects [get_cells -hierarchical -filter {NAME =~*RESET_SYNC_AX2S_1}]]
+<: } :>
+
+create_waiver -scope -internal -user "axi_quad_spi" -internal -type CDC -id CDC-2 -description "waving off" \
+-from [get_pins -quiet -of_objects [get_cells -hierarchical -filter {NAME =~*CDC*}]] \
+-to [get_pins -quiet -of_objects [get_cells -hierarchical -filter {NAME =~*CDC*}]]
+
+<: if { $enable_sync == 1} { :>
+#set_false_path -to [get_pins -hierarchical -filter {NAME =~*RESET_SYNC_AXI_SPI_CLK_INST/RESET_SYNC_AX2S_1/D}]
+set_false_path -to [get_pins -of [get_cells -hier -filter {NAME =~*RESET_SYNC_AXI_SPI_CLK_INST/RESET_SYNC_AX2S_1}] -filter {REF_PIN_NAME =~D}]
+<: if { $xip_mode == 0} { :>
+<: if { $fifo_exists == 1} { :>
+#set_false_path -to [get_pins -hierarchical -filter {NAME =~*QSPI_CORE_INTERFACE_I/FIFO_EXISTS.CLK_CROSS_I/LOGIC_GENERATION_CDC.SPISEL_PULSE_S2AX_1_CDC/D}]
+set_false_path -to [get_pins -of [get_cells -hier -filter {NAME =~*QSPI_CORE_INTERFACE_I/FIFO_EXISTS.CLK_CROSS_I/LOGIC_GENERATION_CDC.SPISEL_PULSE_S2AX_1_CDC}] -filter {REF_PIN_NAME ==D}] 
+#set_false_path -to [get_pins -of [get_cells -hier -filter {NAME =~*QSPI_CORE_INTERFACE_I/FIFO_EXISTS.CLK_CROSS_I/LOGIC_GENERATION_FDR.*SPISEL_PULSE_S2AX_1_CDC}] -filter {REF_PIN_NAME ==D}] 
+#set_false_path -to [get_pins -of [get_cells -hier -filter {NAME =~*QSPI_CORE_INTERFACE_I/RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_inst/dest_graysync_ff_reg*}] -filter {REF_PIN_NAME ==D}] 
+<: } :>
+<: } :>
+<: } :>
+<: if { $fifo_exists == 1} { :>
+<: if {$enable_fifo_xdc} { :>
+# Set false path on the reset synchronizers
+set_false_path -from [get_cells -hierarchical -filter {NAME =~*_FIFO_II/*.I_ASYNC_FIFO_BRAM/*rstblk*/*rst_reg_reg[*]}]
+#set_false_path -to [get_pins -hierarchical -filter {NAME =~*_FIFO_II/*.I_ASYNC_FIFO_BRAM/*rstblk*/*PRE}]
+set_false_path -to [get_pins -of [get_cells -hier -filter {NAME =~*_FIFO_II/*.I_ASYNC_FIFO_BRAM/*rstblk*}] -filter {REF_PIN_NAME =~*PRE}] 
+set_false_path -to [get_pins -of [get_cells -hier -filter {NAME =~*QSPI_CORE_INTERFACE_I/FIFO_EXISTS.CLK_CROSS_I/LOGIC_GENERATION_CDC.SPISEL_PULSE_S2AX_1_CDC}] -filter {REF_PIN_NAME ==D}] 
+set_false_path -to [get_pins -of [get_cells -hier -filter {NAME =~*QSPI_CORE_INTERFACE_I/FIFO_EXISTS.CLK_CROSS_I/LOGIC_GENERATION_FDR.*SPISEL_PULSE_S2AX_1_CDC}] -filter {REF_PIN_NAME ==D}] 
+set_false_path -to [get_pins -of [get_cells -hier -filter {NAME =~*QSPI_CORE_INTERFACE_I/RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_inst/dest_graysync_ff_reg*}] -filter {REF_PIN_NAME ==D}] 
+##set_false_path -to [get_pins -hierarchical -filter {NAME =~*/*rstblk*/*CLR}]
+<: } :>
+<: } :>
+
+
+## IOB constraints ######
+<: if { $uc_family == 1} { :>
+<: if { $start_up == 1} { :>
+<: } else { :>
+set_property IOB true [get_cells -hierarchical -filter {NAME =~*IO*_I_REG}]
+<: } :>
+<: } elseif {[string match -nocase {*versal*} $c_family] == 1} { :>
+#set_property IOB false [get_cells -hierarchical -filter {NAME =~*IO*_I_REG}]
+<: } else { :>
+set_property IOB true [get_cells -hierarchical -filter {NAME =~*IO*_I_REG}]
+<: } :>
+
+<: if { $start_up == 0 && $dual_mode ==0 && $start_up_ext  == 0 && ($sck_ratio !=4)} { :>
+<:if {[string match -nocase {*versal*} $c_family] == 1} { :>
+#set_property IOB false [get_cells -hierarchical -filter {NAME =~*SCK_O_NE_4_FDRE_INST}]
+<: } else { :>
+set_property IOB true [get_cells -hierarchical -filter {NAME =~*SCK_O_NE_4_FDRE_INST}]
+<: } :>
+<: } :>
+#######################################

@@ -1,0 +1,712 @@
+<: if { ($mmcm_compensation != "INTERNAL") } { :>
+<: if  { $auto_ext_feedback }  { :>
+  wire clkfb_bufg_out;
+  wire clkfb_oddr_out;
+  // Instantiate bufg on fbout
+  BUFG clkfbout_bufg
+   (.O  (clkfb_bufg_out),
+    .I  (clkfbout_<=: ComponentName :>));
+
+  // Forward the feedback clock off-chip
+<: if { $is_v8 || $is_k8 }  {  :>
+  ODDRE1 
+  clkfbout_oddr
+    (.Q  (clkfb_oddr_out),
+     .C  (clkfb_bufg_out),
+     .D1 (1'b1),
+     .D2 (1'b0),
+     .SR (1'b0));
+<: } else { :>
+  ODDR clkfbout_oddr
+   (.Q  (clkfb_oddr_out),
+    .C  (clkfb_bufg_out),
+    .CE (1'b1),
+    .D1 (1'b1),
+    .D2 (1'b0),
+    .R  (1'b0),
+    .S  (1'b0));
+<: } :>
+<: ;#back to the standard PLL/MMCM requirements for feedback :>
+
+<: if { $safe_clk_startup}  {  :>
+  BUFG  clkf_buf
+   (.O (clkfbout_buf_<=: ComponentName :>),
+    .I (clkfbout_<=: ComponentName :>));
+<: } :>
+<: } elseif  { [string equal -nocase $clkout1_buf "No_buffer"]}  { :>
+<: if { $ext_feedback}  {  :>
+  assign <=: fbout_port :> = clkfbout_<=: ComponentName :>;
+<: if { $safe_clk_startup}  {  :>
+
+  BUFG  clkf_buf
+   (.O (clkfbout_buf_<=: ComponentName :>),
+    .I (clkfbout_<=: ComponentName :>));
+<: } :>
+<: } elseif  { $use_phase_alignment}  { :>
+  assign clkfbout_buf_<=: ComponentName :> = clkfbout_<=: ComponentName :>;
+<: } :>
+<: } else  { :>
+<: if { $ext_feedback}  {  :>
+<: if { $is_clk0_fb}  {  :>
+  assign <=: fbout_port :> = clkout0;
+
+<: if { $safe_clk_startup}  {  :>
+  BUFG  clkf_buf
+   (.O (clkfbout_buf_<=: ComponentName :>),
+    .I (clkfbout_<=: ComponentName :>));
+<: } :>
+<: } else  { :>
+  assign <=: fbout_port :> = clkfbout_<=: ComponentName :>;
+
+<: if { $safe_clk_startup}  {  :>
+  BUFG  clkf_buf
+   (.O (clkfbout_buf_<=: ComponentName :>),
+    .I (clkfbout_<=: ComponentName :>));
+<: } :>
+<: } :>
+<: } elseif  { $use_phase_alignment}  { :>
+<: if { $is_clk0_fb}  {  :>
+
+<: } else  { :>
+
+  <=: clkfb_buf :> clkf_buf
+   (.O (clkfbout_buf_<=: ComponentName :>),
+    .I (clkfbout_<=: ComponentName :>));
+<: } :>
+<: } :>
+<: } :>
+
+<: if  { (($safe_clk_startup) && !$use_phase_alignment) || (!$use_phase_alignment && $mmcm_compensation == "BUF_IN")}  { :>
+  BUFG clkf_buf
+   (.O (clkfbout_buf_<=: ComponentName :>),
+    .I (clkfbout_<=: ComponentName :>));
+<: } :>
+
+<: if { $auto_diff_feedback}  {  :>
+  // Differential output clock buffer
+  OBUFDS clkfbout_bufds
+   (.O  (<=: fbout_p_port :>),
+    .OB (<=: fbout_n_port :>),
+    .I  (clkfb_oddr_out));
+<: } elseif  { $auto_sing_feedback}  { :>
+  assign <=: fbout_port :> = clkfb_oddr_out;
+<: } :>
+
+<: } :>
+
+<: if { ($mmcm_compensation == "INTERNAL") } { :>
+  assign clkfbout_buf_<=: ComponentName :> = clkfbout_<=: ComponentName :>;
+<: } :>
+
+
+<: if { !$safe_clk_startup}  {  :>
+<: if { [string equal -nocase $clkout1_buf "No_buffer"]}  {  :>
+  assign <=: out1_port :> = <: print $out1_port$u_score$ComponentName :>;
+<: } else  { :>
+<: if { [string equal -nocase $clkout1_buf "BUFR"] || [string equal -nocase $clkout1_buf "BUFGCE_DIV"]}  {  :>
+  <=: clkout1_buf :> 
+<: if { [string equal -nocase $clkout1_buf "BUFR"] }  {  :>
+  #(.BUFR_DIVIDE(CLK_OUT1_BUFR_DIV)) clkout1_buf
+<: } else  { :>
+ #(
+      .BUFGCE_DIVIDE(1),      // 1-8
+      // Programmable Inversion Attributes: Specifies built-in programmable inversion on specific pins
+      .IS_CE_INVERTED(1'b0),  // Optional inversion for CE
+      .IS_CLR_INVERTED(1'b0), // Optional inversion for CLR
+      .IS_I_INVERTED(1'b0)    // Optional inversion for I
+   )
+  clkout1_buf
+<: } :>
+<: } else  { :>
+  <=: clkout1_buf :> clkout1_buf
+<: } :>
+<: if { $is_clk0_fb}  {  :>
+   (.O   (clk_out1_int),
+<: } else  { :>
+   (.O   (<=: out1_port :>),
+<: } :>
+<: if { [string equal -nocase $clkout1_buf "BUFR"] || [string equal -nocase $clkout1_buf "BUFGCE_DIV"]}  {  :>
+<: if { $clkout1_ce_used && !$safe_clk_startup}  {  :>
+    .CE  (<=: out1_port :>_ce),   // 1-bit input: Buffer enable
+<: } else  { :>
+    .CE  (1'b1),   // 1-bit input: Buffer enable
+<: } :>
+<: if { $clkout1_clr_used && !$safe_clk_startup}  {  :>
+    .CLR (<=: out1_port :>_clr),
+<: } else  { :>
+    .CLR (1'b0),
+<: } :>
+<: } elseif  { $clkout1_ce_used}  { :>
+    .CE  (<=: out1_port :>_ce),
+<: } :>
+    .I   (<: print $out1_port$u_score$ComponentName :>));
+<: } :>
+
+<: if { $is_clk0_fb}  {  :>
+    assign <=: out1_port :> = clk_out1_int; 
+<: if { $use_phase_alignment && (!$ext_feedback) && (!$auto_ext_feedback)}  {  :>
+    assign clk0_fb_in = clk_out1_int;
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 2}  {  :>
+
+<: if { [string equal -nocase $clkout2_buf "No_buffer"]}  {  :>
+  assign <=: out2_port :> = <: print $out2_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+<: if { [string equal -nocase $clkout2_buf "BUFR"] || [string equal -nocase $clkout2_buf "BUFGCE_DIV"]}  {  :>
+  <=: clkout2_buf :> 
+<: if { [string equal -nocase $clkout2_buf "BUFR"] }  {  :>
+  #(.BUFR_DIVIDE(CLK_OUT2_BUFR_DIV)) clkout2_buf
+<: } else  { :>
+ #(
+      .BUFGCE_DIVIDE(1),      // 1-8
+      // Programmable Inversion Attributes: Specifies built-in programmable inversion on specific pins
+      .IS_CE_INVERTED(1'b0),  // Optional inversion for CE
+      .IS_CLR_INVERTED(1'b0), // Optional inversion for CLR
+      .IS_I_INVERTED(1'b0)    // Optional inversion for I
+   )
+  clkout2_buf
+<: } :>
+<: } else  { :>
+  <=: clkout2_buf :> clkout2_buf
+<: } :>
+   (.O   (<=: out2_port :>),
+<: if { [string equal -nocase $clkout2_buf "BUFR"] || [string equal -nocase $clkout2_buf "BUFGCE_DIV"]}  {  :>
+<: if { $clkout2_ce_used && !$safe_clk_startup}  {  :>
+    .CE  (<=: out2_port :>_ce),   // 1-bit input: Buffer enable
+<: } else  { :>
+    .CE  (1'b1),   // 1-bit input: Buffer enable
+<: } :>
+<: if { $clkout2_clr_used && !$safe_clk_startup}  {  :>
+    .CLR (<=: out2_port :>_clr),
+<: } else  { :>
+    .CLR (1'b0),
+<: } :>
+<: } elseif  { $clkout2_ce_used}  { :>
+    .CE  (<=: out2_port :>_ce),
+<: } :>
+    .I   (<: print $out2_port$u_score$ComponentName :>));
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 3) && (!$mmcm_ss_en)}  {  :>
+
+<: if { [string equal -nocase $clkout3_buf "No_buffer"]}  {  :>
+  assign <=: out3_port :> = <: print $out3_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+<: if { [string equal -nocase $clkout3_buf "BUFR"] || [string equal -nocase $clkout3_buf "BUFGCE_DIV"]}  {  :>
+  <=: clkout3_buf :> 
+<: if { [string equal -nocase $clkout3_buf "BUFR"] }  {  :>
+  #(.BUFR_DIVIDE(CLK_OUT3_BUFR_DIV)) clkout3_buf
+<: } else  { :>
+ #(
+      .BUFGCE_DIVIDE(1),      // 1-8
+      // Programmable Inversion Attributes: Specifies built-in programmable inversion on specific pins
+      .IS_CE_INVERTED(1'b0),  // Optional inversion for CE
+      .IS_CLR_INVERTED(1'b0), // Optional inversion for CLR
+      .IS_I_INVERTED(1'b0)    // Optional inversion for I
+   )
+  clkout3_buf
+<: } :>
+<: } else  { :>
+  <=: clkout3_buf :> clkout3_buf
+<: } :>
+   (.O   (<=: out3_port :>),
+<: if { [string equal -nocase $clkout3_buf "BUFR"] || [string equal -nocase $clkout3_buf "BUFGCE_DIV"]}  {  :>
+<: if { $clkout3_ce_used && !$safe_clk_startup}  {  :>
+    .CE  (<=: out3_port :>_ce),   // 1-bit input: Buffer enable
+<: } else  { :>
+    .CE  (1'b1),   // 1-bit input: Buffer enable
+<: } :>
+<: if { $clkout3_clr_used && !$safe_clk_startup}  {  :>
+    .CLR (<=: out3_port :>_clr),
+<: } else  { :>
+    .CLR (1'b0),
+<: } :>
+<: } elseif  { $clkout3_ce_used}  { :>
+    .CE  (<=: out3_port :>_ce),
+<: } :>
+    .I   (<: print $out3_port$u_score$ComponentName :>));
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 4) && (!$mmcm_ss_en)}  {  :>
+
+<: if { [string equal -nocase $clkout4_buf "No_buffer"]}  {  :>
+  assign <=: out4_port :> = <: print $out4_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+<: if { [string equal -nocase $clkout4_buf "BUFR"] || [string equal -nocase $clkout4_buf "BUFGCE_DIV"]}  {  :>
+  <=: clkout4_buf :>
+<: if { [string equal -nocase $clkout4_buf "BUFR"] }  {  :>
+  #(.BUFR_DIVIDE(CLK_OUT4_BUFR_DIV)) clkout4_buf
+<: } else  { :>
+ #(
+      .BUFGCE_DIVIDE(1),      // 1-8
+      // Programmable Inversion Attributes: Specifies built-in programmable inversion on specific pins
+      .IS_CE_INVERTED(1'b0),  // Optional inversion for CE
+      .IS_CLR_INVERTED(1'b0), // Optional inversion for CLR
+      .IS_I_INVERTED(1'b0)    // Optional inversion for I
+   )
+  clkout4_buf
+<: } :>
+<: } else  { :>
+  <=: clkout4_buf :> clkout4_buf
+<: } :>
+   (.O   (<=: out4_port :>),
+<: if { [string equal -nocase $clkout4_buf "BUFR"] || [string equal -nocase $clkout4_buf "BUFGCE_DIV"]}  {  :>
+<: if { $clkout4_ce_used && !$safe_clk_startup}  {  :>
+    .CE  (<=: out4_port :>_ce),   // 1-bit input: Buffer enable
+<: } else  { :>
+    .CE  (1'b1),   // 1-bit input: Buffer enable
+<: } :>
+<: if { $clkout4_clr_used && !$safe_clk_startup}  {  :>
+    .CLR (<=: out4_port :>_clr),
+<: } else  { :>
+    .CLR (1'b0),
+<: } :>
+<: } elseif  { $clkout4_ce_used}  { :>
+    .CE  (<=: out4_port :>_ce),
+<: } :>
+    .I   (<: print $out4_port$u_score$ComponentName :>));
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+
+<: if { [string equal -nocase $clkout5_buf "No_buffer"]}  {  :>
+  assign <=: out5_port :> = <: print $out5_port$u_score$ComponentName :>;
+<: } elseif  { [string equal -nocase $clkout5_buf "Clock_pin"]}  { :>
+<: } else  {;#BUFG/BUFR/BUFH :>
+<: if { [string equal -nocase $clkout5_buf "BUFR"] || [string equal -nocase $clkout5_buf "BUFGCE_DIV"]}  {  :>
+  <=: clkout5_buf :>
+<: if { [string equal -nocase $clkout5_buf "BUFR"] }  {  :>
+  #(.BUFR_DIVIDE(CLK_OUT5_BUFR_DIV)) clkout5_buf
+<: } else  { :>
+ #(
+      .BUFGCE_DIVIDE(1),      // 1-8
+      // Programmable Inversion Attributes: Specifies built-in programmable inversion on specific pins
+      .IS_CE_INVERTED(1'b0),  // Optional inversion for CE
+      .IS_CLR_INVERTED(1'b0), // Optional inversion for CLR
+      .IS_I_INVERTED(1'b0)    // Optional inversion for I
+   )
+  clkout5_buf
+<: } :>
+<: } else  { :>
+  <=: clkout5_buf :> clkout5_buf
+<: } :>
+   (.O   (<=: out5_port :>),
+<: if { [string equal -nocase $clkout5_buf "BUFR"] || [string equal -nocase $clkout5_buf "BUFGCE_DIV"]}  {  :>
+<: if { $clkout5_ce_used && !$safe_clk_startup}  {  :>
+    .CE  (<=: out5_port :>_ce),   // 1-bit input: Buffer enable
+<: } else  { :>
+    .CE  (1'b1),   // 1-bit input: Buffer enable
+<: } :>
+<: if { $clkout5_clr_used && !$safe_clk_startup}  {  :>
+    .CLR (<=: out5_port :>_clr),
+<: } else  { :>
+    .CLR (1'b0),
+<: } :>
+<: } elseif  { $clkout5_ce_used}  { :>
+    .CE  (<=: out5_port :>_ce),
+<: } :>
+    .I   (<: print $out5_port$u_score$ComponentName :>));
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+
+<: if { [string equal -nocase $clkout6_buf "No_buffer"]}  {  :>
+  assign <=: out6_port :> = <: print $out6_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+<: if { [string equal -nocase $clkout6_buf "BUFR"] || [string equal -nocase $clkout6_buf "BUFGCE_DIV"]}  {  :>
+  <=: clkout6_buf :>
+<: if { [string equal -nocase $clkout6_buf "BUFR"] }  {  :>
+  #(.BUFR_DIVIDE(CLK_OUT6_BUFR_DIV)) clkout6_buf
+<: } else  { :>
+ #(
+      .BUFGCE_DIVIDE(1),      // 1-8
+      // Programmable Inversion Attributes: Specifies built-in programmable inversion on specific pins
+      .IS_CE_INVERTED(1'b0),  // Optional inversion for CE
+      .IS_CLR_INVERTED(1'b0), // Optional inversion for CLR
+      .IS_I_INVERTED(1'b0)    // Optional inversion for I
+   )
+  clkout6_buf
+<: } :>
+<: } else  { :>
+  <=: clkout6_buf :> clkout6_buf
+<: } :>
+   (.O   (<=: out6_port :>),
+<: if { [string equal -nocase $clkout6_buf "BUFR"] || [string equal -nocase $clkout6_buf "BUFGCE_DIV"]}  {  :>
+<: if { $clkout6_ce_used && !$safe_clk_startup}  {  :>
+    .CE  (<=: out6_port :>_ce),   // 1-bit input: Buffer enable
+<: } else  { :>
+    .CE  (1'b1),   // 1-bit input: Buffer enable
+<: } :>
+<: if { $clkout6_clr_used && !$safe_clk_startup}  {  :>
+    .CLR (<=: out6_port :>_clr),
+<: } else  { :>
+    .CLR (1'b0),
+<: } :>
+<: } elseif  { $clkout6_ce_used}  { :>
+    .CE  (<=: out6_port :>_ce),
+<: } :>
+    .I   (<: print $out6_port$u_score$ComponentName :>));
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+
+<: if { [string equal -nocase $clkout7_buf "No_buffer"]}  {  :>
+  assign <=: out7_port :> = <: print $out7_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+<: if { [string equal -nocase $clkout7_buf "BUFR"] || [string equal -nocase $clkout7_buf "BUFGCE_DIV"]}  {  :>
+  <=: clkout7_buf :>
+<: if { [string equal -nocase $clkout7_buf "BUFR"] }  {  :>
+  #(.BUFR_DIVIDE(CLK_OUT7_BUFR_DIV)) clkout7_buf
+<: } else  { :>
+ #(
+      .BUFGCE_DIVIDE(1),      // 1-8
+      // Programmable Inversion Attributes: Specifies built-in programmable inversion on specific pins
+      .IS_CE_INVERTED(1'b0),  // Optional inversion for CE
+      .IS_CLR_INVERTED(1'b0), // Optional inversion for CLR
+      .IS_I_INVERTED(1'b0)    // Optional inversion for I
+   )
+  clkout7_buf
+<: } :>
+<: } else  { :>
+  <=: clkout7_buf :> clkout7_buf
+<: } :>
+   (.O   (<=: out7_port :>),
+<: if { [string equal -nocase $clkout7_buf "BUFR"] || [string equal -nocase $clkout7_buf "BUFGCE_DIV"]}  {  :>
+<: if { $clkout7_ce_used && !$safe_clk_startup}  {  :>
+    .CE  (<=: out7_port :>_ce),   // 1-bit input: Buffer enable
+<: } else  { :>
+    .CE  (1'b1),   // 1-bit input: Buffer enable
+<: } :>
+<: if { $clkout7_clr_used && !$safe_clk_startup}  {  :>
+    .CLR (<=: out7_port :>_clr),
+<: } else  { :>
+    .CLR (1'b0),
+<: } :>
+<: } elseif  { $clkout7_ce_used}  { :>
+    .CE  (<=: out7_port :>_ce),
+<: } :>
+    .I   (<: print $out7_port$u_score$ComponentName :>));
+<: } :>
+<: } :>
+<: } else  { :>
+
+  <=: clkout1_buf :> clkout1_buf
+<: if { $is_clk0_fb}  {  :>
+   (.O   (clk_out1_int),
+<: } else  { :>
+   (.O   (<=: out1_port :>),
+<: } :>
+    .CE  (seq_reg1[7]),
+    .I   (<: print $out1_port$u_score$ComponentName :>));
+
+<: if { ($is_v8 || $is_k8) } { :>
+  BUFGCE clkout1_buf_en
+   (.O   (<: print $out1_port$u_score$ComponentName :>_en_clk),
+    .CE  (1'b1),
+    .I   (<: print $out1_port$u_score$ComponentName :>));
+<: } else  { :>
+  BUFH clkout1_buf_en
+   (.O   (<: print $out1_port$u_score$ComponentName :>_en_clk),
+    .I   (<: print $out1_port$u_score$ComponentName :>));
+<: } :>
+  always @(posedge <: print $out1_port$u_score$ComponentName :>_en_clk<: if { $use_reset } { :> or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	    seq_reg1 <= 8'h00;
+    end
+    else begin<: } else { :>)<: } :>
+<: if { $clkout1_seq_number == 1}  {  :>
+        seq_reg1 <= {seq_reg1[6:0],<=: locked_port :>_int};
+<: } elseif { $clkout1_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg1 <= {seq_reg1[6:0],seq_reg2[7]};
+<: } elseif { $clkout1_seq_number == [expr $clkout3_seq_number + 1]  && !$mmcm_ss_en} { :>
+        seq_reg1 <= {seq_reg1[6:0],seq_reg3[7]};
+<: } elseif { $clkout1_seq_number == [expr $clkout4_seq_number + 1]  && !$mmcm_ss_en} { :>
+        seq_reg1 <= {seq_reg1[6:0],seq_reg4[7]};
+<: } elseif { $clkout1_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg1 <= {seq_reg1[6:0],seq_reg5[7]};
+<: } elseif { $clkout1_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg1 <= {seq_reg1[6:0],seq_reg6[7]};
+<: } elseif { $clkout1_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg1 <= {seq_reg1[6:0],seq_reg7[7]};
+<: } :>
+<: if { $use_reset } { :>  
+    end
+  end
+<: } :>
+
+<: if { $is_clk0_fb}  {  :>
+
+    assign <=: out1_port :> = clk_out1_int; 
+<: if { $use_phase_alignment && (!$ext_feedback) && (!$auto_ext_feedback)}  {  :>
+
+    assign clk0_fb_in = clk_out1_int;
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 2}  {  :>
+
+  <=: clkout2_buf :> clkout2_buf
+   (.O   (<=: out2_port :>),
+    .CE  (seq_reg2[7]),
+    .I   (<: print $out2_port$u_score$ComponentName :>));
+ 
+<: if { ($is_v8 || $is_k8) } { :>
+  BUFGCE clkout2_buf_en
+   (.O   (<: print $out2_port$u_score$ComponentName :>_en_clk),
+    .CE  (1'b1),
+    .I   (<: print $out2_port$u_score$ComponentName :>));
+<: } else  { :>
+  BUFH clkout2_buf_en
+   (.O   (<: print $out2_port$u_score$ComponentName :>_en_clk),
+    .I   (<: print $out2_port$u_score$ComponentName :>));
+<: } :>
+ 
+  always @(posedge <: print $out2_port$u_score$ComponentName :>_en_clk<: if { $use_reset } { :> or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	  seq_reg2 <= 8'h00;
+    end
+    else begin<: } else { :>)<: } :>
+<: if { $clkout2_seq_number == 1}  {  :>
+        seq_reg2 <= {seq_reg2[6:0],<=: locked_port :>_int};
+<: } elseif { $clkout2_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg2 <= {seq_reg2[6:0],seq_reg1[7]};
+<: } elseif { $clkout2_seq_number == [expr $clkout3_seq_number + 1] && !$mmcm_ss_en} { :>
+        seq_reg2 <= {seq_reg2[6:0],seq_reg3[7]};
+<: } elseif { $clkout2_seq_number == [expr $clkout4_seq_number + 1]  && !$mmcm_ss_en} { :>
+        seq_reg2 <= {seq_reg2[6:0],seq_reg4[7]};
+<: } elseif { $clkout2_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg2 <= {seq_reg2[6:0],seq_reg5[7]};
+<: } elseif { $clkout2_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg2 <= {seq_reg2[6:0],seq_reg6[7]};
+<: } elseif { $clkout2_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg2 <= {seq_reg2[6:0],seq_reg7[7]};
+<: } :>
+<: if { $use_reset } { :>  
+    end
+  end
+<: } :>
+
+<: } :>
+<: if { ($num_out_clks>= 3) && (!$mmcm_ss_en)}  {  :>
+
+  <=: clkout3_buf :> clkout3_buf
+   (.O   (<=: out3_port :>),
+    .CE  (seq_reg3[7]),
+    .I   (<: print $out3_port$u_score$ComponentName :>));
+ 
+<: if { ($is_v8 || $is_k8) } { :>
+  BUFGCE clkout3_buf_en
+   (.O   (<: print $out3_port$u_score$ComponentName :>_en_clk),
+    .CE  (1'b1),
+    .I   (<: print $out3_port$u_score$ComponentName :>));
+<: } else  { :>
+  BUFH clkout3_buf_en
+   (.O   (<: print $out3_port$u_score$ComponentName :>_en_clk),
+    .I   (<: print $out3_port$u_score$ComponentName :>));
+<: } :>
+ 
+  always @(posedge <: print $out3_port$u_score$ComponentName :>_en_clk<: if { $use_reset } { :> or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	  seq_reg3 <= 8'h00;
+    end
+    else begin<: } else { :>)<: } :>
+<: if { $clkout3_seq_number == 1}  {  :>
+        seq_reg3 <= {seq_reg3[6:0],<=: locked_port :>_int};
+<: } elseif { $clkout3_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg3 <= {seq_reg3[6:0],seq_reg1[7]};
+<: } elseif { $clkout3_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg3 <= {seq_reg3[6:0],seq_reg2[7]};
+<: } elseif { $clkout3_seq_number == [expr $clkout4_seq_number + 1]} { :>
+        seq_reg3 <= {seq_reg3[6:0],seq_reg4[7]};
+<: } elseif { $clkout3_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg3 <= {seq_reg3[6:0],seq_reg5[7]};
+<: } elseif { $clkout3_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg3 <= {seq_reg3[6:0],seq_reg6[7]};
+<: } elseif { $clkout3_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg3 <= {seq_reg3[6:0],seq_reg7[7]};
+<: } :>
+<: if { $use_reset } { :>  
+    end
+  end
+<: } :>
+
+<: } :>
+<: if { ($num_out_clks>= 4) && (!$mmcm_ss_en)}  {  :>
+
+  <=: clkout4_buf :> clkout4_buf
+   (.O   (<=: out4_port :>),
+    .CE  (seq_reg4[7]),
+    .I   (<: print $out4_port$u_score$ComponentName :>));
+
+<: if { ($is_v8 || $is_k8) } { :>
+  BUFGCE clkout4_buf_en
+   (.O   (<: print $out4_port$u_score$ComponentName :>_en_clk),
+    .CE  (1'b1),
+    .I   (<: print $out4_port$u_score$ComponentName :>));
+<: } else  { :>
+  BUFH clkout4_buf_en
+   (.O   (<: print $out4_port$u_score$ComponentName :>_en_clk),
+    .I   (<: print $out4_port$u_score$ComponentName :>));
+<: } :>
+	
+  always @(posedge <: print $out4_port$u_score$ComponentName :>_en_clk<: if { $use_reset } { :> or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	  seq_reg4 <= 8'h00;
+    end
+    else begin<: } else { :>)<: } :>
+<: if { $clkout4_seq_number == 1}  {  :>
+        seq_reg4 <= {seq_reg4[6:0],<=: locked_port :>_int};
+<: } elseif { $clkout4_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg4 <= {seq_reg4[6:0],seq_reg1[7]};
+<: } elseif { $clkout4_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg4 <= {seq_reg4[6:0],seq_reg2[7]};
+<: } elseif { $clkout4_seq_number == [expr $clkout3_seq_number + 1]} { :>
+        seq_reg4 <= {seq_reg4[6:0],seq_reg3[7]};
+<: } elseif { $clkout4_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg4 <= {seq_reg4[6:0],seq_reg5[7]};
+<: } elseif { $clkout4_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg4 <= {seq_reg4[6:0],seq_reg6[7]};
+<: } elseif { $clkout4_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg4 <= {seq_reg4[6:0],seq_reg7[7]};
+<: } :>
+<: if { $use_reset } { :>  
+    end
+  end
+<: } :>
+
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+
+  <=: clkout5_buf :> clkout5_buf
+   (.O   (<=: out5_port :>),
+    .CE  (seq_reg5[7]),
+    .I   (<: print $out5_port$u_score$ComponentName :>));
+ 
+<: if { ($is_v8 || $is_k8) } { :>
+  BUFGCE clkout5_buf_en
+   (.O   (<: print $out5_port$u_score$ComponentName :>_en_clk),
+    .CE  (1'b1),
+    .I   (<: print $out5_port$u_score$ComponentName :>));
+<: } else  { :>
+  BUFH clkout5_buf_en
+   (.O   (<: print $out5_port$u_score$ComponentName :>_en_clk),
+    .I   (<: print $out5_port$u_score$ComponentName :>));
+<: } :>
+ 
+  always @(posedge <: print $out5_port$u_score$ComponentName :>_en_clk<: if { $use_reset } { :> or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	  seq_reg5 <= 8'h00;
+    end
+    else begin<: } else { :>)<: } :>
+<: if { $clkout5_seq_number == 1}  {  :>
+        seq_reg5 <= {seq_reg5[6:0],<=: locked_port :>_int};
+<: } elseif { $clkout5_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg5 <= {seq_reg5[6:0],seq_reg1[7]};
+<: } elseif { $clkout5_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg5 <= {seq_reg5[6:0],seq_reg2[7]};
+<: } elseif { $clkout5_seq_number == [expr $clkout3_seq_number + 1]  && !$mmcm_ss_en} { :>
+        seq_reg5 <= {seq_reg5[6:0],seq_reg3[7]};
+<: } elseif { $clkout5_seq_number == [expr $clkout4_seq_number + 1]  && !$mmcm_ss_en} { :>
+        seq_reg5 <= {seq_reg5[6:0],seq_reg4[7]};
+<: } elseif { $clkout5_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg5 <= {seq_reg5[6:0],seq_reg6[7]};
+<: } elseif { $clkout5_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg5 <= {seq_reg5[6:0],seq_reg7[7]};
+<: } :>
+<: if { $use_reset } { :>  
+    end
+  end
+<: } :>
+
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+
+  <=: clkout6_buf :> clkout6_buf
+   (.O   (<=: out6_port :>),
+    .CE  (seq_reg6[7]),
+    .I   (<: print $out6_port$u_score$ComponentName :>));
+ 
+<: if { ($is_v8 || $is_k8) } { :>
+  BUFGCE clkout6_buf_en
+   (.O   (<: print $out6_port$u_score$ComponentName :>_en_clk),
+    .CE  (1'b1),
+    .I   (<: print $out6_port$u_score$ComponentName :>));
+<: } else  { :>
+  BUFH clkout6_buf_en
+   (.O   (<: print $out6_port$u_score$ComponentName :>_en_clk),
+    .I   (<: print $out6_port$u_score$ComponentName :>));
+<: } :>
+ 
+  always @(posedge <: print $out6_port$u_score$ComponentName :>_en_clk<: if { $use_reset } { :> or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	  seq_reg6 <= 8'h00;
+    end
+    else begin<: } else { :>)<: } :>
+<: if { $clkout6_seq_number == 1}  {  :>
+        seq_reg6 <= {seq_reg6[6:0],<=: locked_port :>_int};
+<: } elseif { $clkout6_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg6 <= {seq_reg6[6:0],seq_reg1[7]};
+<: } elseif { $clkout6_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg6 <= {seq_reg6[6:0],seq_reg2[7]};
+<: } elseif { $clkout6_seq_number == [expr $clkout3_seq_number + 1]  && !$mmcm_ss_en} { :>
+        seq_reg6 <= {seq_reg6[6:0],seq_reg3[7]};
+<: } elseif { $clkout6_seq_number == [expr $clkout4_seq_number + 1]  && !$mmcm_ss_en} { :>
+        seq_reg6 <= {seq_reg6[6:0],seq_reg4[7]};
+<: } elseif { $clkout6_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg6 <= {seq_reg6[6:0],seq_reg5[7]};
+<: } elseif { $clkout6_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg6 <= {seq_reg6[6:0],seq_reg7[7]};
+<: } :>
+<: if { $use_reset } { :>  
+    end
+  end
+<: } :>
+
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+
+  <=: clkout7_buf :> clkout7_buf
+   (.O   (<=: out7_port :>),
+    .CE  (seq_reg7[7]),
+    .I   (<: print $out7_port$u_score$ComponentName :>));
+ 
+<: if { ($is_v8 || $is_k8) } { :>
+  BUFGCE clkout7_buf_en
+   (.O   (<: print $out7_port$u_score$ComponentName :>_en_clk),
+    .CE  (1'b1),
+    .I   (<: print $out7_port$u_score$ComponentName :>));
+<: } else  { :>
+  BUFH clkout7_buf_en
+   (.O   (<: print $out7_port$u_score$ComponentName :>_en_clk),
+    .I   (<: print $out7_port$u_score$ComponentName :>));
+<: } :>
+ 
+  always @(posedge <: print $out7_port$u_score$ComponentName :>_en_clk<: if { $use_reset } { :> or posedge reset_high) begin
+    if(reset_high == 1'b1) begin
+	  seq_reg7 <= 8'h00;
+    end
+    else begin<: } else { :>)<: } :>
+<: if { $clkout7_seq_number == 1}  {  :>
+        seq_reg7 <= {seq_reg7[6:0],<=: locked_port :>_int};
+<: } elseif { $clkout7_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg7 <= {seq_reg7[6:0],seq_reg1[7]};
+<: } elseif { $clkout7_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg7 <= {seq_reg7[6:0],seq_reg2[7]};
+<: } elseif { $clkout7_seq_number == [expr $clkout3_seq_number + 1]  && !$mmcm_ss_en} { :>
+        seq_reg7 <= {seq_reg7[6:0],seq_reg3[7]};
+<: } elseif { $clkout7_seq_number == [expr $clkout4_seq_number + 1]  && !$mmcm_ss_en} { :>
+        seq_reg7 <= {seq_reg7[6:0],seq_reg4[7]};
+<: } elseif { $clkout7_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg7 <= {seq_reg7[6:0],seq_reg5[7]};
+<: } elseif { $clkout7_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg7 <= {seq_reg7[6:0],seq_reg6[7]};
+<: } :>
+<: if { $use_reset } { :>  
+    end
+  end
+<: } :>
+
+<: } :>
+
+<: } :>
+<#: ttcl/bar_clk_out_v.ttcl :>

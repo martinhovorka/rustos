@@ -1,0 +1,112 @@
+# (c) Copyright 2023 Advanced Micro Devices, Inc. All rights reserved.
+#
+# This file contains confidential and proprietary information
+# of AMD and is protected under U.S. and international copyright
+# and other intellectual property laws.
+#
+# DISCLAIMER
+# This disclaimer is not a license and does not grant any
+# rights to the materials distributed herewith. Except as
+# otherwise provided in a valid license issued to you by
+# AMD, and to the maximum extent permitted by applicable
+# law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+# WITH ALL FAULTS, AND AMD HEREBY DISCLAIMS ALL WARRANTIES
+# AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+# BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+# INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+# (2) AMD shall not be liable (whether in contract or tort,
+# including negligence, or under any other theory of
+# liability) for any loss or damage of any kind or nature
+# related to, arising under or in connection with these
+# materials, including for any direct, or any indirect,
+# special, incidental, or consequential loss or damage
+# (including loss of data, profits, goodwill, or any type of
+# loss or damage suffered as a result of any action brought
+# by a third party) even if such damage or loss was
+# reasonably foreseeable or AMD had been advised of the
+# possibility of the same.
+#
+# CRITICAL APPLICATIONS
+# AMD products are not designed or intended to be fail-
+# safe, or for use in any application requiring fail-safe
+# performance, such as life-support or safety devices or
+# systems, Class III medical devices, nuclear facilities,
+# applications related to the deployment of airbags, or any
+# other applications that could lead to death, personal
+# injury, or severe property or environmental damage
+# (individually and collectively, "Critical
+# Applications"). Customer assumes the sole risk and
+# liability of any use of AMD products in Critical
+# Applications, subject only to applicable laws and
+# regulations governing limitations on product liability.
+#
+# THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+# PART OF THIS FILE AT ALL TIMES.
+############################################################
+
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: set aclk_freq [getIntValue "C_S_AXI_ACLK_FREQ_HZ"] :>
+<: set axi_clk_mhz [expr {$aclk_freq/1000000.0}] :>
+<: set min [format "%3.3f" $axi_clk_mhz] :>
+<: set family [getStringValue "C_FAMILY"] :>
+<: setOutputDirectory "./" :>
+<: setFileName "top_set" :>
+<: setFileExtension ".tcl" :>
+<: set wd [ file dirname [ get_property xml_file_name [ current_ipbom ] ] ] :>
+set part [get_parts -of [current_project]]
+set family [get_property FAMILY $part]
+if {[string match -nocase {*versal*} $family] == 1} {
+    set c_family [get_property FAMILY $part]
+} else {
+    set c_family [get_property C_FAMILY $part]
+}
+#set clk_wiz_vlnv [lindex [get_ipdefs xilinx.com:ip:clk_wiz:* xilinx.com:ip:clk_wizard:* xilinx.com:ip:clkx5_wiz:* -filter "(SUPPORTED_FAMILIES =~ *$c_family:* || SUPPORTED_FAMILIES =~ *:$part*) && UPGRADE_VERSIONs=={}"] 0]
+set clk_wiz_vlnv    [lindex [get_ipdefs -quiet xilinx.com:ip:clk_wiz:*] end]
+set clk_wizard_vlnv [lindex [get_ipdefs -quiet xilinx.com:ip:clk_wizard:*] end]
+set clkx5_wiz_vlnv  [lindex [get_ipdefs -quiet xilinx.com:ip:clkx5_wiz:*] end]
+if { $clk_wizard_vlnv ne "" && [get_parts -of_objects $clk_wizard_vlnv $part ] == $part } {
+  set clk_wiz_vlnv $clk_wizard_vlnv
+} elseif { $clkx5_wiz_vlnv ne "" && [get_parts -of_objects $clkx5_wiz_vlnv $part ] == $part } {
+  set clk_wiz_vlnv $clkx5_wiz_vlnv
+}
+create_ip -vlnv $clk_wiz_vlnv  -module_name clk_wiz_0
+if {[string match -nocase {*:clk_wiz:*} $clk_wiz_vlnv] == 1} {  
+set_property -dict [list CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {<=:$min:>}] [get_ips clk_wiz_0]
+generate_target all [get_ips clk_wiz_0]
+} else {
+set_property -dict [list CONFIG.USE_RESET {true} CONFIG.USE_LOCKED {true} CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT_USED {true,false,false,false,false,false,false} CONFIG.CLKOUT_PORT {clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6,clk_out7} CONFIG.CLKOUT_REQUESTED_OUT_FREQUENCY {<=:$min:>,50.000,60.000,100.000,100.000,100.000,100.000}] [get_ips clk_wiz_0]
+generate_target all [get_ips clk_wiz_0]
+}
+
+create_ip -name axi_traffic_gen -vendor xilinx.com -library ip -module_name axi_traffic_gen_0
+set coe1 [lindex [get_property name [get_files *atg_addr.coe]] 0 ]
+set coe2 [lindex [get_property name [get_files *atg_mask.coe]] 0 ]
+set coe3 [lindex [get_property name [get_files *atg_ctrl.coe]] 0 ]
+set coe4 [lindex [get_property name [get_files *atg_data.coe]] 0 ]
+
+set_property -dict [list CONFIG.C_ATG_MODE {AXI4-Lite} CONFIG.C_ATG_SYSTEM_INIT_ADDR_MIF $coe1 CONFIG.C_ATG_SYSTEM_INIT_MASK_MIF $coe2 CONFIG.C_ATG_SYSTEM_INIT_CTRL_MIF $coe3 CONFIG.C_ATG_SYSTEM_INIT_DATA_MIF $coe4 CONFIG.C_ATG_SYSINIT_MODES {System_Test} CONFIG.C_ATG_SYSTEM_TEST_MAX_CLKS {2147483647} CONFIG.C_ATG_MIF_DATA_DEPTH {16}] [get_ips axi_traffic_gen_0]
+generate_target all [get_ips axi_traffic_gen_0]
+
+##create_ip -name clk_wiz  -vendor xilinx.com -library ip -module_name clk_wiz_tb
+##set_property -dict [list CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {<=:$min:>}] [get_ips clk_wiz_tb]
+##generate_target all [get_ips clk_wiz_tb]
+##create_fileset -blockset clk_wiz_tb 
+##set_property top clk_wiz_tb [get_fileset clk_wiz_tb]
+##move_files -fileset [get_fileset clk_wiz_tb] [get_files -of_objects [get_fileset sources_1] *clk_wiz_tb.xci]
+##launch_run  clk_wiz_tb_synth_1
+##wait_on_run clk_wiz_tb_synth_1
+##import_files -fileset sim_1 [get_files -all -of_objects [get_files *clk_wiz_tb.xci] -filter {USED_IN=~"*sim*"&&NAME=~"*clk_wiz_tb*sim*"&&USED_IN_SYNTHESIS==0}]
+##set_property used_in_synthesis false [get_files *clk_wiz_tb.xci]
+##set_property used_in_implementation false [get_files *clk_wiz_tb.xci]
+##set_property used_in_simulation false [get_files *clk_wiz_tb.xci]
+##file delete -force *clk_wiz_tb
+##remove_files -fileset clk_wiz_tb *clk_wiz_tb.xci
+##delete_fileset clk_wiz_tb
+set_property top <=: $ComponentName :>_exdes [current_fileset]
+update_compile_order -fileset sources_1
+set_property top <=: $ComponentName :>_exdes_tb [get_filesets sim_1]
+set_property top_lib {} [get_filesets sim_1]
+set_property top_arch {} [get_filesets sim_1]
+set_property top_file {} [get_filesets sim_1]
+update_compile_order -fileset sim_1

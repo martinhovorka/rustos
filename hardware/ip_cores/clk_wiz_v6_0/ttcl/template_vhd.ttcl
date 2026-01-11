@@ -1,0 +1,304 @@
+<: ;#auto-generated instantiation template not working (all ports always included) :>
+<: ;#use the auto one, and replace with exdes instantiation-- and remove timestamp :>
+<: if { ![isVHDLOutputRequired]} { ttcl_return} :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName $ComponentName :>
+<: setFileExtension ".vho" :>
+<: ;#all other variables :>
+<#: ttcl/variables.ttcl :>
+<: set comment "--" :>
+<#: ttcl/disclaimer.ttcl :>
+<#: ttcl/notes.ttcl :>
+
+
+-- The following code must appear in the VHDL architecture header:
+------------- Begin Cut here for COMPONENT Declaration ------ COMP_TAG
+component <=: ComponentName :>
+<: if { $c_has_AXI } { :>
+<#: ttcl/network_decl_axi_vhd.ttcl :>
+<:  } else { :>
+<#: ttcl/network_decl_vhd.ttcl :>
+<:  } :>
+end component;
+
+-- COMP_TAG_END ------ End COMPONENT Declaration ------------
+-- The following code must appear in the VHDL architecture
+-- body. Substitute your own instance name and net names.
+------------- Begin Cut here for INSTANTIATION Template ----- INST_TAG
+your_instance_name : <=: ComponentName :>
+   port map ( 
+<: if { $c_has_AXI } { :>
+   s_axi_aclk                => s_axi_aclk,           
+   s_axi_aresetn             => s_axi_aresetn,        
+
+   s_axi_awaddr              => s_axi_awaddr,         
+   s_axi_awvalid             => s_axi_awvalid,        
+   s_axi_awready             => s_axi_awready,        
+   s_axi_wdata               => s_axi_wdata,          
+   s_axi_wstrb               => s_axi_wstrb,          
+   s_axi_wvalid              => s_axi_wvalid,         
+   s_axi_wready              => s_axi_wready,         
+   s_axi_bresp               => s_axi_bresp,          
+   s_axi_bvalid              => s_axi_bvalid,         
+   s_axi_bready              => s_axi_bready,         
+   
+   s_axi_araddr              => s_axi_araddr,         
+   s_axi_arvalid             => s_axi_arvalid,        
+   s_axi_arready             => s_axi_arready,        
+   s_axi_rdata               => s_axi_rdata,          
+   s_axi_rresp               => s_axi_rresp,          
+   s_axi_rvalid              => s_axi_rvalid,         
+   s_axi_rready              => s_axi_rready,         
+<: } :>
+  <: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+<: if { $sel_PRIMITIVE != "None"}  { :>
+  ref_clk                 => ref_clk,
+<: } else  { :>
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+   user_clk0                    => user_clk0,
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+   user_clk1                    => user_clk1,
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+   user_clk2                    => user_clk2,
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+   user_clk3                    => user_clk3,
+<: } :>
+   clk_stop                     => clk_stop,
+   clk_oor                      => clk_oor,
+   clk_glitch                   => clk_glitch,
+   interrupt                   => interrupt,
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { $clkin2_diff}  {  :>
+   <=: SECONDARY_PORT :>_p => <=: SECONDARY_PORT :>_p,
+   <=: SECONDARY_PORT :>_n => <=: SECONDARY_PORT :>_n,
+<: } else  { :>
+   <=: SECONDARY_PORT :> => <=: SECONDARY_PORT :>,
+<: } :>
+   <=: clk_in_sel_port :> => <=: clk_in_sel_port :>,
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+   <=: fbin_p_port :> => <=: fbin_p_port :>,
+   <=: fbin_n_port :> => <=: fbin_n_port :>,
+<: } else  { :>
+   <=: fbin_port :> => <=: fbin_port :>,
+<: } :>
+<: } :>
+<: } :>
+  -- Clock out ports  
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+   clkoutphy        => clkoutphy,
+<: } :>
+<: } :>
+<: if { $clkout1_ce_used && !$safe_clk_startup}  {  :>
+   <=: out1_port :>_ce => <=: out1_port :>_ce,
+<: } :>
+<: if { $clkout1_clr_used && !$safe_clk_startup}  {  :>
+   <=: out1_port :>_clr => <=: out1_port :>_clr,
+<: } :>
+<: if { $clkout1_last}  {  :>
+   <=: out1_port :> => <=: out1_port :>              
+<: } else  { :>
+   <=: out1_port :> => <=: out1_port :>,
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+   <=: out1_port :>B => <=: out1_port :>B,
+<: } :>
+<: if { $num_out_clks>= 2}  {  :>
+<: if { $clkout2_ce_used && !$safe_clk_startup}  {  :>
+   <=: out2_port :>_ce => <=: out2_port :>_ce,
+<: } :>
+<: if { $clkout2_clr_used && !$safe_clk_startup}  {  :>
+   <=: out2_port :>_clr => <=: out2_port :>_clr,
+<: } :>
+<: if { $clkout2_last}  {  :>
+   <=: out2_port :> => <=: out2_port :>              
+<: } else  { :>
+   <=: out2_port :> => <=: out2_port :>,
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+   <=: out2_port :>B => <=: out2_port :>B,
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 3) &&  (!$mmcm_ss_en)}  {  :>
+<: if { $clkout3_ce_used && !$safe_clk_startup}  {  :>
+   <=: out3_port :>_ce => <=: out3_port :>_ce,
+<: } :>
+<: if { $clkout3_clr_used && !$safe_clk_startup}  {  :>
+   <=: out3_port :>_clr => <=: out3_port :>_clr,
+<: } :>
+<: if { $clkout3_last}  {  :>
+   <=: out3_port :> => <=: out3_port :>              
+<: } else  { :>
+   <=: out3_port :> => <=: out3_port :>,
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+   <=: out3_port :>B => <=: out3_port :>B,
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 4) &&  (!$mmcm_ss_en)}  {  :>
+<: if { $clkout4_ce_used && !$safe_clk_startup}  {  :>
+   <=: out4_port :>_ce => <=: out4_port :>_ce,
+<: } :>
+<: if { $clkout4_clr_used && !$safe_clk_startup}  {  :>
+   <=: out4_port :>_clr => <=: out4_port :>_clr,
+<: } :>
+<: if { $clkout4_last}  {  :>
+   <=: out4_port :> => <=: out4_port :>              
+<: } else  { :>
+   <=: out4_port :> => <=: out4_port :>,
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+   <=: out4_port :>B => <=: out4_port :>B,
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+<: if { $clkout5_ce_used && !$safe_clk_startup}  {  :>
+   <=: out5_port :>_ce => <=: out5_port :>_ce,
+<: } :>
+<: if { $clkout5_clr_used && !$safe_clk_startup}  {  :>
+   <=: out5_port :>_clr => <=: out5_port :>_clr,
+<: } :>
+<: if { $clkout5_last}  {  :>
+   <=: out5_port :> => <=: out5_port :>              
+<: } else  { :>
+   <=: out5_port :> => <=: out5_port :>,
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+<: if { $clkout6_ce_used && !$safe_clk_startup}  {  :>
+   <=: out6_port :>_ce => <=: out6_port :>_ce,
+<: } :>
+<: if { $clkout6_clr_used && !$safe_clk_startup}  {  :>
+   <=: out6_port :>_clr => <=: out6_port :>_clr,
+<: } :>
+<: if { $clkout6_last}  {  :>
+   <=: out6_port :> => <=: out6_port :>              
+<: } else  { :>
+   <=: out6_port :> => <=: out6_port :>,
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+<: if { $clkout7_ce_used && !$safe_clk_startup}  {  :>
+   <=: out7_port :>_ce => <=: out7_port :>_ce,
+<: } :>
+<: if { $clkout7_clr_used && !$safe_clk_startup}  {  :>
+   <=: out7_port :>_clr => <=: out7_port :>_clr,
+<: } :>
+<: if { $clkout7_last}  {  :>
+   <=: out7_port :> => <=: out7_port :>              
+<: } else  { :>
+   <=: out7_port :> => <=: out7_port :>,
+<: } :>
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback  || $auto_sing_feedback}  {  :>
+<: if { $clkfbout_last}  {  :>
+   <=: fbout_port :> => <=: fbout_port :>
+<: } else  { :>
+   <=: fbout_port :> => <=: fbout_port :>,
+<: } :>
+<: } elseif  { $auto_diff_feedback}  { :>
+   <=: fbout_p_port :> => <=: fbout_p_port :>,
+<: if { $clkfbout_last}  {  :>
+   <=: fbout_n_port :> => <=: fbout_n_port :>           
+<: } else  { :>
+   <=: fbout_n_port :> => <=: fbout_n_port :>,
+<: } :>
+<: } :>
+<: } :>
+<: if { !($c_has_AXI) }  {  :>
+<: if { $use_dyn_reprog}  {  :>
+  -- Dynamic reconfiguration ports             
+   <=: daddr_port :> => <=: daddr_port :>,
+   <=: dclk_port :> => <=: dclk_port :>,
+   <=: den_port :> => <=: den_port :>,
+   <=: din_port :> => <=: din_port :>,
+   <=: dout_port :> => <=: dout_port :>,
+   <=: drdy_port :> => <=: drdy_port :>,
+<: if { $dyn_reprog_last}  {  :>
+   <=: dwe_port :> => <=: dwe_port :>               
+<: } else  { :>
+   <=: dwe_port :> => <=: dwe_port :>,
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_dyn_phase_shift}  {  :>
+  -- Dynamic phase shift ports                 
+   <=: psclk_port :> => <=: psclk_port :>,
+   <=: psen_port :> => <=: psen_port :>,
+   <=: psincdec_port :> => <=: psincdec_port :>,
+<: if { $dyn_phase_shift_last}  {  :>
+   <=: psdone_port :> => <=: psdone_port :>            
+<: } else  { :>
+   <=: psdone_port :> => <=: psdone_port :>,
+<: } :>
+<: } :>
+<: ;#only print the header if the signals actually exist :>        
+<: if { $has_control}  {  :>
+  -- Status and control signals                
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_last}  {  :>
+   <=: reset_port :> => <=: reset_port :>             
+<: } else  { :>
+   <=: reset_port :> => <=: reset_port :>,
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+   <=: power_down_port :> => <=: power_down_port :>        
+<: } else  { :>
+   <=: power_down_port :> => <=: power_down_port :>,
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+   <=: input_clk_stopped_port :> => <=: input_clk_stopped_port :>   
+<: } else  { :>
+   <=: input_clk_stopped_port :> => <=: input_clk_stopped_port :>,
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+   <=: clkfb_stopped_port :> => <=: clkfb_stopped_port :>     
+<: } else  { :>
+   <=: clkfb_stopped_port :> => <=: clkfb_stopped_port :>,
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+   <=: locked_port :> => <=: locked_port :>            
+<: } else  { :>
+   <=: locked_port :> => <=: locked_port :>,
+<: } :>
+<: } :>
+<: if { $is_v8 || $is_k8 }  {  :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+   <=: cddcdone_port :> => <=: cddcdone_port :>,
+   <=: cddcreq_port :>  => <=: cddcreq_port :>,
+<: } :>
+<: } :>
+<: } :>
+   -- Clock in ports
+<: if { $sel_PRIMITIVE != "None"}  { :>
+<: if { $clkin1_diff}  {  :>
+   <=: PRIMARY_PORT :>_p => <=: PRIMARY_PORT :>_p,
+   <=: PRIMARY_PORT :>_n => <=: PRIMARY_PORT :>_n
+<: } else  { :>
+   <=: PRIMARY_PORT :> => <=: PRIMARY_PORT :>
+<: } :>
+<: } else  { :>
+  ref_clk  => ref_clk
+<: } :>
+ );
+-- INST_TAG_END ------ End INSTANTIATION Template ------------

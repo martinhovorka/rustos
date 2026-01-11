@@ -1,0 +1,394 @@
+# (c) Copyright 2023 Advanced Micro Devices, Inc. All rights reserved.
+#
+# This file contains confidential and proprietary information
+# of AMD and is protected under U.S. and international copyright
+# and other intellectual property laws.
+#
+# DISCLAIMER
+# This disclaimer is not a license and does not grant any
+# rights to the materials distributed herewith. Except as
+# otherwise provided in a valid license issued to you by
+# AMD, and to the maximum extent permitted by applicable
+# law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+# WITH ALL FAULTS, AND AMD HEREBY DISCLAIMS ALL WARRANTIES
+# AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+# BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+# INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+# (2) AMD shall not be liable (whether in contract or tort,
+# including negligence, or under any other theory of
+# liability) for any loss or damage of any kind or nature
+# related to, arising under or in connection with these
+# materials, including for any direct, or any indirect,
+# special, incidental, or consequential loss or damage
+# (including loss of data, profits, goodwill, or any type of
+# loss or damage suffered as a result of any action brought
+# by a third party) even if such damage or loss was
+# reasonably foreseeable or AMD had been advised of the
+# possibility of the same.
+#
+# CRITICAL APPLICATIONS
+# AMD products are not designed or intended to be fail-
+# safe, or for use in any application requiring fail-safe
+# performance, such as life-support or safety devices or
+# systems, Class III medical devices, nuclear facilities,
+# applications related to the deployment of airbags, or any
+# other applications that could lead to death, personal
+# injury, or severe property or environmental damage
+# (individually and collectively, "Critical
+# Applications"). Customer assumes the sole risk and
+# liability of any use of AMD products in Critical
+# Applications, subject only to applicable laws and
+# regulations governing limitations on product liability.
+#
+# THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+# PART OF THIS FILE AT ALL TIMES.
+############################################################
+namespace eval clk_wiz_v6_0_0_0_0_0_0_0 {
+
+variable tcl_scope
+variable tcl_ipinst
+set tcl_scope xit
+
+proc update_boundary {} {
+
+
+ if {([get_property CONFIG.PRIM_SOURCE [::ipxit::current_inst]] == "Single_ended_clock_capable_pin" || [get_property CONFIG.PRIM_SOURCE [::ipxit::current_inst]] == "Single_ended_non_clock_pin" || [get_property CONFIG.PRIM_SOURCE [::ipxit::current_inst]] == "No_buffer" || [get_property CONFIG.PRIM_SOURCE [::ipxit::current_inst]] == "Global_buffer") && [get_property CONFIG.PRIMITIVE [::ipxit::current_inst]] != "None" } {
+   set port [add_dynamic_port [get_property CONFIG.PRIMARY_PORT [::ipxit::current_inst]] in ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLK_IN1 -vlnv xilinx.com:signal:clock_rtl:1.0 -mode slave ]
+  set param [ipx::add_bus_parameter BOARD.ASSOCIATED_PARAM $intf ]
+    set_property value CLK_IN1_BOARD_INTERFACE $param
+    # Map ports to it
+    xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.PRIMARY_PORT [::ipxit::current_inst]]"  -interface_name clock_CLK_IN1 -logical_name CLK_IN1
+ }
+
+ if {(([get_property CONFIG.SECONDARY_SOURCE [::ipxit::current_inst]] == "Single_ended_clock_capable_pin" || [get_property CONFIG.SECONDARY_SOURCE [::ipxit::current_inst]] == "Single_ended_non_clock_pin" || [get_property CONFIG.SECONDARY_SOURCE [::ipxit::current_inst]] == "No_buffer" || [get_property CONFIG.SECONDARY_SOURCE [::ipxit::current_inst]] == "Global_buffer") && [get_property CONFIG.USE_INCLK_SWITCHOVER [::ipxit::current_inst]] == "true")} {
+   set port [add_dynamic_port [get_property CONFIG.SECONDARY_PORT [::ipxit::current_inst]] in ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLK_IN2 -vlnv xilinx.com:signal:clock_rtl:1.0 -mode slave ]
+    set param [  ipx::add_bus_parameter BOARD.ASSOCIATED_PARAM $intf ]
+    set_property value CLK_IN2_BOARD_INTERFACE $param
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.SECONDARY_PORT [::ipxit::current_inst]]"  -interface_name clock_CLK_IN2 -logical_name CLK_IN2
+ }
+
+ if {[get_property CONFIG.USE_INCLK_SWITCHOVER [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.CLK_IN_SEL_PORT [::ipxit::current_inst]] in ]
+ }
+
+ if {(((([get_property CONFIG.USE_PHASE_ALIGNMENT [::ipxit::current_inst]] == "true") && (([get_property CONFIG.FEEDBACK_SOURCE [::ipxit::current_inst]] != "FDBK_AUTO") || ([get_property CONFIG.FEEDBACK_SOURCE [::ipxit::current_inst]] == "FDBK_AUTO_OFFCHIP")) && ([get_property CONFIG.MMCM_COMPENSATION [::ipxit::current_inst]] != "INTERNAL")) || (([get_property CONFIG.USE_PHASE_ALIGNMENT [::ipxit::current_inst]] == "true") && ([get_property CONFIG.FEEDBACK_SOURCE [::ipxit::current_inst]] == "FDBK_AUTO_OFFCHIP") && ([get_property CONFIG.MMCM_COMPENSATION [::ipxit::current_inst]] != "INTERNAL"))) && (([get_property CONFIG.USE_PHASE_ALIGNMENT [::ipxit::current_inst]] == "false") || ([get_property CONFIG.FEEDBACK_SOURCE [::ipxit::current_inst]] != "FDBK_AUTO_OFFCHIP") || ([get_property CONFIG.CLKFB_IN_SIGNALING [::ipxit::current_inst]] != "DIFF") && ([get_property CONFIG.MMCM_COMPENSATION [::ipxit::current_inst]] != "INTERNAL")))} {
+   set port [add_dynamic_port [get_property CONFIG.CLKFB_IN_PORT [::ipxit::current_inst]] in ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLKFB_IN -vlnv xilinx.com:signal:clock_rtl:1.0 -mode slave ]
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.CLKFB_IN_PORT [::ipxit::current_inst]]"  -interface_name clock_CLKFB_IN -logical_name CLKFB_IN
+ }
+
+ if {([get_property CONFIG.USE_DYN_RECONFIG [::ipxit::current_inst]] == "true" && [get_property CONFIG.INTERFACE_SELECTION [::ipxit::current_inst]] != "Enable_AXI")} {
+   set port [add_dynamic_port [get_property CONFIG.DADDR_PORT [::ipxit::current_inst]] in 0 6]
+   #xit::add_dynamic_port -of [xit::current_scope] -port_name "[get_property CONFIG.DADDR_PORT [::ipxit::current_inst]]" -dir in -left 6 -right 0
+   set port [add_dynamic_port [get_property CONFIG.DRDY_PORT  [::ipxit::current_inst]] out ]
+   set port [add_dynamic_port [get_property CONFIG.DWE_PORT   [::ipxit::current_inst]] in ]
+   set port [add_dynamic_port [get_property CONFIG.DIN_PORT   [::ipxit::current_inst]] in 0 15]
+   set port [add_dynamic_port [get_property CONFIG.DOUT_PORT  [::ipxit::current_inst]] out 0 15]
+   set port [add_dynamic_port [get_property CONFIG.DEN_PORT   [::ipxit::current_inst]] in ]
+
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name s_drp -vlnv xilinx.com:interface:drp_rtl:1.0 -mode slave ]
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.DADDR_PORT [::ipxit::current_inst]]"  -interface_name s_drp -logical_name DADDR
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.DRDY_PORT  [::ipxit::current_inst]]"  -interface_name s_drp -logical_name DRDY
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.DWE_PORT   [::ipxit::current_inst]]"  -interface_name s_drp -logical_name DWE
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.DIN_PORT   [::ipxit::current_inst]]"  -interface_name s_drp -logical_name DI
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.DOUT_PORT  [::ipxit::current_inst]]"  -interface_name s_drp -logical_name DO
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.DEN_PORT   [::ipxit::current_inst]]"  -interface_name s_drp -logical_name DEN
+ }
+
+ if {([get_property CONFIG.USE_DYN_RECONFIG [::ipxit::current_inst]] == "true" && [get_property CONFIG.INTERFACE_SELECTION [::ipxit::current_inst]] != "Enable_AXI")} {
+   set port [add_dynamic_port [get_property CONFIG.DCLK_PORT [::ipxit::current_inst]] in ]
+ }
+
+ if {[get_property CONFIG.USE_DYN_PHASE_SHIFT [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.PSCLK_PORT [::ipxit::current_inst]] in ]
+ }
+
+
+ if {[get_property CONFIG.USE_DYN_PHASE_SHIFT [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.PSEN_PORT [::ipxit::current_inst]] in ]
+ }
+
+
+ if {[get_property CONFIG.USE_DYN_PHASE_SHIFT [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.PSINCDEC_PORT [::ipxit::current_inst]] in ]
+ }
+
+
+ if {[get_property CONFIG.USE_DYN_PHASE_SHIFT [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.PSDONE_PORT [::ipxit::current_inst]] out ]
+ }
+
+ if {[get_property CONFIG.CLKOUT1_USED [::ipxit::current_inst]] == "true"} {
+ set port [add_dynamic_port [get_property CONFIG.CLK_OUT1_PORT [::ipxit::current_inst]] out ]
+ set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLK_OUT1 -vlnv xilinx.com:signal:clock_rtl:1.0 -mode master ]
+ # Map ports to it
+ xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.CLK_OUT1_PORT [::ipxit::current_inst]]"  -interface_name clock_CLK_OUT1 -logical_name CLK_OUT1
+}
+
+ 
+ if {[get_property CONFIG.CLKOUT2_USED [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.CLK_OUT2_PORT [::ipxit::current_inst]] out ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLK_OUT2 -vlnv xilinx.com:signal:clock_rtl:1.0 -mode master ]
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.CLK_OUT2_PORT [::ipxit::current_inst]]"  -interface_name clock_CLK_OUT2 -logical_name CLK_OUT2
+ }
+
+
+ if {[get_property CONFIG.CLKOUT3_USED [::ipxit::current_inst]] == "true" && [get_property CONFIG.USE_SPREAD_SPECTRUM [::ipxit::current_inst]] == "false"} {
+   set port [add_dynamic_port [get_property CONFIG.CLK_OUT3_PORT [::ipxit::current_inst]] out ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLK_OUT3 -vlnv xilinx.com:signal:clock_rtl:1.0 -mode master ]
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.CLK_OUT3_PORT [::ipxit::current_inst]]"  -interface_name clock_CLK_OUT3 -logical_name CLK_OUT3
+ }
+
+
+ if {[get_property CONFIG.CLKOUT4_USED [::ipxit::current_inst]] == "true" && [get_property CONFIG.USE_SPREAD_SPECTRUM [::ipxit::current_inst]] == "false"} {
+   set port [add_dynamic_port [get_property CONFIG.CLK_OUT4_PORT [::ipxit::current_inst]] out ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLK_OUT4 -vlnv xilinx.com:signal:clock_rtl:1.0 -mode master ]
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.CLK_OUT4_PORT [::ipxit::current_inst]]"  -interface_name clock_CLK_OUT4 -logical_name CLK_OUT4
+ }
+
+
+ if {[get_property CONFIG.CLKOUT5_USED [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.CLK_OUT5_PORT [::ipxit::current_inst]] out ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLK_OUT5 -vlnv xilinx.com:signal:clock_rtl:1.0 -mode master ]
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.CLK_OUT5_PORT [::ipxit::current_inst]]"  -interface_name clock_CLK_OUT5 -logical_name CLK_OUT5
+ }
+
+
+ if {[get_property CONFIG.CLKOUT6_USED [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.CLK_OUT6_PORT [::ipxit::current_inst]] out ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLK_OUT6 -vlnv xilinx.com:signal:clock_rtl:1.0 -mode master ]
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.CLK_OUT6_PORT [::ipxit::current_inst]]"  -interface_name clock_CLK_OUT6 -logical_name CLK_OUT6
+ }
+
+
+ if {[get_property CONFIG.CLKOUT7_USED [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.CLK_OUT7_PORT [::ipxit::current_inst]] out ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLK_OUT7 -vlnv xilinx.com:signal:clock_rtl:1.0 -mode master ]
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.CLK_OUT7_PORT [::ipxit::current_inst]]"  -interface_name clock_CLK_OUT7 -logical_name CLK_OUT7
+ }
+
+ if {(((([get_property CONFIG.USE_PHASE_ALIGNMENT [::ipxit::current_inst]] == "true") && (([get_property CONFIG.FEEDBACK_SOURCE [::ipxit::current_inst]] != "FDBK_AUTO") || ([get_property CONFIG.FEEDBACK_SOURCE [::ipxit::current_inst]] == "FDBK_AUTO_OFFCHIP")) && ([get_property CONFIG.MMCM_COMPENSATION [::ipxit::current_inst]] != "INTERNAL")) || (([get_property CONFIG.USE_PHASE_ALIGNMENT [::ipxit::current_inst]] == "true") && ([get_property CONFIG.FEEDBACK_SOURCE [::ipxit::current_inst]] == "FDBK_AUTO_OFFCHIP") && ([get_property CONFIG.MMCM_COMPENSATION [::ipxit::current_inst]] != "INTERNAL"))) && (([get_property CONFIG.USE_PHASE_ALIGNMENT [::ipxit::current_inst]] == "false") || ([get_property CONFIG.FEEDBACK_SOURCE [::ipxit::current_inst]] != "FDBK_AUTO_OFFCHIP") || ([get_property CONFIG.CLKFB_IN_SIGNALING [::ipxit::current_inst]] != "DIFF") && ([get_property CONFIG.MMCM_COMPENSATION [::ipxit::current_inst]] != "INTERNAL")))} {
+   set port [add_dynamic_port [get_property CONFIG.CLKFB_OUT_PORT [::ipxit::current_inst]] out ]
+   set intf [xit::add_dynamic_interface -of [xit::current_scope] -name clock_CLKFB_OUT -vlnv xilinx.com:signal:clock_rtl:1.0 -mode master ]
+   # Map ports to it
+   xit::add_port_map -of [xit::current_scope] -port_name "[get_property CONFIG.CLKFB_OUT_PORT [::ipxit::current_inst]]"  -interface_name clock_CLKFB_OUT -logical_name CLKFB_OUT
+ }
+
+ set use_reset [::xit::get_property MODELPARAM_VALUE.C_USE_RESET]
+ set reset_low [::xit::get_property MODELPARAM_VALUE.C_RESET_LOW]
+ set intf_sel  [::xit::get_property MODELPARAM_VALUE.C_INTERFACE_SELECTION]
+
+
+ if {[get_property CONFIG.USE_POWER_DOWN [::ipxit::current_inst]] == "true"} {
+   set port [add_dynamic_port [get_property CONFIG.POWER_DOWN_PORT [::ipxit::current_inst]] in ]
+ }
+
+
+ if {([get_property CONFIG.USE_INCLK_STOPPED [::ipxit::current_inst]] == "true")} {
+   set port [add_dynamic_port [get_property CONFIG.INPUT_CLK_STOPPED_PORT [::ipxit::current_inst]] out ]
+ }
+
+
+ if {([get_property CONFIG.USE_CLKFB_STOPPED [::ipxit::current_inst]] == "true")} {
+   set port [add_dynamic_port [get_property CONFIG.CLKFB_STOPPED_PORT [::ipxit::current_inst]] out ]
+ }
+
+
+ if {[get_property CONFIG.USE_LOCKED [::ipxit::current_inst]] == "true" && [get_property CONFIG.PRIMITIVE [::ipxit::current_inst]] != "None"} {
+   set port [add_dynamic_port [get_property CONFIG.LOCKED_PORT [::ipxit::current_inst]] out ]
+ }
+
+ if {([get_property CONFIG.ENABLE_CDDC [::ipxit::current_inst]] == "true")} {
+   set port [add_dynamic_port [get_property CONFIG.CDDCREQ_PORT [::ipxit::current_inst]] in ]
+ }
+
+
+ if {([get_property CONFIG.ENABLE_CDDC [::ipxit::current_inst]] == "true")} {
+   set port [add_dynamic_port [get_property CONFIG.CDDCDONE_PORT [::ipxit::current_inst]] out ]
+ }
+
+#clk_out1_ce dynamic port
+if {(([get_property CONFIG.CLKOUT1_DRIVES [::ipxit::current_inst]] == "BUFGCE") || ([get_property CONFIG.CLKOUT1_DRIVES [::ipxit::current_inst]] == "BUFHCE") || ([get_property CONFIG.CLKOUT1_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT1_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV") || ([get_property CONFIG.CLKOUT1_DRIVES [::ipxit::current_inst]] == "Buffer_with_CE") ) && ([get_property CONFIG.USE_SAFE_CLOCK_STARTUP [::ipxit::current_inst]] == "false")} {
+set port1 [get_property CONFIG.CLK_OUT1_PORT [::ipxit::current_inst]]
+set port1_ce [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port1}_ce -dir in ]
+set intf_ce [xit::add_dynamic_interface -of [xit::current_scope] -name CE_CLK_OUT1 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_ce]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port1}_ce  -interface_name CE_CLK_OUT1 -logical_name CLK_OUT1_CE
+}
+
+#clk_out2_ce dynamic port
+if {(([get_property CONFIG.CLKOUT2_DRIVES [::ipxit::current_inst]] == "BUFGCE") || ([get_property CONFIG.CLKOUT2_DRIVES [::ipxit::current_inst]] == "BUFHCE") || ([get_property CONFIG.CLKOUT2_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT2_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV") || ([get_property CONFIG.CLKOUT2_DRIVES [::ipxit::current_inst]] == "Buffer_with_CE") ) && ([get_property CONFIG.CLKOUT2_USED [::ipxit::current_inst]] == "true") && ([get_property CONFIG.USE_SAFE_CLOCK_STARTUP [::ipxit::current_inst]] == "false")} {
+set port2 [get_property CONFIG.CLK_OUT2_PORT [::ipxit::current_inst]]
+set port2_ce [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port2}_ce -dir in ]
+set intf_ce [xit::add_dynamic_interface -of [xit::current_scope] -name CE_CLK_OUT2 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_ce]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port2}_ce  -interface_name CE_CLK_OUT2 -logical_name CLK_OUT2_CE
+}
+
+#clk_out3_ce dynamic port
+if {(([get_property CONFIG.CLKOUT3_DRIVES [::ipxit::current_inst]] == "BUFGCE") || ([get_property CONFIG.CLKOUT3_DRIVES [::ipxit::current_inst]] == "BUFHCE") || ([get_property CONFIG.CLKOUT3_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT3_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV") || ([get_property CONFIG.CLKOUT3_DRIVES [::ipxit::current_inst]] == "Buffer_with_CE") ) && ([get_property CONFIG.CLKOUT3_USED [::ipxit::current_inst]] == "true") && ([get_property CONFIG.USE_SPREAD_SPECTRUM [::ipxit::current_inst]] == "false") && ([get_property CONFIG.USE_SAFE_CLOCK_STARTUP [::ipxit::current_inst]] == "false")} {
+set port3 [get_property CONFIG.CLK_OUT3_PORT [::ipxit::current_inst]]
+set port3_ce [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port3}_ce -dir in ]
+set intf_ce [xit::add_dynamic_interface -of [xit::current_scope] -name CE_CLK_OUT3 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_ce]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port3}_ce  -interface_name CE_CLK_OUT3 -logical_name CLK_OUT3_CE
+}
+
+#clk_out4_ce dynamic port
+if {(([get_property CONFIG.CLKOUT4_DRIVES [::ipxit::current_inst]] == "BUFGCE") || ([get_property CONFIG.CLKOUT4_DRIVES [::ipxit::current_inst]] == "BUFHCE") || ([get_property CONFIG.CLKOUT4_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT4_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV") || ([get_property CONFIG.CLKOUT4_DRIVES [::ipxit::current_inst]] == "Buffer_with_CE") ) && ([get_property CONFIG.CLKOUT4_USED [::ipxit::current_inst]] == "true") && ([get_property CONFIG.USE_SPREAD_SPECTRUM [::ipxit::current_inst]] == "false") && ([get_property CONFIG.USE_SAFE_CLOCK_STARTUP [::ipxit::current_inst]] == "false")} {
+set port4 [get_property CONFIG.CLK_OUT4_PORT [::ipxit::current_inst]]
+set port4_ce [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port4}_ce -dir in ]
+set intf_ce [xit::add_dynamic_interface -of [xit::current_scope] -name CE_CLK_OUT4 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_ce]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port4}_ce  -interface_name CE_CLK_OUT4 -logical_name CLK_OUT4_CE
+}
+
+#clk_out5_ce dynamic port
+if {(([get_property CONFIG.CLKOUT5_DRIVES [::ipxit::current_inst]] == "BUFGCE") || ([get_property CONFIG.CLKOUT5_DRIVES [::ipxit::current_inst]] == "BUFHCE") || ([get_property CONFIG.CLKOUT5_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT5_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV") || ([get_property CONFIG.CLKOUT5_DRIVES [::ipxit::current_inst]] == "Buffer_with_CE") ) && ([get_property CONFIG.CLKOUT5_USED [::ipxit::current_inst]] == "true") && ([get_property CONFIG.USE_SAFE_CLOCK_STARTUP [::ipxit::current_inst]] == "false")} {
+set port5 [get_property CONFIG.CLK_OUT5_PORT [::ipxit::current_inst]]
+set port5_ce [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port5}_ce -dir in ]
+set intf_ce [xit::add_dynamic_interface -of [xit::current_scope] -name CE_CLK_OUT5 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_ce]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port5}_ce  -interface_name CE_CLK_OUT5 -logical_name CLK_OUT5_CE
+}
+
+#clk_out6_ce dynamic port
+if {(([get_property CONFIG.CLKOUT6_DRIVES [::ipxit::current_inst]] == "BUFGCE") || ([get_property CONFIG.CLKOUT6_DRIVES [::ipxit::current_inst]] == "BUFHCE") || ([get_property CONFIG.CLKOUT6_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT6_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV") || ([get_property CONFIG.CLKOUT6_DRIVES [::ipxit::current_inst]] == "Buffer_with_CE") ) && ([get_property CONFIG.CLKOUT6_USED [::ipxit::current_inst]] == "true") && ([get_property CONFIG.USE_SAFE_CLOCK_STARTUP [::ipxit::current_inst]] == "false")} {
+set port6 [get_property CONFIG.CLK_OUT6_PORT [::ipxit::current_inst]]
+set port6_ce [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port6}_ce -dir in ]
+set intf_ce [xit::add_dynamic_interface -of [xit::current_scope] -name CE_CLK_OUT6 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_ce]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port6}_ce  -interface_name CE_CLK_OUT6 -logical_name CLK_OUT6_CE
+}
+
+#clk_out7_ce dynamic port
+if {(([get_property CONFIG.CLKOUT7_DRIVES [::ipxit::current_inst]] == "BUFGCE") || ([get_property CONFIG.CLKOUT7_DRIVES [::ipxit::current_inst]] == "BUFHCE") || ([get_property CONFIG.CLKOUT7_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT7_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV") || ([get_property CONFIG.CLKOUT7_DRIVES [::ipxit::current_inst]] == "Buffer_with_CE") ) && ([get_property CONFIG.CLKOUT7_USED [::ipxit::current_inst]] == "true") && ([get_property CONFIG.USE_SAFE_CLOCK_STARTUP [::ipxit::current_inst]] == "false")} {
+set port7 [get_property CONFIG.CLK_OUT7_PORT [::ipxit::current_inst]]
+set port7_ce [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port7}_ce -dir in ]
+set intf_ce [xit::add_dynamic_interface -of [xit::current_scope] -name CE_CLK_OUT7 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_ce]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port7}_ce  -interface_name CE_CLK_OUT7 -logical_name CLK_OUT7_CE
+}
+
+#clk_out1_clr dynamic port
+if {([get_property CONFIG.CLKOUT1_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT1_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV")} {
+set port1 [get_property CONFIG.CLK_OUT1_PORT [::ipxit::current_inst]]
+set port1_clr [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port1}_clr -dir in ]
+set intf_clr [xit::add_dynamic_interface -of [xit::current_scope] -name CLR_CLK_OUT1 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_clr]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port1}_clr  -interface_name CLR_CLK_OUT1 -logical_name CLK_OUT1_CLR
+}
+
+#clk_out2_clr dynamic port
+if {(([get_property CONFIG.CLKOUT2_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT2_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV")) && ([get_property CONFIG.CLKOUT2_USED [::ipxit::current_inst]] == "true")} {
+set port2 [get_property CONFIG.CLK_OUT2_PORT [::ipxit::current_inst]]
+set port2_clr [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port2}_clr -dir in ]
+set intf_clr [xit::add_dynamic_interface -of [xit::current_scope] -name CLR_CLK_OUT2 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_clr]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port2}_clr  -interface_name CLR_CLK_OUT2 -logical_name CLK_OUT2_CLR
+}
+
+#clk_out3_clr dynamic port
+if {(([get_property CONFIG.CLKOUT3_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT3_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV")) && ([get_property CONFIG.CLKOUT3_USED [::ipxit::current_inst]] == "true") && ([get_property CONFIG.USE_SPREAD_SPECTRUM [::ipxit::current_inst]] == "false")} {
+set port3 [get_property CONFIG.CLK_OUT3_PORT [::ipxit::current_inst]]
+set port3_clr [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port3}_clr -dir in ]
+set intf_clr [xit::add_dynamic_interface -of [xit::current_scope] -name CLR_CLK_OUT3 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_clr]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port3}_clr  -interface_name CLR_CLK_OUT3 -logical_name CLK_OUT3_CLR
+}
+
+#clk_out4_clr dynamic port
+if {(([get_property CONFIG.CLKOUT4_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT4_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV")) && ([get_property CONFIG.CLKOUT4_USED [::ipxit::current_inst]] == "true") && ([get_property CONFIG.USE_SPREAD_SPECTRUM [::ipxit::current_inst]] == "false")} {
+set port4 [get_property CONFIG.CLK_OUT4_PORT [::ipxit::current_inst]]
+set port4_clr [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port4}_clr -dir in ]
+set intf_clr [xit::add_dynamic_interface -of [xit::current_scope] -name CLR_CLK_OUT4 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_clr]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port4}_clr  -interface_name CLR_CLK_OUT4 -logical_name CLK_OUT4_CLR
+}
+
+#clk_out5_clr dynamic port
+if {(([get_property CONFIG.CLKOUT5_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT5_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV")) && ([get_property CONFIG.CLKOUT5_USED [::ipxit::current_inst]] == "true")} {
+set port5 [get_property CONFIG.CLK_OUT5_PORT [::ipxit::current_inst]]
+set port5_clr [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port5}_clr -dir in ]
+set intf_clr [xit::add_dynamic_interface -of [xit::current_scope] -name CLR_CLK_OUT5 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_clr]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port5}_clr  -interface_name CLR_CLK_OUT5 -logical_name CLK_OUT5_CLR
+}
+
+#clk_out6_clr dynamic port
+if {(([get_property CONFIG.CLKOUT6_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT6_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV")) && ([get_property CONFIG.CLKOUT6_USED [::ipxit::current_inst]] == "true")} {
+set port6 [get_property CONFIG.CLK_OUT6_PORT [::ipxit::current_inst]]
+set port6_clr [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port6}_clr -dir in ]
+set intf_clr [xit::add_dynamic_interface -of [xit::current_scope] -name CLR_CLK_OUT6 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_clr]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port6}_clr  -interface_name CLR_CLK_OUT6 -logical_name CLK_OUT6_CLR
+}
+
+#clk_out7_clr dynamic port
+if {(([get_property CONFIG.CLKOUT7_DRIVES [::ipxit::current_inst]] == "BUFR") || ([get_property CONFIG.CLKOUT7_DRIVES [::ipxit::current_inst]] == "BUFGCE_DIV")) && ([get_property CONFIG.CLKOUT7_USED [::ipxit::current_inst]] == "true")} {
+set port7 [get_property CONFIG.CLK_OUT7_PORT [::ipxit::current_inst]]
+set port7_clr [xit::add_dynamic_port -of [xit::current_scope] -port_name ${port7}_clr -dir in ]
+set intf_clr [xit::add_dynamic_interface -of [xit::current_scope] -name CLR_CLK_OUT7 -vlnv xilinx.com:signal:clockenable_rtl:1.0 -mode master ]
+set param [ipx::add_bus_parameter POLARITY $intf_clr]
+set_property value ACTIVE_HIGH $param
+set_property value_source constant $param
+# Map ports to it
+xit::add_port_map -of [xit::current_scope] -port_name ${port7}_clr  -interface_name CLR_CLK_OUT7 -logical_name CLK_OUT7_CLR
+}
+
+
+
+}
+update_boundary
+}

@@ -1,0 +1,31 @@
+<: setFileUsedIn { out_of_context synthesis implementation } :>
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName $ComponentName :>
+<: setFileExtension "_ooc.xdc" :>
+<: set mb_clk_not_connected [getIntValue "C_MB_CLK_NOT_CONNECTED"] :>
+<: getDisclaimer "#" :>
+
+# This constraints file contains default clock frequencies to be used during 
+# out-of-context flows such as OOC Synthesis and Hierarchical Designs. 
+# This constraints file is not used in normal top-down synthesis (the default
+# flow of Vivado).
+
+# List of all the clock needed for AXI Intc v4.1 core
+
+<: if { $mb_clk_not_connected == 0} { :>
+<:      set freq [get_property "PARAM_VALUE.C_S_AXI_ACLK_FREQ_MHZ"] :>
+<:      set period [format "%.3f" [expr 1000.0 / $freq]] :>
+create_clock -name s_axi_aclk -period <=: $period :> [get_ports s_axi_aclk] 
+set_property -quiet HD.CLK_SRC BUFGCTRL_X0Y0 [get_ports s_axi_aclk]
+<:      set freq [get_property "PARAM_VALUE.C_PROCESSOR_CLK_FREQ_MHZ"] :>
+<:      set period [format "%.3f" [expr 1000.0 / $freq]] :>
+create_clock -name processor_clk -period <=: $period :> [get_ports processor_clk]
+set_property -quiet HD.CLK_SRC BUFGCTRL_X0Y1 [get_ports processor_clk]
+<: } else { :>
+<:      set freq [get_property "PARAM_VALUE.C_S_AXI_ACLK_FREQ_MHZ"] :>
+<:      set period [format "%.3f" [expr 1000.0 / $freq]] :>
+create_clock -name s_axi_aclk -period <=: $period :> [get_ports s_axi_aclk]
+set_property -quiet HD.CLK_SRC BUFGCTRL_X0Y0 [get_ports s_axi_aclk]
+<: } :>

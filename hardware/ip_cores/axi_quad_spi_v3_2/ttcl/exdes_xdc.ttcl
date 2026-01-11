@@ -1,0 +1,331 @@
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory [ttcl_string_concat $ComponentName "/example_design"] :>
+<: setFileName "exdes" :>
+<: set wd [ file dirname [ get_property xml_file_name [ current_ipbom ] ] ] :>
+<: setFileExtension ".xdc" :>
+<: set dev_family [getProjectFamily] :>
+<: set dev_speed [getProjectSpeedGrade] :>
+<: set c_family [getStringValue "c_family"] :>
+<: set uc_family [get_property PARAM_VALUE.UC_FAMILY ] :>
+<: set start_up [get_property PARAM_VALUE.C_USE_STARTUP] :>
+<: set start_up_int [get_property PARAM_VALUE.C_USE_STARTUP_INT ] :>
+<: if {($c_family == "virtexuplus" || $c_family == "kintexuplus" || $c_family == "zynquplus" || $c_family == "zynquplusrfsoc" || $c_family == "virtexuplusHBM")} { :>
+<: set is_usp_device 1 :>
+<: } else { :>
+<: set is_usp_device 0 :>
+<: } :>
+<: if {$c_family == "kintex7" || $c_family == "virtex7" || $c_family == "zynq" || $c_family == "artix7" || $c_family == "spartan7"} { :> 
+<: set is_7s_device 1 :>
+<: } else { :>
+<: set is_7s_device 0 :>
+<: } :>
+<: set C_SCK_RATIO  [get_property MODELPARAM_VALUE.C_SCK_RATIO ] :>
+<: set Master_mode  [get_property PARAM_VALUE.Master_mode ] :>
+<: set C_DUAL_QUAD_MODE  [get_property PARAM_VALUE.C_DUAL_QUAD_MODE ] :>
+# file: exdes.xdc
+# 
+# (c) Copyright 2008 - 2023 Advanced Micro Devices, Inc. All rights reserved.
+# 
+# This file contains confidential and proprietary information
+# of Advanced Micro Devices, Inc. and is protected under U.S. and
+# international copyright and other intellectual property
+# laws.
+# 
+# DISCLAIMER
+# This disclaimer is not a license and does not grant any
+# rights to the materials distributed herewith. Except as
+# otherwise provided in a valid license issued to you by
+# AMD, and to the maximum extent permitted by applicable
+# law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+# WITH ALL FAULTS, AND AMD HEREBY DISCLAIMS ALL WARRANTIES
+# AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+# BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+# INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+# (2) AMD shall not be liable (whether in contract or tort,
+# including negligence, or under any other theory of
+# liability) for any loss or damage of any kind or nature
+# related to, arising under or in connection with these
+# materials, including for any direct, or any indirect,
+# special, incidental, or consequential loss or damage
+# (including loss of data, profits, goodwill, or any type of
+# loss or damage suffered as a result of any action brought
+# by a third party) even if such damage or loss was
+# reasonably foreseeable or AMD had been advised of the
+# possibility of the same.
+# 
+# CRITICAL APPLICATIONS
+# AMD products are not designed or intended to be fail-
+# safe, or for use in any application requiring fail-safe
+# performance, such as life-support or safety devices or
+# systems, Class III medical devices, nuclear facilities,
+# applications related to the deployment of airbags, or any
+# other applications that could lead to death, personal
+# injury, or severe property or environmental damage
+# (individually and collectively, "Critical
+# Applications"). Customer assumes the sole risk and
+# liability of any use of AMD products in Critical
+# Applications, subject only to applicable laws and
+# regulations governing limitations on product liability.
+# 
+# THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+# PART OF THIS FILE AT ALL TIMES.
+# 
+#----------------------------------------------------------------
+
+#####################################################################################################
+# The following section list the board specific constraints (with/without STARTUPE2/E3 primitive)   #
+# as per guidance given in product guide.                                                           #
+# User should update  constraints based on board delays and use                                     #
+#####################################################################################################
+#Project Device Family : <=:$dev_family:>
+#Project Device SpeedGrade : <=:$dev_speed:>
+#Project Device c_family : <=:$c_family:>
+#Project IP CONFIG uc_family : <=:$uc_family:>
+#Project IP CONFIG start_up : <=:$start_up:>
+#Project IP CONFIG start_up_int : <=:$start_up_int:>
+#Project IP CONFIG is_usp_device : <=:$is_usp_device:>
+#Project IP CONFIG is_7s_device : <=:$is_7s_device:>
+#Project IP CONFIG C_SCK_RATIO : <=:$C_SCK_RATIO:>
+#Project IP CONFIG Master_mode : <=:$Master_mode:>
+#Project IP CONFIG C_DUAL_QUAD_MODE : <=:$C_DUAL_QUAD_MODE:>
+<: if {  ($uc_family == 1) && ($start_up == 1) && ($Master_mode == 1) && ($C_SCK_RATIO == 2) } { :>
+## All the delay numbers have to be provided by the user
+
+## CCLK max delay is 6.7 ns ; refer Data sheet
+## We need to consider the max delay for worst case analysis
+set cclk_delay 6.7
+
+## Following are the worst case SPI device parameters - User should update based on Flash device used 
+## on their Board
+## Max Tco
+set tco_max 7
+## Min Tco
+set tco_min 1
+## Setup time requirement
+set tsu 2
+## Hold time requirement
+set th 3
+<: if { $is_usp_device == 1} { :>
+#####################################################################################################
+# STARTUPE3 primitive included inside IP for US+                                                             #
+#####################################################################################################
+set tdata_trace_delay_max 0.25
+set tdata_trace_delay_min 0.25
+set tclk_trace_delay_max 0.2
+set tclk_trace_delay_min 0.2
+
+create_generated_clock -name clk_sck -source [get_pins -filter {REF_PIN_NAME==ext_spi_clk} -of [get_cells -hier -filter {REF_NAME=~<=:$ComponentName:>}]] [get_pins -hierarchical */CCLK] -edges {3 5 7}
+set_input_delay -clock clk_sck -max [expr $tco_max + $tdata_trace_delay_max + $tclk_trace_delay_max] [get_pins -hierarchical *STARTUP*/DATA_IN[*]] -clock_fall;
+set_input_delay -clock clk_sck -min [expr $tco_min + $tdata_trace_delay_min + $tclk_trace_delay_min] [get_pins -hierarchical *STARTUP*/DATA_IN[*]] -clock_fall;
+set_multicycle_path 2 -setup -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
+set_multicycle_path 1 -hold -end -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
+set_output_delay -clock clk_sck -max [expr $tsu + $tdata_trace_delay_max - $tclk_trace_delay_min] [get_pins -hierarchical *STARTUP*/DATA_OUT[*]];
+set_output_delay -clock clk_sck -min [expr $tdata_trace_delay_min -$th - $tclk_trace_delay_max] [get_pins -hierarchical *STARTUP*/DATA_OUT[*]];
+set_multicycle_path 2 -setup -start -from [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] -to clk_sck
+set_multicycle_path 1 -hold -from [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] -to clk_sck
+<: } else { :>
+#####################################################################################################
+# STARTUPE3 primitive included inside IP for US                                                             #
+#####################################################################################################
+## All the delay numbers have to be provided by the user
+ 
+## CCLK delay is 0.1, 6.7 ns min/max for ultra-scale devices; refer Data sheet
+## Consider the max delay for worst case analysis
+set cclk_delay 6.7
+##create_generated_clock -name clk_sck -source [get_pins -hierarchical *DUT/ext_spi_clk] -edges {3 5 7} -edge_shift [list $cclk_delay $cclk_delay $cclk_delay] [get_pins -hierarchical *USRCCLKO]
+create_generated_clock -name clk_sck -source [get_pins -filter {REF_PIN_NAME==ext_spi_clk} -of [get_cells -hier -filter {REF_NAME=~<=:$ComponentName:>}]] -edges {3 5 7} -edge_shift [list $cclk_delay $cclk_delay $cclk_delay] [get_pins -hierarchical *USRCCLKO]
+
+set_multicycle_path -setup -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] 2
+set_multicycle_path -hold -end -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] 1
+set_multicycle_path -setup -start -from [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] -to clk_sck 2
+set_multicycle_path -hold -from [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] -to clk_sck 1
+
+<: } :>
+
+<: if {($C_DUAL_QUAD_MODE == 1) } { :>
+# Data is captured into FPGA on the second rising edge of ext_spi_clk after the SCK
+falling edge
+# Data is driven by the FPGA on every alternate rising_edge of ext_spi_clk
+set_input_delay -clock clk_sck -max [expr $tco_max + $tdata_trace_delay_max + $tclk_trace_delay_max] [get_ports IO*_1_IO] -clock_fall;
+set_input_delay -clock clk_sck -min [expr $tco_min + $tdata_trace_delay_min + $tclk_trace_delay_min] [get_ports IO*_1_IO] -clock_fall;
+# Data is captured into SPI on the following rising edge of SCK
+# Data is driven by the IP on alternate rising_edge of the ext_spi_clk
+set_output_delay -clock clk_sck -max [expr $tsu + $tdata_trace_delay_max - $tclk_trace_delay_min] [get_ports IO*_1_IO];
+set_output_delay -clock clk_sck -min [expr $tdata_trace_delay_min - $th - $tclk_trace_delay_max] [get_ports IO*_1_IO];
+<: } :>
+<: } elseif { ($is_7s_device == 1) && ($start_up == 1) && ($Master_mode == 1) && ($C_SCK_RATIO == 2) } { :>
+#####################################################################################################
+# STARTUPE2 primitive included inside IP                                                            #
+#####################################################################################################
+
+## All the delay numbers have to be provided by the user
+
+## CCLK delay is 0.5, 6.7 ns min/max for K7-2; refer Data sheet
+## Consider the max delay for worst case analysis
+set cclk_delay 6.7
+
+## Following are the worst case SPI device parameters - User should update based on Flash device used 
+## on their Board
+## Max Tco
+set tco_max 7
+## Min Tco
+set tco_min 1
+## Setup time requirement
+set tsu 2
+## Hold time requirement
+set th 3
+ 
+ 
+## Following are the board/trace delay numbers
+## Assumption is that all Data lines are matched
+set tdata_trace_delay_max 0.25
+set tdata_trace_delay_min 0.25
+set tclk_trace_delay_max 0.2
+set tclk_trace_delay_min 0.2
+### End of user provided delay numbers
+
+## This is to ensure min routing delay from SCK generation to STARTUP input
+## User should change this value based on the results having more delay on this net reduces the Fmax
+set_max_delay 1.5 -from [get_pins -hier *SCK_O_reg_reg/C] -to [get_pins -hier *USRCCLKO] -datapath_only
+set_min_delay 0.1 -from [get_pins -hier *SCK_O_reg_reg/C] -to [get_pins -hier *USRCCLKO]
+
+## Following command creates a divide by 2 clock
+## It also takes into account the delay added by STARTUP block to route the CCLK
+create_generated_clock -name clk_sck -source [get_pins -filter {REF_PIN_NAME==ext_spi_clk} -of [get_cells -hier -filter {REF_NAME=~<=:$ComponentName:>}]] [get_pins -hierarchical *USRCCLKO] -edges {3 5 7} -edge_shift [list $cclk_delay $cclk_delay $cclk_delay]
+
+## Data is captured into FPGA on the second rising edge of ext_spi_clk after the SCK falling edge
+## Data is driven by the FPGA on every alternate rising_edge of ext_spi_clk
+set_input_delay -clock clk_sck -max [expr $tco_max + $tdata_trace_delay_max + $tclk_trace_delay_max] [get_ports IO*_IO] -clock_fall;
+set_input_delay -clock clk_sck -min [expr $tco_min + $tdata_trace_delay_min + $tclk_trace_delay_min] [get_ports IO*_IO] -clock_fall;
+set_multicycle_path 2 -setup -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
+set_multicycle_path 1 -hold -end -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
+
+## Data is captured into SPI on the following rising edge of SCK
+## Data is driven by the IP on alternate rising_edge of the ext_spi_clk
+set_output_delay -clock clk_sck -max [expr $tsu + $tdata_trace_delay_max - $tclk_trace_delay_min] [get_ports IO*_IO];
+set_output_delay -clock clk_sck -min [expr $tdata_trace_delay_min -$th - $tclk_trace_delay_max] [get_ports IO*_IO];
+set_multicycle_path 2 -setup -start -from [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] -to clk_sck
+set_multicycle_path 1 -hold -from [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] -to clk_sck
+
+<: } elseif { ($start_up == 0) && ($Master_mode == 1) && ($C_SCK_RATIO == 2) } { :>
+## All the delay numbers have to be provided by the user
+
+
+## Following are the worst case SPI device parameters - User should update based on Flash device used 
+## on their Board
+## Max Tco
+set tco_max 7
+## Min Tco
+set tco_min 1
+## Setup time requirement
+set tsu 2
+## Hold time requirement
+set th 3
+
+## Following are the board/trace delay numbers
+## Assumption is that all Data lines are matched
+set tdata_trace_delay_max 0.25
+set tdata_trace_delay_min 0.25
+set tclk_trace_delay_max 0.2
+set tclk_trace_delay_min 0.2
+
+### End of user provided delay numbers
+create_generated_clock -name clk_sck -source [get_pins -filter {REF_PIN_NAME==ext_spi_clk} -of [get_cells -hier -filter {REF_NAME=~<=:$ComponentName:>}]] [get_ports SCK_IO] -edges {3 5 7}
+
+## Data is captured into FPGA on the second rising edge of ext_spi_clk after the SCK falling edge
+## Data is driven by the FPGA on every alternate rising_edge of ext_spi_clk
+set_input_delay -clock clk_sck -max [expr $tco_max + $tdata_trace_delay_max + $tclk_trace_delay_max] [get_ports IO*_IO] -clock_fall;
+set_input_delay -clock clk_sck -min [expr $tco_min + $tdata_trace_delay_min + $tclk_trace_delay_min] [get_ports IO*_IO] -clock_fall;
+set_multicycle_path 2 -setup -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
+set_multicycle_path 1 -hold -end -from clk_sck -to [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]]
+
+## Data is captured into SPI on the following rising edge of SCK
+## Data is driven by the IP on alternate rising_edge of the ext_spi_clk
+set_output_delay -clock clk_sck -max [expr $tsu + $tdata_trace_delay_max - $tclk_trace_delay_min] [get_ports IO*_IO];
+set_output_delay -clock clk_sck -min [expr $tdata_trace_delay_min - $th - $tclk_trace_delay_max] [get_ports IO*_IO];
+set_multicycle_path 2 -setup -start -from [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] -to clk_sck
+set_multicycle_path 1 -hold -from [get_clocks -of_objects [get_pins -hierarchical */ext_spi_clk]] -to clk_sck
+<: }  else {  :>
+## user need to use a PG153 with correct constraints with respect to GPIO pins.
+<: } :>
+
+#create_clock -name clk_p -period 5.0 [get_ports clk_p]
+
+# Following are the IO pins for KC705 board
+
+#set_property LOC AD11 [ get_ports clk_n]
+#set_property IOSTANDARD DIFF_SSTL15 [ get_ports clk_n]
+#set_property LOC AD12 [ get_ports clk_p]
+#set_property IOSTANDARD DIFF_SSTL15 [ get_ports clk_p]
+#
+#set_property LOC AB7 [ get_ports reset]
+#set_property IOSTANDARD LVCMOS15 [ get_ports reset]
+#
+#
+#set_property LOC F16 [ get_ports atg_done]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_done]
+#
+#set_property LOC E18 [ get_ports atg_status[0]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[0]]
+#set_property LOC G19 [ get_ports atg_status[1]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[1]]
+#set_property LOC E19 [ get_ports atg_status[2]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[2]]
+#set_property LOC E20 [ get_ports atg_status[3]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[3]]
+#set_property LOC E21 [ get_ports atg_status[4]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[4]]
+#set_property LOC E23 [ get_ports atg_status[5]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[5]]
+#set_property LOC E24 [ get_ports atg_status[6]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[6]]
+#set_property LOC E25 [ get_ports atg_status[7]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[7]]
+#set_property LOC E26 [ get_ports atg_status[8]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[8]]
+#set_property LOC E28 [ get_ports atg_status[9]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[9]]
+#set_property LOC E29 [ get_ports atg_status[10]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[10]]
+#set_property LOC E30 [ get_ports atg_status[11]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[11]]
+#set_property LOC F11 [ get_ports atg_status[12]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[12]]
+#set_property LOC F12 [ get_ports atg_status[13]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[13]]
+#set_property LOC F13 [ get_ports atg_status[14]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[14]]
+#set_property LOC F15 [ get_ports atg_status[15]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[15]]
+#set_property LOC F17 [ get_ports atg_status[16]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[16]]
+#set_property LOC F18 [ get_ports atg_status[17]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[17]]
+#set_property LOC F20 [ get_ports atg_status[18]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[18]]
+#set_property LOC F21 [ get_ports atg_status[19]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[19]]
+#set_property LOC F22 [ get_ports atg_status[20]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[20]]
+#set_property LOC F23 [ get_ports atg_status[21]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[21]]
+#set_property LOC F25 [ get_ports atg_status[22]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[22]]
+#set_property LOC F26 [ get_ports atg_status[23]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[23]]
+#set_property LOC F27 [ get_ports atg_status[24]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[24]]
+#set_property LOC F28 [ get_ports atg_status[25]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[25]]
+#set_property LOC F30 [ get_ports atg_status[26]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[26]]
+#set_property LOC G13 [ get_ports atg_status[27]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[27]]
+#set_property LOC G12 [ get_ports atg_status[28]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[28]]
+#set_property LOC G14 [ get_ports atg_status[29]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[29]]
+#set_property LOC G15 [ get_ports atg_status[30]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[30]]
+#set_property LOC G17 [ get_ports atg_status[31]]
+#set_property IOSTANDARD LVCMOS25 [ get_ports atg_status[31]]

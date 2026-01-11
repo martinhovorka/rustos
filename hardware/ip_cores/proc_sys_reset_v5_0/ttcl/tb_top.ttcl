@@ -1,0 +1,188 @@
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory [ttcl_add $ComponentName "/simulation"] :>
+<: setFileName [ttcl_add $ComponentName "_top_tb"] :>
+<: setFileExtension ".vhd" :>
+<: set family [getStringValue "C_FAMILY"] :>
+<: set ext_rst_width [getIntValue "C_EXT_RST_WIDTH"] :>
+<: set aux_rst_width [getIntValue "C_AUX_RST_WIDTH"] :>
+<: set ext_rst_high [getIntValue "C_EXT_RESET_HIGH"] :>
+<: set aux_rst_high [getIntValue "C_AUX_RESET_HIGH"] :>
+<: set num_bus_rst [getIntValue "C_NUM_BUS_RST"] :>
+<: set num_perp_rst [getIntValue "C_NUM_PERP_RST"] :>
+<: set num_bus_rstn [getIntValue "C_NUM_INTERCONNECT_ARESETN"] :>
+<: set num_perp_rstn [getIntValue "C_NUM_PERP_ARESETN"] :>
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_misc.all;
+
+entity <=: ComponentName:>_top_tb is
+
+end entity;
+
+architecture tb of <=: ComponentName:>_top_tb is
+  component <=: ComponentName:>_exdes is
+       port (
+        clk_in                    : in std_logic;
+        debug_rst_active_detect   : out std_logic;
+        debug_rst_inactive_detect : out std_logic;
+        ext_rst_active_detect     : out std_logic;
+        ext_rst_inactive_detect   : out std_logic;
+        aux_rst_active_detect     : out std_logic;
+        aux_rst_inactive_detect   : out std_logic;
+        test_done                 : out std_logic;
+        error_detected            : out std_logic;
+        timeout_reached           : out std_logic;
+        local_dcm_locked          : in std_logic
+    );
+  end component;
+
+-- local signals
+signal local_clk_in : std_logic := '0';
+signal local_debug_rst_active_detect : std_logic;
+signal local_debug_rst_inactive_detect : std_logic;
+signal local_ext_rst_active_detect : std_logic;
+signal local_ext_rst_inactive_detect : std_logic;
+signal local_aux_rst_active_detect : std_logic;
+signal local_aux_rst_inactive_detect : std_logic;
+signal local_test_done : std_logic;
+signal local_error_detected : std_logic;
+signal local_timeout_reached : std_logic;
+signal dcm_locked : std_logic := '0';
+signal dcm_locked1 : std_logic := '0';
+
+-----
+begin
+-----
+   ----------------------------------------------
+   -- PROCESS_CLK_GEN_P: generate the clock with 100 Mhz
+   PROCESS_CLK_GEN_P: process
+   -----
+   begin
+   -----
+       wait for 3 ns;
+--       local_clk_in <= not local_clk_in;
+if (dcm_locked1 = '1') then
+       local_clk_in <= not local_clk_in;
+       end if;
+
+   end process PROCESS_CLK_GEN_P;
+
+dcm_locked1 <= '1' after 50 ns;
+dcm_locked <= '1' after 100 ns;
+
+
+------------------------------------------------------------------
+-- PROCESS_DBG_ACTIVE: below process is for the test completion
+PROCESS_DBG_ACTIVE:process (local_debug_rst_active_detect)
+-----
+begin
+-----
+        if (local_debug_rst_active_detect = '1') then
+                report "Active Reset observed on Debug Reset, Resets will be generated now" severity NOTE;
+        end if;
+end process PROCESS_DBG_ACTIVE;
+------------------------------------------------------------------
+-- PROCESS_DBG_INACTIVE: below process is for the test completion
+PROCESS_DBG_INACTIVE:process (local_debug_rst_inactive_detect)
+-----
+begin
+-----
+        if (local_debug_rst_inactive_detect = '1') then
+                report "A Giltch has been detected on Debug Reset port IP will be ignoring this" severity NOTE;
+        end if;
+end process PROCESS_DBG_INACTIVE;
+------------------------------------------------------------------
+------------------------------------------------------------------
+-- PROCESS_DBG_ACTIVE: below process is for the test completion
+PROCESS_EXT_ACTIVE:process (local_ext_rst_active_detect)
+-----
+begin
+-----
+        if (local_ext_rst_active_detect = '1') then
+                report "Active Reset observed on External Reset, Resets will be generated now" severity NOTE;
+        end if;
+end process PROCESS_EXT_ACTIVE;
+------------------------------------------------------------------
+-- PROCESS_DBG_INACTIVE: below process is for the test completion
+PROCESS_EXT_INACTIVE:process (local_ext_rst_inactive_detect)
+-----
+begin
+-----
+        if (local_ext_rst_inactive_detect = '1') then
+                report "A Giltch has been detected on External Reset port IP will be ignoring this" severity NOTE;
+        end if;
+end process PROCESS_EXT_INACTIVE;
+------------------------------------------------------------------
+------------------------------------------------------------------
+-- PROCESS_DBG_ACTIVE: below process is for the test completion
+PROCESS_AUX_ACTIVE:process (local_aux_rst_active_detect)
+-----
+begin
+-----
+        if (local_aux_rst_active_detect = '1') then
+                report "Active Reset observed on Auxilary Reset, Resets will be generated now" severity NOTE;
+        end if;
+end process PROCESS_AUX_ACTIVE;
+------------------------------------------------------------------
+-- PROCESS_DBG_INACTIVE: below process is for the test completion
+PROCESS_AUX_INACTIVE:process (local_aux_rst_inactive_detect)
+-----
+begin
+-----
+        if (local_aux_rst_inactive_detect = '1') then
+                report "A Giltch has been detected on Auxilary Reset port IP will be ignoring this" severity NOTE;
+        end if;
+end process PROCESS_AUX_INACTIVE;
+------------------------------------------------------------------
+------------------------------------------------------------------
+-- PROCESS_ERROR_OUT: below process is for the test completion
+PROCESS_ERROR_OUT:process (local_error_detected)
+-----
+begin
+-----
+        if (local_error_detected = '1' and local_error_detected'event) then
+                report "An ERROR occured" severity FAILURE;
+        end if;
+end process PROCESS_ERROR_OUT;
+------------------------------------------------------------------
+------------------------------------------------------------------
+-- PROCESS_TB_FINISH: below process is for the test completion
+PROCESS_TB_FINISH:process (local_test_done)
+-----
+begin
+-----
+        if (local_test_done = '1' and local_test_done'event) then
+                report "Test Completed Successfully" severity FAILURE;
+        end if;
+end process PROCESS_TB_FINISH;
+------------------------------------------------------------------
+------------------------------------------------------------------
+-- PROCESS_TIME_OUT: below process is for the test completion
+PROCESS_TIME_OUT:process (local_timeout_reached)
+-----
+begin
+-----
+        if (local_timeout_reached = '1') then
+                report "Testbench Timed Out" severity FAILURE;
+        end if;
+end process PROCESS_TIME_OUT;
+------------------------------------------------------------------
+EXDES:<=: ComponentName:>_exdes
+   port map (
+        clk_in                   => local_clk_in,
+        debug_rst_active_detect  => local_debug_rst_active_detect,
+        debug_rst_inactive_detect=> local_debug_rst_inactive_detect,
+        ext_rst_active_detect    => local_ext_rst_active_detect,
+        ext_rst_inactive_detect  => local_ext_rst_inactive_detect,
+        aux_rst_active_detect    => local_aux_rst_active_detect,
+        aux_rst_inactive_detect  => local_aux_rst_inactive_detect,
+        test_done                => local_test_done,
+        error_detected           => local_error_detected,
+        timeout_reached          => local_timeout_reached,
+        local_dcm_locked         => dcm_locked
+
+   );
+
+end tb;

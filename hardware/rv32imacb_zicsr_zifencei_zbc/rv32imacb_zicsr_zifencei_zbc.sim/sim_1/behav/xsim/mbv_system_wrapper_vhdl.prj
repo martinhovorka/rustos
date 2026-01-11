@@ -1,0 +1,32 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/sim/mbv_system_microblaze_riscv_0_0.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_dlmb_v10_1/sim/mbv_system_dlmb_v10_1.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_ilmb_v10_1/sim/mbv_system_ilmb_v10_1.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_dlmb_bram_if_cntlr_1/sim/mbv_system_dlmb_bram_if_cntlr_1.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_ilmb_bram_if_cntlr_1/sim/mbv_system_ilmb_bram_if_cntlr_1.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_lmb_bram_1/mbv_system_lmb_bram_1_sim_netlist.vhdl" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/mbv_system_mbv_riscv_axi_periph_1_sim_netlist.vhdl" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_intc_1/sim/mbv_system_mbv_riscv_axi_intc_1.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_mdm_1_1/sim/mbv_system_mdm_1_1.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1_sim_netlist.vhdl" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_rst_clk_wiz_1_100M_1/sim/mbv_system_rst_clk_wiz_1_100M_1.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_fit_timer_0_0/sim/mbv_system_fit_timer_0_0.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_timebase_wdt_0_0/sim/mbv_system_axi_timebase_wdt_0_0.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_uartlite_0_0/sim/mbv_system_axi_uartlite_0_0.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0_sim_netlist.vhdl" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_gpio_0_0/sim/mbv_system_axi_gpio_0_0.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_gpio_0_1/sim/mbv_system_axi_gpio_0_1.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_gpio_0_2/sim/mbv_system_axi_gpio_0_2.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_gpio_0_3/sim/mbv_system_axi_gpio_0_3.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_gpio_0_4/sim/mbv_system_axi_gpio_0_4.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_gpio_0_5/sim/mbv_system_axi_gpio_0_5.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/sim/mbv_system_axi_ethernetlite_0_0.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/sim/mbv_system.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1_sim_netlist.vhdl" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_iic_0_0/sim/mbv_system_axi_iic_0_0.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.ip_user_files/bd/mbv_system/ip/mbv_system_axi_gpio_0_6/sim/mbv_system_axi_gpio_0_6.vhd" \
+"../../../../rv32imafcb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd" \
+
+# Do not sort compile order
+nosort

@@ -1,0 +1,997 @@
+<: ;#------------------------ :>
+<: ;#specific core variables :>
+<: ;#------------------------ :>
+<: ;#Overall selections :>
+<: ;#----------------------- :>
+<:proc dec2bin_wid {i {width {}}} { :>
+<:    set ares {}  :>
+<:    if {$i<0} { :>
+<:       set sign - :>
+<:        set i [expr {abs($i)}] :>
+<:    } else { :>
+<:        set sign {} :>
+<:    } :>
+<:    while {$i>0} { :>
+<:        set ares [expr {$i%2}]$ares :>
+<:        set i [expr {$i/2}] :>
+<:    } :>
+<:    if {$ares == {}} {set ares 0} :>
+<:    if {$width != {}} { :>
+<:        append d [string repeat 0 $width] $ares :>
+<:        set ares [string range $d [string length $ares] end] :>
+<:    } :>
+<:    return $sign$ares :>
+<:} :>
+
+<: set c_xdevicefamily [getProjectFamily] :>
+<: set c_family [getProjectFamily] :>
+<: set DEVICE [getProjectDevice] :>
+<: set PACKAGE [getProjectPackage] :>
+<: set SPEEDGRADE [getProjectSpeedGrade] :>
+<: ;#virtex7 edit --ACTION: o: aa100109:  defaults to V6 for now :>
+<: set is_pele [expr {( [string equal -nocase $c_family "zynq"] || [string equal -nocase $c_family "azynq"] || [string equal -nocase $c_family "qzynq"] )?true:false}]  :>
+<: set is_v7 [expr {( [string equal -nocase $c_family "virtex7"] || [string equal -nocase $c_family "kintex7"] || [string equal -nocase $c_family "spartan7"] || [string equal -nocase $c_family "aspartan7"]|| [string equal -nocase $c_family "virtex7l"] || [string equal -nocase $c_family "kintex7l"] || [string equal -nocase $c_family "artix7"] || [string equal -nocase $c_family "artix7l"] || [string equal -nocase $c_family "qvirtex7"] || [string equal -nocase $c_family "qkintex7"] || [string equal -nocase $c_family "qvirtex7l"] || [string equal -nocase $c_family "qkintex7l"] || [string equal -nocase $c_family "qartix7"] || [string equal -nocase $c_family "aartix7"] || [string equal -nocase $c_family "akintex7"] || $is_pele)?true:false}]  :>
+<: set is_v8 [expr {( [string equal -nocase $c_family "virtexu"] || [string equal -nocase $c_family "virtexuplus"] || [string equal -nocase $c_family "virtexuplusHBM"] || [string equal -nocase $c_family "virtexuplus58g"] || [string equal -nocase $c_family "kintexuplus"] || [string equal -nocase $c_family "artixuplus"] || [string equal -nocase $c_family "zynquplus"]  || [string equal -nocase $c_family "spartanuplus"] )?true:false}]  :>
+<: set is_k8 [expr {( [string equal -nocase $c_family "kintexu"] )?true:false}]  :>
+<: set C_PLATFORM [getStringValue "C_PLATFORM"] :>
+<: set flowvendor [getProjectFlowVendor] :>
+<: set PRIMTYPE_SEL [getStringValue "C_PRIMTYPE_SEL"] :>
+<: set sel_PRIMITIVE [getStringValue "C_PRIMITIVE"] :>
+<: set Auto_primitive [getStringValue "C_AUTO_PRIMITIVE"] :>
+<: set divide1 [getStringValue "C_DIVIDE1_AUTO"] :>
+<: set divide2 [getStringValue "C_DIVIDE2_AUTO"] :>
+<: set divide3 [getStringValue "C_DIVIDE3_AUTO"] :>
+<: set divide4 [getStringValue "C_DIVIDE4_AUTO"] :>
+<: set divide5 [getStringValue "C_DIVIDE5_AUTO"] :>
+<: set divide6 [getStringValue "C_DIVIDE6_AUTO"] :>
+<: set divide7 [getStringValue "C_DIVIDE7_AUTO"] :>
+<: if { [string equal -nocase $sel_PRIMITIVE "Auto"]}  {  :>
+<: set PRIMITIVE [getStringValue "C_AUTO_PRIMITIVE"] :>
+<: } else  { :>
+<: set PRIMITIVE [getStringValue "C_PRIMITIVE"] :>
+<: } :>
+<: set pllbufgcediv [getStringValue "C_PLLBUFGCEDIV"] :>
+<: set pllbufgcediv1 [getStringValue "C_PLLBUFGCEDIV1"] :>
+<: set pllbufgcediv2 [getStringValue "C_PLLBUFGCEDIV2"] :>
+<: set pllbufgcediv3 [getStringValue "C_PLLBUFGCEDIV3"] :>
+<: set pllbufgcediv4 [getStringValue "C_PLLBUFGCEDIV4"] :>
+<: set mmcmbufgcediv [getStringValue "C_MMCMBUFGCEDIV"] :>
+<: set mmcmbufgcediv1 [getStringValue "C_MMCMBUFGCEDIV1"] :>
+<: set mmcmbufgcediv2 [getStringValue "C_MMCMBUFGCEDIV2"] :>
+<: set mmcmbufgcediv3 [getStringValue "C_MMCMBUFGCEDIV3"] :>
+<: set mmcmbufgcediv4 [getStringValue "C_MMCMBUFGCEDIV4"] :>
+<: set mmcmbufgcediv5 [getStringValue "C_MMCMBUFGCEDIV5"] :>
+<: set mmcmbufgcediv6 [getStringValue "C_MMCMBUFGCEDIV6"] :>
+<: set mmcmbufgcediv7 [getStringValue "C_MMCMBUFGCEDIV7"] :>
+<: set list_pllbufg "" :>
+<: if {$pllbufgcediv1 == "false"} { :>
+<: lappend list_pllbufg "1"  :>
+<: } :>
+<: if {$pllbufgcediv2 == "false"} { :>
+<: lappend list_pllbufg "2"  :>
+<: } :>
+<: if {$pllbufgcediv3 == "false"} { :>
+<: lappend list_pllbufg "3"  :>
+<: } :>
+<: if {$pllbufgcediv4 == "false"} { :>
+<: lappend list_pllbufg "4"  :>
+<: } :>
+<: set pllbufg1 [lindex $list_pllbufg 0]  :>
+<: set pllbufg2 [lindex $list_pllbufg 1]  :>
+<: set pllbufg2_1 [expr $pllbufg2 - 1]  :>
+<: set length [llength $list_pllbufg]   :>
+<: if  { $length >= 2} { :>
+<: set list_pllbufg2 true  :>
+<: } else  { :>
+<: set list_pllbufg2 false  :>
+<: } :>
+<: set xdevice [getProjectDevice] :>
+<: set xpackage [getProjectPackage] :>
+<: set xspeedgrade [getProjectSpeedGrade] :>
+<: set wd [ file dirname [ get_property xml_file_name [ current_ipbom ] ] ] :>
+<: ;#----------------------- :>
+<: ;#Direct DRP Parameters :>
+<: ;#----------------------- :>
+<: set axi_drp [get_property PARAM_VALUE.AXI_DRP] :>
+<: set C_POWER_REG [getStringValue "C_POWER_REG"] :>
+<: set C_CLKOUT0_1 [getStringValue "C_CLKOUT0_1"] :>
+<: set C_CLKOUT0_2 [getStringValue "C_CLKOUT0_2"] :>
+<: set C_CLKOUT1_1 [getStringValue "C_CLKOUT1_1"] :>
+<: set C_CLKOUT1_2 [getStringValue "C_CLKOUT1_2"] :>
+<: set C_CLKOUT2_1 [getStringValue "C_CLKOUT2_1"] :>
+<: set C_CLKOUT2_2 [getStringValue "C_CLKOUT2_2"] :>
+<: set C_CLKOUT3_1 [getStringValue "C_CLKOUT3_1"] :>
+<: set C_CLKOUT3_2 [getStringValue "C_CLKOUT3_2"] :>
+<: set C_CLKOUT4_1 [getStringValue "C_CLKOUT4_1"] :>
+<: set C_CLKOUT4_2 [getStringValue "C_CLKOUT4_2"] :>
+<: set C_CLKOUT5_1 [getStringValue "C_CLKOUT5_1"] :>
+<: set C_CLKOUT5_2 [getStringValue "C_CLKOUT5_2"] :>
+<: set C_CLKOUT6_1 [getStringValue "C_CLKOUT6_1"] :>
+<: set C_CLKOUT6_2 [getStringValue "C_CLKOUT6_2"] :>
+<: set C_DIVCLK [getStringValue "C_DIVCLK"] :>
+<: set C_CLKFBOUT_1 [getStringValue "C_CLKFBOUT_1"] :>
+<: set C_CLKFBOUT_2 [getStringValue "C_CLKFBOUT_2"] :>
+<: set C_Lock_1 [getStringValue "C_LOCK_1"] :>
+<: set C_Lock_2 [getStringValue "C_LOCK_2"] :>
+<: set C_Lock_3 [getStringValue "C_LOCK_3"] :>
+<: set C_Filter_1 [getStringValue "C_FILTER_1"] :>
+<: set C_Filter_2 [getStringValue "C_FILTER_2"] :>
+<: ;#----------------------- :>
+<: ;#Clock Monitor Parameters :>
+<: ;#----------------------- :>
+<: set C_ENABLE_CLOCK_MONITOR [getStringValue "C_ENABLE_CLOCK_MONITOR"] :>
+<: set C_PRECISION [getStringValue "C_PRECISION"] :>
+<: set C_REF_CLK_FREQ [getStringValue "C_REF_CLK_FREQ"] :>
+<: set REF_CLK_PERIOD [expr { 1000/$C_REF_CLK_FREQ }  ] :>
+<: set C_Enable_PLL0 [getStringValue "C_Enable_PLL0"] :>
+<: set C_Enable_PLL1 [getStringValue "C_Enable_PLL1"] :>
+<: set C_ENABLE_USER_CLOCK0 [getStringValue "C_ENABLE_USER_CLOCK0"] :>
+<: set C_ENABLE_USER_CLOCK1 [getStringValue "C_ENABLE_USER_CLOCK1"] :>
+<: set C_ENABLE_USER_CLOCK2 [getStringValue "C_ENABLE_USER_CLOCK2"] :>
+<: set C_ENABLE_USER_CLOCK3 [getStringValue "C_ENABLE_USER_CLOCK3"] :>
+<: set C_USER_CLK_FREQ0 [getStringValue "C_USER_CLK_FREQ0"] :>
+<: set C_USER_CLK0_PERIOD [expr { 1000/$C_USER_CLK_FREQ0 }  ] :>
+<: set C_USER_CLK_FREQ1 [getStringValue "C_USER_CLK_FREQ1"] :>
+<: set C_USER_CLK1_PERIOD [expr { 1000/$C_USER_CLK_FREQ1 }  ] :>
+<: set C_USER_CLK_FREQ2 [getStringValue "C_USER_CLK_FREQ2"] :>
+<: set C_USER_CLK2_PERIOD [expr { 1000/$C_USER_CLK_FREQ2 }  ] :>
+<: set C_USER_CLK_FREQ3 [getStringValue "C_USER_CLK_FREQ3"] :>
+<: set C_USER_CLK3_PERIOD [expr { 1000/$C_USER_CLK_FREQ3 }  ] :>
+<: if { $C_USER_CLK_FREQ0 > $C_USER_CLK_FREQ1 }  {  :>
+<: set max_user_clk_01 $C_USER_CLK_FREQ0  :>
+<: } else  { :>
+<: set max_user_clk_01 $C_USER_CLK_FREQ1  :>
+<: } :>
+<: if { $C_USER_CLK_FREQ2 > $C_USER_CLK_FREQ3 }  {  :>
+<: set max_user_clk_12 $C_USER_CLK_FREQ2  :>
+<: } else  { :>
+<: set max_user_clk_12 $C_USER_CLK_FREQ3  :>
+<: } :>
+<: if { $max_user_clk_01 > $max_user_clk_12 }  {  :>
+<: set max_user_clk_value $max_user_clk_01  :>
+<: } else  { :>
+<: set max_user_clk_value $max_user_clk_12  :>
+<: } :>
+<: set calc_value [expr { $max_user_clk_value * 320.0/$C_REF_CLK_FREQ/$C_PRECISION }  ] :>
+<: set calc_value_log [expr {log($calc_value)/log(2) } ] :>
+<: set C_COUNTER1_WIDTH_ceil [expr { ceil($calc_value_log) + 2 }  ] :>
+<: set C_COUNTER1_WIDTH_int [expr { int($C_COUNTER1_WIDTH_ceil) }  ] :>
+<: if { $C_COUNTER1_WIDTH_int > 5 }  {  :>
+<: set C_COUNTER1_WIDTH $C_COUNTER1_WIDTH_int  :>
+<: } else  { :>
+<: set C_COUNTER1_WIDTH 5  :>
+<: } :>
+<: set calc_value1_st [expr { $C_USER_CLK_FREQ0 * 320.0/$C_REF_CLK_FREQ/$C_PRECISION }  ] :>
+<: set calc_value_log1_st [expr {log($calc_value1_st)/log(2) } ] :>
+<: set C_COUNTER1_WIDTH_ceil_st [expr { ceil($calc_value_log1_st) + 2 }  ] :>
+<: set C_COUNTER1_WIDTH_int_st [expr { int($C_COUNTER1_WIDTH_ceil_st) }  ] :>
+<: if { $C_COUNTER1_WIDTH_int_st > 5 }  {  :>
+<: set C_COUNTER1_WIDTH_STOP $C_COUNTER1_WIDTH_int_st  :>
+<: } else  { :>
+<: set C_COUNTER1_WIDTH_STOP 5  :>
+<: } :>
+<: set calc_value2_st [expr { $C_USER_CLK_FREQ1 * 320.0/$C_REF_CLK_FREQ/$C_PRECISION }  ] :>
+<: set calc_value_log2_st [expr {log($calc_value2_st)/log(2) } ] :>
+<: set C_COUNTER2_WIDTH_ceil_st [expr { ceil($calc_value_log2_st) + 2 }  ] :>
+<: set C_COUNTER2_WIDTH_int_st [expr { int($C_COUNTER2_WIDTH_ceil_st) }  ] :>
+<: if { $C_COUNTER2_WIDTH_int_st > 5 }  {  :>
+<: set C_COUNTER2_WIDTH_STOP $C_COUNTER2_WIDTH_int_st  :>
+<: } else  { :>
+<: set C_COUNTER2_WIDTH_STOP 5  :>
+<: } :>
+<: set calc_value3_st [expr { $C_USER_CLK_FREQ2 * 320.0/$C_REF_CLK_FREQ/$C_PRECISION }  ] :>
+<: set calc_value_log3_st [expr {log($calc_value3_st)/log(2) } ] :>
+<: set C_COUNTER3_WIDTH_ceil_st [expr { ceil($calc_value_log3_st) + 2 }  ] :>
+<: set C_COUNTER3_WIDTH_int_st [expr { int($C_COUNTER3_WIDTH_ceil_st) }  ] :>
+<: if { $C_COUNTER3_WIDTH_int_st > 5 }  {  :>
+<: set C_COUNTER3_WIDTH_STOP $C_COUNTER3_WIDTH_int_st  :>
+<: } else  { :>
+<: set C_COUNTER3_WIDTH_STOP 5  :>
+<: } :>
+<: set calc_value4_st [expr { $C_USER_CLK_FREQ3 * 320.0/$C_REF_CLK_FREQ/$C_PRECISION }  ] :>
+<: set calc_value_log4_st [expr {log($calc_value4_st)/log(2) } ] :>
+<: set C_COUNTER4_WIDTH_ceil_st [expr { ceil($calc_value_log4_st) + 2 }  ] :>
+<: set C_COUNTER4_WIDTH_int_st [expr { int($C_COUNTER4_WIDTH_ceil_st) }  ] :>
+<: if { $C_COUNTER4_WIDTH_int_st > 5 }  {  :>
+<: set C_COUNTER4_WIDTH_STOP $C_COUNTER4_WIDTH_int_st  :>
+<: } else  { :>
+<: set C_COUNTER4_WIDTH_STOP 5  :>
+<: } :>
+<: set C_COUNTER2_WIDTH 15 :>
+<: set C_COUNTER1_WIDTH_STOP 6  :>
+<: set C_COUNTER2_WIDTH_STOP 6  :>
+<: set C_COUNTER3_WIDTH_STOP 6  :>
+<: set C_COUNTER4_WIDTH_STOP 6  :>
+<: set C_COUNTER1_value [expr {pow(2,$C_COUNTER1_WIDTH)}  ] :>
+<: set C_COUNTER1_value_st [expr {pow(2,$C_COUNTER1_WIDTH_STOP)}  ] :>
+<: set C_COUNTER2_value_st [expr {pow(2,$C_COUNTER2_WIDTH_STOP)}  ] :>
+<: set C_COUNTER3_value_st [expr {pow(2,$C_COUNTER3_WIDTH_STOP)}  ] :>
+<: set C_COUNTER4_value_st [expr {pow(2,$C_COUNTER4_WIDTH_STOP)}  ] :>
+<: set C_COUNTER2_value [expr {pow(2,$C_COUNTER2_WIDTH)}  ] :>
+<: set Count_clk0 [expr { 1.0 * $C_REF_CLK_FREQ * $C_COUNTER1_value/$C_USER_CLK_FREQ0 }  ] :>
+<: set Count_clk0_st [expr { 1.0 * $C_REF_CLK_FREQ * $C_COUNTER1_value_st/$C_USER_CLK_FREQ0 }  ] :>
+<: set Count_clk0_stop [expr { int($Count_clk0_st * 4 )}  ] :>
+<: set Count_clk0_by2 [expr {$Count_clk0/2 }  ] :>
+<: set Count_clk0_by2_plus1 [dec2bin_wid [expr {round($Count_clk0_by2 + 1  )} ] $C_COUNTER2_WIDTH] :>
+<: set Count_clk0_by2_minus1 [dec2bin_wid [expr {round($Count_clk0_by2 - 1 )} ] $C_COUNTER2_WIDTH] :>
+<: set Count_clk1 [expr { 1.0 * $C_REF_CLK_FREQ * $C_COUNTER1_value/$C_USER_CLK_FREQ1 }  ] :>
+<: set Count_clk1_st [expr { 1.0 * $C_REF_CLK_FREQ * $C_COUNTER2_value_st/$C_USER_CLK_FREQ1 }  ] :>
+<: set Count_clk1_stop [expr { int($Count_clk1_st * 4) }  ] :>
+<: set Count_clk1_by2 [expr { $Count_clk1/2}  ] :>
+<: set Count_clk1_by2_plus1 [dec2bin_wid [expr {round($Count_clk1_by2 + 1  )} ] $C_COUNTER2_WIDTH] :>
+<: set Count_clk1_by2_minus1 [dec2bin_wid [expr {round($Count_clk1_by2 - 1 )} ] $C_COUNTER2_WIDTH] :>
+<: set Count_clk2 [expr { 1.0 * $C_REF_CLK_FREQ * $C_COUNTER1_value/$C_USER_CLK_FREQ2 }  ] :>
+<: set Count_clk2_st [expr { 1.0 * $C_REF_CLK_FREQ * $C_COUNTER3_value_st/$C_USER_CLK_FREQ2 }  ] :>
+<: set Count_clk2_stop [expr {int( $Count_clk2_st * 4 )}  ] :>
+<: set Count_clk2_by2 [expr { $Count_clk2/2 }  ] :>
+<: set Count_clk2_by2_plus1 [dec2bin_wid [expr {round($Count_clk2_by2 + 1  )} ] $C_COUNTER2_WIDTH] :>
+<: set Count_clk2_by2_minus1 [dec2bin_wid [expr {round($Count_clk2_by2 - 1 )} ] $C_COUNTER2_WIDTH] :>
+<: set Count_clk3 [expr { 1.0 * $C_REF_CLK_FREQ * $C_COUNTER1_value/$C_USER_CLK_FREQ3 }  ] :>
+<: set Count_clk3_st [expr { 1.0 * $C_REF_CLK_FREQ * $C_COUNTER4_value_st/$C_USER_CLK_FREQ3 }  ] :>
+<: set Count_clk3_stop [expr { int($Count_clk3_st * 4 )}  ] :>
+<: set Count_clk3_by2 [expr { $Count_clk3/2 }  ] :>
+<: set Count_clk3_by2_plus1 [dec2bin_wid [expr {round($Count_clk3_by2 + 1  )} ] $C_COUNTER2_WIDTH] :>
+<: set Count_clk3_by2_minus1 [dec2bin_wid [expr {round($Count_clk3_by2 - 1 )} ] $C_COUNTER2_WIDTH] :>
+<: ;#----------------------- :>
+<: ;#Clocking features :>
+<: ;#----------------------- :>
+<: set use_phase_alignment [expr {( [getBooleanValue "C_USE_PHASE_ALIGNMENT"])?true:false}]  :>
+<: set use_min_o_jitter [expr {( [getBooleanValue "C_USE_MIN_O_JITTER"])?true:false}]  :>
+<: set use_max_i_jitter [expr {( [getBooleanValue "C_USE_MAX_I_JITTER"])?true:false}]  :>
+<: set use_dyn_reprog [expr {( [getBooleanValue "C_USE_DYN_RECONFIG"])?true:false}]  :>
+<: set use_dyn_phase_shift [expr {( [getBooleanValue "C_USE_DYN_PHASE_SHIFT"])?true:false}]  :>
+<: set use_inclk_switchover [expr {( [getBooleanValue "C_USE_INCLK_SWITCHOVER"])?true:false}]  :>
+<: set use_spread_spectrum [expr {( [getBooleanValue "C_USE_SPREAD_SPECTRUM"])?true:false}]  :>
+<: set use_clk_valid [expr {( [getBooleanValue "C_USE_CLK_VALID"])?true:false}]  :>
+<: set use_fast_sim [expr {( [getBooleanValue "C_USE_FAST_SIMULATION"])?true:false}]  :>
+<: set optimize_structure_en [expr {( [getBooleanValue "C_OPTIMIZE_CLOCKING_STRUCTURE_EN"])?true:false}]  :>
+<: ;#----------------------- :>
+<: ;#Optional ports :>
+<: ;#----------------------- :>
+<: set mmcm_compensation [getStringValue "C_MMCM_COMPENSATION"] :>
+<: set use_reset [expr {( [getBooleanValue "C_USE_RESET"])?true:false}]  :>
+<: set reset_active_high [expr {( [getBooleanValue "C_RESET_LOW"])?false:true}]  :>
+<: set use_locked [expr {( [getBooleanValue "C_USE_LOCKED"])?true:false}]  :>
+<: set use_inclk_stopped [expr {( [getBooleanValue "C_USE_INCLK_STOPPED"])?true:false}]  :>
+<: set use_clkfb_stopped [expr {( [getBooleanValue "C_USE_CLKFB_STOPPED"])?true:false}]  :>
+<: set use_power_down [expr {( [getBooleanValue "C_USE_POWER_DOWN"])?true:false}]  :>
+<: set use_status [expr {( [getBooleanValue "C_USE_STATUS"])?true:false}]  :>
+<: set use_freeze [expr {( [getBooleanValue "C_USE_FREEZE"])?true:false}]  :>
+<: set CLOCK_MGR_TYPE [getStringValue "C_CLOCK_MGR_TYPE"] :>
+<: set has_cddc [expr {( [getBooleanValue "C_HAS_CDDC"])?true:false}]  :>
+<: ;#----------------------- :>
+<: ;#Input clocks :>
+<: ;#----------------------- :>
+<: set feedback_source [getStringValue "C_FEEDBACK_SOURCE"] :>
+<: set ext_feedback [expr {( $use_phase_alignment  && (![string equal -nocase $feedback_source "FDBK_AUTO"])  && (![string equal -nocase $feedback_source "FDBK_AUTO_OFFCHIP"]))?true:false}]  :>
+<: set feedback_type [getStringValue "C_CLKFB_IN_SIGNALING"] :>
+<: ;#auto mode external feedback :>
+<: ;#ACTION: o: aa091026:  have to edit this to pick variable from gui :>
+<: set auto_ext_feedback [expr {( $use_phase_alignment  && [string equal -nocase $feedback_source "FDBK_AUTO_OFFCHIP"])?true:false}]  :>
+<: set auto_sing_feedback [expr {( $auto_ext_feedback  && [string equal -nocase $feedback_type "SINGLE"])?true:false}]  :>
+<: set auto_diff_feedback [expr {( $auto_ext_feedback  && [string equal -nocase $feedback_type "DIFF"])?true:false}]  :>
+<: set clkin1_buf [getStringValue "C_PRIM_SOURCE"] :>
+<: set clkin2_buf [getStringValue "C_SECONDARY_SOURCE"] :>
+<: set clkin1_diff [expr {( [string equal -nocase $clkin1_buf "Differential_clock_capable_pin"] || [string equal -nocase $clkin1_buf "Differential_non_clock_pin"])?true:false}]  :>
+<: set clkin2_diff [expr {( [string equal -nocase $clkin2_buf "Differential_clock_capable_pin"] || [string equal -nocase $clkin2_buf "Differential_non_clock_pin"])?true:false}]  :>
+<: set clkin1_nonclkpin [expr {( [string equal -nocase $clkin1_buf "Single_ended_non_clock_pin"] || [string equal -nocase $clkin1_buf "Differential_non_clock_pin"])?true:false}]  :>
+<: set clkin2_nonclkpin [expr {( [string equal -nocase $clkin2_buf "Single_ended_non_clock_pin"] || [string equal -nocase $clkin2_buf "Differential_non_clock_pin"])?true:false}]  :>
+<: set clkin1_buf_no_buf [expr {( [string equal -nocase $clkin1_buf "No_buffer"])?true:false}]  :>
+<: set exdes_buffer_clkin1 [expr {( false)?true:false}]  :>
+<: if { [string equal -nocase $PRIMTYPE_SEL "PLL_BASE"]}  {  :>
+<: if { [string equal -nocase $feedback_source "FDBK_AUTO_OFFCHIP"] || [string equal -nocase $feedback_source "FDBK_OFFCHIP"]}  {  :>
+<: set exdes_buffer_clkin1 [expr {( false)?true:false}]  :>
+<: } else  { :>
+<: set exdes_buffer_clkin1 [expr {( $clkin1_buf_no_buf)?true:false}]  :>
+<: } :>
+<: } else  { :>
+<: set exdes_buffer_clkin1 [expr {( $clkin1_buf_no_buf)?true:false}]  :>
+<: } :>
+<: set exdes_buffer_clkin2 [expr {( $use_inclk_switchover  && [string equal -nocase $clkin2_buf "No_buffer"])?true:false}]  :>
+<: set exdes_buffer_clkfbin [expr {( $ext_feedback  && [string equal -nocase $feedback_source "FDBK_OFFCHIP"]  && [string equal -nocase $feedback_type "SINGLE"])?true:false}]  :>
+<: set exdes_connectfb false  :>
+<: set ext_feedback_xdc_constr [expr {( $use_phase_alignment  && (![string equal -nocase $feedback_source "FDBK_AUTO"])  && (![string equal -nocase $feedback_source "FDBK_ONCHIP"]))?true:false}]  :>
+<: ;#----------------------- :>
+<: ;#Safe clock Startup      :>
+<: ;#----------------------- :>
+<: set safe_clk_startup [expr {( [getBooleanValue "C_USE_SAFE_CLOCK_STARTUP"])?true:false}]  :>
+<: set clock_sequencing [expr {( [getBooleanValue "C_USE_CLOCK_SEQUENCING"])?true:false}]  :>
+<: set clkout1_seq_number [getIntValue "C_CLKOUT1_SEQUENCE_NUMBER"]  :>
+<: set clkout2_seq_number [getIntValue "C_CLKOUT2_SEQUENCE_NUMBER"]  :>
+<: set clkout3_seq_number [getIntValue "C_CLKOUT3_SEQUENCE_NUMBER"]  :>
+<: set clkout4_seq_number [getIntValue "C_CLKOUT4_SEQUENCE_NUMBER"]  :>
+<: set clkout5_seq_number [getIntValue "C_CLKOUT5_SEQUENCE_NUMBER"]  :>
+<: set clkout6_seq_number [getIntValue "C_CLKOUT6_SEQUENCE_NUMBER"]  :>
+<: set clkout7_seq_number [getIntValue "C_CLKOUT7_SEQUENCE_NUMBER"]  :>
+<: set max_seq_number [expr [::tcl::mathfunc::max $clkout1_seq_number $clkout2_seq_number $clkout3_seq_number $clkout4_seq_number $clkout5_seq_number $clkout6_seq_number $clkout7_seq_number]]  :>
+<: ;#----------------------- :>
+<: ;#Output clocks topology :>
+<: ;#----------------------- :>
+<: set enable_clkoutphy [expr {( [getBooleanValue "C_ENABLE_CLKOUTPHY"])?true:false}]  :>
+<: set num_out_clks [getIntValue "C_NUM_OUT_CLKS"] :>
+<: set clkout1_buf [getStringValue "C_CLKOUT1_DRIVES"] :>
+<: set clkout2_buf [getStringValue "C_CLKOUT2_DRIVES"] :>
+<: set clkout3_buf [getStringValue "C_CLKOUT3_DRIVES"] :>
+<: set clkout4_buf [getStringValue "C_CLKOUT4_DRIVES"] :>
+<: set clkout5_buf [getStringValue "C_CLKOUT5_DRIVES"] :>
+<: set clkout6_buf [getStringValue "C_CLKOUT6_DRIVES"] :>
+<: set clkout7_buf [getStringValue "C_CLKOUT7_DRIVES"] :>
+<: set clkout1_buf_param [get_property PARAM_VALUE.CLKOUT1_DRIVES] :>
+<: set clkout2_buf_param [get_property PARAM_VALUE.CLKOUT2_DRIVES] :>
+<: set clkout3_buf_param [get_property PARAM_VALUE.CLKOUT3_DRIVES] :>
+<: set clkout4_buf_param [get_property PARAM_VALUE.CLKOUT4_DRIVES] :>
+<: set clkout5_buf_param [get_property PARAM_VALUE.CLKOUT5_DRIVES] :>
+<: set clkout6_buf_param [get_property PARAM_VALUE.CLKOUT6_DRIVES] :>
+<: set clkout7_buf_param [get_property PARAM_VALUE.CLKOUT7_DRIVES] :>
+<: ;#----------------------- :>
+<: ;#Derived variables for easy ending (defined in reverse port order) :>
+<: ;#----------------------- :>
+<: set has_control [expr {( $use_reset || $use_locked || $use_inclk_stopped || $use_power_down || $use_status || $use_clkfb_stopped)?true:false}]  :>
+<: set locked_last [expr {( !$has_cddc)?false:false}]  :>
+<: set clkfb_stopped_last [expr {( $locked_last  && !$use_locked)?false:false}]  :>
+<: set inclk_stopped_last [expr {( $clkfb_stopped_last  && !$use_clkfb_stopped)?false:false}]  :>
+<: set status_last [expr {( $inclk_stopped_last  && !$use_inclk_stopped)?false:false}]  :>
+<: set freeze_last [expr {( $status_last  && !$use_status)?false:false}]  :>
+<: set power_down_last [expr {( $freeze_last  && !$use_freeze)?false:false}]  :>
+<: set reset_last [expr {( $power_down_last  && !$use_power_down)?false:false}]  :>
+<: set dyn_phase_shift_last [expr {( $reset_last  && !$use_reset)?false:false}]  :>
+<: set dyn_reprog_last [expr {( $dyn_phase_shift_last  && !$use_dyn_phase_shift)?false:false}]  :>
+<: set clkfbout_last [expr {( $dyn_reprog_last  && !$use_dyn_reprog)?false:false}]  :>
+<: set clkout7_last [expr {( $clkfbout_last  && (!$ext_feedback)  && (!$auto_ext_feedback))?false:false}]  :>
+<: set clkout6_last [expr {( $clkout7_last  && ( $num_out_clks< 7) )?false:false}]  :>
+<: set clkout5_last [expr {( $clkout6_last  && ( $num_out_clks< 6) )?false:false}]  :>
+<: set clkout4_last [expr {( $clkout5_last  && ( $num_out_clks< 5) )?false:false}]  :>
+<: set clkout3_last [expr {( $clkout4_last  && ( $num_out_clks< 4) )?false:false}]  :>
+<: set clkout2_last [expr {( $clkout3_last  && ( $num_out_clks< 3) )?false:false}]  :>
+<: set clkout1_last [expr {( $clkout2_last  && ( $num_out_clks< 2) )?false:false}]  :>
+<: set clkfbout_last_nodyn [expr {( $reset_last  && !$use_reset)?false:false}]  :>
+<: set clkout_last_nodyn [expr {( $clkfbout_last_nodyn  && (!$ext_feedback)  && (!$auto_ext_feedback))?false:false}]  :>
+<: set clkout_last [expr {( $clkout7_last)?false:false}]  :>
+<: ;#----------------------- :>
+<: ;#AXI4 Lite selection :>
+<: ;#----------------------- :>
+<: set c_has_AXI [expr [getIntValue "C_INTERFACE_SELECTION"] == 1] :>
+<: ;#----------------------- :>
+<: ;#Summary note variables :>
+<: ;#----------------------- :>
+<: set inclk_sum_row0 [getStringValue "C_INCLK_SUM_ROW0"] :>
+<: set inclk_sum_row1 [getStringValue "C_INCLK_SUM_ROW1"] :>
+<: set inclk_sum_row2 [getStringValue "C_INCLK_SUM_ROW2"] :>
+<: set outclk_sum_row0a [getStringValue "C_OUTCLK_SUM_ROW0A"] :>
+<: set outclk_sum_row0b [getStringValue "C_OUTCLK_SUM_ROW0B"] :>
+<: set outclk_sum_row1 [getStringValue "C_OUTCLK_SUM_ROW1"] :>
+<: set outclk_sum_row2 [getStringValue "C_OUTCLK_SUM_ROW2"] :>
+<: set outclk_sum_row3 [getStringValue "C_OUTCLK_SUM_ROW3"] :>
+<: set outclk_sum_row4 [getStringValue "C_OUTCLK_SUM_ROW4"] :>
+<: set outclk_sum_row5 [getStringValue "C_OUTCLK_SUM_ROW5"] :>
+<: set outclk_sum_row6 [getStringValue "C_OUTCLK_SUM_ROW6"] :>
+<: set outclk_sum_row7 [getStringValue "C_OUTCLK_SUM_ROW7"] :>
+<: ;#-------------------------------------- :>
+<: ;#Other reported variables used against timing calculations :>
+<: ;#-------------------------------------- :>
+<: set clkout1_requested_out_freq [getStringValue "C_CLKOUT1_REQUESTED_OUT_FREQ"] :>
+<: set clkout2_requested_out_freq [getStringValue "C_CLKOUT2_REQUESTED_OUT_FREQ"] :>
+<: set clkout3_requested_out_freq [getStringValue "C_CLKOUT3_REQUESTED_OUT_FREQ"] :>
+<: set clkout4_requested_out_freq [getStringValue "C_CLKOUT4_REQUESTED_OUT_FREQ"] :>
+<: set clkout5_requested_out_freq [getStringValue "C_CLKOUT5_REQUESTED_OUT_FREQ"] :>
+<: set clkout6_requested_out_freq [getStringValue "C_CLKOUT6_REQUESTED_OUT_FREQ"] :>
+<: set clkout7_requested_out_freq [getStringValue "C_CLKOUT7_REQUESTED_OUT_FREQ"] :>
+<: set clkout1_requested_phase [getStringValue "C_CLKOUT1_REQUESTED_PHASE"] :>
+<: set clkout2_requested_phase [getStringValue "C_CLKOUT2_REQUESTED_PHASE"] :>
+<: set clkout3_requested_phase [getStringValue "C_CLKOUT3_REQUESTED_PHASE"] :>
+<: set clkout4_requested_phase [getStringValue "C_CLKOUT4_REQUESTED_PHASE"] :>
+<: set clkout5_requested_phase [getStringValue "C_CLKOUT5_REQUESTED_PHASE"] :>
+<: set clkout6_requested_phase [getStringValue "C_CLKOUT6_REQUESTED_PHASE"] :>
+<: set clkout7_requested_phase [getStringValue "C_CLKOUT7_REQUESTED_PHASE"] :>
+<: set clkout1_requested_duty_cycle [getStringValue "C_CLKOUT1_REQUESTED_DUTY_CYCLE"] :>
+<: set clkout2_requested_duty_cycle [getStringValue "C_CLKOUT2_REQUESTED_DUTY_CYCLE"] :>
+<: set clkout3_requested_duty_cycle [getStringValue "C_CLKOUT3_REQUESTED_DUTY_CYCLE"] :>
+<: set clkout4_requested_duty_cycle [getStringValue "C_CLKOUT4_REQUESTED_DUTY_CYCLE"] :>
+<: set clkout5_requested_duty_cycle [getStringValue "C_CLKOUT5_REQUESTED_DUTY_CYCLE"] :>
+<: set clkout6_requested_duty_cycle [getStringValue "C_CLKOUT6_REQUESTED_DUTY_CYCLE"] :>
+<: set clkout7_requested_duty_cycle [getStringValue "C_CLKOUT7_REQUESTED_DUTY_CYCLE"] :>
+<: set clkout1_out_freq [getStringValue "C_CLKOUT1_OUT_FREQ"] :>
+<: set clkout2_out_freq [getStringValue "C_CLKOUT2_OUT_FREQ"] :>
+<: set clkout3_out_freq [getStringValue "C_CLKOUT3_OUT_FREQ"] :>
+<: set clkout4_out_freq [getStringValue "C_CLKOUT4_OUT_FREQ"] :>
+<: set clkout5_out_freq [getStringValue "C_CLKOUT5_OUT_FREQ"] :>
+<: set clkout6_out_freq [getStringValue "C_CLKOUT6_OUT_FREQ"] :>
+<: set clkout7_out_freq [getStringValue "C_CLKOUT7_OUT_FREQ"] :>
+<: set clkout1_phase [getStringValue "C_CLKOUT1_PHASE"] :>
+<: set clkout2_phase [getStringValue "C_CLKOUT2_PHASE"] :>
+<: set clkout3_phase [getStringValue "C_CLKOUT3_PHASE"] :>
+<: set clkout4_phase [getStringValue "C_CLKOUT4_PHASE"] :>
+<: set clkout5_phase [getStringValue "C_CLKOUT5_PHASE"] :>
+<: set clkout6_phase [getStringValue "C_CLKOUT6_PHASE"] :>
+<: set clkout7_phase [getStringValue "C_CLKOUT7_PHASE"] :>
+<: set clkout1_duty_cycle [getStringValue "C_CLKOUT1_DUTY_CYCLE"] :>
+<: set clkout2_duty_cycle [getStringValue "C_CLKOUT2_DUTY_CYCLE"] :>
+<: set clkout3_duty_cycle [getStringValue "C_CLKOUT3_DUTY_CYCLE"] :>
+<: set clkout4_duty_cycle [getStringValue "C_CLKOUT4_DUTY_CYCLE"] :>
+<: set clkout5_duty_cycle [getStringValue "C_CLKOUT5_DUTY_CYCLE"] :>
+<: set clkout6_duty_cycle [getStringValue "C_CLKOUT6_DUTY_CYCLE"] :>
+<: set clkout7_duty_cycle [getStringValue "C_CLKOUT7_DUTY_CYCLE"] :>
+<: ;#------------------------------------------- :>
+<: ;#PHASESHUFT_MODE settings :>
+<: ;#------------------------------------------- :>
+<: set phaseshift_mode [getStringValue "C_PHASESHIFT_MODE"] :>
+<: ;#------------------------------------------- :>
+<: ;#Connectivity settings :>
+<: ;#------------------------------------------- :>
+<: set clk0_unused [expr {( true)?true:false}]  :>
+<: set clk90_unused [expr {( true)?true:false}]  :>
+<: set clk180_unused [expr {( true)?true:false}]  :>
+<: set clk270_unused [expr {( true)?true:false}]  :>
+<: set clk2x_unused [expr {( true)?true:false}]  :>
+<: set clk2x180_unused [expr {( true)?true:false}]  :>
+<: set clkfx_unused [expr {( true)?true:false}]  :>
+<: set clkfx180_unused [expr {( true)?true:false}]  :>
+<: set clkdv_unused [expr {( true)?true:false}]  :>
+<: set clkfxdv_unused [expr {( true)?true:false}]  :>
+<: ;#by default set all portname vars to be PLL/MMCM 1:1 mapping :>
+<: set clkout1_portname "clkout0" :>
+<: set clkout2_portname "clkout1" :>
+<: set clkout3_portname "clkout2" :>
+<: set clkout4_portname "clkout3" :>
+<: set clkout5_portname "clkout4" :>
+<: set clkout6_portname "clkout5" :>
+<: set clkout7_portname "clkout6" :>
+<: if { [string equal -nocase $PRIMTYPE_SEL "DCM_SP"]}  {  :>
+<: } elseif  { [string equal -nocase $PRIMTYPE_SEL "DCM_CLKGEN"]}  { :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clk0"] ||( [string equal -nocase $clkout2_portname "clk0"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clk0"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clk0"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clk0"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clk0"]  && $num_out_clks> 5) }  {  :>
+<: set clk0_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clk90"] ||( [string equal -nocase $clkout2_portname "clk90"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clk90"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clk90"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clk90"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clk90"]  && $num_out_clks> 5) }  {  :>
+<: set clk90_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clk180"] ||( [string equal -nocase $clkout2_portname "clk180"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clk180"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clk180"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clk180"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clk180"]  && $num_out_clks> 5) }  {  :>
+<: set clk180_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clk270"] ||( [string equal -nocase $clkout2_portname "clk270"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clk270"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clk270"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clk270"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clk270"]  && $num_out_clks> 5) }  {  :>
+<: set clk270_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clk2x"] ||( [string equal -nocase $clkout2_portname "clk2x"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clk2x"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clk2x"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clk2x"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clk2x"]  && $num_out_clks> 5) }  {  :>
+<: set clk2x_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clk2x180"] ||( [string equal -nocase $clkout2_portname "clk2x180"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clk2x180"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clk2x180"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clk2x180"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clk2x180"]  && $num_out_clks> 5) }  {  :>
+<: set clk2x180_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clkfx"] ||( [string equal -nocase $clkout2_portname "clkfx"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clkfx"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clkfx"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clkfx"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clkfx"]  && $num_out_clks> 5) }  {  :>
+<: set clkfx_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clkfx180"] ||( [string equal -nocase $clkout2_portname "clkfx180"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clkfx180"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clkfx180"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clkfx180"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clkfx180"]  && $num_out_clks> 5) }  {  :>
+<: set clkfx180_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clkdv"] ||( [string equal -nocase $clkout2_portname "clkdv"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clkdv"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clkdv"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clkdv"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clkdv"]  && $num_out_clks> 5) }  {  :>
+<: set clkdv_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: if { [string equal -nocase $clkout1_portname "clkfxdv"] ||( [string equal -nocase $clkout2_portname "clkfxdv"]  && $num_out_clks> 1)  ||( [string equal -nocase $clkout3_portname "clkfxdv"]  && $num_out_clks> 2)  ||( [string equal -nocase $clkout4_portname "clkfxdv"]  && $num_out_clks> 3)  ||( [string equal -nocase $clkout5_portname "clkfxdv"]  && $num_out_clks> 4)  ||( [string equal -nocase $clkout6_portname "clkfxdv"]  && $num_out_clks> 5) }  {  :>
+<: set clkfxdv_unused [expr {( false)?true:false}]  :>
+<: } :>
+<: proc EvalSubstituting {parameters procedure {numlevels 1}} { :>
+<:      set paramlist {} :>
+<:      if {[string index $numlevels 0]!="#"} { :>
+<:          set numlevels [expr $numlevels+1] :>
+<:      } :>
+<:      foreach parameter $parameters { :>
+<:          upvar 1 $parameter $parameter\_value :>
+<:          tcl::lappend paramlist \$$parameter [set $parameter\_value] :>
+<:      } :>
+<:     uplevel $numlevels [string map $paramlist $procedure] :>
+<:  }  :>
+<: ;#-------------------------------------- :>
+<: ;#evaluate if CE ports are required :>
+<: ;#-------------------------------------- :>
+<: set clkout1_ce_used [expr {(( [string equal -nocase $clkout1_buf "BUFGCE"] || [string equal -nocase $clkout1_buf "BUFHCE"] || [string equal -nocase $clkout1_buf_param "Buffer_with_CE"] || [string equal -nocase $clkout1_buf "BUFR"] || [string equal -nocase $clkout1_buf_param "BUFGCE_DIV"]) )?true:false}]  :>
+<: set clkout2_ce_used [expr {((( [string equal -nocase $clkout2_buf "BUFGCE"] || [string equal -nocase $clkout2_buf "BUFHCE"] || [string equal -nocase $clkout2_buf "BUFR"] || [string equal -nocase $clkout2_buf_param "Buffer_with_CE"] || [string equal -nocase $clkout2_buf_param "BUFGCE_DIV"])  && $num_out_clks> 1) )?true:false}]  :>
+<: set clkout3_ce_used [expr {((( [string equal -nocase $clkout3_buf "BUFGCE"] || [string equal -nocase $clkout3_buf "BUFHCE"] || [string equal -nocase $clkout3_buf_param "Buffer_with_CE"] || [string equal -nocase $clkout3_buf "BUFR"] || [string equal -nocase $clkout3_buf_param "BUFGCE_DIV"])  && $num_out_clks> 2) )?true:false}]  :>
+<: set clkout4_ce_used [expr {((( [string equal -nocase $clkout4_buf "BUFGCE"] || [string equal -nocase $clkout4_buf "BUFHCE"] || [string equal -nocase $clkout4_buf_param "Buffer_with_CE"] || [string equal -nocase $clkout4_buf "BUFR"] || [string equal -nocase $clkout4_buf_param "BUFGCE_DIV"])  && $num_out_clks> 3) )?true:false}]  :>
+<: set clkout5_ce_used [expr {((( [string equal -nocase $clkout5_buf "BUFGCE"] || [string equal -nocase $clkout5_buf "BUFHCE"] || [string equal -nocase $clkout5_buf_param "Buffer_with_CE"] || [string equal -nocase $clkout5_buf "BUFR"] || [string equal -nocase $clkout5_buf_param "BUFGCE_DIV"])  && $num_out_clks> 4) )?true:false}]  :>
+<: set clkout6_ce_used [expr {((( [string equal -nocase $clkout6_buf "BUFGCE"] || [string equal -nocase $clkout6_buf "BUFHCE"] || [string equal -nocase $clkout6_buf_param "Buffer_with_CE"] || [string equal -nocase $clkout6_buf "BUFR"] || [string equal -nocase $clkout6_buf_param "BUFGCE_DIV"])  && $num_out_clks> 5) )?true:false}]  :>
+<: set clkout7_ce_used [expr {((( [string equal -nocase $clkout7_buf "BUFGCE"] || [string equal -nocase $clkout7_buf "BUFHCE"] || [string equal -nocase $clkout7_buf_param "Buffer_with_CE"] || [string equal -nocase $clkout7_buf "BUFR"] || [string equal -nocase $clkout7_buf_param "BUFGCE_DIV"])  && $num_out_clks> 6) )?true:false}]  :>
+<: set clkout1_clr_used [expr {( [string equal -nocase $clkout1_buf "BUFR"] || [string equal -nocase $clkout1_buf_param "BUFGCE_DIV"])?true:false}]  :>
+<: set clkout2_clr_used [expr {(( ([string equal -nocase $clkout2_buf "BUFR"] || [string equal -nocase $clkout2_buf_param "BUFGCE_DIV"]) && $num_out_clks> 1) )?true:false}]  :>
+<: set clkout3_clr_used [expr {(( ([string equal -nocase $clkout3_buf "BUFR"] || [string equal -nocase $clkout3_buf_param "BUFGCE_DIV"]) && $num_out_clks> 2) )?true:false}]  :>
+<: set clkout4_clr_used [expr {(( ([string equal -nocase $clkout4_buf "BUFR"] || [string equal -nocase $clkout4_buf_param "BUFGCE_DIV"]) && $num_out_clks> 3) )?true:false}]  :>
+<: set clkout5_clr_used [expr {(( ([string equal -nocase $clkout5_buf "BUFR"] || [string equal -nocase $clkout5_buf_param "BUFGCE_DIV"]) && $num_out_clks> 4) )?true:false}]  :>
+<: set clkout6_clr_used [expr {(( ([string equal -nocase $clkout6_buf "BUFR"] || [string equal -nocase $clkout6_buf_param "BUFGCE_DIV"]) && $num_out_clks> 5) )?true:false}]  :>
+<: set clkout7_clr_used [expr {(( ([string equal -nocase $clkout7_buf "BUFR"] || [string equal -nocase $clkout7_buf_param "BUFGCE_DIV"]) && $num_out_clks> 6) )?true:false}]  :>
+<: if { $is_v8 || $is_k8 }  {  :>
+<: set bufr_div_attr_use false  :>
+<: } else { :>
+<: set bufr_div_attr_use [expr {(( $clkout1_clr_used || $clkout2_clr_used || $clkout3_clr_used || $clkout4_clr_used || $clkout5_clr_used || $clkout6_clr_used || $clkout7_clr_used) ) ?true:false}]  :>
+<: } :>
+<: set clkout1_bufr_last [expr {( $clkout1_clr_used && (!$clkout2_clr_used) && (!$clkout3_clr_used) && (!$clkout4_clr_used) && (!$clkout5_clr_used) && (!$clkout6_clr_used) && (!$clkout7_clr_used))?true:false}]  :>
+<: set clkout2_bufr_last [expr {( $clkout2_clr_used && (!$clkout3_clr_used) && (!$clkout4_clr_used) && (!$clkout5_clr_used) && (!$clkout6_clr_used) && (!$clkout7_clr_used))?true:false}]  :>
+<: set clkout3_bufr_last [expr {( $clkout3_clr_used && (!$clkout4_clr_used) && (!$clkout5_clr_used) && (!$clkout6_clr_used) && (!$clkout7_clr_used))?true:false}]  :>
+<: set clkout4_bufr_last [expr {( $clkout4_clr_used && (!$clkout5_clr_used) && (!$clkout6_clr_used) && (!$clkout7_clr_used))?true:false}]  :>
+<: set clkout5_bufr_last [expr {( $clkout5_clr_used && (!$clkout6_clr_used) && (!$clkout7_clr_used))?true:false}]  :>
+<: set clkout6_bufr_last [expr {( $clkout6_clr_used && (!$clkout7_clr_used))?true:false}]  :>
+<: set clkout7_bufr_last [expr {( $clkout7_clr_used)?true:false}]  :>
+<: ;# :>
+<: ;#-------------------------------------- :>
+<: ;#check the feedback buffer type :>
+<: ;#-------------------------------------- :>
+<: set clkfb_buf $clkout1_buf :>
+<: if { [string equal -nocase $clkfb_buf "BUFGCE"] || [string equal -nocase $clkfb_buf "BUFHCE"] || [string equal -nocase $clkfb_buf "BUFGCE_DIV"] }  {  :>
+<: set clkfb_buf "BUFG";;#overide to bufg :>
+<: } :>
+<: ;# :>
+<: ;#-------------------------------------- :>
+<: ;#MMCM variables :>
+<: ;#-------------------------------------- :>
+<: ;#mmcm input attributes :>
+<: set mmcm_notes [getStringValue "C_MMCM_NOTES"] :>
+<: set mmcm_bandwidth [getStringValue "C_MMCM_BANDWIDTH"] :>
+<: set mmcm_clkfbout_mult_f [getStringValue "C_MMCM_CLKFBOUT_MULT_F"] :>
+<: set mmcm_clkfbout_mult_1 [::tcl::mathfunc::double [::tcl::mathfunc::double $mmcm_clkfbout_mult_f]] :>
+<: set mmcm_clkfbout_mult [::tcl::mathfunc::int $mmcm_clkfbout_mult_1] :>
+<: set mmcm_clkin1_period [getStringValue "C_MMCM_CLKIN1_PERIOD"] :>
+<: set mmcm_clkin2_period [getStringValue "C_MMCM_CLKIN2_PERIOD"] :>
+<: set mmcm_clkout4_cascade [getStringValue "C_MMCM_CLKOUT4_CASCADE"] :>
+<: set mmcm_clock_hold [getStringValue "C_MMCM_CLOCK_HOLD"] :>
+<: set mmcm_divclk_divide [getIntValue "C_MMCM_DIVCLK_DIVIDE"] :>
+<: set mmcm_ref_jitter1 [getStringValue "C_MMCM_REF_JITTER1"] :>
+<: set mmcm_ref_jitter2 [getStringValue "C_MMCM_REF_JITTER2"] :>
+<: set mmcm_startup_wait [getStringValue "C_MMCM_STARTUP_WAIT"] :>
+<: set mmcm_clkfb_period [ expr $mmcm_clkin1_period*$mmcm_divclk_divide] :>
+<: set mmcm_ss_mode [getStringValue "C_SS_MODE"] :>
+<: set mmcm_ss_mod_period [getIntValue "C_SS_MOD_PERIOD"] :>
+<: set mmcm_ss_en [expr {( [getBooleanValue "C_USE_SPREAD_SPECTRUM"])?TRUE:FALSE}]  :>
+<: ;#mmcm output attributes :>
+<: set mmcm_clkout0_divide_f [getStringValue "C_MMCM_CLKOUT0_DIVIDE_F"] :>
+<: set mmcm_clkout0_divide_1 [::tcl::mathfunc::double [::tcl::mathfunc::double $mmcm_clkout0_divide_f]] :>
+<: set mmcm_clkout0_divide [::tcl::mathfunc::int $mmcm_clkout0_divide_1] :>
+<: set mmcm_clkout1_divide [getIntValue "C_MMCM_CLKOUT1_DIVIDE"] :>
+<: set mmcm_clkout2_divide [getIntValue "C_MMCM_CLKOUT2_DIVIDE"] :>
+<: set mmcm_clkout3_divide [getIntValue "C_MMCM_CLKOUT3_DIVIDE"] :>
+<: set mmcm_clkout4_divide [getIntValue "C_MMCM_CLKOUT4_DIVIDE"] :>
+<: set mmcm_clkout5_divide [getIntValue "C_MMCM_CLKOUT5_DIVIDE"] :>
+<: set mmcm_clkout6_divide [getIntValue "C_MMCM_CLKOUT6_DIVIDE"] :>
+<: if { $mmcmbufgcediv2 == "true" || $pllbufgcediv2 == "true" }  {  :>
+<: set mmcm_clkout1_divide_tb [expr $mmcm_clkout0_divide_f * $divide2] :>
+<: } else  { :>
+<: set mmcm_clkout1_divide_tb [getIntValue "C_MMCM_CLKOUT1_DIVIDE"] :>
+<: } :>
+<: if { $mmcmbufgcediv3 == "true" || $pllbufgcediv3 == "true" }  {  :>
+<: set mmcm_clkout2_divide_tb [expr $mmcm_clkout0_divide_f * $divide3] :>
+<: } else  { :>
+<: set mmcm_clkout2_divide_tb [getIntValue "C_MMCM_CLKOUT2_DIVIDE"] :>
+<: } :>
+<: if { $mmcmbufgcediv4 == "true" || $pllbufgcediv4 == "true" }  {  :>
+<: set mmcm_clkout3_divide_tb [expr $mmcm_clkout0_divide_f * $divide4] :>
+<: } else  { :>
+<: set mmcm_clkout3_divide_tb [getIntValue "C_MMCM_CLKOUT3_DIVIDE"] :>
+<: } :>
+<: if { $mmcmbufgcediv5 == "true"}  {  :>
+<: set mmcm_clkout4_divide_tb [expr $mmcm_clkout0_divide_f * $divide5] :>
+<: } else  { :>
+<: set mmcm_clkout4_divide_tb [getIntValue "C_MMCM_CLKOUT4_DIVIDE"] :>
+<: } :>
+<: if { $mmcmbufgcediv6 == "true"}  {  :>
+<: set mmcm_clkout5_divide_tb [expr $mmcm_clkout0_divide_f * $divide6] :>
+<: } else  { :>
+<: set mmcm_clkout5_divide_tb [getIntValue "C_MMCM_CLKOUT5_DIVIDE"] :>
+<: } :>
+<: if { $mmcmbufgcediv7 == "true"}  {  :>
+<: set mmcm_clkout6_divide_tb [expr $mmcm_clkout0_divide_f * $divide7] :>
+<: } else  { :>
+<: set mmcm_clkout6_divide_tb [getIntValue "C_MMCM_CLKOUT6_DIVIDE"] :>
+<: } :>
+<: set mmcm_clkout0_duty_cycle [getStringValue "C_MMCM_CLKOUT0_DUTY_CYCLE"] :>
+<: set mmcm_clkout1_duty_cycle [getStringValue "C_MMCM_CLKOUT1_DUTY_CYCLE"] :>
+<: set mmcm_clkout2_duty_cycle [getStringValue "C_MMCM_CLKOUT2_DUTY_CYCLE"] :>
+<: set mmcm_clkout3_duty_cycle [getStringValue "C_MMCM_CLKOUT3_DUTY_CYCLE"] :>
+<: set mmcm_clkout4_duty_cycle [getStringValue "C_MMCM_CLKOUT4_DUTY_CYCLE"] :>
+<: set mmcm_clkout5_duty_cycle [getStringValue "C_MMCM_CLKOUT5_DUTY_CYCLE"] :>
+<: set mmcm_clkout6_duty_cycle [getStringValue "C_MMCM_CLKOUT6_DUTY_CYCLE"] :>
+<: set mmcm_clkfbout_phase [getStringValue "C_MMCM_CLKFBOUT_PHASE"] :>
+<: set mmcm_clkout0_phase [getStringValue "C_MMCM_CLKOUT0_PHASE"] :>
+<: set mmcm_clkout1_phase [getStringValue "C_MMCM_CLKOUT1_PHASE"] :>
+<: set mmcm_clkout2_phase [getStringValue "C_MMCM_CLKOUT2_PHASE"] :>
+<: set mmcm_clkout3_phase [getStringValue "C_MMCM_CLKOUT3_PHASE"] :>
+<: set mmcm_clkout4_phase [getStringValue "C_MMCM_CLKOUT4_PHASE"] :>
+<: set mmcm_clkout5_phase [getStringValue "C_MMCM_CLKOUT5_PHASE"] :>
+<: set mmcm_clkout6_phase [getStringValue "C_MMCM_CLKOUT6_PHASE"] :>
+<: set mmcm_clkfbout_use_fine_ps [getStringValue "C_MMCM_CLKFBOUT_USE_FINE_PS"] :>
+<: set mmcm_clkout0_use_fine_ps [getStringValue "C_MMCM_CLKOUT0_USE_FINE_PS"] :>
+<: set mmcm_clkout1_use_fine_ps [getStringValue "C_MMCM_CLKOUT1_USE_FINE_PS"] :>
+<: set mmcm_clkout2_use_fine_ps [getStringValue "C_MMCM_CLKOUT2_USE_FINE_PS"] :>
+<: set mmcm_clkout3_use_fine_ps [getStringValue "C_MMCM_CLKOUT3_USE_FINE_PS"] :>
+<: set mmcm_clkout4_use_fine_ps [getStringValue "C_MMCM_CLKOUT4_USE_FINE_PS"] :>
+<: set mmcm_clkout5_use_fine_ps [getStringValue "C_MMCM_CLKOUT5_USE_FINE_PS"] :>
+<: set mmcm_clkout6_use_fine_ps [getStringValue "C_MMCM_CLKOUT6_USE_FINE_PS"] :>
+<: set override_mmcm [expr {( [getBooleanValue "C_OVERRIDE_MMCM"])?true:false}]  :>
+<: ;# :>
+<: ;# :>
+<: ;#-------------------------------------- :>
+<: ;#PLL variables :>
+<: ;#-------------------------------------- :>
+<: ;#pll input attributes :>
+<: ;#-------------------------------------------------- :>
+<: set pll_notes [getStringValue "C_PLL_NOTES"] :>
+<: set pll_bandwidth [getStringValue "C_PLL_BANDWIDTH"] :>
+<: set pll_clk_feedback [getStringValue "C_PLL_CLK_FEEDBACK"] :>
+<: set is_clk0_fb [expr {(( [string equal -nocase $pll_clk_feedback "CLKOUT0"]) )?true:false}]  :>
+<: set pll_clkfbout_mult [getIntValue "C_PLL_CLKFBOUT_MULT"] :>
+<: set pll_clkin_period [getStringValue "C_PLL_CLKIN_PERIOD"] :>
+<: set pll_compensation [getStringValue "C_PLL_COMPENSATION"] :>
+<: set pll_divclk_divide [getIntValue "C_PLL_DIVCLK_DIVIDE"] :>
+<: set pll_ref_jitter [getStringValue "C_PLL_REF_JITTER"] :>
+<: ;# :>
+<: ;# :>
+<: ;#pll output attributes :>
+<: ;#--------------------------------------------------- :>
+<: set pll_clkout0_divide [getIntValue "C_PLL_CLKOUT0_DIVIDE"] :>
+<: set pll_clkout1_divide [getIntValue "C_PLL_CLKOUT1_DIVIDE"] :>
+<: set pll_clkout2_divide [getIntValue "C_PLL_CLKOUT2_DIVIDE"] :>
+<: set pll_clkout3_divide [getIntValue "C_PLL_CLKOUT3_DIVIDE"] :>
+<: set pll_clkout4_divide [getIntValue "C_PLL_CLKOUT4_DIVIDE"] :>
+<: set pll_clkout5_divide [getIntValue "C_PLL_CLKOUT5_DIVIDE"] :>
+<: set pll_clkout0_duty_cycle [getStringValue "C_PLL_CLKOUT0_DUTY_CYCLE"] :>
+<: set pll_clkout1_duty_cycle [getStringValue "C_PLL_CLKOUT1_DUTY_CYCLE"] :>
+<: set pll_clkout2_duty_cycle [getStringValue "C_PLL_CLKOUT2_DUTY_CYCLE"] :>
+<: set pll_clkout3_duty_cycle [getStringValue "C_PLL_CLKOUT3_DUTY_CYCLE"] :>
+<: set pll_clkout4_duty_cycle [getStringValue "C_PLL_CLKOUT4_DUTY_CYCLE"] :>
+<: set pll_clkout5_duty_cycle [getStringValue "C_PLL_CLKOUT5_DUTY_CYCLE"] :>
+<: set pll_clkfbout_phase [getStringValue "C_PLL_CLKFBOUT_PHASE"] :>
+<: set pll_clkout0_phase [getStringValue "C_PLL_CLKOUT0_PHASE"] :>
+<: set pll_clkout1_phase [getStringValue "C_PLL_CLKOUT1_PHASE"] :>
+<: set pll_clkout2_phase [getStringValue "C_PLL_CLKOUT2_PHASE"] :>
+<: set pll_clkout3_phase [getStringValue "C_PLL_CLKOUT3_PHASE"] :>
+<: set pll_clkout4_phase [getStringValue "C_PLL_CLKOUT4_PHASE"] :>
+<: set pll_clkout5_phase [getStringValue "C_PLL_CLKOUT5_PHASE"] :>
+<: set override_pll [expr {( [getBooleanValue "C_OVERRIDE_PLL"])?true:false}]  :>
+<: set clkoutphy_mode [getStringValue "C_CLKOUTPHY_MODE"] :>
+<: ;# :>
+<: ;# :>
+<: ;#boolean use_clkout1_bar                  = getBooleanValue("C_USE_CLKOUT1_BAR") :>
+<: ;#boolean use_clkout2_bar                  = getBooleanValue("C_USE_CLKOUT2_BAR") :>
+<: ;#boolean use_clkout3_bar                  = getBooleanValue("C_USE_CLKOUT3_BAR") :>
+<: ;#boolean use_clkout4_bar                  = getBooleanValue("C_USE_CLKOUT4_BAR") :>
+<: set use_clkout1_bar [expr {( false)?true:false}]  :>
+<: set use_clkout2_bar [expr {( false)?true:false}]  :>
+<: set use_clkout3_bar [expr {( false)?true:false}]  :>
+<: set use_clkout4_bar [expr {( false)?true:false}]  :>
+<: ;#decided in the PRT that bar clock uses the same buffer :>
+<: set clkout1b_buf [getStringValue "C_CLKOUT1_DRIVES"] :>
+<: set clkout2b_buf [getStringValue "C_CLKOUT2_DRIVES"] :>
+<: set clkout3b_buf [getStringValue "C_CLKOUT3_DRIVES"] :>
+<: set clkout4b_buf [getStringValue "C_CLKOUT4_DRIVES"] :>
+<: set clkout1b_ce_used [expr {(( [string equal -nocase $clkout1b_buf "BUFGCE"] || [string equal -nocase $clkout1b_buf "BUFHCE"] || [string equal -nocase $clkout1b_buf "BUFR"]) )?true:false}]  :>
+<: set clkout2b_ce_used [expr {((( [string equal -nocase $clkout2b_buf "BUFGCE"] || [string equal -nocase $clkout2b_buf "BUFHCE"] || [string equal -nocase $clkout2b_buf "BUFR"])  && $num_out_clks> 1) )?true:false}]  :>
+<: set clkout3b_ce_used [expr {((( [string equal -nocase $clkout3b_buf "BUFGCE"] || [string equal -nocase $clkout3b_buf "BUFHCE"] || [string equal -nocase $clkout3b_buf "BUFR"])  && $num_out_clks> 2) )?true:false}]  :>
+<: set clkout4b_ce_used [expr {((( [string equal -nocase $clkout4b_buf "BUFGCE"] || [string equal -nocase $clkout4b_buf "BUFHCE"] || [string equal -nocase $clkout4b_buf "BUFR"])  && $num_out_clks> 3) )?true:false}]  :>
+<: set num_bar_clks 0 :>
+<: if { $use_clkout1_bar}  {  :>
+<: set num_bar_clks [ttcl_add $num_bar_clks 1] :>
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+<: set num_bar_clks [ttcl_add $num_bar_clks 1] :>
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+<: set num_bar_clks [ttcl_add $num_bar_clks 1] :>
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+<: set num_bar_clks [ttcl_add $num_bar_clks 1] :>
+<: } :>
+<: ;# :>
+<: ;# :>
+<: ;#----------------------------------------------------- :>
+<: ;#Language specific parameters for common files :>
+<: ;#----------------------------------------------------- :>
+<: set is_verilog [expr {( [isVerilogOutputRequired])?true:false}]  :>
+<: set is_vhdl [expr {( [isVHDLOutputRequired])?true:false}]  :>
+<: set command "" :>
+<: set ext "" :>
+<: set comment "" :>
+<: set glbl_arg "" :>
+<: set library "" :>
+<: set library_sim "" :>
+<: if { $is_verilog}  {  :>
+<: set command "verilog" :>
+<: set ext "v" :>
+<: set comment "//" :>
+<: set glbl_arg "work.glbl" :>
+<: set library "unisims_ver" :>
+<: set library_sim "simprims_ver" :>
+<: } else  { :>
+<: set command "vhdl" :>
+<: set ext "vhd" :>
+<: set comment "--" :>
+<: set library "unisim" :>
+<: set library_sim "simprim" :>
+<: } :>
+<: ;#Generic parameters remerged from PRIMITIVE specific :>
+<: ;#----------------------------------------------------- :>
+<: set clkin1_period "" :>
+<: set clkin2_period "" :>
+<: set clkin1_jitter "" :>
+<: set clkin2_jitter "" :>
+<: set clkin1_jitter_ps [getStringValue "C_CLKIN1_JITTER_PS"] :>
+<: set clkin2_jitter_ps [getStringValue "C_CLKIN2_JITTER_PS"] :>
+<: set clkin1_jitter_ps_l [::tcl::mathfunc::double [::tcl::mathfunc::double $clkin1_jitter_ps]] :>
+<: set clkin1_jitter_ns [expr { $clkin1_jitter_ps_l / 1000} ] :>
+<: set clkin1_jitter_ns_rounded [format "%4.3f"  $clkin1_jitter_ns] :>
+<: set clkin2_jitter_ps_l [::tcl::mathfunc::double [::tcl::mathfunc::double $clkin2_jitter_ps]] :>
+<: set clkin2_jitter_ns [expr { $clkin2_jitter_ps_l / 1000} ] :>
+<: set clkin2_jitter_ns_rounded [format "%4.3f"  $clkin2_jitter_ns] :>
+<: set prim_inst "" :>
+<: set notes "" :>
+<: set status_low 0 :>
+<: set manual_override [expr {( false)?true:false}]  :>
+<: set is_plle2 [expr {( false)?true:false}]  :>
+<: set is_plle3 [expr {( false)?true:false}]  :>
+<: if { [string equal -nocase $PRIMITIVE "PLL"]}  {  :>
+<: set clkin1_period $mmcm_clkin1_period :>
+<: set clkin2_period $mmcm_clkin2_period :>
+<: set clkin1_jitter $mmcm_ref_jitter1 :>
+<: set clkin2_jitter $mmcm_ref_jitter2 :>
+<: set notes $mmcm_notes :>
+<: set manual_override [expr {( $override_mmcm)?true:false}]  :>
+<: if { $is_v8 || $is_k8 }  {  :>
+<: set is_plle3 [expr {( true)?true:false}]  :>
+<: set prim_inst "plle3_adv_inst" :>
+<: } else  { :>
+<: set is_plle2 [expr {( true)?true:false}]  :>
+<: set prim_inst "plle2_adv_inst" :>
+<: } :>
+<: } else  { :>
+<: set clkin1_period $mmcm_clkin1_period :>
+<: set clkin2_period $mmcm_clkin2_period :>
+<: set clkin1_jitter $mmcm_ref_jitter1 :>
+<: set clkin2_jitter $mmcm_ref_jitter2 :>
+<: set prim_inst "mmcm_adv_inst" :>
+<: set notes $mmcm_notes :>
+<: set manual_override [expr {( $override_mmcm)?true:false}]  :>
+<: } :>
+<: if { !$use_inclk_switchover }  {  :>
+<: set per_based_vco [expr 1000*$mmcm_clkfbout_mult_1/($mmcm_divclk_divide*$clkin1_period)] :>
+<: set per_based_vco [format "%3.3f"  $per_based_vco] :>
+<: set clk_in1_freq [get_property PARAM_VALUE.PRIM_IN_FREQ ] :>
+<: set freq_based_vco [expr $clk_in1_freq*$mmcm_clkfbout_mult_1/$mmcm_divclk_divide] :>
+<: set freq_based_vco [format "%3.3f"  $freq_based_vco] :>
+<: set round_issue [expr $freq_based_vco - $per_based_vco] :>
+<: if { $freq_based_vco == 600.000 && $round_issue != 0.000}  {  :>
+<: } :>
+<: } else  { :>
+<: set per_based_vco [expr 1000*$mmcm_clkfbout_mult_1/($mmcm_divclk_divide*$clkin1_period)] :>
+<: set per_based_vco [format "%3.3f"  $per_based_vco] :>
+<: set clk_in1_freq [get_property PARAM_VALUE.PRIM_IN_FREQ ] :>
+<: set freq_based_vco [expr $clk_in1_freq*$mmcm_clkfbout_mult_1/$mmcm_divclk_divide] :>
+<: set freq_based_vco [format "%3.3f"  $freq_based_vco] :>
+<: set round_issue [expr $freq_based_vco - $per_based_vco] :>
+<: if { $freq_based_vco == 600.000 && $round_issue != 0.000}  {  :>
+<: } :>
+<: set per_based_vco [expr 1000*$mmcm_clkfbout_mult_1/($mmcm_divclk_divide*$clkin2_period)] :>
+<: set per_based_vco [format "%3.3f"  $per_based_vco] :>
+<: set clk_in2_freq [get_property PARAM_VALUE.SECONDARY_IN_FREQ] :>
+<: set freq_based_vco [expr $clk_in2_freq*$mmcm_clkfbout_mult_1/$mmcm_divclk_divide] :>
+<: set freq_based_vco [format "%3.3f"  $freq_based_vco] :>
+<: set round_issue [expr $freq_based_vco - $per_based_vco] :>
+<: if { $freq_based_vco == 600.000 && $round_issue != 0.000}  {  :>
+<: } :>
+<: } :>
+<: ;#following are the port names :>
+<: set PRIMARY_PORT [getStringValue "C_PRIMARY_PORT"] :>
+<: set SECONDARY_PORT [getStringValue "C_SECONDARY_PORT"] :>
+<: set out1_port [getStringValue "C_CLK_OUT1_PORT"] :>
+<: set out2_port [getStringValue "C_CLK_OUT2_PORT"] :>
+<: set out3_port [getStringValue "C_CLK_OUT3_PORT"] :>
+<: set out4_port [getStringValue "C_CLK_OUT4_PORT"] :>
+<: set out5_port [getStringValue "C_CLK_OUT5_PORT"] :>
+<: set out6_port [getStringValue "C_CLK_OUT6_PORT"] :>
+<: set out7_port [getStringValue "C_CLK_OUT7_PORT"] :>
+<: set reset_port [getStringValue "C_RESET_PORT"] :>
+<: set locked_port [getStringValue "C_LOCKED_PORT"] :>
+<: set fbin_port [getStringValue "C_CLKFB_IN_PORT"] :>
+<: set fbin_p_port [getStringValue "C_CLKFB_IN_P_PORT"] :>
+<: set fbin_n_port [getStringValue "C_CLKFB_IN_N_PORT"] :>
+<: set fbout_port [getStringValue "C_CLKFB_OUT_PORT"] :>
+<: set fbout_p_port [getStringValue "C_CLKFB_OUT_P_PORT"] :>
+<: set fbout_n_port [getStringValue "C_CLKFB_OUT_N_PORT"] :>
+<: set power_down_port [getStringValue "C_POWER_DOWN_PORT"] :>
+<: set daddr_port [getStringValue "C_DADDR_PORT"] :>
+<: set dclk_port [getStringValue "C_DCLK_PORT"] :>
+<: set drdy_port [getStringValue "C_DRDY_PORT"] :>
+<: set dwe_port [getStringValue "C_DWE_PORT"] :>
+<: set din_port [getStringValue "C_DIN_PORT"] :>
+<: set dout_port [getStringValue "C_DOUT_PORT"] :>
+<: set den_port [getStringValue "C_DEN_PORT"] :>
+<: set psclk_port [getStringValue "C_PSCLK_PORT"] :>
+<: set psen_port [getStringValue "C_PSEN_PORT"] :>
+<: set psincdec_port [getStringValue "C_PSINCDEC_PORT"] :>
+<: set psdone_port [getStringValue "C_PSDONE_PORT"] :>
+<: set clk_valid_port [getStringValue "C_CLK_VALID_PORT"] :>
+<: set status_port [getStringValue "C_STATUS_PORT"] :>
+<: set clk_in_sel_port [getStringValue "C_CLK_IN_SEL_PORT"] :>
+<: set input_clk_stopped_port [getStringValue "C_INPUT_CLK_STOPPED_PORT"] :>
+<: set clkfb_stopped_port [getStringValue "C_CLKFB_STOPPED_PORT"] :>
+<: set cddcdone_port [getStringValue "C_CDDCDONE_PORT"] :>
+<: set cddcreq_port [getStringValue "C_CDDCREQ_PORT"] :>
+<: ;#----------------------- :>
+<: ;#AXI4Lite DRP conversions :>
+<: ;#----------------------- :>
+<: set addZeros [list "00000000" "0000000" "000000" "00000" "0000" "000" "00" "0" ""] :>
+<: set addZeros2 [list "00" "0" ""] :>
+<: set addZeros3 [list "00" "0" ""] :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: set int_mult_factor [expr int($mmcm_clkfbout_mult_f)]   :>
+<: } else  { :>
+<: set int_mult_factor $mmcm_clkfbout_mult   :>
+<: } :>
+<: set hex_mult_factor [dec2hex $int_mult_factor] :>
+<: set hex_mult_factor [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros2 [string length $hex_mult_factor]] $hex_mult_factor]] :>
+<: set frac_en_clkfbout_mid [expr ($mmcm_clkfbout_mult_f - [expr int($mmcm_clkfbout_mult_f)])] :>
+<: if { $frac_en_clkfbout_mid == 0 }  {  :>
+<: set frac_en_clkfbout 0 :>
+<: set frac_mult_factor [expr int([expr ($mmcm_clkfbout_mult_f - [expr int($mmcm_clkfbout_mult_f)])*1000])] :>
+<: } else  { :>
+<: set frac_en_clkfbout 1 :>
+<: set frac_mult_factor [expr int([expr ($mmcm_clkfbout_mult_f - [expr int($mmcm_clkfbout_mult_f)])*1000 + 1024])] :>
+<: } :>
+<: set hex_frac_mult_factor [dec2hex $frac_mult_factor] :>
+<: set hex_frac_mult_factor [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros3 [string length $hex_frac_mult_factor]] $hex_frac_mult_factor]] :>
+<: set int_clkfbout_phase [expr int($mmcm_clkfbout_phase * 1000)]   :>
+<: set hex_clkfbout_phase [dec2hex $int_clkfbout_phase] :>
+<: set hex_clkfbout_phase [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkfbout_phase]] $hex_clkfbout_phase]] :>
+<: set hex_divclk_divide [dec2hex $mmcm_divclk_divide] :>
+<: set hex_divclk_divide [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros2 [string length $hex_divclk_divide]] $hex_divclk_divide]] :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: set int_clkout0_div_factor [expr int($mmcm_clkout0_divide_f)]   :>
+<: } else  { :>
+<: set int_clkout0_div_factor $mmcm_clkout0_divide   :>
+<: } :>
+<: set hex_clkout0_div_factor [dec2hex $int_clkout0_div_factor] :>
+<: set hex_clkout0_div_factor [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros2 [string length $hex_clkout0_div_factor]] $hex_clkout0_div_factor]] :>
+<: set frac_en_clkout0_mid [expr ($mmcm_clkout0_divide_f - [expr int($mmcm_clkout0_divide_f)])] :>
+<: if { $frac_en_clkout0_mid == 0 }  {  :>
+<: set frac_en_clkout0 0 :>
+<: set frac_clkout0_div_factor [expr int([expr ($mmcm_clkout0_divide_f - [expr int($mmcm_clkout0_divide_f)])*1000])] :>
+<: } else  { :>
+<: set frac_en_clkout0 1 :>
+<: set frac_clkout0_div_factor [expr int([expr ($mmcm_clkout0_divide_f - [expr int($mmcm_clkout0_divide_f)])*1000 + 1024])] :>
+<: } :>
+<: set hex_frac_clkout0_div_factor [dec2hex $frac_clkout0_div_factor] :>
+<: set hex_frac_clkout0_div_factor [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros3 [string length $hex_frac_clkout0_div_factor]] $hex_frac_clkout0_div_factor]] :>
+<: set int_clkout0_duty_cycle [expr int($mmcm_clkout0_duty_cycle*100000)]   :>
+<: set hex_clkout0_duty_cycle [dec2hex $int_clkout0_duty_cycle] :>
+<: set hex_clkout0_duty_cycle [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout0_duty_cycle]] $hex_clkout0_duty_cycle]] :>
+<: set int_clkout0_phase [expr int($mmcm_clkout0_phase * 1000)]   :>
+<: set hex_clkout0_phase [format %.8x [expr {$int_clkout0_phase & 0xFFFFFFFF}]] :>
+<: set hex_clkout0_phase [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout0_phase]] $hex_clkout0_phase]] :>
+<: if { $num_out_clks> 1}  {  :>
+<: set int_clkout1_duty_cycle [expr int($mmcm_clkout1_duty_cycle*100000)]   :>
+<: set int_clkout1_phase [expr int($mmcm_clkout1_phase * 1000)]   :>
+<: set hex_clkout1_divide [dec2hex $mmcm_clkout1_divide] :>
+<: set hex_clkout1_divide [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros2 [string length $hex_clkout1_divide]] $hex_clkout1_divide]] :>
+<: } else  { :>
+<: set int_clkout1_duty_cycle 50000 :>
+<: set int_clkout1_phase 0  :>
+<: set hex_clkout1_divide "01" :>
+<: } :>
+<: if { $num_out_clks> 2}  {  :>
+<: set int_clkout2_duty_cycle [expr int($mmcm_clkout2_duty_cycle*100000)]   :>
+<: set int_clkout2_phase [expr int($mmcm_clkout2_phase * 1000)]   :>
+<: set hex_clkout2_divide [dec2hex $mmcm_clkout2_divide] :>
+<: set hex_clkout2_divide [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros2 [string length $hex_clkout2_divide]] $hex_clkout2_divide]] :>
+<: } else  { :>
+<: set int_clkout2_duty_cycle 50000 :>
+<: set int_clkout2_phase 0  :>
+<: set hex_clkout2_divide "01" :>
+<: } :>
+<: if { $num_out_clks> 3}  {  :>
+<: set int_clkout3_duty_cycle [expr int($mmcm_clkout3_duty_cycle*100000)]   :>
+<: set int_clkout3_phase [expr int($mmcm_clkout3_phase * 1000)]   :>
+<: set hex_clkout3_divide [dec2hex $mmcm_clkout3_divide] :>
+<: set hex_clkout3_divide [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros2 [string length $hex_clkout3_divide]] $hex_clkout3_divide]] :>
+<: } else  { :>
+<: set int_clkout3_duty_cycle 50000 :>
+<: set int_clkout3_phase 0  :>
+<: set hex_clkout3_divide "01" :>
+<: } :>
+<: if { $num_out_clks> 4}  {  :>
+<: set int_clkout4_duty_cycle [expr int($mmcm_clkout4_duty_cycle*100000)]   :>
+<: set int_clkout4_phase [expr int($mmcm_clkout4_phase * 1000)]   :>
+<: set hex_clkout4_divide [dec2hex $mmcm_clkout4_divide] :>
+<: set hex_clkout4_divide [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros2 [string length $hex_clkout4_divide]] $hex_clkout4_divide]] :>
+<: } else  { :>
+<: set int_clkout4_duty_cycle 50000 :>
+<: set int_clkout4_phase 0  :>
+<: set hex_clkout4_divide "01" :>
+<: } :>
+<: if { $num_out_clks> 5}  {  :>
+<: set int_clkout5_duty_cycle [expr int($mmcm_clkout5_duty_cycle*100000)]   :>
+<: set int_clkout5_phase [expr int($mmcm_clkout5_phase * 1000)]   :>
+<: set hex_clkout5_divide [dec2hex $mmcm_clkout5_divide] :>
+<: set hex_clkout5_divide [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros2 [string length $hex_clkout5_divide]] $hex_clkout5_divide]] :>
+<: } else  { :>
+<: set int_clkout5_duty_cycle 50000 :>
+<: set int_clkout5_phase 0  :>
+<: set hex_clkout5_divide "01" :>
+<: } :>
+<: if { $num_out_clks> 6}  {  :>
+<: set int_clkout6_duty_cycle [expr int($mmcm_clkout6_duty_cycle*100000)]   :>
+<: set int_clkout6_phase [expr int($mmcm_clkout6_phase * 1000)]   :>
+<: set hex_clkout6_divide [dec2hex $mmcm_clkout6_divide] :>
+<: set hex_clkout6_divide [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros2 [string length $hex_clkout6_divide]] $hex_clkout6_divide]] :>
+<: } else  { :>
+<: set int_clkout6_duty_cycle 50000 :>
+<: set int_clkout6_phase 0  :>
+<: set hex_clkout6_divide "01" :>
+<: } :>
+<: set hex_clkout1_duty_cycle [dec2hex $int_clkout1_duty_cycle] :>
+<: set hex_clkout1_duty_cycle [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout1_duty_cycle]] $hex_clkout1_duty_cycle]] :>
+<: set hex_clkout1_phase [format %.8x [expr {$int_clkout1_phase & 0xFFFFFFFF}]] :>
+<: set hex_clkout1_phase [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout1_phase]] $hex_clkout1_phase]] :>
+<: set hex_clkout2_duty_cycle [dec2hex $int_clkout2_duty_cycle] :>
+<: set hex_clkout2_duty_cycle [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout2_duty_cycle]] $hex_clkout2_duty_cycle]] :>
+<: set hex_clkout2_phase [format %.8x [expr {$int_clkout2_phase & 0xFFFFFFFF}]] :>
+<: set hex_clkout2_phase [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout2_phase]] $hex_clkout2_phase]] :>
+<: set hex_clkout3_duty_cycle [dec2hex $int_clkout3_duty_cycle] :>
+<: set hex_clkout3_duty_cycle [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout3_duty_cycle]] $hex_clkout3_duty_cycle]] :>
+<: set hex_clkout3_phase [format %.8x [expr {$int_clkout3_phase & 0xFFFFFFFF}]] :>
+<: set hex_clkout3_phase [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout3_phase]] $hex_clkout3_phase]] :>
+<: set hex_clkout4_duty_cycle [dec2hex $int_clkout4_duty_cycle] :>
+<: set hex_clkout4_duty_cycle [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout4_duty_cycle]] $hex_clkout4_duty_cycle]] :>
+<: set hex_clkout4_phase [format %.8x [expr {$int_clkout4_phase & 0xFFFFFFFF}]] :>
+<: set hex_clkout4_phase [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout4_phase]] $hex_clkout4_phase]] :>
+<: set hex_clkout5_duty_cycle [dec2hex $int_clkout5_duty_cycle] :>
+<: set hex_clkout5_duty_cycle [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout5_duty_cycle]] $hex_clkout5_duty_cycle]] :>
+<: set hex_clkout5_phase [format %.8x [expr {$int_clkout5_phase & 0xFFFFFFFF}]] :>
+<: set hex_clkout5_phase [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout5_phase]] $hex_clkout5_phase]] :>
+<: set hex_clkout6_duty_cycle [dec2hex $int_clkout6_duty_cycle] :>
+<: set hex_clkout6_duty_cycle [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout6_duty_cycle]] $hex_clkout6_duty_cycle]] :>
+<: set hex_clkout6_phase [format %.8x [expr {$int_clkout6_phase & 0xFFFFFFF}]] :>
+<: set hex_clkout6_phase [ttcl_string_concat [ttcl_string_concat "" [lindex $addZeros [string length $hex_clkout6_phase]] $hex_clkout6_phase]] :>
+<: ;#------------------------------- :>
+<: ;#Include "hidden" test features :>
+<: ;#------------------------------- :>
+<: set sv_test_str [getSystemProperty "SV_TEST" "NULL"] :>
+<: ;#boolean sv_test     = sv_test_str.equalsIgnoreCase("1") :>
+<: set sv_test [expr {( false)?true:false}]  :>
+<: set u_score "_" :>
+<: set up "_p" :>
+<: set un "_n" :>
+<: set uce "_ce" :>
+<: set uclr "_clr" :>
+<: set reconfig_adv [get_property PARAM_VALUE.PHASE_DUTY_CONFIG] :>
+<: ;#----------------------- :>
+<: ;#Matched routing     :>
+<: ;#----------------------- :>
+<: set clkout1_matched [getIntValue "C_CLKOUT1_MATCHED_ROUTING"]  :>
+<: set clkout2_matched [getIntValue "C_CLKOUT2_MATCHED_ROUTING"]  :>
+<: set clkout3_matched [getIntValue "C_CLKOUT3_MATCHED_ROUTING"]  :>
+<: set clkout4_matched [getIntValue "C_CLKOUT4_MATCHED_ROUTING"]  :>
+<: set clkout5_matched [getIntValue "C_CLKOUT5_MATCHED_ROUTING"]  :>
+<: set clkout6_matched [getIntValue "C_CLKOUT6_MATCHED_ROUTING"]  :>
+<: set clkout7_matched [getIntValue "C_CLKOUT7_MATCHED_ROUTING"]  :>
+<: set list_matched "" :>
+<: if {$clkout1_matched == "true"} { :>
+<: lappend list_matched "$out1_port"  :>
+<: } :>
+<: if {$clkout2_matched == "true"} { :>
+<: lappend list_matched "$out2_port"  :>
+<: } :>
+<: if {$clkout3_matched == "true"} { :>
+<: lappend list_matched "$out3_port"  :>
+<: } :>
+<: if {$clkout4_matched == "true"} { :>
+<: lappend list_matched "$out4_port"  :>
+<: } :>
+<: if {$clkout5_matched == "true"} { :>
+<: lappend list_matched "$out5_port"  :>
+<: } :>
+<: if {$clkout6_matched == "true"} { :>
+<: lappend list_matched "$out6_port"  :>
+<: } :>
+<: if {$clkout7_matched == "true"} { :>
+<: lappend list_matched "$out7_port"  :>
+<: } :>
+<: set length_matched [llength $list_matched]   :>
+<: if  {$length_matched <= 1} { :>
+<: set matched false  :>
+<: } else  { :>
+<: set matched true  :>
+<: } :>

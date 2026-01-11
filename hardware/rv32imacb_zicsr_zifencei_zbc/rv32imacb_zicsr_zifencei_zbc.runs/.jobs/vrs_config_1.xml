@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<Runs Version="1" Minor="0">
+	<Run Id="mbv_system_axi_gpio_0_1_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_axi_gpio_0_1_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_axi_gpio_0_2_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_axi_gpio_0_2_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_axi_gpio_0_3_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_axi_gpio_0_3_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_axi_gpio_0_0_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_axi_gpio_0_0_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_axi_gpio_0_5_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_axi_gpio_0_5_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_axi_gpio_0_4_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_axi_gpio_0_4_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_lmb_bram_1_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_lmb_bram_1_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_axi_quad_spi_0_0_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_axi_quad_spi_0_0_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_mbv_riscv_axi_periph_1_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_mbv_riscv_axi_periph_1_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_axi_quad_spi_0_1_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_axi_quad_spi_0_1_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_microblaze_riscv_0_0_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_microblaze_riscv_0_0_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="mbv_system_axi_gpio_0_6_synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_axi_gpio_0_6_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="synth_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado">
+		<Parent Id="mbv_system_axi_gpio_0_1_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_2_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_3_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_0_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_5_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_4_synth_1"/>
+		<Parent Id="mbv_system_lmb_bram_1_synth_1"/>
+		<Parent Id="mbv_system_axi_quad_spi_0_0_synth_1"/>
+		<Parent Id="mbv_system_mbv_riscv_axi_periph_1_synth_1"/>
+		<Parent Id="mbv_system_axi_quad_spi_0_1_synth_1"/>
+		<Parent Id="mbv_system_microblaze_riscv_0_0_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_6_synth_1"/>
+	</Run>
+	<Run Id="impl_1" LaunchDir="C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1" FlowId="Vivado_Implementation" FromStepId="init_design" ToStepId="write_bitstream">
+		<Parent Id="synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_1_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_2_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_3_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_0_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_5_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_4_synth_1"/>
+		<Parent Id="mbv_system_lmb_bram_1_synth_1"/>
+		<Parent Id="mbv_system_axi_quad_spi_0_0_synth_1"/>
+		<Parent Id="mbv_system_mbv_riscv_axi_periph_1_synth_1"/>
+		<Parent Id="mbv_system_axi_quad_spi_0_1_synth_1"/>
+		<Parent Id="mbv_system_microblaze_riscv_0_0_synth_1"/>
+		<Parent Id="mbv_system_axi_gpio_0_6_synth_1"/>
+	</Run>
+	<Parameters>
+		<Parameter Name="runs.monitorLSFJobs" Val="true" Type="bool"/>
+		<Parameter Name="runs.enableClusterConf" Val="true" Type="bool"/>
+		<Parameter Name="general.shortenLongPath" Val="true" Type="bool"/>
+		<Parameter Name="general.usePosixSpawnForFork" Val="true" Type="bool"/>
+	</Parameters>
+	<ProductInfo Name="vivado"/>
+</Runs>
+

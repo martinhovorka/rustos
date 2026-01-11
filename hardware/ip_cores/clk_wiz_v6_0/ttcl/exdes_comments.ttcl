@@ -1,0 +1,6 @@
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> Clocking wizard example design
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> This example design instantiates the created clocking network, where each
+<=: comment :>   output clock drives a counter. The high bit of each counter is ported.
+<=: comment :>----------------------------------------------------------------------------

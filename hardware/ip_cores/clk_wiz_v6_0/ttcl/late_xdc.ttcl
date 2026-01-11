@@ -1,0 +1,46 @@
+<: if {![expr [getIntValue "C_USE_SAFE_CLOCK_STARTUP"] == 1] && ! ([string equal -nocase $clkin1_buf "No_buffer"] || [string equal -nocase $clkin2_buf "No_buffer"]) } {ttcl_return} :>
+<: ;#Component and file information :>
+<: setFileProcessingOrder late :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName [ttcl_string_concat $ComponentName "_late"] :>
+<: setFileExtension ".xdc" :>
+<: ;#all other variables :>
+<#: ttcl/variables.ttcl :>
+<: set comment "#" :>
+# file: <=: ComponentName :>_late.xdc
+<#: ttcl/disclaimer.ttcl :>
+
+<: if { $safe_clk_startup}  {  :>
+set_false_path -to [get_cells  -hier {*seq_reg*[0]} -filter {is_sequential}]
+<: } :>
+
+<: if { $use_inclk_switchover}  {  :>
+<: if { [string equal -nocase $clkin2_buf "No_buffer"]}  {  :>
+<: if { $clkin1_diff}  {  :>
+set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>_p]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]]
+<: } else  { :>
+set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]]
+<: } :>
+<: } elseif { $clkin2_diff}  {  :>
+# Differential clock only needs one constraint
+<: if { $clkin1_diff}  {  :>
+<: } else  { :>
+<: if {  [string equal -nocase $clkin1_buf "No_buffer"]}  {  :>
+set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>_p]]
+<: } else  { :>
+<: } :>
+<: } :>
+<: } else  { :>
+# Connect to input port when clock capable pin is selected for input
+<: if { $clkin1_diff}  {  :>
+<: } else  { :>
+<: if {  [string equal -nocase $clkin1_buf "No_buffer"]}  {  :>
+set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]]
+<: } else  { :>
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+
+

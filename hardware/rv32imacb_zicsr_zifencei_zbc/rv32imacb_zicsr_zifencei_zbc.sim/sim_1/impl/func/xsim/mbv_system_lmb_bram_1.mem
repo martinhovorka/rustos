@@ -1,0 +1,16 @@
+// Mem file initialization records.
+//
+// SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+// Vivado v2025.2 (64-bit)
+// Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+// Created on Tuesday December 23, 2025 - 11:37:03 am, from:
+//
+//     Map file     - x:\hw\rv32imafcb_zicsr_zifencei_zbc\rv32imafcb_zicsr_zifencei_zbc.gen\sources_1\bd\mbv_system\mbv_system.bmm
+//     Data file(s) - x:/hw/rv32imafcb_zicsr_zifencei_zbc/rv32imafcb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/data/riscv_bootloop.elf
+//
+// Address space 'mbv_system_i_mbv_microblaze_v.mbv_system_i_mbv_local_memory_mbv_block_memory_generator_128K_2_ADDR_SPACE', bit lane [31:0].
+//
+// Bus width = 32 bits, number of bus blocks = 1.
+
+@0000000000000000
+    0000006F

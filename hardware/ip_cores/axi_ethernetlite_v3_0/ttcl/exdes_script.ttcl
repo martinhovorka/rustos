@@ -1,0 +1,83 @@
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName "top_set" :>
+<: setFileExtension ".tcl" :>
+<: set wd [ file dirname [ get_property xml_file_name [ current_ipbom ] ] ] :>
+<: set en_bufg [get_property MODELPARAM_VALUE.C_INCLUDE_GLOBAL_BUFFERS] :>
+<: set rx_pp [get_property PARAM_VALUE.C_RX_PING_PONG] :>
+<: set tx_pp [get_property PARAM_VALUE.C_TX_PING_PONG] :>
+<: set en_loop [get_property PARAM_VALUE.C_INCLUDE_INTERNAL_LOOPBACK] :>
+<: set axi_p [get_property PARAM_VALUE.C_S_AXI_PROTOCOL] :>
+<: set duplex [get_property PARAM_VALUE.C_DUPLEX] :>
+<: set id_wid [get_property PARAM_VALUE.C_S_AXI_ID_WIDTH] :>
+<: set family [getStringValue "C_FAMILY"] :>
+<: set DEVICE [get_property PROJECT_PARAM.DEVICE] :>
+<: if {$id_wid <= 6} { :>
+<: set id_atg $id_wid :>
+<: } else { :>
+<: set id_atg 6 :>
+<: } :>
+<: set clk_freq [get_property PARAM_VALUE.AXI_ACLK_FREQ_MHZ] :> 
+
+set addr_coe [lindex [get_property name [get_files *addr.coe]] 0 ]
+set data_coe [lindex [get_property name [get_files *data.coe]] 0 ]
+set mask_coe [lindex [get_property name [get_files *mask.coe]] 0 ]
+set ctrl_coe [lindex [get_property name [get_files *ctrl.coe]] 0 ]
+
+<: if {$en_loop == 0} { :>
+####partner IP
+create_ip -name axi_ethernetlite -vendor xilinx.com -library ip -module_name <=:$ComponentName:>_partner
+set_property -dict [list CONFIG.C_RX_PING_PONG {<=:$rx_pp:>} CONFIG.C_TX_PING_PONG {<=:$tx_pp:>} CONFIG.C_INCLUDE_INTERNAL_LOOPBACK {<=:$en_loop:>} CONFIG.C_S_AXI_PROTOCOL {<=:$axi_p:>} CONFIG.C_DUPLEX {<=:$duplex:>} CONFIG.C_S_AXI_ID_WIDTH {<=:$id_wid:>} CONFIG.AXI_ACLK_FREQ_MHZ {<=:$clk_freq:>} CONFIG.C_INCLUDE_MDIO {0} CONFIG.C_INCLUDE_GLOBAL_BUFFERS {0}] [get_ips <=:$ComponentName:>_partner]
+generate_target all [get_ips <=:$ComponentName:>_partner]
+<: } :>
+
+####Clocking Wizard
+<: if {[string first "versal" $family] == -1} { :>
+create_ip -name clk_wiz  -vendor xilinx.com -library ip -module_name clk_wiz_0
+<: if {$en_loop == 0 || $en_bufg == 0} { :>
+set_property -dict [list CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT2_USED {true} CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {<=:$clk_freq:>} CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {25.000}] [get_ips clk_wiz_0]
+<: } else { :>
+set_property -dict [list CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {<=:$clk_freq:>}] [get_ips clk_wiz_0]
+<: } :>
+generate_target all [get_ips clk_wiz_0]
+<: } else { :>
+<: if { $DEVICE == "xc2ve3858" || $DEVICE == "xcvm2152" || $DEVICE == "xc2vm3558" || $DEVICE == "xc2vm3858" || $DEVICE == "xc2ve3504" || $DEVICE == "xcvm2152_SE" || $DEVICE == "xc2ve3558" || $DEVICE == "xc2ve3804" || $DEVICE == "xcvr1652" || $DEVICE == "xcvr1602" || $DEVICE == "xcvn3716" || $DEVICE == "xc2ve3858_SE" } { :>
+create_ip -name clkx5_wiz -vendor xilinx.com -library ip -version 1.0 -module_name clk_wiz_0
+<: } else { :>
+create_ip -name clk_wizard -vendor xilinx.com -library ip -module_name clk_wiz_0
+<: } :>
+<: if {$en_loop == 0 || $en_bufg == 0} { :>
+set_property -dict [list CONFIG.USE_RESET {true} CONFIG.USE_LOCKED {true} CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT_USED {true,true,false,false,false,false,false} CONFIG.CLKOUT_PORT {clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6,clk_out7} CONFIG.CLKOUT_REQUESTED_OUT_FREQUENCY {<=:$clk_freq:>,25.000,60.000,100.000,100.000,100.000,100.000}] [get_ips clk_wiz_0]
+<: } else { :>
+set_property -dict [list CONFIG.USE_RESET {true} CONFIG.USE_LOCKED {true} CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT_USED {true,false,false,false,false,false,false} CONFIG.CLKOUT_PORT {clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6,clk_out7} CONFIG.CLKOUT_REQUESTED_OUT_FREQUENCY {<=:$clk_freq:>,50.000,60.000,100.000,100.000,100.000,100.000}] [get_ips clk_wiz_0]
+<: } :>
+generate_target all [get_ips clk_wiz_0]
+<: } :>
+
+####ATG
+create_ip -name axi_traffic_gen -vendor xilinx.com -library ip -module_name axi_traffic_gen_0
+<: if {$axi_p == "AXI4"} { :>
+<: if {$en_loop == 0} { :>
+set_property -dict [list CONFIG.ATG_OPTIONS {Custom} CONFIG.C_ATG_MODE {AXI4-Lite} CONFIG.C_ATG_SYSTEM_CMD_MAX_RETRY {1024} CONFIG.C_ATG_MIF_DATA_DEPTH {256} CONFIG.C_ATG_SYSINIT_MODES {System_Test} CONFIG.C_ATG_SYSTEM_MAX_CHANNELS {2} CONFIG.C_ATG_SYSTEM_INIT_ADDR_MIF $addr_coe CONFIG.C_ATG_SYSTEM_INIT_DATA_MIF $data_coe CONFIG.C_ATG_SYSTEM_INIT_MASK_MIF $mask_coe CONFIG.C_ATG_SYSTEM_INIT_CTRL_MIF $ctrl_coe CONFIG.C_ATG_SYSTEM_CH1_HIGH {0x0000FFFF} CONFIG.C_ATG_SYSTEM_CH1_LOW {0x00000000} CONFIG.C_ATG_SYSTEM_CH2_HIGH {0x0002FFFF} CONFIG.C_ATG_SYSTEM_CH2_LOW {0x00020000} CONFIG.C_ATG_SYSTEM_TEST_MAX_CLKS {20000}] [get_ips axi_traffic_gen_0]
+<: } else { :>
+set_property -dict [list CONFIG.ATG_OPTIONS {Custom} CONFIG.C_ATG_MODE {AXI4-Lite} CONFIG.C_ATG_SYSTEM_CMD_MAX_RETRY {1024} CONFIG.C_ATG_MIF_DATA_DEPTH {256} CONFIG.C_ATG_SYSINIT_MODES {System_Test} CONFIG.C_ATG_SYSTEM_MAX_CHANNELS {1} CONFIG.C_ATG_SYSTEM_INIT_ADDR_MIF $addr_coe CONFIG.C_ATG_SYSTEM_INIT_DATA_MIF $data_coe CONFIG.C_ATG_SYSTEM_INIT_MASK_MIF $mask_coe CONFIG.C_ATG_SYSTEM_INIT_CTRL_MIF $ctrl_coe CONFIG.C_ATG_SYSTEM_CH1_HIGH {0x0000FFFF} CONFIG.C_ATG_SYSTEM_CH1_LOW {0x00000000} CONFIG.C_ATG_SYSTEM_TEST_MAX_CLKS {20000}] [get_ips axi_traffic_gen_0]
+<: } :>
+<: } else { :>
+<: if {$en_loop == 0} { :>
+set_property -dict [list CONFIG.ATG_OPTIONS {Custom} CONFIG.C_ATG_MODE {AXI4-Lite} CONFIG.C_ATG_SYSTEM_CMD_MAX_RETRY {1024} CONFIG.C_ATG_MIF_DATA_DEPTH {256} CONFIG.C_ATG_SYSINIT_MODES {System_Test} CONFIG.C_ATG_SYSTEM_MAX_CHANNELS {2} CONFIG.C_ATG_SYSTEM_INIT_ADDR_MIF $addr_coe CONFIG.C_ATG_SYSTEM_INIT_DATA_MIF $data_coe CONFIG.C_ATG_SYSTEM_INIT_MASK_MIF $mask_coe CONFIG.C_ATG_SYSTEM_INIT_CTRL_MIF $ctrl_coe CONFIG.C_ATG_SYSTEM_CH1_HIGH {0x0001FFFF} CONFIG.C_ATG_SYSTEM_CH1_LOW {0x00010000} CONFIG.C_ATG_SYSTEM_CH2_HIGH {0x0002FFFF} CONFIG.C_ATG_SYSTEM_CH2_LOW {0x00020000} CONFIG.C_ATG_SYSTEM_TEST_MAX_CLKS {20000}] [get_ips axi_traffic_gen_0]
+<: } else { :>
+set_property -dict [list CONFIG.ATG_OPTIONS {Custom} CONFIG.C_ATG_MODE {AXI4-Lite} CONFIG.C_ATG_SYSTEM_CMD_MAX_RETRY {1024} CONFIG.C_ATG_MIF_DATA_DEPTH {256} CONFIG.C_ATG_SYSINIT_MODES {System_Test} CONFIG.C_ATG_SYSTEM_MAX_CHANNELS {1} CONFIG.C_ATG_SYSTEM_INIT_ADDR_MIF $addr_coe CONFIG.C_ATG_SYSTEM_INIT_DATA_MIF $data_coe CONFIG.C_ATG_SYSTEM_INIT_MASK_MIF $mask_coe CONFIG.C_ATG_SYSTEM_INIT_CTRL_MIF $ctrl_coe CONFIG.C_ATG_SYSTEM_CH1_HIGH {0x0001FFFF} CONFIG.C_ATG_SYSTEM_CH1_LOW {0x00010000} CONFIG.C_ATG_SYSTEM_TEST_MAX_CLKS {20000}] [get_ips axi_traffic_gen_0]
+<: } :>
+<: } :>
+generate_target all [get_ips axi_traffic_gen_0]
+
+<: if {$axi_p == "AXI4"} { :>
+create_ip -name axi_traffic_gen -vendor xilinx.com -library ip -module_name atg_full
+set_property -dict [list CONFIG.C_M_AXI_THREAD_ID_WIDTH {<=:$id_atg:>} CONFIG.C_S_AXI_ID_WIDTH {0} CONFIG.C_ATG_MODE_L2 {Advanced}] [get_ips atg_full]
+generate_target all [get_ips atg_full]
+<: if {$en_loop == 0} { :>
+###create_ip -name axi_traffic_gen -vendor xilinx.com -library ip -module_name atg_full_p
+###set_property -dict [list CONFIG.C_M_AXI_THREAD_ID_WIDTH {<=:$id_atg:>} CONFIG.C_S_AXI_ID_WIDTH {0} CONFIG.C_HIGHADDR {0x0002FFFF} CONFIG.C_BASEADDR {0x00020000} CONFIG.C_ATG_MODE_L2 {Advanced}] [get_ips atg_full_p]
+###generate_target all [get_ips atg_full_p]
+<: } :>
+<: } :>

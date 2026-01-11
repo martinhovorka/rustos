@@ -1,0 +1,105 @@
+<: ;#Component and file information :>
+<: setFileProcessingOrder early :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName $ComponentName :>
+<: setFileExtension ".xdc" :>
+<: ;#all other variables :>
+<#: ttcl/variables.ttcl :>
+<: set comment "#" :>
+# file: <=: ComponentName :>.xdc
+<#: ttcl/disclaimer.ttcl :>
+
+# Input clock periods. These duplicate the values entered for the
+# input clocks. You can use these to time your system. If required
+# commented constraints can be used in the top level xdc 
+#----------------------------------------------------------------
+<: if { $sel_PRIMITIVE != "None"}  {  :>
+<: if {  [string equal -nocase $clkin1_buf "No_buffer"] || [string equal -nocase $clkin1_buf "Global_buffer"]}  {  :>
+#create_clock -period <=: clkin1_period :> [get_ports <=: PRIMARY_PORT :>]
+#set_input_jitter [get_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] <=: clkin1_jitter_ns :>
+<: } elseif { $clkin1_diff}  {  :>
+# Differential clock only needs one constraint
+create_clock -period <=: clkin1_period :> [get_ports <=: PRIMARY_PORT :>_p]
+set_input_jitter [get_clocks -of_objects [get_ports <=: PRIMARY_PORT :>_p]] <=: clkin1_jitter_ns_rounded :>
+<: } else  { :>
+# Connect to input port when clock capable pin is selected for input
+create_clock -period <=: clkin1_period :> [get_ports <=: PRIMARY_PORT :>]
+set_input_jitter [get_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] <=: clkin1_jitter_ns_rounded :>
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { [string equal -nocase $clkin2_buf "No_buffer"] || [string equal -nocase $clkin2_buf "Global_buffer"]}  {  :>
+#create_clock -period <=: clkin2_period :> [get_ports <=: SECONDARY_PORT :>]
+#set_input_jitter [get_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]] <=: clkin2_jitter_ns :>
+<: if { $clkin1_diff}  {  :>
+#set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>_p]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]]
+<: } else  { :>
+#set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]]
+<: } :>
+<: } elseif { $clkin2_diff}  {  :>
+# Differential clock only needs one constraint
+create_clock -period <=: clkin2_period :> [get_ports <=: SECONDARY_PORT :>_p]
+set_input_jitter [get_clocks -of_objects [get_ports <=: SECONDARY_PORT :>_p]] <=: clkin2_jitter_ns_rounded :>
+<: if { $clkin1_diff}  {  :>
+set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>_p]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>_p]]
+<: } else  { :>
+<: if {  [string equal -nocase $clkin1_buf "No_buffer"] || [string equal -nocase $clkin1_buf "Global_buffer"]}  {  :>
+#set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>_p]]
+<: } else  { :>
+set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>_p]]
+<: } :>
+<: } :>
+<: } else  { :>
+# Connect to input port when clock capable pin is selected for input
+create_clock -period <=: clkin2_period :> [get_ports <=: SECONDARY_PORT :>]
+set_input_jitter [get_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]] <=: clkin2_jitter_ns_rounded :>
+<: if { $clkin1_diff}  {  :>
+set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>_p]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]]
+<: } else  { :>
+<: if {  [string equal -nocase $clkin1_buf "No_buffer"] || [string equal -nocase $clkin1_buf "Global_buffer"]}  {  :>
+#set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]]
+<: } else  { :>
+set_clock_groups -physically_exclusive -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: PRIMARY_PORT :>]] -group [get_clocks -include_generated_clocks -of_objects [get_ports <=: SECONDARY_PORT :>]]
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+
+<: if { $ext_feedback_xdc_constr}  {  :>
+# external feedback constraints
+# Change delay numbers as per requirement 
+<: if { $auto_diff_feedback}  {  :>
+set_external_delay -from [get_ports <=: fbout_p_port :>] -to [get_ports <=: fbin_p_port :>] -min 0.1
+set_external_delay -from [get_ports <=: fbout_p_port :>] -to [get_ports <=: fbin_p_port :>] -max 0.11 
+set_external_delay -from [get_ports <=: fbout_n_port :>] -to [get_ports <=: fbin_n_port :>] -min 0.1 
+set_external_delay -from [get_ports <=: fbout_n_port :>] -to [get_ports <=: fbin_n_port :>] -max 0.11 
+<: } else { :>
+# Please uncomment following lines if these pins are directly connected at top. Recommended method is to use ODDR for forwarding the clk on IO
+#set_external_delay -from [get_ports <=: fbout_port :>] -to [get_ports <=: fbin_port :>] -min 0.1  
+#set_external_delay -from [get_ports <=: fbout_port :>] -to [get_ports <=: fbin_port :>] -max 0.11  
+<: } :>
+<: } :>
+
+<: if { $safe_clk_startup}  {  :>
+set_false_path -to [get_cells  -hier {*seq_reg*[*]} -filter {is_sequential}]
+<: } :>
+<: if { $c_has_AXI } { :>
+
+#create_clock -period 10 [get_ports s_axi_aclk]
+set_false_path -from  [get_pins  -leaf -of_objects [get_cells -hier *ram_clk_config* -filter {is_sequential}] -filter {NAME=~*/C}] -to [get_pins  -leaf -of_objects [get_cells -hier *ram* -filter {is_sequential}] -filter {NAME=~*/D}]
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR } { :>
+set_false_path -to [get_cells -hierarchical *syncstages_ff_reg[0]*]
+<: } :>
+<: if { $Auto_primitive != "BUFGCE_DIV"}  {  :>
+<: if { $is_v8 || $is_k8 } { :>
+set_property PHASESHIFT_MODE <: print $phaseshift_mode :> [get_cells -hierarchical *adv*]
+<: } else { :>
+set_property PHASESHIFT_MODE WAVEFORM [get_cells -hierarchical *adv*]
+<: } :>
+<: } :>
+<: if {$matched == "true"} { :>
+set_property CLOCK_DELAY_GROUP group_<=:ComponentName:> [get_nets -hierarchical {<=: list_matched :>}]
+<: } else { :>
+<: } :>
+<: } :>

@@ -1,0 +1,217 @@
+  -- Input clock buffering / unused connectors
+  signal <: print $PRIMARY_PORT$u_score$ComponentName :>      : std_logic;
+<: if { $clkin1_nonclkpin}  {  :>
+  signal <: print $PRIMARY_PORT$u_score$ComponentName :>_buf : std_logic;
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+  signal <: print $SECONDARY_PORT$u_score$ComponentName :>      : std_logic;
+<: if { $clkin2_nonclkpin}  {  :>
+  signal <: print $SECONDARY_PORT$u_score$ComponentName :>_buf : std_logic;
+<: } :>
+<: } :>
+  -- Output clock buffering / unused connectors
+  signal clkfbout_<=: ComponentName :>         : std_logic;
+<: if { (($safe_clk_startup) && !$use_phase_alignment) || ($safe_clk_startup) || ((!$ext_feedback) && (!$auto_ext_feedback) && $use_phase_alignment)}  {  :>
+  signal clkfbout_buf_<=: ComponentName :>     : std_logic;
+<: } :>
+  signal clkfboutb_unused : std_logic;
+  signal <: print $out1_port$u_score$ComponentName :>          : std_logic;
+<: if { $safe_clk_startup}  {  :>
+  signal <: print $out1_port$u_score$ComponentName :>_en_clk   : std_logic;
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+  signal clkout0b         : std_logic;
+<: } else  { :>
+<: if { $num_out_clks< 2}  { :>
+  signal clkout0b_unused         : std_logic;
+<: } else  { :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide_f && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+  signal clkout0b_unused         : std_logic;
+<: } else  { :>
+<: } :>
+<: } else  { :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+  signal clkout0b_unused         : std_logic;
+<: } else  { :>
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks< 2}  {  :>
+  signal clkout1_unused   : std_logic;
+<: } else  { :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide_f && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+<: } else  { :>
+  signal clkout1_unused   : std_logic;
+<: } :>
+<: } else  { :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+<: } else  { :>
+  signal clkout1_unused   : std_logic;
+<: } :>
+<: } :>
+  signal <: print $out2_port$u_score$ComponentName :>          : std_logic;
+<: if { $safe_clk_startup}  {  :>
+  signal <: print $out2_port$u_score$ComponentName :>_en_clk   : std_logic;
+<: } :>
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+  signal clkout1b         : std_logic;
+<: } elseif { $num_out_clks< 3}  { :>
+  signal clkout1b_unused         : std_logic;
+<: } else  { :>
+<: if {(!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) && ($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && (!$is_plle2)) }  {  :>
+<: } else  { :>
+  signal clkout1b_unused         : std_logic;
+<: } :>
+<: } :>
+<: if { !$is_plle3}  {  :>
+<: if { ($mmcm_ss_en) || ($num_out_clks< 3)}  {  :>
+  signal clkout2_unused   : std_logic;
+<: } else  { :>
+<: if {(!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) && ($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && (!$is_plle2)) }  {  :>
+  signal clkout2_unused   : std_logic;
+<: } else  { :>
+<: } :>
+  signal <: print $out3_port$u_score$ComponentName :>          : std_logic;
+<: if { $safe_clk_startup}  {  :>
+  signal <: print $out3_port$u_score$ComponentName :>_en_clk   : std_logic;
+<: } :>
+<: } :>
+<: if { (!$mmcm_ss_en) && ($use_clkout3_bar)}  {  :>
+  signal clkout2b         : std_logic;
+<: } elseif { $num_out_clks< 4}  { :>
+  signal clkout2b_unused         : std_logic;
+<: } else  { :>
+<: if {(!($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && ($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && (!$is_plle2)) }  {  :>
+<: } else  { :>
+  signal clkout2b_unused         : std_logic;
+<: } :>
+<: } :>
+<: if {($mmcm_ss_en) || ($num_out_clks< 4)}  {  :>
+  signal clkout3_unused   : std_logic;
+<: } else  { :>
+<: if {(!($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && ($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && (!$is_plle2)) }  {  :>
+  signal clkout3_unused   : std_logic;
+<: } else  { :>
+<: } :>
+  signal <: print $out4_port$u_score$ComponentName :>          : std_logic;
+<: if { $safe_clk_startup}  {  :>
+  signal <: print $out4_port$u_score$ComponentName :>_en_clk   : std_logic;
+<: } :>
+<: } :>
+<: if {(!$mmcm_ss_en) &&  ($use_clkout4_bar)}  {  :>
+  signal clkout3b         : std_logic;
+<: } elseif { $num_out_clks< 5}  { :>
+  signal clkout3b_unused  : std_logic;
+<: } else  { :>
+<: if {(!($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && ($mmcm_clkout4_divide == $mmcm_clkout3_divide && ($mmcm_clkout4_phase - $mmcm_clkout3_phase) == 180 && $mmcm_clkout4_duty_cycle == $mmcm_clkout3_duty_cycle && $mmcm_clkout4_use_fine_ps == $mmcm_clkout3_use_fine_ps) && (!$is_plle2)) }  {  :>
+<: } else  { :>
+  signal clkout3b_unused  : std_logic;
+<: } :>
+<: } :>
+<: if { $num_out_clks< 5}  {  :>
+  signal clkout4_unused   : std_logic;
+<: } else  { :>
+<: if {(!($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && ($mmcm_clkout4_divide == $mmcm_clkout3_divide && ($mmcm_clkout4_phase - $mmcm_clkout3_phase) == 180 && $mmcm_clkout4_duty_cycle == $mmcm_clkout3_duty_cycle && $mmcm_clkout4_use_fine_ps == $mmcm_clkout3_use_fine_ps) && (!$is_plle2)) }  {  :>
+  signal clkout4_unused   : std_logic;
+<: } else  { :>
+<: } :>
+  signal <: print $out5_port$u_score$ComponentName :>          : std_logic;
+<: if { $safe_clk_startup}  {  :>
+  signal <: print $out5_port$u_score$ComponentName :>_en_clk   : std_logic;
+<: } :>
+<: } :>
+<: if { $num_out_clks< 6}  {  :>
+  signal clkout5_unused   : std_logic;
+<: } else  { :>
+  signal <: print $out6_port$u_score$ComponentName :>          : std_logic;
+<: if { $safe_clk_startup}  {  :>
+  signal <: print $out6_port$u_score$ComponentName :>_en_clk   : std_logic;
+<: } :>
+<: } :>
+<: if { $num_out_clks< 7}  {  :>
+  signal clkout6_unused   : std_logic;
+<: } else  { :>
+  signal <: print $out7_port$u_score$ComponentName :>          : std_logic;
+<: if { $safe_clk_startup}  {  :>
+  signal <: print $out7_port$u_score$ComponentName :>_en_clk   : std_logic;
+<: } :>
+<: } :>
+<: } :>
+<: if { !$use_dyn_reprog}  {  :>
+  -- Dynamic programming unused signals
+  signal do_unused        : std_logic_vector(15 downto 0);
+  signal drdy_unused      : std_logic;
+<: } :>
+<: if { !$use_dyn_phase_shift}  {  :>
+  -- Dynamic phase shift unused signals
+  signal psdone_unused    : std_logic;
+<: } :>
+  signal <=: locked_port :>_int : std_logic;
+  -- Unused status signals
+  signal clkfbstopped_unused : std_logic;
+<: if { !$use_inclk_stopped}  {  :>
+  signal clkinstopped_unused : std_logic;
+<: } :>
+<: if { $auto_ext_feedback}  {  :>
+  signal clkfb_in_buf_out : std_logic;
+  signal clkfb_bufg_out   : std_logic;
+  signal clkfb_oddr_out   : std_logic;
+<: } :>
+<: if  { !$use_phase_alignment}  { :>
+<: } :>
+<: if { $use_reset}  {  :>
+  signal reset_high   : std_logic;
+<: } :>
+<: if { $safe_clk_startup}  {  :>
+  signal seq_reg1       : std_logic_vector(7 downto 0) := (others => '0');
+<: if { $num_out_clks>= 2}  {  :>
+  signal seq_reg2       : std_logic_vector(7 downto 0) := (others => '0');
+<: } :>
+<: if { ($num_out_clks>= 3) && (!$mmcm_ss_en)}  {  :>
+  signal seq_reg3       : std_logic_vector(7 downto 0) := (others => '0');
+<: } :>
+<: if { ($num_out_clks>= 4) && (!$mmcm_ss_en)}  {  :>
+  signal seq_reg4       : std_logic_vector(7 downto 0) := (others => '0');
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+  signal seq_reg5       : std_logic_vector(7 downto 0) := (others => '0');
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+  signal seq_reg6       : std_logic_vector(7 downto 0) := (others => '0');
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+  signal seq_reg7       : std_logic_vector(7 downto 0) := (others => '0');
+<: } :>
+  attribute ASYNC_REG   : string;
+  attribute ASYNC_REG of seq_reg1: signal is "TRUE";
+  attribute keep: boolean;
+  attribute keep of seq_reg1: signal is true;
+<: if { $num_out_clks>= 2}  {  :>
+  attribute ASYNC_REG of seq_reg2: signal is "TRUE";
+  attribute keep of seq_reg2: signal is true;
+<: } :>
+<: if { ($num_out_clks>= 3) && (!$mmcm_ss_en)}  {  :>
+  attribute ASYNC_REG of seq_reg3: signal is "TRUE";
+  attribute keep of seq_reg3: signal is true;
+<: } :>
+<: if { ($num_out_clks>= 4) && (!$mmcm_ss_en)}  {  :>
+  attribute ASYNC_REG of seq_reg4: signal is "TRUE";
+  attribute keep of seq_reg4: signal is true;
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+  attribute ASYNC_REG of seq_reg5: signal is "TRUE";
+  attribute keep of seq_reg5: signal is true;
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+  attribute ASYNC_REG of seq_reg6: signal is "TRUE";
+  attribute keep of seq_reg6: signal is true;
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+  attribute ASYNC_REG of seq_reg7: signal is "TRUE";
+  attribute keep of seq_reg7: signal is true;
+<: } :>
+<: } :>

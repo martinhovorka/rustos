@@ -1,0 +1,23 @@
+<: setFileProcessingOrder late :>
+<: setOutputDirectory "./" :>
+<: set ComponentName [getComponentNameString] :>
+<: setFileName [ttcl_add $ComponentName "_ooc_trace"] :>
+<: setFileExtension ".xdc" :>
+<: setFileUsedIn [list out_of_context synthesis implementation] :>
+<: getDisclaimer "#" :>
+
+# This constraints file contains default clock frequencies to be used during 
+# out-of-context flows such as OOC Synthesis and Hierarchical Designs. For 
+# best results the frequencies should be modified to match the target 
+# frequencies. This constraints file is not used in normal top-down 
+# synthesis (the default flow of Vivado)
+
+<: set trace_output [getIntValue "c_trace_output"] :>
+<: if {$trace_output == 1} { :>
+create_clock -name TRACE_CLK -period 10.0 [get_ports TRACE_CLK]
+<: } :>
+<: set use_bscan [getIntValue "c_use_bscan"] :>
+<: if {$use_bscan == 2 || $use_bscan == 4} { :>
+create_clock -name bscan_ext_update -period 60.0 [get_ports bscan_ext_update]
+create_clock -name bscan_ext_tck    -period 30.0 [get_ports bscan_ext_tck]
+<: }:>

@@ -1,0 +1,124 @@
+wire <: print $PRIMARY_PORT$u_score$ComponentName :>;
+wire <: print $PRIMARY_PORT$u_score$ComponentName :>_buf;
+wire <: print $SECONDARY_PORT$u_score$ComponentName :>;
+<: if { [string equal -nocase $clkin1_buf "No_buffer"]}  {  :>
+  assign <: print $PRIMARY_PORT$u_score$ComponentName :> = <=: PRIMARY_PORT :>;
+<: } elseif  { [string equal -nocase $clkin1_buf "Single_ended_clock_capable_pin"]}  { :>
+<: if { $is_v8 || $is_k8 }  {  :>
+  IBUF clkin1_ibuf
+<: } else  { :>
+  IBUF clkin1_ibufg
+<: } :>
+   (.O (<: print $PRIMARY_PORT$u_score$ComponentName :>),
+    .I (<=: PRIMARY_PORT :>));
+<: } elseif  { [string equal -nocase $clkin1_buf "Differential_clock_capable_pin"]}  { :>
+<: if { $is_v8 || $is_k8 }  {  :>
+  IBUFDS clkin1_ibufds
+<: } else  { :>
+  IBUFDS clkin1_ibufgds
+<: } :>
+   (.O  (<: print $PRIMARY_PORT$u_score$ComponentName :>_buf),
+    .I  (<=: PRIMARY_PORT :>_p),
+    .IB (<=: PRIMARY_PORT :>_n));
+    BUFG clkin1_bufg1
+   (.O (<: print $PRIMARY_PORT$u_score$ComponentName :>),
+    .I (<: print $PRIMARY_PORT$u_score$ComponentName :>_buf));
+<: } elseif  { [string equal -nocase $clkin1_buf "Single_ended_non_clock_pin"]}  { :>
+  IBUF clkin1_ibuf0
+   (.O (<: print $PRIMARY_PORT$u_score$ComponentName :>_buf),
+    .I (<=: PRIMARY_PORT :>));
+
+  BUFG clkin1_bufg1
+   (.O (<: print $PRIMARY_PORT$u_score$ComponentName :>),
+    .I (<: print $PRIMARY_PORT$u_score$ComponentName :>_buf));
+<: } elseif  { [string equal -nocase $clkin1_buf "Differential_non_clock_pin"]}  { :>
+  IBUFDS clkin1_ibufds0
+   (.O  (<: print $PRIMARY_PORT$u_score$ComponentName :>_buf),
+    .I  (<=: PRIMARY_PORT :>_p),
+    .IB (<=: PRIMARY_PORT :>_n));
+
+  BUFG clkin1_bufg1
+   (.O (<: print $PRIMARY_PORT$u_score$ComponentName :>),
+    .I (<: print $PRIMARY_PORT$u_score$ComponentName :>_buf));
+<: } else  {;#BUFG :>
+  BUFG clkin1_bufg
+   (.O (<: print $PRIMARY_PORT$u_score$ComponentName :>),
+    .I (<=: PRIMARY_PORT :>));
+<: } :>
+
+<: if { !$is_plle3}  {  :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { [string equal -nocase $clkin2_buf "No_buffer"]}  {  :>
+  assign <: print $SECONDARY_PORT$u_score$ComponentName :> = <=: SECONDARY_PORT :>;
+<: } elseif  { [string equal -nocase $clkin2_buf "Single_ended_clock_capable_pin"]}  { :>
+<: if { $is_v8 || $is_k8 }  {  :>
+  IBUF clkin2_ibuf
+<: } else  { :>
+  IBUF clkin2_ibufg
+<: } :>
+   (.O (<: print $SECONDARY_PORT$u_score$ComponentName :>),
+    .I (<=: SECONDARY_PORT :>));
+<: } elseif  { [string equal -nocase $clkin2_buf "Differential_clock_capable_pin"]}  { :>
+<: if { $is_v8 || $is_k8 }  {  :>
+  IBUFDS clkin2_ibufds
+<: } else  { :>
+  IBUFDS clkin2_ibufgds
+<: } :>
+   (.O  (<: print $SECONDARY_PORT$u_score$ComponentName :>),
+    .I  (<=: SECONDARY_PORT :>_p),
+    .IB (<=: SECONDARY_PORT :>_n));
+<: } elseif  { [string equal -nocase $clkin2_buf "Single_ended_non_clock_pin"]}  { :>
+  IBUF clkin2_ibuf0
+   (.O (<: print $SECONDARY_PORT$u_score$ComponentName :>_buf),
+    .I (<=: SECONDARY_PORT :>));
+
+  BUFG clkin2_bufg1
+   (.O (<: print $SECONDARY_PORT$u_score$ComponentName :>),
+    .I (<: print $SECONDARY_PORT$u_score$ComponentName :>_buf));
+<: } elseif  { [string equal -nocase $clkin2_buf "Differential_non_clock_pin"]}  { :>
+  IBUFDS clkin2_ibufds0
+   (.O  (<: print $SECONDARY_PORT$u_score$ComponentName :>_buf),
+    .I  (<=: SECONDARY_PORT :>_p),
+    .IB (<=: SECONDARY_PORT :>_n));
+
+  BUFG clkin2_bufg1
+   (.O (<: print $SECONDARY_PORT$u_score$ComponentName :>),
+    .I (<: print $SECONDARY_PORT$u_score$ComponentName :>_buf));
+<: } else  {;#BUFG :>
+  BUFG clkin2_bufg
+   (.O (<: print $SECONDARY_PORT$u_score$ComponentName :>),
+    .I (<=: SECONDARY_PORT :>));
+<: } :>
+<: } :>
+<: } :>
+<: if { $auto_ext_feedback}  {  :>
+  wire clkfb_in_buf_out;
+<: } :>
+
+<: if  { ($mmcm_compensation != "INTERNAL")} { :>
+<: if  { $auto_sing_feedback }  { :>
+
+  // feedback clock input buffer
+<: if { $is_v8 || $is_k8 }  {  :>
+  IBUF clkfb_ibuf
+<: } else  { :>
+  IBUF clkfb_ibufg
+<: } :>
+   (.O  (clkfb_in_buf_out),
+    .I  (<=: fbin_port :>));
+<: } :>
+<: if  { $auto_diff_feedback }  { :>
+
+  // differential buffer for the feedback clock
+<: if { $is_v8 || $is_k8 }  {  :>
+  IBUFDS clkfb_ibufds
+<: } else  { :>
+  IBUFDS clkfb_ibufgds
+<: } :>
+   (.O  (clkfb_in_buf_out),
+    .I  (<=: fbin_p_port :>),
+    .IB (<=: fbin_n_port :>));
+<: } :>
+<: } :>
+
+

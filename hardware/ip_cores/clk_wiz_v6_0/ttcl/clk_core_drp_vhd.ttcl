@@ -1,0 +1,1497 @@
+<: if {![expr [getIntValue "C_INTERFACE_SELECTION"] == 1]} {ttcl_return} :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName [ttcl_add $ComponentName "_clk_wiz_drp"] :>
+<: setFileExtension ".vhd" :>
+<#: ttcl/variables.ttcl :>
+-- *************************************************************************
+-- ** (c) Copyright 2017-2018, 2023 Advanced Micro Devices, Inc. All rights reserved **                                                                   **
+-- **                                                                                **
+-- ** This file contains confidential and proprietary information                    **
+-- ** of AMD and is protected under U.S. and international copyright                 **
+-- ** and other intellectual property laws.                                          **
+-- **                                                                                **
+-- ** DISCLAIMER                                                                     **
+-- ** This disclaimer is not a license and does not grant any                        **
+-- ** rights to the materials distributed herewith. Except as                        **
+-- ** otherwise provided in a valid license issued to you by                         **
+-- ** AMD, and to the maximum extent permitted by applicable                         **
+-- ** law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND                        **
+-- ** WITH ALL FAULTS, AND AMD HEREBY DISCLAIMS ALL WARRANTIES                       **
+-- ** AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING                      **
+-- ** BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-                         **
+-- ** INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and                       **
+-- ** (2) AMD shall not be liable (whether in contract or tort,                      **
+-- ** including negligence, or under any other theory of                             **
+-- ** liability) for any loss or damage of any kind or nature                        **
+-- ** related to, arising under or in connection with these                          **
+-- ** materials, including for any direct, or any indirect,                          **
+-- ** special, incidental, or consequential loss or damage                           **
+-- ** (including loss of data, profits, goodwill, or any type of                     **
+-- ** loss or damage suffered as a result of any action brought                      **
+-- ** by a third party) even if such damage or loss was                              **
+-- ** reasonably foreseeable or AMD had been advised of the                          **
+-- ** possibility of the same.                                                       **
+-- **                                                                                **
+-- ** CRITICAL APPLICATIONS                                                          **
+-- ** AMD products are not designed or intended to be fail-                          **
+-- ** safe, or for use in any application requiring fail-safe                        **
+-- ** performance, such as life-support or safety devices or                         **
+-- ** systems, Class III medical devices, nuclear facilities,                        **
+-- ** applications related to the deployment of airbags, or any                      **
+-- ** other applications that could lead to death, personal                          **
+-- ** injury, or severe property or environmental damage                             **
+-- ** (individually and collectively, "Critical                                      **
+-- ** Applications"). Customer assumes the sole risk and                             **
+-- ** liability of any use of AMD products in Critical                               **
+-- ** Applications, subject only to applicable laws and                              **
+-- ** regulations governing limitations on product liability.                        **
+-- **                                                                                **
+-- ** THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS                       **
+-- ** PART OF THIS FILE AT ALL TIMES.                                                **
+-- **          **
+-- **          **
+-- **          **
+-- **          **
+-- **                                                                                **
+-- *************************************************************************
+--
+
+-------------------------------------------------------------------------------
+-- File          : clk_wiz_drp.vhd
+-- Version       : v1.0
+-- Description   : AXI bus slave interface for dynamic clock configuration.
+--                 This file containts actual interface between the core
+--                 and MMCM/PLL hard macro.
+-- Standard      : VHDL-93
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- Structure:
+--             axi_clk_wiz.vhd
+--               -clk_wiz_drp.vhd
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- Naming Conventions:
+--      active low signals:                     "*_n"
+--      clock signals:                          "clk", "clk_div#", "clk_#x"
+--      reset signals:                          "rst", "rst_n"
+--      generics:                               "C_*"
+--      user defined types:                     "*_TYPE"
+--      state machine next state:               "*_ns"
+--      state machine current state:            "*_cs"
+--      combinatorial signals:                  "*_cmb"
+--      pipelined or register delay signals:    "*_d#"
+--      counter signals:                        "*cnt*"
+--      clock enable signals:                   "*_ce"
+--      internal version of output port         "*_i"
+--      device pins:                            "*_pin"
+--      ports:                                  - Names begin with Uppercase
+--      processes:                              "*_PROCESS"
+--      component instantiations:               "<ENTITY_>I_<#|FUNC>
+-------------------------------------------------------------------------------
+
+library IEEE;
+    use IEEE.std_logic_1164.all;
+    use IEEE.std_logic_unsigned.all;
+    use ieee.std_logic_misc.all;
+
+
+library work;
+    use work.<=: ComponentName :>_ipif_pkg.all;
+    use work.<=: ComponentName :>_proc_common_pkg.all;
+
+Library UNISIM;
+use UNISIM.VCOMPONENTS.ALL;
+
+-------------------------------------------------------------------------------
+--                     Definition of Generics
+-------------------------------------------------------------------------------
+-- AXI4 Slave Single block generics
+-------------------------------------------------------------------------------
+--    C_S_AXI_ADDR_WIDTH     -- AXI4 address bus width
+--    C_S_AXI_DATA_WIDTH     -- AXI4 Slave bus width
+--    CE_NUMBERS             -- read/write chip enble no.
+-------------------------------------------------------------------------------
+--                  Definition of Ports
+-------------------------------------------------------------------------------
+-- AXI Slave Interface --   INPUT/OUTPUT Signals
+-------------------------------------------------------------------------------
+--    Bus2IP_Clk             -- bus clock
+--    Bus2IP_Rst             -- bus reset
+--    -- Bus 2 IP IPIC interface
+--    Bus2IP_RdCE            -- bus read chip enable signals
+--    Bus2IP_WrCE            -- bus write chip enable signals
+--    Bus2IP_Addr            -- bus address bits
+--    Bus2IP_Data            -- bus to ip data
+--    -- IP 2 Bus IPIC interface
+--    IP2Bus_Data     -- data 
+--    IP2Bus_WrAck    -- write ack 
+--    IP2Bus_RdAck    -- read ack 
+
+-------------------------------------------------------------------------------
+
+entity <=: ComponentName :>_clk_wiz_drp is
+  generic
+  (
+    ----------------
+    C_S_AXI_ADDR_WIDTH     : integer;
+    C_S_AXI_DATA_WIDTH     : integer;
+    C_FAMILY               : string;
+    ----------------
+    CE_NUMBERS             : integer
+    ----------------
+  );
+  port
+  (
+   -- IP Interconnect (IPIC) port signals ---------
+  Bus2IP_Clk             : in  std_logic;
+  Bus2IP_Rst             : in  std_logic;
+  -- Bus 2 IP IPIC interface
+  Bus2IP_RdCE            : in std_logic_vector(0 to CE_NUMBERS-1);
+  Bus2IP_WrCE            : in std_logic_vector(0 to CE_NUMBERS-1);
+  Bus2IP_Addr            : in std_logic_vector(0 to (C_S_AXI_ADDR_WIDTH-1));
+  Bus2IP_Data            : in std_logic_vector(0 to (C_S_AXI_DATA_WIDTH-1));
+  -- IP 2 Bus IPIC interface
+  IP2Bus_Data     : out std_logic_vector(0 to (C_S_AXI_DATA_WIDTH-1));
+  IP2Bus_WrAck    : out std_logic;
+  IP2Bus_RdAck    : out std_logic;
+  <: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+   Ref_Clk           : in STD_LOGIC;
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+   User_Clk0         : in STD_LOGIC;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+   User_Clk1         : in STD_LOGIC;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+   User_Clk2         : in STD_LOGIC;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+   User_Clk3         : in STD_LOGIC;
+<: } :>
+   Clk_stop          : out std_logic_vector(3 downto 0);
+   Clk_OOR           : out std_logic_vector(3 downto 0);
+   Clock_Glitch      : out std_logic_vector(3 downto 0);
+   Interrupt         : out std_logic;
+<: } :>
+  ----------------  clocking macro interface  -------------------
+  -- Clock in ports
+<: if { $use_inclk_switchover}  {  :>
+<: if { $clkin2_diff}  {  :>
+  <=: SECONDARY_PORT :>_p         : in     std_logic;
+  <=: SECONDARY_PORT :>_n         : in     std_logic;
+<: } else  { :>
+  <=: SECONDARY_PORT :>           : in     std_logic;
+<: } :>
+  <=: clk_in_sel_port :>           : in     std_logic;
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+  <=: fbin_p_port :>        : in     std_logic;
+  <=: fbin_n_port :>        : in     std_logic;
+<: } else  { :>
+  <=: fbin_port :>          : in     std_logic;
+<: } :>
+<: } :>
+<: } :>
+  -- Clock out ports
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+  clkoutphy                 : out    std_logic;
+<: } :>
+<: } :>
+<: if { $clkout1_ce_used && !$safe_clk_startup}  {  :>
+  <=: out1_port :>_ce       : in     std_logic;
+<: } :>
+<: if { $clkout1_clr_used && !$safe_clk_startup}  {  :>
+  <=: out1_port :>_clr      : in     std_logic;
+<: } :>
+<: if { $clkout1_last}  {  :>
+  <=: out1_port :>          : out    std_logic
+<: } else  { :>
+  <=: out1_port :>          : out    std_logic;
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+  <=: out1_port :>B         : out    std_logic;
+<: } :>
+<: if { $num_out_clks>= 2}  {  :>
+<: if { $clkout2_ce_used && !$safe_clk_startup}  {  :>
+  <=: out2_port :>_ce       : in     std_logic;
+<: } :>
+<: if { $clkout2_clr_used && !$safe_clk_startup}  {  :>
+  <=: out2_port :>_clr      : in     std_logic;
+<: } :>
+<: if { $clkout2_last}  {  :>
+  <=: out2_port :>          : out    std_logic
+<: } else  { :>
+  <=: out2_port :>          : out    std_logic;
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+  <=: out2_port :>B         : out    std_logic;
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 3) && (!$mmcm_ss_en)}  {  :>
+<: if { $clkout3_ce_used && !$safe_clk_startup}  {  :>
+  <=: out3_port :>_ce       : in     std_logic;
+<: } :>
+<: if { $clkout3_clr_used && !$safe_clk_startup}  {  :>
+  <=: out3_port :>_clr      : in     std_logic;
+<: } :>
+<: if { $clkout3_last}  {  :>
+  <=: out3_port :>          : out    std_logic
+<: } else  { :>
+  <=: out3_port :>          : out    std_logic;
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+  <=: out3_port :>B         : out    std_logic;
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 4) && (!$mmcm_ss_en)}  {  :>
+<: if { $clkout4_ce_used && !$safe_clk_startup}  {  :>
+  <=: out4_port :>_ce       : in     std_logic;
+<: } :>
+<: if { $clkout4_clr_used && !$safe_clk_startup}  {  :>
+  <=: out4_port :>_clr      : in     std_logic;
+<: } :>
+<: if { $clkout4_last}  {  :>
+  <=: out4_port :>          : out    std_logic
+<: } else  { :>
+  <=: out4_port :>          : out    std_logic;
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+  <=: out4_port :>B         : out    std_logic;
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+<: if { $clkout5_ce_used && !$safe_clk_startup}  {  :>
+  <=: out5_port :>_ce       : in     std_logic;
+<: } :>
+<: if { $clkout5_clr_used && !$safe_clk_startup}  {  :>
+  <=: out5_port :>_clr      : in     std_logic;
+<: } :>
+<: if { $clkout5_last}  {  :>
+  <=: out5_port :>          : out    std_logic
+<: } else  { :>
+  <=: out5_port :>          : out    std_logic;
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+<: if { $clkout6_ce_used && !$safe_clk_startup}  {  :>
+  <=: out6_port :>_ce       : in     std_logic;
+<: } :>
+<: if { $clkout6_clr_used && !$safe_clk_startup}  {  :>
+  <=: out6_port :>_clr      : in     std_logic;
+<: } :>
+<: if { $clkout6_last}  {  :>
+  <=: out6_port :>          : out    std_logic
+<: } else  { :>
+  <=: out6_port :>          : out    std_logic;
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+<: if { $clkout7_ce_used && !$safe_clk_startup}  {  :>
+  <=: out7_port :>_ce       : in     std_logic;
+<: } :>
+<: if { $clkout7_clr_used && !$safe_clk_startup}  {  :>
+  <=: out7_port :>_clr      : in     std_logic;
+<: } :>
+<: if { $clkout7_last}  {  :>
+  <=: out7_port :>          : out    std_logic
+<: } else  { :>
+  <=: out7_port :>          : out    std_logic;
+<: } :>
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback  || $auto_sing_feedback}  {  :>
+<: if { $clkfbout_last}  {  :>
+  <=: fbout_port :>         : out    std_logic
+<: } else  { :>
+  <=: fbout_port :>         : out    std_logic;
+<: } :>
+<: } elseif  { $auto_diff_feedback}  { :>
+  <=: fbout_p_port :>       : out    std_logic;
+<: if { $clkfbout_last}  {  :>
+  <=: fbout_n_port :>       : out    std_logic
+<: } else  { :>
+  <=: fbout_n_port :>       : out    std_logic;
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_dyn_phase_shift}  {  :>
+  -- Dynamic phase shift ports
+  <=: psclk_port :>             : in     std_logic;
+  <=: psen_port :>              : in     std_logic;
+  <=: psincdec_port :>          : in     std_logic;
+<: if { $dyn_phase_shift_last}  {  :>
+  <=: psdone_port :>            : out    std_logic
+<: } else  { :>
+  <=: psdone_port :>            : out    std_logic;
+<: } :>
+<: } :>
+<: ;#only print the header if the signals actually exist :>
+<: if { $has_control}  {  :>
+  -- Status and control signals
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+  <=: power_down_port :>        : in     std_logic
+<: } else  { :>
+  <=: power_down_port :>        : in     std_logic;
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+  <=: input_clk_stopped_port :> : out    std_logic
+<: } else  { :>
+  <=: input_clk_stopped_port :> : out    std_logic;
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+  <=: clkfb_stopped_port :> : out    std_logic
+<: } else  { :>
+  <=: clkfb_stopped_port :> : out    std_logic;
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+  <=: locked_port :>            : out    std_logic
+<: } else  { :>
+  <=: locked_port :>            : out    std_logic;
+<: } :>
+<: } :>
+<: if { $is_v8 || $is_k8 }  {  :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+  <=: cddcdone_port :>          : out    std_logic; 
+  <=: cddcreq_port :>           : in     std_logic;
+<: } :>
+<: } :>
+<: } :>
+<: if { $clkin1_diff}  {  :>
+  <=: PRIMARY_PORT :>_p         : in     std_logic;
+  <=: PRIMARY_PORT :>_n         : in     std_logic
+<: } else  { :>
+  <=: PRIMARY_PORT :>           : in     std_logic
+<: } :>
+  );
+
+end entity <=: ComponentName :>_clk_wiz_drp;
+-------------------------------------------------------------------------------
+-- Architecture Section
+-------------------------------------------------------------------------------
+architecture imp of <=: ComponentName :>_clk_wiz_drp is
+
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+
+component xpm_cdc_single
+  generic (
+
+    -- Common module generics
+    DEST_SYNC_FF   : integer;
+    SIM_ASSERT_CHK : integer;
+    SRC_INPUT_REG  : integer
+  );
+  port (
+    src_clk  : in std_logic;
+    src_in   : in std_logic;
+    dest_clk : in std_logic;
+    dest_out : out std_logic
+  );
+end component;
+
+
+component xpm_cdc_array_single
+  generic (
+
+    -- Common module generics
+    DEST_SYNC_FF   : integer;
+    SIM_ASSERT_CHK : integer;
+    SRC_INPUT_REG  : integer;
+    WIDTH          : integer
+  );
+  port (
+
+    src_clk  : in std_logic;
+    src_in   : in std_logic_vector(WIDTH-1 downto 0);
+    dest_clk : in std_logic;
+    dest_out : out std_logic_vector(WIDTH-1 downto 0)
+  );
+end component;
+
+			
+component <=: ComponentName :>_clk_mon
+    Port (
+           Ref_Clk           : in STD_LOGIC;
+           Reset           : in STD_LOGIC;
+<: if { $C_ENABLE_USER_CLOCK0 } { :>
+           User_Clk0         : in STD_LOGIC;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 } { :>
+           User_Clk1         : in STD_LOGIC;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+           User_Clk2         : in STD_LOGIC;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+           User_Clk3         : in STD_LOGIC;
+<: } :>
+           Clk_stop          : out std_logic_vector(3 downto 0);
+           Clk_OOR           : out std_logic_vector(3 downto 0);
+           Clk_Greater       : out std_logic_vector(3 downto 0);
+           Clk_Lesser        : out std_logic_vector(3 downto 0);
+           Clock_Glitch      : out std_logic_vector(3 downto 0)
+           );
+end component;
+<: } :>
+
+<: if { $PRIMITIVE != "None"}  { :>
+component <=: ComponentName :>_clk_wiz
+<#: ttcl/network_decl_vhd.ttcl :>
+end component;
+
+<: if { $use_dyn_reprog } { :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+  component <=: ComponentName :>_mmcm_drp 
+<: } else  { :>
+  component <=: ComponentName :>_pll_drp 
+<: } :>
+  generic (
+<: if { !$axi_drp }  {  :>
+  S1_CLKFBOUT_MULT          : integer := 5;
+  S1_CLKFBOUT_PHASE         : integer := 0;
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+  S1_CLKFBOUT_FRAC          : integer := 125; 
+  S1_CLKFBOUT_FRAC_EN       : integer := 1; 
+<: } :>
+  S1_BANDWIDTH              : string := "LOW";
+  S1_DIVCLK_DIVIDE          : integer := 1;
+  S1_CLKOUT0_DIVIDE         : integer := 1;
+  S1_CLKOUT0_PHASE          : integer := 0;
+  S1_CLKOUT0_DUTY           : integer := 50000;
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+  S1_CLKOUT0_FRAC           : integer := 125; 
+  S1_CLKOUT0_FRAC_EN        : integer := 1; 
+<: } :>
+  
+  S1_CLKOUT1_DIVIDE         : integer := 1;
+  S1_CLKOUT1_PHASE          : integer := 0;
+<: if { !($is_plle3) }  {  :>
+  S1_CLKOUT1_DUTY           : integer := 50000;
+  
+  S1_CLKOUT2_DIVIDE         : integer := 1;
+  S1_CLKOUT2_PHASE          : integer := 0;
+  S1_CLKOUT2_DUTY           : integer := 50000;
+  
+  S1_CLKOUT3_DIVIDE         : integer := 1;
+  S1_CLKOUT3_PHASE          : integer := 0;
+  S1_CLKOUT3_DUTY           : integer := 50000;
+  
+  S1_CLKOUT4_DIVIDE         : integer := 1;
+  S1_CLKOUT4_PHASE          : integer := 0;
+  S1_CLKOUT4_DUTY           : integer := 50000;
+  
+  S1_CLKOUT5_DIVIDE         : integer := 1;
+  S1_CLKOUT5_PHASE          : integer := 0;
+<: if { !($is_plle2) }  {  :>
+  S1_CLKOUT5_DUTY           : integer := 50000;
+  
+  S1_CLKOUT6_DIVIDE         : integer := 1;
+  S1_CLKOUT6_PHASE          : integer := 0;
+  S1_CLKOUT6_DUTY           : integer := 50000
+<: } else  { :>
+  S1_CLKOUT5_DUTY           : integer := 50000
+<: } :>
+<: } else  { :>
+  S1_CLKOUT1_DUTY           : integer := 50000
+<: } :>
+<: } else  { :>
+  S1_Power        : std_logic_vector := X"0000";
+  S1_CLKOUT0_1    : std_logic_vector := X"0000";
+  S1_CLKOUT0_2    : std_logic_vector := X"0000";    
+  S1_CLKOUT1_1    : std_logic_vector := X"0000";
+  S1_CLKOUT1_2    : std_logic_vector := X"0000";
+  S1_CLKOUT2_1    : std_logic_vector := X"0000";
+  S1_CLKOUT2_2    : std_logic_vector := X"0000";
+  S1_CLKOUT3_1    : std_logic_vector := X"0000";
+  S1_CLKOUT3_2    : std_logic_vector := X"0000";
+  S1_CLKOUT4_1    : std_logic_vector := X"0000";
+  S1_CLKOUT4_2    : std_logic_vector := X"0000";
+  S1_CLKOUT5_1    : std_logic_vector := X"0000";
+  S1_CLKOUT5_2    : std_logic_vector := X"0000";
+  S1_CLKOUT6_1    : std_logic_vector := X"0000";
+  S1_CLKOUT6_2    : std_logic_vector := X"0000";
+  S1_DIVCLK       : std_logic_vector := X"0000";
+  S1_CLKFBOUT_1   : std_logic_vector := X"0000";
+  S1_CLKFBOUT_2   : std_logic_vector := X"0000";
+  S1_Lock_1       : std_logic_vector := X"0000";
+  S1_Lock_2       : std_logic_vector := X"0000"; 
+  S1_Lock_3       : std_logic_vector := X"0000"; 
+  S1_Filter_1     : std_logic_vector := X"0000";
+  S1_Filter_2     : std_logic_vector := X"0000"
+<: } :>
+  );
+  port (
+<: if { !$axi_drp }  {  :>
+  S2_CLKFBOUT_MULT : in std_logic_vector( 7 downto 0);
+<: if { $reconfig_adv }  {  :>
+  S2_CLKFBOUT_PHASE : in std_logic_vector( 31 downto 0);    
+<: } :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+  S2_CLKFBOUT_FRAC: in std_logic_vector( 9 downto 0);     
+  S2_CLKFBOUT_FRAC_EN: in std_logic;
+<: } :>
+  S2_DIVCLK_DIVIDE: in std_logic_vector( 7 downto 0);     
+  S2_CLKOUT0_DIVIDE: in std_logic_vector( 7 downto 0);    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT0_PHASE: in std_logic_vector( 31 downto 0);     
+  S2_CLKOUT0_DUTY: in std_logic_vector( 31 downto 0);      
+<: } :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+  S2_CLKOUT0_FRAC: in std_logic_vector( 9 downto 0);      
+  S2_CLKOUT0_FRAC_EN: in std_logic;
+<: } :>
+  S2_CLKOUT1_DIVIDE: in std_logic_vector( 7 downto 0);    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT1_PHASE: in std_logic_vector( 31 downto 0);     
+  S2_CLKOUT1_DUTY: in std_logic_vector( 31 downto 0);      
+<: } :>
+<: if { !$is_plle3}  {  :>
+  S2_CLKOUT2_DIVIDE: in std_logic_vector( 7 downto 0);    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT2_PHASE: in std_logic_vector( 31 downto 0);     
+  S2_CLKOUT2_DUTY: in std_logic_vector( 31 downto 0);      
+<: } :>
+  S2_CLKOUT3_DIVIDE: in std_logic_vector( 7 downto 0);    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT3_PHASE: in std_logic_vector( 31 downto 0);     
+  S2_CLKOUT3_DUTY: in std_logic_vector( 31 downto 0);      
+<: } :>
+  S2_CLKOUT4_DIVIDE: in std_logic_vector( 7 downto 0);    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT4_PHASE: in std_logic_vector( 31 downto 0);     
+  S2_CLKOUT4_DUTY: in std_logic_vector( 31 downto 0);      
+<: } :>
+  S2_CLKOUT5_DIVIDE: in std_logic_vector( 7 downto 0);    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT5_PHASE: in std_logic_vector( 31 downto 0);     
+  S2_CLKOUT5_DUTY: in std_logic_vector( 31 downto 0);      
+<: } :>
+<: if { !$is_plle2}  {  :>
+  S2_CLKOUT6_DIVIDE: in std_logic_vector( 7 downto 0);    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT6_PHASE: in std_logic_vector( 31 downto 0);     
+  S2_CLKOUT6_DUTY: in std_logic_vector( 31 downto 0);      
+<: } :>
+<: } :>
+<: } :>
+<: } else  { :>
+  S2_Power      : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT0_1  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT0_2  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT1_1  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT1_2  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT2_1  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT2_2  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT3_1  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT3_2  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT4_1  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT4_2  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT5_1  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT5_2  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT6_1  : in std_logic_vector( 15 downto 0); 
+  S2_CLKOUT6_2  : in std_logic_vector( 15 downto 0); 
+  S2_DIVCLK     : in std_logic_vector( 15 downto 0); 
+  S2_CLKFBOUT_1 : in std_logic_vector( 15 downto 0); 
+  S2_CLKFBOUT_2 : in std_logic_vector( 15 downto 0); 
+  S2_Lock_1     : in std_logic_vector( 15 downto 0); 
+  S2_Lock_2     : in std_logic_vector( 15 downto 0);  
+  S2_Lock_3     : in std_logic_vector( 15 downto 0); 
+  S2_Filter_1   : in std_logic_vector( 15 downto 0); 
+  S2_Filter_2   : in std_logic_vector( 15 downto 0); 
+<: } :>
+  LOAD : in std_logic;
+  SADDR: in std_logic;
+  SEN  : in std_logic;
+  RST  : in std_logic;
+  SRDY : out std_logic;
+  SCLK : in std_logic;
+  DO  : in std_logic_vector(15 downto 0);
+  DRDY  : in std_logic;
+  LOCKED  : in std_logic;
+  DWE  : out std_logic;
+  DEN  : out std_logic;
+  DADDR  : out std_logic_vector( 6 downto 0);
+  DI  : out std_logic_vector(15 downto 0);
+  DCLK  : out std_logic;
+  RST_MMCM_PLL  : out std_logic
+  );
+  end component;
+<: } :>
+<: } :>
+-------------------------------------------------------------------------------
+-- Constant Declarations
+-------------------------------------------------------------------------------
+constant DATA_SIZE_DRP     : integer := 16;
+
+constant ADDR_SIZE_DRP     : integer := 7;
+
+type mem_type is array (0 to 31) of std_logic_vector(31 downto 0);
+
+signal ram_clk_config : mem_type := (
+-- initialize memory with valid clock configuration
+<: if { $frac_en_clkfbout }  {  :>
+   X"0<: print $hex_frac_mult_factor$hex_mult_factor$hex_divclk_divide :>", 
+<: } else  { :>
+   X"00<: print $hex_frac_mult_factor$hex_mult_factor$hex_divclk_divide :>", 
+<: } :>
+   X"<: print $hex_clkfbout_phase :>",
+<: if { $frac_en_clkout0 }  {  :>
+   X"000<: print $hex_frac_clkout0_div_factor$hex_clkout0_div_factor :>", 
+<: } else  { :>
+   X"0000<: print $hex_frac_clkout0_div_factor$hex_clkout0_div_factor :>", 
+<: } :>
+   X"<: print $hex_clkout0_phase :>",
+   X"<: print $hex_clkout0_duty_cycle :>",
+   X"000000<: print $hex_clkout1_divide :>",
+   X"<: print $hex_clkout1_phase :>",
+   X"<: print $hex_clkout1_duty_cycle :>",
+   X"000000<: print $hex_clkout2_divide :>",
+   X"<: print $hex_clkout2_phase :>",
+   X"<: print $hex_clkout2_duty_cycle :>",
+   X"000000<: print $hex_clkout3_divide :>",
+   X"<: print $hex_clkout3_phase :>",
+   X"<: print $hex_clkout3_duty_cycle :>",
+   X"000000<: print $hex_clkout4_divide :>",
+   X"<: print $hex_clkout4_phase :>",
+   X"<: print $hex_clkout4_duty_cycle :>",
+   X"000000<: print $hex_clkout5_divide :>",
+   X"<: print $hex_clkout5_phase :>",
+   X"<: print $hex_clkout5_duty_cycle :>",
+   X"000000<: print $hex_clkout6_divide :>",
+   X"<: print $hex_clkout6_phase :>",
+   X"<: print $hex_clkout6_duty_cycle :>",
+   X"00000000",
+   X"00000000",
+   X"00000000",
+   X"00000000",
+   X"00000000",
+   X"00000000",
+   X"00000000",
+   X"00000000",
+   X"00000000"
+ );
+-------------------------------------------------------------------------------
+-- Signal Declarations
+-------------------------------------------------------------------------------
+signal ram_addr     : std_logic_vector(4 downto 0);
+signal daddr        : std_logic_vector(ADDR_SIZE_DRP-1 downto 0);
+signal dout         : std_logic_vector(DATA_SIZE_DRP-1 downto 0);
+signal din          : std_logic_vector(DATA_SIZE_DRP-1 downto 0);
+signal den          : std_logic;
+signal dwe          : std_logic;
+signal drdy         : std_logic;
+signal dclk         : std_logic;
+signal register_rdce_select      : std_logic_vector(0 to 7);
+signal register_wrce_select      : std_logic_vector(0 to 7);
+-------------------------------------------------------------------------------
+signal wrack_reg_1               : std_logic;
+signal wrack_reg_2               : std_logic;
+signal rdack_reg_1               : std_logic;
+signal rdack_reg_2               : std_logic;
+-------------------------------------------------------------------------------
+signal locked_int                : std_logic;
+signal srdy                      : std_logic;
+signal reset                     : std_logic;
+signal program_status            : std_logic_vector(0 to 1);
+signal clk_mon_error_reg         :std_logic_vector(15 downto 0);
+signal clk_mon_error_reg_sig         :std_logic_vector(15 downto 0);
+signal clk_mon_error         :std_logic_vector(15 downto 0);
+signal clk_mon_error_reg_d       :std_logic_vector(15 downto 0);
+signal interrupt_enable_reg         :std_logic_vector(15 downto 0) ;
+signal interrupt_status_reg         :std_logic_vector(15 downto 0) ;
+signal interrupt_status_reg_wr         :std_logic_vector(15 downto 0) ;
+signal load_enable_reg_d         :std_logic;
+signal load_enable_reg_actual         :std_logic;
+signal SEN         :std_logic;
+signal Reset_axi         :std_logic;
+signal load_enable_reg           :std_logic_vector(0 to 31);
+<: if { $frac_en_clkfbout }  {  :>
+signal clkfbout_reg           :std_logic_vector(0 to 31) := X"0<: print $hex_frac_mult_factor$hex_mult_factor$hex_divclk_divide :>";
+<: } else  { :>
+signal clkfbout_reg           :std_logic_vector(0 to 31) := X"00<: print $hex_frac_mult_factor$hex_mult_factor$hex_divclk_divide :>";
+<: } :>
+<: if { $frac_en_clkout0 }  {  :>
+signal clkout0_reg           :std_logic_vector(0 to 31) := X"000<: print $hex_frac_clkout0_div_factor$hex_clkout0_div_factor :>" ;
+<: } else  { :>
+signal clkout0_reg           :std_logic_vector(0 to 31) := X"0000<: print $hex_frac_clkout0_div_factor$hex_clkout0_div_factor :>" ;
+<: } :>
+signal config_reg           :std_logic_vector(0 to 31);
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+  signal Clk_Lesser           :std_logic_vector(3 downto 0);
+  signal Clk_Greater          :std_logic_vector(3 downto 0);
+  signal Clk_stop_sig         :std_logic_vector(3 downto 0);
+  signal Clk_glitch_sig       :std_logic_vector(3 downto 0);
+<: if { $C_Enable_PLL0}  { :>
+  signal clk_mon_in0           :std_logic; 
+<: } :>
+<: if { $C_Enable_PLL1}  { :>
+  signal clk_mon_in1           :std_logic; 
+<: } :>
+<: } :>
+begin
+
+-------------------------------------------------------------------------------
+-- Assign temporary internal signal to separate out Addr bit 23 to Addr bit 29
+-- from PLB address lines
+-- As the addresses are word aligned, it is required to trim the
+-- address bit 30 and 31. The incoming address from PLB is word aligned.
+-- The internal register file interface are at sequential address like
+-- 0x00h, 0x01h...etc
+-------------------------------------------------------------------------------
+--  daddr_i <= Bus2IP_Addr(23 to 29);
+  ram_addr <= Bus2IP_Addr(C_S_AXI_ADDR_WIDTH-7 to C_S_AXI_ADDR_WIDTH-3);
+
+-------------------------------------------------------------------------------
+   WR_RD_ACK_PROCESS:process(Bus2IP_Clk) is
+   begin
+       if Bus2IP_Clk'event and Bus2IP_Clk='1' then
+         if(Bus2IP_Rst = RESET_ACTIVE or Bus2IP_Addr = x"000") then
+           wrack_reg_1    <= '0';
+           wrack_reg_2    <= '0';
+           rdack_reg_1    <= '0';
+           rdack_reg_2    <= '0';
+           IP2Bus_WrAck   <= '0';
+           IP2Bus_RdAck   <= '0';
+         else
+           wrack_reg_1    <= Bus2IP_WrCE(CE_NUMBERS-1);
+           wrack_reg_2    <= wrack_reg_1;
+           rdack_reg_1    <= Bus2IP_RdCE(CE_NUMBERS-1) or Bus2IP_RdCE(0);
+           rdack_reg_2    <= rdack_reg_1;
+           -- Generate the WRITE ACK back to PLB
+           IP2Bus_WrAck   <=  wrack_reg_1 and (not wrack_reg_2);
+           -- Generate the READ ACK back to PLB
+           IP2Bus_RdAck   <=  rdack_reg_1 and (not rdack_reg_2);
+         end if;
+       end if;
+   end process WR_RD_ACK_PROCESS;
+
+-------------------------------------------------------------------------------
+
+register_wrce_select <= Bus2IP_WrCE(1) & Bus2IP_WrCE(2) & Bus2IP_WrCE(3) & Bus2IP_WrCE(4) & Bus2IP_WrCE(CE_NUMBERS-1) & 
+                        Bus2IP_Addr(C_S_AXI_ADDR_WIDTH-9 to C_S_AXI_ADDR_WIDTH-8) & Bus2IP_Addr(C_S_AXI_ADDR_WIDTH-11);
+
+-------------------------------------------------------------------------------
+DATA_WR_PROCESS: process(Bus2IP_Clk) is
+begin
+    if (Bus2IP_Clk'event and Bus2IP_Clk='1') then
+      if(Bus2IP_Rst = RESET_ACTIVE) then
+       -- reset values
+<: if { !$axi_drp }  {  :>
+<: if { $frac_en_clkfbout }  {  :>
+	    ram_clk_config(0)  <=    X"0<: print $hex_frac_mult_factor$hex_mult_factor$hex_divclk_divide :>";
+<: } else  { :>
+	    ram_clk_config(0)  <=    X"00<: print $hex_frac_mult_factor$hex_mult_factor$hex_divclk_divide :>";
+<: } :>
+	    ram_clk_config(1)  <=    X"<: print $hex_clkfbout_phase :>";
+<: if { $frac_en_clkout0 }  {  :>
+	    ram_clk_config(2)  <=    X"000<: print $hex_frac_clkout0_div_factor$hex_clkout0_div_factor :>";
+<: } else  { :>
+	    ram_clk_config(2)  <=    X"0000<: print $hex_frac_clkout0_div_factor$hex_clkout0_div_factor :>";
+<: } :>
+	    ram_clk_config(3)  <=    X"<: print $hex_clkout0_phase :>";
+	    ram_clk_config(4)  <=    X"<: print $hex_clkout0_duty_cycle :>";
+	    ram_clk_config(5)  <=    X"000000<: print $hex_clkout1_divide :>";
+	    ram_clk_config(6)  <=    X"<: print $hex_clkout1_phase :>";
+	    ram_clk_config(7)  <=    X"<: print $hex_clkout1_duty_cycle :>";
+	    ram_clk_config(8)  <=    X"000000<: print $hex_clkout2_divide :>";
+	    ram_clk_config(9)  <=    X"<: print $hex_clkout2_phase :>";
+	    ram_clk_config(10) <=    X"<: print $hex_clkout2_duty_cycle :>";
+	    ram_clk_config(11) <=    X"000000<: print $hex_clkout3_divide :>";
+	    ram_clk_config(12) <=    X"<: print $hex_clkout3_phase :>";
+	    ram_clk_config(13) <=    X"<: print $hex_clkout3_duty_cycle :>";
+	    ram_clk_config(14) <=    X"000000<: print $hex_clkout4_divide :>";
+	    ram_clk_config(15) <=    X"<: print $hex_clkout4_phase :>";
+	    ram_clk_config(16) <=    X"<: print $hex_clkout4_duty_cycle :>";
+	    ram_clk_config(17) <=    X"000000<: print $hex_clkout5_divide :>";
+	    ram_clk_config(18) <=    X"<: print $hex_clkout5_phase :>";
+	    ram_clk_config(19) <=    X"<: print $hex_clkout5_duty_cycle :>";
+	    ram_clk_config(20) <=    X"000000<: print $hex_clkout6_divide :>";
+	    ram_clk_config(21) <=    X"<: print $hex_clkout6_phase :>";
+	    ram_clk_config(22) <=    X"<: print $hex_clkout6_duty_cycle :>";
+<: } else  { :>
+	    ram_clk_config(0)  <=    X"0000<: print $C_POWER_REG :>";
+	    ram_clk_config(1)  <=    X"0000<: print $C_CLKOUT0_1 :>";
+	    ram_clk_config(2)  <=    X"0000<: print $C_CLKOUT0_2 :>";
+	    ram_clk_config(3)  <=    X"0000<: print $C_CLKOUT1_1 :>";
+	    ram_clk_config(4)  <=    X"0000<: print $C_CLKOUT1_2 :>";
+	    ram_clk_config(5)  <=    X"0000<: print $C_CLKOUT2_1 :>";
+	    ram_clk_config(6)  <=    X"0000<: print $C_CLKOUT2_2 :>";
+	    ram_clk_config(7)  <=    X"0000<: print $C_CLKOUT3_1 :>";
+	    ram_clk_config(8)  <=    X"0000<: print $C_CLKOUT3_2 :>";
+	    ram_clk_config(9)  <=    X"0000<: print $C_CLKOUT4_1 :>";
+	    ram_clk_config(10) <=    X"0000<: print $C_CLKOUT4_2 :>";
+	    ram_clk_config(11) <=    X"0000<: print $C_CLKOUT5_1 :>";
+	    ram_clk_config(12) <=    X"0000<: print $C_CLKOUT5_2 :>";
+	    ram_clk_config(13) <=    X"0000<: print $C_CLKOUT6_1 :>";
+	    ram_clk_config(14) <=    X"0000<: print $C_CLKOUT6_2 :>";
+	    ram_clk_config(15) <=    X"0000<: print $C_DIVCLK :>";
+	    ram_clk_config(16) <=    X"0000<: print $C_CLKFBOUT_1 :>";
+	    ram_clk_config(17) <=    X"0000<: print $C_CLKFBOUT_2 :>";
+	    ram_clk_config(18) <=    X"0000<: print $C_Lock_1 :>";
+	    ram_clk_config(19) <=    X"0000<: print $C_Lock_2 :>";
+	    ram_clk_config(20) <=    X"0000<: print $C_Lock_3 :>";
+	    ram_clk_config(21) <=    X"0000<: print $C_Filter_1 :>";
+	    ram_clk_config(22) <=    X"0000<: print $C_Filter_2 :>";
+<: } :>
+	    ram_clk_config(23) <=    X"00000000";
+	    ram_clk_config(24) <=    X"00000000";
+	    ram_clk_config(25) <=    X"00000000";
+	    ram_clk_config(26) <=    X"00000000";
+	    ram_clk_config(27) <=    X"00000000";
+	    ram_clk_config(28) <=    X"00000000";
+	    ram_clk_config(29) <=    X"00000000";
+	    ram_clk_config(30) <=    X"00000000";
+	    ram_clk_config(31) <=    X"00000000";
+        load_enable_reg    <=    X"00000000";
+        interrupt_enable_reg <=  X"0000";
+        interrupt_status_reg_wr <= X"0000";
+      else
+        case register_wrce_select is
+          when "00001000"   => 
+            if(Bus2IP_Addr = x"25C")  then
+              load_enable_reg <= Bus2IP_Data;
+            elsif(Bus2IP_Addr = x"200" ) then
+              clkfbout_reg <= Bus2IP_Data;
+              ram_clk_config(0) <= "00000" & or_reduce(clkfbout_reg(6 to 15)) & clkfbout_reg(6 to 31);
+            elsif(Bus2IP_Addr = x"208" ) then
+              clkout0_reg <= Bus2IP_Data;
+              ram_clk_config(2) <= "0000000000000" & or_reduce(clkout0_reg(14 to 23)) & clkout0_reg(14 to 31);
+            elsif(Bus2IP_Addr = x"25C")  then
+              load_enable_reg <= Bus2IP_Data;
+            elsif(Bus2IP_Addr /= x"000" ) then
+            ram_clk_config(conv_integer(ram_addr)) <= Bus2IP_Data;
+             end if;
+          when "00001100"   => 
+            if(Bus2IP_Addr = x"35C")  then
+              load_enable_reg <= Bus2IP_Data;
+            elsif(Bus2IP_Addr /= x"000" ) then
+            ram_clk_config(conv_integer(ram_addr)) <= Bus2IP_Data;
+             end if;
+          when "00011000"   => 
+              interrupt_enable_reg <= Bus2IP_Data(16 to 31);
+         when "00101000"   =>
+              interrupt_status_reg_wr <= Bus2IP_Data(16 to 31) ;
+            -- coverage off
+            when others =>   null;
+            -- coverage on
+        end case;
+      end if;
+    end if;	  
+end process DATA_WR_PROCESS;
+
+
+
+<: if { $use_locked}  {  :>
+  <=: locked_port :> <= locked_int;
+<: } :>
+  program_status(0) <= srdy; -- used for testing purpose
+  program_status(1) <= locked_int;
+-------------------------------------------------------------------------------
+-- Status Register,DRP Register File Interface (RFI) can be READ
+-------------------------------------------------------------------------------
+  register_rdce_select <= Bus2IP_RdCE(1) & -- Status Register
+                          Bus2IP_RdCE(2) & 
+                          Bus2IP_RdCE(3) & 
+                          Bus2IP_RdCE(4) & 
+        Bus2IP_RdCE(CE_NUMBERS-1) & Bus2IP_Addr(C_S_AXI_ADDR_WIDTH-9 to C_S_AXI_ADDR_WIDTH-8) & Bus2IP_Addr(C_S_AXI_ADDR_WIDTH-11);
+
+-------------------------------------------------------------------------------
+-- The upper bits are always '0'.
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+-- LOCAL_REG_READ_PROCESS
+-------------------------
+LOCAL_REG_READ_PROCESS: process (register_rdce_select,
+                                 program_status,
+                                 clk_mon_error_reg,
+                                 interrupt_status_reg,
+                                 interrupt_enable_reg,
+                                 ram_clk_config,ram_addr,Bus2IP_Addr,config_reg) is
+begin
+    case  register_rdce_select is
+    -- bus2ip_rdce(1,2,8)
+      when "00001000"   =>
+         if(Bus2IP_Addr = x"25C") then
+        IP2Bus_Data <= config_reg;
+       else 
+         IP2Bus_Data <= ram_clk_config(conv_integer(ram_addr));
+       end if;
+      when "00001100"   =>
+         if(Bus2IP_Addr = x"35C") then
+        IP2Bus_Data <= config_reg;
+       else 
+         IP2Bus_Data <= ram_clk_config(conv_integer(ram_addr));
+       end if;
+      when "10001000"   =>
+         IP2Bus_Data(30 to 31) <= program_status;
+         IP2Bus_Data(0 to 29) <= (others => '0');
+      when "01001000"   =>
+         IP2Bus_Data(0 to 15) <=  (others => '0') ; --clock monitor error status register
+         IP2Bus_Data(16 to 31) <= clk_mon_error_reg;
+      when "00101000"   =>
+         IP2Bus_Data(0 to 15) <= (others => '0'); -- clock monitor interrupt status register
+         IP2Bus_Data(16 to 31) <= interrupt_status_reg;
+      when "00011000"   =>
+         IP2Bus_Data(0 to 15) <= (others => '0'); -- clock monitor interrupt enable register
+         IP2Bus_Data(16 to 31) <= interrupt_enable_reg;
+      -- coverage off
+      when others  =>
+         IP2Bus_Data <= (others => '0');
+      -- coverage on
+    end case;
+end process LOCAL_REG_READ_PROCESS;
+
+Interrupt_Enable_proc: process ( Bus2IP_Clk  ) is
+begin
+ if (Bus2IP_Clk'event and Bus2IP_Clk='1') then
+   if(Bus2IP_Rst = RESET_ACTIVE) then
+    clk_mon_error_reg <= X"0000";
+    clk_mon_error_reg_d <= X"0000";
+<: if { !$C_ENABLE_CLOCK_MONITOR}  { :>
+    clk_mon_error_reg_sig <= X"0000";
+<: } :>
+    interrupt_status_reg <= X"0000";
+   else 
+   clk_mon_error_reg <= clk_mon_error_reg_sig;
+    for I in 15 downto 0 loop
+    case  register_wrce_select is
+      when "00101000"   =>
+        interrupt_status_reg(I) <= interrupt_status_reg(I) and (not(interrupt_status_reg_wr(I)));
+        clk_mon_error_reg_d <= clk_mon_error_reg_sig;
+      when others  =>
+        interrupt_status_reg(I) <= interrupt_enable_reg(I) and ((clk_mon_error_reg_sig(I) and (not(clk_mon_error_reg_d(I)))) or interrupt_status_reg(I)) ;
+    end case;
+    end loop;
+    end if;
+    end if;
+end process Interrupt_Enable_proc;
+
+
+Load_Enable_proc: process (Bus2IP_Clk) is
+begin
+  if (Bus2IP_Clk'event and Bus2IP_Clk='1') then
+    if(Bus2IP_Rst = RESET_ACTIVE) then
+     load_enable_reg_actual <= '0';
+     load_enable_reg_d <= '0';
+     SEN <= '0';
+  else
+      if(((Bus2IP_Addr = x"25C") or (Bus2IP_Addr = x"35C")) and ((register_wrce_select = "00001000") or (register_wrce_select = "00001100")) and (Bus2IP_Data(31) = '1')) then
+        load_enable_reg_d <= '1';
+        else
+          if (locked_int = '1') then
+            load_enable_reg_d <= '0';
+          else
+            load_enable_reg_d <= '1';
+          end if;
+      end if;
+      load_enable_reg_actual <= load_enable_reg_d; 
+      SEN <=  load_enable_reg_d and (not(load_enable_reg_actual ));
+   end if;
+ end if;     
+end process Load_Enable_proc;
+config_reg <= load_enable_reg(0 to 30) & load_enable_reg_d;
+
+<: if { $PRIMITIVE != "None"}  { :>
+  clk_inst: <=: ComponentName :>_clk_wiz
+   port map ( 
+<: if { $use_inclk_switchover}  {  :>
+<: if { $clkin2_diff}  {  :>
+   <=: SECONDARY_PORT :>_p => <=: SECONDARY_PORT :>_p,
+   <=: SECONDARY_PORT :>_n => <=: SECONDARY_PORT :>_n,
+<: } else  { :>
+   <=: SECONDARY_PORT :> => <=: SECONDARY_PORT :>,
+<: } :>
+   <=: clk_in_sel_port :> => <=: clk_in_sel_port :>,
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+<: if { $C_Enable_PLL0}  { :>
+   clk_mon_in0          =>  clk_mon_in0,
+<: } :>
+<: if { $C_Enable_PLL1}  { :>
+   clk_mon_in1          =>  clk_mon_in1,
+<: } :>
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+   <=: fbin_p_port :> => <=: fbin_p_port :>,
+   <=: fbin_n_port :> => <=: fbin_n_port :>,
+<: } else  { :>
+   <=: fbin_port :> => <=: fbin_port :>,
+<: } :>
+<: } :>
+<: } :>
+  -- Clock out ports  
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+   clkoutphy        => clkoutphy,
+<: } :>
+<: } :>
+<: if { $clkout1_ce_used && !$safe_clk_startup}  {  :>
+   <=: out1_port :>_ce => <=: out1_port :>_ce,
+<: } :>
+<: if { $clkout1_clr_used && !$safe_clk_startup}  {  :>
+   <=: out1_port :>_clr => <=: out1_port :>_clr,
+<: } :>
+<: if { $clkout1_last}  {  :>
+   <=: out1_port :> => <=: out1_port :>              
+<: } else  { :>
+   <=: out1_port :> => <=: out1_port :>,
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+   <=: out1_port :>B => <=: out1_port :>B,
+<: } :>
+<: if { $num_out_clks>= 2}  {  :>
+<: if { $clkout2_ce_used && !$safe_clk_startup}  {  :>
+   <=: out2_port :>_ce => <=: out2_port :>_ce,
+<: } :>
+<: if { $clkout2_clr_used && !$safe_clk_startup}  {  :>
+   <=: out2_port :>_clr => <=: out2_port :>_clr,
+<: } :>
+<: if { $clkout2_last}  {  :>
+   <=: out2_port :> => <=: out2_port :>              
+<: } else  { :>
+   <=: out2_port :> => <=: out2_port :>,
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+   <=: out2_port :>B => <=: out2_port :>B,
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 3) &&  (!$mmcm_ss_en)}  {  :>
+<: if { $clkout3_ce_used && !$safe_clk_startup}  {  :>
+   <=: out3_port :>_ce => <=: out3_port :>_ce,
+<: } :>
+<: if { $clkout3_clr_used && !$safe_clk_startup}  {  :>
+   <=: out3_port :>_clr => <=: out3_port :>_clr,
+<: } :>
+<: if { $clkout3_last}  {  :>
+   <=: out3_port :> => <=: out3_port :>              
+<: } else  { :>
+   <=: out3_port :> => <=: out3_port :>,
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+   <=: out3_port :>B => <=: out3_port :>B,
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 4) &&  (!$mmcm_ss_en)}  {  :>
+<: if { $clkout4_ce_used && !$safe_clk_startup}  {  :>
+   <=: out4_port :>_ce => <=: out4_port :>_ce,
+<: } :>
+<: if { $clkout4_clr_used && !$safe_clk_startup}  {  :>
+   <=: out4_port :>_clr => <=: out4_port :>_clr,
+<: } :>
+<: if { $clkout4_last}  {  :>
+   <=: out4_port :> => <=: out4_port :>              
+<: } else  { :>
+   <=: out4_port :> => <=: out4_port :>,
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+   <=: out4_port :>B => <=: out4_port :>B,
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+<: if { $clkout5_ce_used && !$safe_clk_startup}  {  :>
+   <=: out5_port :>_ce => <=: out5_port :>_ce,
+<: } :>
+<: if { $clkout5_clr_used && !$safe_clk_startup}  {  :>
+   <=: out5_port :>_clr => <=: out5_port :>_clr,
+<: } :>
+<: if { $clkout5_last}  {  :>
+   <=: out5_port :> => <=: out5_port :>              
+<: } else  { :>
+   <=: out5_port :> => <=: out5_port :>,
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+<: if { $clkout6_ce_used && !$safe_clk_startup}  {  :>
+   <=: out6_port :>_ce => <=: out6_port :>_ce,
+<: } :>
+<: if { $clkout6_clr_used && !$safe_clk_startup}  {  :>
+   <=: out6_port :>_clr => <=: out6_port :>_clr,
+<: } :>
+<: if { $clkout6_last}  {  :>
+   <=: out6_port :> => <=: out6_port :>              
+<: } else  { :>
+   <=: out6_port :> => <=: out6_port :>,
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+<: if { $clkout7_ce_used && !$safe_clk_startup}  {  :>
+   <=: out7_port :>_ce => <=: out7_port :>_ce,
+<: } :>
+<: if { $clkout7_clr_used && !$safe_clk_startup}  {  :>
+   <=: out7_port :>_clr => <=: out7_port :>_clr,
+<: } :>
+<: if { $clkout7_last}  {  :>
+   <=: out7_port :> => <=: out7_port :>              
+<: } else  { :>
+   <=: out7_port :> => <=: out7_port :>,
+<: } :>
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback  || $auto_sing_feedback}  {  :>
+<: if { $clkfbout_last}  {  :>
+   <=: fbout_port :> => <=: fbout_port :>
+<: } else  { :>
+   <=: fbout_port :> => <=: fbout_port :>,
+<: } :>
+<: } elseif  { $auto_diff_feedback}  { :>
+   <=: fbout_p_port :> => <=: fbout_p_port :>,
+<: if { $clkfbout_last}  {  :>
+   <=: fbout_n_port :> => <=: fbout_n_port :>           
+<: } else  { :>
+   <=: fbout_n_port :> => <=: fbout_n_port :>,
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_dyn_reprog}  {  :>
+  -- Dynamic reconfiguration ports             
+   <=: daddr_port :> => daddr,
+   <=: dclk_port :> => dclk,
+   <=: den_port :> => den,
+   <=: din_port :> => din,
+   <=: dout_port :> => dout,
+   <=: drdy_port :> => drdy,
+<: if { $dyn_reprog_last}  {  :>
+   <=: dwe_port :> => dwe
+<: } else  { :>
+   <=: dwe_port :> => dwe,
+<: } :>
+<: } :>
+<: if { $use_dyn_phase_shift}  {  :>
+  -- Dynamic phase shift ports                 
+   <=: psclk_port :> => <=: psclk_port :>,
+   <=: psen_port :> => <=: psen_port :>,
+   <=: psincdec_port :> => <=: psincdec_port :>,
+<: if { $dyn_phase_shift_last}  {  :>
+   <=: psdone_port :> => <=: psdone_port :>            
+<: } else  { :>
+   <=: psdone_port :> => <=: psdone_port :>,
+<: } :>
+<: } :>
+<: ;#only print the header if the signals actually exist :>        
+<: if { $has_control}  {  :>
+  -- Status and control signals                
+<: } :>
+<: if { $use_reset}  {  :>
+<: if { $reset_last}  {  :>
+<: if { $use_dyn_reprog } { :>
+   <=: reset_port :> => reset 
+<: } else  { :>
+   <=: reset_port :> => Bus2IP_Rst 
+<: } :>
+<: } else  { :>
+<: if { $use_dyn_reprog } { :>
+   <=: reset_port :> => reset, 
+<: } else  { :>
+   <=: reset_port :> => Bus2IP_Rst, 
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+   <=: power_down_port :> => <=: power_down_port :>        
+<: } else  { :>
+   <=: power_down_port :> => <=: power_down_port :>,
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+   <=: input_clk_stopped_port :> => <=: input_clk_stopped_port :>   
+<: } else  { :>
+   <=: input_clk_stopped_port :> => <=: input_clk_stopped_port :>,
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+   <=: clkfb_stopped_port :> => <=: clkfb_stopped_port :>     
+<: } else  { :>
+   <=: clkfb_stopped_port :> => <=: clkfb_stopped_port :>,
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+   <=: locked_port :> => locked_int            
+<: } else  { :>
+   <=: locked_port :> => locked_int,
+<: } :>
+<: } :>
+<: if { $is_v8 || $is_k8 }  {  :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+   <=: cddcdone_port :> => <=: cddcdone_port :>,
+   <=: cddcreq_port :>  => <=: cddcreq_port :>,
+<: } :>
+<: } :>
+<: } :>
+   -- Clock in ports
+<: if { $clkin1_diff}  {  :>
+   <=: PRIMARY_PORT :>_p => <=: PRIMARY_PORT :>_p,
+   <=: PRIMARY_PORT :>_n => <=: PRIMARY_PORT :>_n
+<: } else  { :>
+   <=: PRIMARY_PORT :> => <=: PRIMARY_PORT :>
+<: } :>
+ );
+<: if { $use_dyn_reprog } { :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+mmcm_drp_inst: <=: ComponentName :>_mmcm_drp generic map (
+<: } else  { :>
+pll_drp_inst: <=: ComponentName :>_pll_drp generic map (
+<: } :>
+<: if { !$axi_drp }  {  :>
+  S1_CLKFBOUT_MULT          =>  <: print $int_mult_factor :>,
+  S1_CLKFBOUT_PHASE         =>  <: print $int_clkfbout_phase :>,
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+  S1_CLKFBOUT_FRAC          =>  <: print $frac_mult_factor :>,
+  S1_CLKFBOUT_FRAC_EN       =>  <: print $frac_en_clkfbout :>, 
+<: } :>
+  S1_BANDWIDTH              => "<=: mmcm_bandwidth :>",
+  S1_DIVCLK_DIVIDE          =>  <=: mmcm_divclk_divide :>,
+  S1_CLKOUT0_DIVIDE         =>  <: print $int_clkout0_div_factor :>,
+  S1_CLKOUT0_PHASE          =>  <: print $int_clkout0_phase :>,
+  S1_CLKOUT0_DUTY           =>  <: print $int_clkout0_duty_cycle :>, 
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+  S1_CLKOUT0_FRAC           =>  <: print $frac_clkout0_div_factor :>, 
+  S1_CLKOUT0_FRAC_EN        =>  <: print $frac_en_clkout0 :>,  
+<: } :>
+  
+  S1_CLKOUT1_DIVIDE         =>  <=: mmcm_clkout1_divide :>,
+  S1_CLKOUT1_PHASE          =>  <: print $int_clkout1_phase :>,
+<: if { !($is_plle3) }  {  :>
+  S1_CLKOUT1_DUTY           =>  <: print $int_clkout1_duty_cycle :>,
+  
+  S1_CLKOUT2_DIVIDE         =>  <=: mmcm_clkout2_divide :>,         
+  S1_CLKOUT2_PHASE          =>  <: print $int_clkout2_phase :>,          
+  S1_CLKOUT2_DUTY           =>  <: print $int_clkout2_duty_cycle :>,
+  
+  S1_CLKOUT3_DIVIDE         =>  <=: mmcm_clkout3_divide :>,         
+  S1_CLKOUT3_PHASE          =>  <: print $int_clkout3_phase :>,          
+  S1_CLKOUT3_DUTY           =>  <: print $int_clkout3_duty_cycle :>,
+  
+  S1_CLKOUT4_DIVIDE         =>  <=: mmcm_clkout4_divide :>,         
+  S1_CLKOUT4_PHASE          =>  <: print $int_clkout4_phase :>,          
+  S1_CLKOUT4_DUTY           =>  <: print $int_clkout4_duty_cycle :>,
+  
+  S1_CLKOUT5_DIVIDE         =>  <=: mmcm_clkout5_divide :>,         
+  S1_CLKOUT5_PHASE          =>  <: print $int_clkout5_phase :>,          
+<: if { !($is_plle2) }  {  :> 
+  S1_CLKOUT5_DUTY           =>  <: print $int_clkout5_duty_cycle :>,
+  
+  S1_CLKOUT6_DIVIDE         =>  <=: mmcm_clkout6_divide :>,     
+  S1_CLKOUT6_PHASE          =>  <: print $int_clkout6_phase :>,      
+  S1_CLKOUT6_DUTY           =>  <: print $int_clkout6_duty_cycle :>
+<: } else  { :>
+  S1_CLKOUT5_DUTY           =>  <: print $int_clkout5_duty_cycle :>
+<: } :>
+<: } else  { :>
+  S1_CLKOUT1_DUTY           =>  <: print $int_clkout1_duty_cycle :>
+<: } :>
+<: } else  { :>
+  S1_Power         => X"<: print $C_POWER_REG :>",
+  S1_CLKOUT0_1     => X"<: print $C_CLKOUT0_1 :>",
+  S1_CLKOUT0_2     => X"<: print $C_CLKOUT0_2 :>",    
+  S1_CLKOUT1_1     => X"<: print $C_CLKOUT1_1 :>",
+  S1_CLKOUT1_2     => X"<: print $C_CLKOUT1_2 :>",
+  S1_CLKOUT2_1     => X"<: print $C_CLKOUT2_1 :>",
+  S1_CLKOUT2_2     => X"<: print $C_CLKOUT2_2 :>",
+  S1_CLKOUT3_1     => X"<: print $C_CLKOUT3_1 :>",
+  S1_CLKOUT3_2     => X"<: print $C_CLKOUT3_2 :>",
+  S1_CLKOUT4_1     => X"<: print $C_CLKOUT4_1 :>",
+  S1_CLKOUT4_2     => X"<: print $C_CLKOUT4_2 :>",
+  S1_CLKOUT5_1     => X"<: print $C_CLKOUT5_1 :>",
+  S1_CLKOUT5_2     => X"<: print $C_CLKOUT5_2 :>",
+  S1_CLKOUT6_1     => X"<: print $C_CLKOUT6_1 :>",
+  S1_CLKOUT6_2     => X"<: print $C_CLKOUT6_2 :>",
+  S1_DIVCLK        => X"<: print $C_DIVCLK :>",
+  S1_CLKFBOUT_1    => X"<: print $C_CLKFBOUT_1 :>",
+  S1_CLKFBOUT_2    => X"<: print $C_CLKFBOUT_2 :>",
+  S1_Lock_1        => X"<: print $C_Lock_1 :>",
+  S1_Lock_2        => X"<: print $C_Lock_2 :>",
+  S1_Lock_3        => X"<: print $C_Lock_3 :>",
+  S1_Filter_1      => X"<: print $C_Filter_1 :>",
+  S1_Filter_2      => X"<: print $C_Filter_2 :>"
+<: } :>
+  )
+  port map (
+<: if { !$axi_drp }  {  :>
+  S2_CLKFBOUT_MULT => ram_clk_config(0)(15 downto 8),
+<: if { $reconfig_adv }  {  :>
+  S2_CLKFBOUT_PHASE => ram_clk_config(1)(31 downto 0),    
+<: } :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+  S2_CLKFBOUT_FRAC => ram_clk_config(0)(25 downto 16),     
+  S2_CLKFBOUT_FRAC_EN => ram_clk_config(0)(26),  
+<: } :>
+  S2_DIVCLK_DIVIDE => ram_clk_config(0)(7 downto 0),     
+  S2_CLKOUT0_DIVIDE => ram_clk_config(2)(7 downto 0),    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT0_PHASE => ram_clk_config(3)(31 downto 0),     
+  S2_CLKOUT0_DUTY => ram_clk_config(4)(31 downto 0),      
+<: } :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+  S2_CLKOUT0_FRAC => ram_clk_config(2)(17 downto 8),      
+  S2_CLKOUT0_FRAC_EN => ram_clk_config(2)(18),   
+<: } :>
+  S2_CLKOUT1_DIVIDE => ram_clk_config(5)(7 downto 0),    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT1_PHASE => ram_clk_config(6)(31 downto 0),     
+  S2_CLKOUT1_DUTY => ram_clk_config(7)(31 downto 0),      
+<: } :>
+<: if { !$is_plle3}  {  :>
+  S2_CLKOUT2_DIVIDE => ram_clk_config(8)(7 downto 0),    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT2_PHASE => ram_clk_config(9)(31 downto 0),     
+  S2_CLKOUT2_DUTY => ram_clk_config(10)(31 downto 0),      
+<: } :>
+  S2_CLKOUT3_DIVIDE => ram_clk_config(11)(7 downto 0),    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT3_PHASE => ram_clk_config(12)(31 downto 0),     
+  S2_CLKOUT3_DUTY => ram_clk_config(13)(31 downto 0),      
+<: } :>
+  S2_CLKOUT4_DIVIDE => ram_clk_config(14)(7 downto 0),    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT4_PHASE => ram_clk_config(15)(31 downto 0),     
+  S2_CLKOUT4_DUTY => ram_clk_config(16)(31 downto 0),      
+<: } :>
+  S2_CLKOUT5_DIVIDE => ram_clk_config(17)(7 downto 0),    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT5_PHASE => ram_clk_config(18)(31 downto 0),     
+  S2_CLKOUT5_DUTY => ram_clk_config(19)(31 downto 0),      
+<: } :>
+<: if { !$is_plle2}  {  :>
+  S2_CLKOUT6_DIVIDE => ram_clk_config(20)(7 downto 0),    
+<: if { $reconfig_adv }  {  :>
+  S2_CLKOUT6_PHASE => ram_clk_config(21)(31 downto 0),     
+  S2_CLKOUT6_DUTY => ram_clk_config(22)(31 downto 0),      
+<: } :>
+<: } :>
+<: } :>
+<: } else  { :>
+  S2_Power       => ram_clk_config(0)(15 downto 0), 
+  S2_CLKOUT0_1   => ram_clk_config(1)(15 downto 0), 
+  S2_CLKOUT0_2   => ram_clk_config(2)(15 downto 0),
+  S2_CLKOUT1_1   => ram_clk_config(3)(15 downto 0),
+  S2_CLKOUT1_2   => ram_clk_config(4)(15 downto 0),
+  S2_CLKOUT2_1   => ram_clk_config(5)(15 downto 0), 
+  S2_CLKOUT2_2   => ram_clk_config(6)(15 downto 0), 
+  S2_CLKOUT3_1   => ram_clk_config(7)(15 downto 0),
+  S2_CLKOUT3_2   => ram_clk_config(8)(15 downto 0),
+  S2_CLKOUT4_1   => ram_clk_config(9)(15 downto 0), 
+  S2_CLKOUT4_2   => ram_clk_config(10)(15 downto 0), 
+  S2_CLKOUT5_1   => ram_clk_config(11)(15 downto 0), 
+  S2_CLKOUT5_2   => ram_clk_config(12)(15 downto 0), 
+  S2_CLKOUT6_1   => ram_clk_config(13)(15 downto 0), 
+  S2_CLKOUT6_2   => ram_clk_config(14)(15 downto 0), 
+  S2_DIVCLK      => ram_clk_config(15)(15 downto 0),
+  S2_CLKFBOUT_1  => ram_clk_config(16)(15 downto 0),
+  S2_CLKFBOUT_2  => ram_clk_config(17)(15 downto 0),
+  S2_Lock_1      => ram_clk_config(18)(15 downto 0),
+  S2_Lock_2      => ram_clk_config(19)(15 downto 0),  
+  S2_Lock_3      => ram_clk_config(20)(15 downto 0),
+  S2_Filter_1    => ram_clk_config(21)(15 downto 0),
+  S2_Filter_2    => ram_clk_config(22)(15 downto 0),
+<: } :>
+  LOAD => SEN,                 
+  SADDR => config_reg(30), 
+  SEN   => SEN,
+  RST  => Bus2IP_Rst,
+  SRDY => srdy,
+  SCLK => bus2ip_clk,
+  DO  => dout,
+  DRDY  => drdy,
+  LOCKED  => locked_int,
+  DWE  => dwe,
+  DEN  => den,
+  DADDR  => daddr,
+  DI  => din,
+  DCLK  => dclk,
+  RST_MMCM_PLL  => reset
+  );
+<: } :>
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+
+xpm_cdc_single_rst: xpm_cdc_single
+  generic map (
+     DEST_SYNC_FF   => 4, -- integer; range: 2-10
+     SIM_ASSERT_CHK => 0, -- integer; 0=disable simulation messages, 1=enable simulation messages
+     SRC_INPUT_REG  => 1  -- integer; 0=do not register input, 1=register input
+  )
+  port map (
+     src_clk  => Bus2IP_Clk,  -- optional; required when SRC_INPUT_REG = 1
+     src_in   => Bus2IP_Rst,
+     dest_clk => Ref_Clk,
+     dest_out => Reset_axi
+  );
+
+  clk_mon_inst: <=: ComponentName :>_clk_mon
+   port map ( 
+   Ref_Clk                      => Ref_Clk,
+   Reset                        => Reset_axi,
+<: if { $C_ENABLE_USER_CLOCK0 } { :>
+<: if { $C_Enable_PLL0 } { :>
+   User_Clk0                    => clk_mon_in0,
+<: } else  { :>
+   User_Clk0                    => User_Clk0,
+<: } :>
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 } { :>
+<: if { $C_Enable_PLL1 } { :>
+   User_Clk1                    => clk_mon_in1,
+<: } else  { :>
+   User_Clk1                    => User_Clk1,
+<: } :>
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+   User_Clk2                    => User_Clk2,
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+   User_Clk3                    => User_Clk3,
+<: } :>
+   Clk_stop                     => Clk_stop_sig,
+   Clk_OOR                      => Clk_OOR,
+   Clk_Greater                  => Clk_Greater,
+   Clk_Lesser                   => Clk_Lesser,
+   Clock_Glitch                 => Clk_glitch_sig
+   );
+   
+xpm_cdc_array_single_glitch: xpm_cdc_array_single
+  generic map (
+
+    -- Common module generics
+    DEST_SYNC_FF   => 4, -- integer; range: 2-10
+    SIM_ASSERT_CHK => 0, -- integer; 0=disable simulation messages, 1=enable simulation messages
+    SRC_INPUT_REG  => 1, -- integer; 0=do not register input, 1=register input
+    WIDTH          => 16  -- integer; range: 1-1024
+
+  )
+  port map (
+
+    src_clk  => Ref_Clk,  -- optional; required when SRC_INPUT_REG = 1
+    src_in   => clk_mon_error,
+    dest_clk => Bus2IP_Clk,
+    dest_out => clk_mon_error_reg_sig
+  );
+
+Clock_Glitch  <= Clk_glitch_sig;
+Clk_stop  <= Clk_stop_sig;
+clk_mon_error <= Clk_stop_sig & Clk_glitch_sig & Clk_Lesser & Clk_Greater;
+Interrupt <= or_reduce(interrupt_status_reg);
+<: } :>
+end architecture imp;
+--------------------------------------------------------------------------------
+

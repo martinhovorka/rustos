@@ -1,0 +1,568 @@
+<: if  { $auto_ext_feedback }  { :>
+  -- buffer for feedback clock output
+  clkfbout_bufg : BUFG
+  port map
+   (O  => clkfb_bufg_out,
+    I  => clkfbout_<=: ComponentName :>);
+
+  -- Forward the feedback clock off-chip
+<: if { $is_v8 || $is_k8 }  {  :>
+  clkfbout_oddr: ODDRE1 
+  port map (
+     Q  => clkfb_oddr_out,
+     C  => clkfb_bufg_out,
+     D1 => '1',
+     D2 => '0',
+     SR => '0');
+<: } else { :>
+  clkfbout_oddr : ODDR
+  port map
+   (Q  => clkfb_oddr_out,
+    C  => clkfb_bufg_out,
+    CE => '1',
+    D1 => '1',
+    D2 => '0',
+    R  => '0',
+    S  => '0');
+<: } :>
+<: ;#back to the standard PLL/MMCM requirements for feedback :>
+<: if { $safe_clk_startup}  {  :>
+
+  clkf_buf : BUFG
+  port map
+   (O => clkfbout_buf_<=: ComponentName :>,
+    I => clkfbout_<=: ComponentName :>);
+<: } :>
+<: } elseif  { [string equal -nocase $clkout1_buf "No_buffer"]}  { :>
+<: if { $ext_feedback}  {  :>
+  <=: fbout_port :> <= clkfbout_<=: ComponentName :>;
+<: if { $safe_clk_startup}  {  :>
+
+  clkf_buf : BUFG
+  port map
+   (O => clkfbout_buf_<=: ComponentName :>,
+    I => clkfbout_<=: ComponentName :>);
+<: } :>
+<: } elseif  { $use_phase_alignment}  { :>
+  clkfbout_buf_<=: ComponentName :> <= clkfbout_<=: ComponentName :>;
+<: } :>
+<: } else  {;#BUFG/BUFR/BUFH :>
+<: if { $ext_feedback}  {  :>
+<: if { $is_clk0_fb}  {  :>
+
+  <=: fbout_port :> <= <: print $out1_port$u_score$ComponentName :>;
+<: if { $safe_clk_startup}  {  :>
+
+  clkf_buf : BUFG
+  port map
+   (O => clkfbout_buf_<=: ComponentName :>,
+    I => clkfbout_<=: ComponentName :>);
+<: } :>
+<: } else  { :>
+  <=: fbout_port :> <= clkfbout_<=: ComponentName :>;
+<: if { $safe_clk_startup}  {  :>
+
+  clkf_buf : BUFG
+  port map
+   (O => clkfbout_buf_<=: ComponentName :>,
+    I => clkfbout_<=: ComponentName :>);
+<: } :>
+<: } :>
+<: } elseif  { $use_phase_alignment}  { :>
+<: if { $is_clk0_fb}  {  :>
+
+<: } else  { :>
+
+  clkf_buf : <=: clkfb_buf :>
+  port map
+   (O => clkfbout_buf_<=: ComponentName :>,
+    I => clkfbout_<=: ComponentName :>);
+<: } :>
+<: } :>
+<: } :>
+
+<: if  { ($safe_clk_startup) && !$use_phase_alignment || (!$use_phase_alignment && $mmcm_compensation == "BUF_IN")}  { :>
+  clkf_buf : BUFG
+  port map
+   (O => clkfbout_buf_<=: ComponentName :>,
+    I => clkfbout_<=: ComponentName :>);
+<: } :>
+
+<: if { $auto_diff_feedback}  {  :>
+  -- Differential output clock buffer
+  clkfbout_bufds : OBUFDS
+  port map
+   (O  => <=: fbout_p_port :>,
+    OB => <=: fbout_n_port :>,
+    I  => clkfb_oddr_out);
+<: } elseif  { $auto_sing_feedback}  { :>
+  <=: fbout_port :> <= clkfb_oddr_out;
+<: } :>
+
+<: if { !$safe_clk_startup}  {  :>
+<: ;#CLKOUT1 // :>
+<: if { [string equal -nocase $clkout1_buf "No_buffer"]}  {  :>
+  <=: out1_port :> <= <: print $out1_port$u_score$ComponentName :>;
+<: } else  { :>
+  clkout1_buf : <=: clkout1_buf :>
+<: if { [string equal -nocase $clkout1_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT1_BUFR_DIV)
+<: } :>
+  port map
+<: if { $is_clk0_fb}  {  :>
+   (O   => clk_out1_int,
+<: } else  { :>
+   (O   => <=: out1_port :>,
+<: } :>
+<: if { [string equal -nocase $clkout1_buf "BUFR"]}  {  :>
+    CE  => <=: out1_port :>_ce,
+    CLR => <=: out1_port :>_clr,
+<: } elseif  { $clkout1_ce_used}  { :>
+    CE  => <=: out1_port :>_ce,
+<: } :>
+    I   => <: print $out1_port$u_score$ComponentName :>);
+
+<: if { $is_clk0_fb}  {  :>
+    <=: out1_port :> <= clk_out1_int; 
+<: if { $use_phase_alignment && (!$ext_feedback) && (!$auto_ext_feedback)}  {  :>
+    clk0_fb_in <= clk_out1_int;
+<: } :>
+<: } :>
+
+<: } :>
+<: ;#CLKOUT1 // :>
+<: if { $num_out_clks>= 2}  {  :>
+
+<: if { [string equal -nocase $clkout2_buf "No_buffer"]}  {  :>
+  <=: out2_port :> <= <: print $out2_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+  clkout2_buf : <=: clkout2_buf :>
+<: if { [string equal -nocase $clkout2_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT2_BUFR_DIV)
+<: } :>
+  port map
+   (O   => <=: out2_port :>,
+<: if { [string equal -nocase $clkout2_buf "BUFR"]}  {  :>
+    CE  => <=: out2_port :>_ce,
+    CLR => <=: out2_port :>_clr,
+<: } elseif  { $clkout2_ce_used}  { :>
+    CE  => <=: out2_port :>_ce,
+<: } :>
+    I   => <: print $out2_port$u_score$ComponentName :>);
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 3) && (!$mmcm_ss_en)}  {  :>
+
+<: if { [string equal -nocase $clkout3_buf "No_buffer"]}  {  :>
+  <=: out3_port :> <= <: print $out3_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+  clkout3_buf : <=: clkout3_buf :>
+<: if { [string equal -nocase $clkout3_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT3_BUFR_DIV)
+<: } :>
+  port map
+   (O   => <=: out3_port :>,
+<: if { [string equal -nocase $clkout3_buf "BUFR"]}  {  :>
+    CE  => <=: out3_port :>_ce,
+    CLR => <=: out3_port :>_clr,
+<: } elseif  { $clkout3_ce_used}  { :>
+    CE  => <=: out3_port :>_ce,
+<: } :>
+    I   => <: print $out3_port$u_score$ComponentName :>);
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 4) && (!$mmcm_ss_en)}  {  :>
+
+<: if { [string equal -nocase $clkout4_buf "No_buffer"]}  {  :>
+  <=: out4_port :> <= <: print $out4_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+  clkout4_buf : <=: clkout4_buf :>
+<: if { [string equal -nocase $clkout4_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT4_BUFR_DIV)
+<: } :>
+  port map
+   (O   => <=: out4_port :>,
+<: if { [string equal -nocase $clkout4_buf "BUFR"]}  {  :>
+    CE  => <=: out4_port :>_ce,
+    CLR => <=: out4_port :>_clr,
+<: } elseif  { $clkout4_ce_used}  { :>
+    CE  => <=: out4_port :>_ce,
+<: } :>
+    I   => <: print $out4_port$u_score$ComponentName :>);
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+
+<: if { [string equal -nocase $clkout5_buf "No_buffer"]}  {  :>
+  <=: out5_port :> <= <: print $out5_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+  clkout5_buf : <=: clkout5_buf :>
+<: if { [string equal -nocase $clkout5_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT5_BUFR_DIV)
+<: } :>
+  port map
+   (O   => <=: out5_port :>,
+<: if { [string equal -nocase $clkout5_buf "BUFR"]}  {  :>
+    CE  => <=: out5_port :>_ce,
+    CLR => <=: out5_port :>_clr,
+<: } elseif  { $clkout5_ce_used}  { :>
+    CE  => <=: out5_port :>_ce,
+<: } :>
+    I   => <: print $out5_port$u_score$ComponentName :>);
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+
+<: if { [string equal -nocase $clkout6_buf "No_buffer"]}  {  :>
+  <=: out6_port :> <= <: print $out6_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+  clkout6_buf : <=: clkout6_buf :>
+<: if { [string equal -nocase $clkout6_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT6_BUFR_DIV)
+<: } :>
+  port map
+   (O   => <=: out6_port :>,
+<: if { [string equal -nocase $clkout6_buf "BUFR"]}  {  :>
+    CE  => <=: out6_port :>_ce,
+    CLR => <=: out6_port :>_clr,
+<: } elseif  { $clkout6_ce_used}  { :>
+    CE  => <=: out6_port :>_ce,
+<: } :>
+    I   => <: print $out6_port$u_score$ComponentName :>);
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+
+<: if { [string equal -nocase $clkout7_buf "No_buffer"]}  {  :>
+  <=: out7_port :> <= <: print $out7_port$u_score$ComponentName :>;
+<: } else  {;#BUFG/BUFR/BUFH :>
+  clkout7_buf : <=: clkout7_buf :>
+<: if { [string equal -nocase $clkout7_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT7_BUFR_DIV)
+<: } :>
+  port map
+   (O   => <=: out7_port :>,
+<: if { [string equal -nocase $clkout7_buf "BUFR"]}  {  :>
+    CE  => <=: out7_port :>_ce,
+    CLR => <=: out7_port :>_clr,
+<: } elseif  { $clkout7_ce_used}  { :>
+    CE  => <=: out7_port :>_ce,
+<: } :>
+    I   => <: print $out7_port$u_score$ComponentName :>);
+<: } :>
+<: } :>
+<: } else { :>
+<: ;#CLKOUT1 // :>
+  clkout1_buf : <=: clkout1_buf :>
+  port map
+<: if { $is_clk0_fb}  {  :>
+   (O   => clk_out1_int,
+<: } else  { :>
+   (O   => <=: out1_port :>,
+<: } :>
+    CE  => seq_reg1(7),
+    I   => <: print $out1_port$u_score$ComponentName :>);
+
+<: if { ($is_v8 || $is_k8) } { :>
+  clkout1_buf_en : BUFGCE
+  port map
+   (O   => <: print $out1_port$u_score$ComponentName :>_en_clk,
+    CE  => '1',
+    I   => <: print $out1_port$u_score$ComponentName :>);
+<: } else  { :>
+  clkout1_buf_en : BUFH
+  port map
+   (O   => <: print $out1_port$u_score$ComponentName :>_en_clk,
+    I   => <: print $out1_port$u_score$ComponentName :>);
+<: } :>
+  process(<: print $out1_port$u_score$ComponentName :>_en_clk)
+  begin
+     if <: print $out1_port$u_score$ComponentName :>_en_clk'event and <: print $out1_port$u_score$ComponentName :>_en_clk = '1' then
+<: if { $clkout1_seq_number == 1}  {  :>
+        seq_reg1 <= seq_reg1(6 downto 0) & <=: locked_port :>_int;
+<: } elseif { $clkout1_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg1 <= seq_reg1(6 downto 0) & seq_reg2(7);
+<: } elseif { $clkout1_seq_number == [expr $clkout3_seq_number + 1]} { :>
+        seq_reg1 <= seq_reg1(6 downto 0) & seq_reg3(7);
+<: } elseif { $clkout1_seq_number == [expr $clkout4_seq_number + 1]} { :>
+        seq_reg1 <= seq_reg1(6 downto 0) & seq_reg4(7);
+<: } elseif { $clkout1_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg1 <= seq_reg1(6 downto 0) & seq_reg5(7);
+<: } elseif { $clkout1_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg1 <= seq_reg1(6 downto 0) & seq_reg6(7);
+<: } elseif { $clkout1_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg1 <= seq_reg1(6 downto 0) & seq_reg7(7);
+<: } :>
+     end if;
+  end process;
+
+<: if { $is_clk0_fb}  {  :>
+
+    <=: out1_port :> <= clk_out1_int; 
+<: if { $use_phase_alignment && (!$ext_feedback) && (!$auto_ext_feedback)}  {  :>
+
+    clk0_fb_in <= clk_out1_int;
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 2}  {  :>
+
+  clkout2_buf : <=: clkout2_buf :>
+  port map
+   (O   => <=: out2_port :>,
+    CE  => seq_reg2(7),
+    I   => <: print $out2_port$u_score$ComponentName :>);
+
+<: if { ($is_v8 || $is_k8) } { :>
+  clkout2_buf_en : BUFGCE
+  port map
+   (O   => <: print $out2_port$u_score$ComponentName :>_en_clk,
+    CE  => '1',
+    I   => <: print $out2_port$u_score$ComponentName :>);
+<: } else  { :>
+  clkout2_buf_en : BUFH
+  port map
+   (O   => <: print $out2_port$u_score$ComponentName :>_en_clk,
+    I   => <: print $out2_port$u_score$ComponentName :>);
+<: } :>
+   
+  process(<: print $out2_port$u_score$ComponentName :>_en_clk)
+  begin
+     if <: print $out2_port$u_score$ComponentName :>_en_clk'event and <: print $out2_port$u_score$ComponentName :>_en_clk = '1' then
+<: if { $clkout2_seq_number == 1}  {  :>
+        seq_reg2 <= seq_reg2(6 downto 0) & <=: locked_port :>_int;
+<: } elseif { $clkout2_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg2 <= seq_reg2(6 downto 0) & seq_reg1(7);
+<: } elseif { $clkout2_seq_number == [expr $clkout3_seq_number + 1]} { :>
+        seq_reg2 <= seq_reg2(6 downto 0) & seq_reg3(7);
+<: } elseif { $clkout2_seq_number == [expr $clkout4_seq_number + 1]} { :>
+        seq_reg2 <= seq_reg2(6 downto 0) & seq_reg4(7);
+<: } elseif { $clkout2_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg2 <= seq_reg2(6 downto 0) & seq_reg5(7);
+<: } elseif { $clkout2_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg2 <= seq_reg2(6 downto 0) & seq_reg6(7);
+<: } elseif { $clkout2_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg2 <= seq_reg2(6 downto 0) & seq_reg7(7);
+<: } :>
+     end if;
+  end process;
+<: } :>
+<: if { ($num_out_clks>= 3) && (!$mmcm_ss_en)}  {  :>
+
+  clkout3_buf : <=: clkout3_buf :>
+  port map
+   (O   => <=: out3_port :>,
+    CE  => seq_reg3(7),
+    I   => <: print $out3_port$u_score$ComponentName :>);
+
+<: if { ($is_v8 || $is_k8) } { :>
+  clkout3_buf_en : BUFGCE
+  port map
+   (O   => <: print $out3_port$u_score$ComponentName :>_en_clk,
+    CE  => '1',
+    I   => <: print $out3_port$u_score$ComponentName :>);
+<: } else  { :>
+  clkout3_buf_en : BUFH
+  port map
+   (O   => <: print $out3_port$u_score$ComponentName :>_en_clk,
+    I   => <: print $out3_port$u_score$ComponentName :>);
+<: } :>
+   
+  process(<: print $out3_port$u_score$ComponentName :>_en_clk)
+  begin
+     if <: print $out3_port$u_score$ComponentName :>_en_clk'event and <: print $out3_port$u_score$ComponentName :>_en_clk = '1' then
+<: if { $clkout3_seq_number == 1}  {  :>
+        seq_reg3 <= seq_reg3(6 downto 0) & <=: locked_port :>_int;
+<: } elseif { $clkout3_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg3 <= seq_reg3(6 downto 0) & seq_reg1(7);
+<: } elseif { $clkout3_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg3 <= seq_reg3(6 downto 0) & seq_reg2(7);
+<: } elseif { $clkout3_seq_number == [expr $clkout4_seq_number + 1]} { :>
+        seq_reg3 <= seq_reg3(6 downto 0) & seq_reg4(7);
+<: } elseif { $clkout3_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg3 <= seq_reg3(6 downto 0) & seq_reg5(7);
+<: } elseif { $clkout3_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg3 <= seq_reg3(6 downto 0) & seq_reg6(7);
+<: } elseif { $clkout3_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg3 <= seq_reg3(6 downto 0) & seq_reg7(7);
+<: } :>
+     end if;
+  end process;
+<: } :>
+<: if { ($num_out_clks>= 4) && (!$mmcm_ss_en)}  {  :>
+
+  clkout4_buf : <=: clkout4_buf :>
+  port map
+   (O   => <=: out4_port :>,
+    CE  => seq_reg4(7),
+    I   => <: print $out4_port$u_score$ComponentName :>);
+
+<: if { ($is_v8 || $is_k8) } { :>
+  clkout4_buf_en : BUFGCE
+  port map
+   (O   => <: print $out4_port$u_score$ComponentName :>_en_clk,
+    CE  => '1',
+    I   => <: print $out4_port$u_score$ComponentName :>);
+<: } else  { :>
+  clkout4_buf_en : BUFH
+  port map
+   (O   => <: print $out4_port$u_score$ComponentName :>_en_clk,
+    I   => <: print $out4_port$u_score$ComponentName :>);
+<: } :>
+   
+  process(<: print $out4_port$u_score$ComponentName :>_en_clk)
+  begin
+     if <: print $out4_port$u_score$ComponentName :>_en_clk'event and <: print $out4_port$u_score$ComponentName :>_en_clk = '1' then
+<: if { $clkout4_seq_number == 1}  {  :>
+        seq_reg4 <= seq_reg4(6 downto 0) & <=: locked_port :>_int;
+<: } elseif { $clkout4_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg4 <= seq_reg4(6 downto 0) & seq_reg1(7);
+<: } elseif { $clkout4_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg4 <= seq_reg4(6 downto 0) & seq_reg2(7);
+<: } elseif { $clkout4_seq_number == [expr $clkout3_seq_number + 1]} { :>
+        seq_reg4 <= seq_reg4(6 downto 0) & seq_reg3(7);
+<: } elseif { $clkout4_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg4 <= seq_reg4(6 downto 0) & seq_reg5(7);
+<: } elseif { $clkout4_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg4 <= seq_reg4(6 downto 0) & seq_reg6(7);
+<: } elseif { $clkout4_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg4 <= seq_reg4(6 downto 0) & seq_reg7(7);
+<: } :>
+     end if;
+  end process;
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+
+  clkout5_buf : <=: clkout5_buf :>
+  port map
+   (O   => <=: out5_port :>,
+    CE  => seq_reg5(7),
+    I   => <: print $out5_port$u_score$ComponentName :>);
+
+<: if { ($is_v8 || $is_k8) } { :>
+  clkout5_buf_en : BUFGCE
+  port map
+   (O   => <: print $out5_port$u_score$ComponentName :>_en_clk,
+    CE  => '1',
+    I   => <: print $out5_port$u_score$ComponentName :>);
+<: } else  { :>
+  clkout5_buf_en : BUFH
+  port map
+   (O   => <: print $out5_port$u_score$ComponentName :>_en_clk,
+    I   => <: print $out5_port$u_score$ComponentName :>);
+<: } :>
+   
+  process(<: print $out5_port$u_score$ComponentName :>_en_clk)
+  begin
+     if <: print $out5_port$u_score$ComponentName :>_en_clk'event and <: print $out5_port$u_score$ComponentName :>_en_clk = '1' then
+<: if { $clkout5_seq_number == 1}  {  :>
+        seq_reg5 <= seq_reg5(6 downto 0) & <=: locked_port :>_int;
+<: } elseif { $clkout5_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg5 <= seq_reg5(6 downto 0) & seq_reg1(7);
+<: } elseif { $clkout5_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg5 <= seq_reg5(6 downto 0) & seq_reg2(7);
+<: } elseif { $clkout5_seq_number == [expr $clkout3_seq_number + 1]} { :>
+        seq_reg5 <= seq_reg5(6 downto 0) & seq_reg3(7);
+<: } elseif { $clkout5_seq_number == [expr $clkout4_seq_number + 1]} { :>
+        seq_reg5 <= seq_reg5(6 downto 0) & seq_reg4(7);
+<: } elseif { $clkout5_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg5 <= seq_reg5(6 downto 0) & seq_reg6(7);
+<: } elseif { $clkout5_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg5 <= seq_reg5(6 downto 0) & seq_reg7(7);
+<: } :>
+     end if;
+  end process;
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+
+  clkout6_buf : <=: clkout6_buf :>
+  port map
+   (O   => <=: out6_port :>,
+    CE  => seq_reg6(7),
+    I   => <: print $out6_port$u_score$ComponentName :>);
+
+<: if { ($is_v8 || $is_k8) } { :>
+  clkout6_buf_en : BUFGCE
+  port map
+   (O   => <: print $out6_port$u_score$ComponentName :>_en_clk,
+    CE  => '1',
+    I   => <: print $out6_port$u_score$ComponentName :>);
+<: } else  { :>
+  clkout6_buf_en : BUFH
+  port map
+   (O   => <: print $out6_port$u_score$ComponentName :>_en_clk,
+    I   => <: print $out6_port$u_score$ComponentName :>);
+<: } :>
+   
+  process(<: print $out6_port$u_score$ComponentName :>_en_clk)
+  begin
+     if <: print $out6_port$u_score$ComponentName :>_en_clk'event and <: print $out6_port$u_score$ComponentName :>_en_clk = '1' then
+<: if { $clkout6_seq_number == 1}  {  :>
+        seq_reg6 <= seq_reg6(6 downto 0) & <=: locked_port :>_int;
+<: } elseif { $clkout6_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg6 <= seq_reg6(6 downto 0) & seq_reg1(7);
+<: } elseif { $clkout6_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg6 <= seq_reg6(6 downto 0) & seq_reg2(7);
+<: } elseif { $clkout6_seq_number == [expr $clkout3_seq_number + 1]} { :>
+        seq_reg6 <= seq_reg6(6 downto 0) & seq_reg3(7);
+<: } elseif { $clkout6_seq_number == [expr $clkout4_seq_number + 1]} { :>
+        seq_reg6 <= seq_reg6(6 downto 0) & seq_reg4(7);
+<: } elseif { $clkout6_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg6 <= seq_reg6(6 downto 0) & seq_reg5(7);
+<: } elseif { $clkout6_seq_number == [expr $clkout7_seq_number + 1]} { :>
+        seq_reg6 <= seq_reg7(6 downto 0) & seq_reg7(7);
+<: } :>
+     end if;
+  end process;
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+
+  clkout7_buf : <=: clkout7_buf :>
+  port map
+   (O   => <=: out7_port :>,
+    CE  => seq_reg7(7),
+    I   => <: print $out7_port$u_score$ComponentName :>);
+
+<: if { ($is_v8 || $is_k8) } { :>
+  clkout7_buf_en : BUFGCE
+  port map
+   (O   => <: print $out7_port$u_score$ComponentName :>_en_clk,
+    CE  => '1',
+    I   => <: print $out7_port$u_score$ComponentName :>);
+<: } else  { :>
+  clkout7_buf_en : BUFH
+  port map
+   (O   => <: print $out7_port$u_score$ComponentName :>_en_clk,
+    I   => <: print $out7_port$u_score$ComponentName :>);
+<: } :>
+   
+  process(<: print $out7_port$u_score$ComponentName :>_en_clk)
+  begin
+     if <: print $out7_port$u_score$ComponentName :>_en_clk'event and <: print $out7_port$u_score$ComponentName :>_en_clk = '1' then
+<: if { $clkout7_seq_number == 1}  {  :>
+        seq_reg7 <= seq_reg7(6 downto 0) & <=: locked_port :>_int;
+<: } elseif { $clkout7_seq_number == [expr $clkout1_seq_number + 1]} { :>
+        seq_reg7 <= seq_reg7(6 downto 0) & seq_reg1(7);
+<: } elseif { $clkout7_seq_number == [expr $clkout2_seq_number + 1]} { :>
+        seq_reg7 <= seq_reg7(6 downto 0) & seq_reg2(7);
+<: } elseif { $clkout7_seq_number == [expr $clkout3_seq_number + 1]} { :>
+        seq_reg7 <= seq_reg7(6 downto 0) & seq_reg3(7);
+<: } elseif { $clkout7_seq_number == [expr $clkout4_seq_number + 1]} { :>
+        seq_reg7 <= seq_reg7(6 downto 0) & seq_reg4(7);
+<: } elseif { $clkout7_seq_number == [expr $clkout5_seq_number + 1]} { :>
+        seq_reg7 <= seq_reg7(6 downto 0) & seq_reg5(7);
+<: } elseif { $clkout7_seq_number == [expr $clkout6_seq_number + 1]} { :>
+        seq_reg7 <= seq_reg7(6 downto 0) & seq_reg6(7);
+<: } :>
+     end if;
+  end process;
+<: } :>
+   
+<: } :>
+<#: ttcl/bar_clk_out_vhd.ttcl :>

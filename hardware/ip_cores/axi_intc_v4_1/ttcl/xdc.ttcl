@@ -1,0 +1,15 @@
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName $ComponentName :>
+<: setFileExtension ".xdc" :>
+<: set no_of_intr [getIntValue "C_NUM_INTR_INPUTS"] :>
+<: set async_intr [getIntValue "C_ASYNC_INTR"] :>
+<: set num_sync_ff [getIntValue "C_NUM_SYNC_FF"] :>
+<: set intr_mask [expr (1 << $no_of_intr) - 1] :>
+<: set enable_async_constraints [expr (($async_intr & $intr_mask) != 0) && ($num_sync_ff > 0)] :>
+# file: <=: ComponentName :>.xdc
+<: getDisclaimer "#" :>
+<: if { $enable_async_constraints } { :>
+  set_false_path -to [ get_cells -filter {IS_SEQUENTIAL} {INTC_CORE_I/*ASYNC_GEN.intr_ff*[0]} ]
+<: } :>

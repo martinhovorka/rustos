@@ -1,0 +1,456 @@
+<: set c_family_prim [getProjectFamily] :>
+
+  -- Instantiation of the MMCM PRIMITIVE
+  --    * Unused inputs are tied off
+  --    * Unused outputs are labeled unused
+<: if { $is_v8 || $is_k8}  {  :>
+<: if { !$is_plle3}  {  :>
+  <: if { ($c_family_prim == "zynquplus") || ($c_family_prim == "virtexuplus" ) || ($c_family_prim == "artixuplus" ) || ($c_family_prim == "kintexuplus" ) } { :>  
+    mmcme4_adv_inst : MMCME4_ADV
+  <: } else  { :>  
+    mmcme3_adv_inst : MMCME3_ADV
+  <: } :>
+<: } else  { :>
+  <: if { ($c_family_prim == "zynquplus") || ($c_family_prim == "virtexuplus" ) || ($c_family_prim == "artixuplus" ) || ($c_family_prim == "kintexuplus" ) } { :>    
+    plle4_adv_inst : PLLE4_ADV
+  <: } else  { :> 
+    plle3_adv_inst : PLLE3_ADV
+  <: } :>
+<: } :>
+<: } elseif { $is_v7 || $is_pele}  {  :>
+<: if { $is_plle2}  {  :>
+  plle2_adv_inst : PLLE2_ADV
+<: } else  { :>
+  mmcm_adv_inst : MMCME2_ADV
+<: } :>
+<: } :>
+  generic map
+<: if { !$is_plle3 }  {  :>
+   (BANDWIDTH            => "<=: mmcm_bandwidth :>",
+<: } else  { :>
+   (
+<: } :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKOUT4_CASCADE      => "<=: mmcm_clkout4_cascade :>",
+<: } else  { :>
+    CLKOUT4_CASCADE      => <=: mmcm_clkout4_cascade :>,
+<: } :>
+<: } :>
+    COMPENSATION         => "<=: mmcm_compensation :>",
+<: if { $is_plle3 }  {  :>
+<: if { $enable_clkoutphy}  {  :>
+    CLKOUTPHY_MODE     => "<=: clkoutphy_mode :>",
+<: } :>
+<: } :>
+<: if { $is_v8 || $is_k8}  {  :>
+    STARTUP_WAIT         => "<=: mmcm_startup_wait :>",
+<: } else  { :>
+    STARTUP_WAIT         => <=: mmcm_startup_wait :>,
+<: } :>
+    DIVCLK_DIVIDE        => <=: mmcm_divclk_divide :>,
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+    CLKFBOUT_MULT_F      => <=: mmcm_clkfbout_mult_f :>,
+<: } else  { :>
+    CLKFBOUT_MULT        => <=: mmcm_clkfbout_mult :>,
+<: } :>
+    CLKFBOUT_PHASE       => <=: mmcm_clkfbout_phase :>,
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKFBOUT_USE_FINE_PS => "<=: mmcm_clkfbout_use_fine_ps :>",
+<: } else  { :>
+    CLKFBOUT_USE_FINE_PS => <=: mmcm_clkfbout_use_fine_ps :>,
+<: } :>
+<: } :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+    CLKOUT0_DIVIDE_F     => <=: mmcm_clkout0_divide_f :>,
+<: } else  { :>
+    CLKOUT0_DIVIDE       => <=: mmcm_clkout0_divide :>,
+<: } :>
+    CLKOUT0_PHASE        => <=: mmcm_clkout0_phase :>,
+    CLKOUT0_DUTY_CYCLE   => <=: mmcm_clkout0_duty_cycle :>,
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKOUT0_USE_FINE_PS  => "<=: mmcm_clkout0_use_fine_ps :>",
+<: } else  { :>
+    CLKOUT0_USE_FINE_PS  => <=: mmcm_clkout0_use_fine_ps :>,
+<: } :>
+<: } :>
+<: if { $num_out_clks> 1}  {  :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide_f && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+    CLKOUT1_DIVIDE       => <=: mmcm_clkout1_divide :>,
+    CLKOUT1_PHASE        => <=: mmcm_clkout1_phase :>,
+    CLKOUT1_DUTY_CYCLE   => <=: mmcm_clkout1_duty_cycle :>,
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKOUT1_USE_FINE_PS  => "<=: mmcm_clkout1_use_fine_ps :>",
+<: } else  { :>
+    CLKOUT1_USE_FINE_PS  => <=: mmcm_clkout1_use_fine_ps :>,
+<: } :>
+<: } :>
+<: } :>
+<: } else  { :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+    CLKOUT1_DIVIDE       => <=: mmcm_clkout1_divide :>,
+    CLKOUT1_PHASE        => <=: mmcm_clkout1_phase :>,
+    CLKOUT1_DUTY_CYCLE   => <=: mmcm_clkout1_duty_cycle :>,
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKOUT1_USE_FINE_PS  => "<=: mmcm_clkout1_use_fine_ps :>",
+<: } else  { :>
+    CLKOUT1_USE_FINE_PS  => <=: mmcm_clkout1_use_fine_ps :>,
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { !$is_plle3}  {  :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks> 2)}  {  :>
+<: if {(!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) && ($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && (!$is_plle2)) }  {  :>
+<: } else  { :>
+    CLKOUT2_DIVIDE       => <=: mmcm_clkout2_divide :>,
+<: if { !$is_plle3}  {  :>
+    CLKOUT2_PHASE        => <=: mmcm_clkout2_phase :>,
+<: } :>
+    CLKOUT2_DUTY_CYCLE   => <=: mmcm_clkout2_duty_cycle :>,
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKOUT2_USE_FINE_PS  => "<=: mmcm_clkout2_use_fine_ps :>",
+<: } else  { :>
+    CLKOUT2_USE_FINE_PS  => <=: mmcm_clkout2_use_fine_ps :>,
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks> 3)}  {  :>
+<: if {(!($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && ($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && (!$is_plle2)) }  {  :>
+<: } else  { :>
+    CLKOUT3_DIVIDE       => <=: mmcm_clkout3_divide :>,
+<: if { !$is_plle3}  {  :>
+    CLKOUT3_PHASE        => <=: mmcm_clkout3_phase :>,
+<: } :>
+    CLKOUT3_DUTY_CYCLE   => <=: mmcm_clkout3_duty_cycle :>,
+<: if { !$is_plle2}  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKOUT3_USE_FINE_PS  => "<=: mmcm_clkout3_use_fine_ps :>",
+<: } else  { :>
+    CLKOUT3_USE_FINE_PS  => <=: mmcm_clkout3_use_fine_ps :>,
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks> 4}  {  :>
+<: if {(!($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && ($mmcm_clkout4_divide == $mmcm_clkout3_divide && ($mmcm_clkout4_phase - $mmcm_clkout3_phase) == 180 && $mmcm_clkout4_duty_cycle == $mmcm_clkout3_duty_cycle && $mmcm_clkout4_use_fine_ps == $mmcm_clkout3_use_fine_ps) && (!$is_plle2)) }  {  :>
+<: } else  { :>
+    CLKOUT4_DIVIDE       => <=: mmcm_clkout4_divide :>,
+<: if { !$is_plle3}  {  :>
+    CLKOUT4_PHASE        => <=: mmcm_clkout4_phase :>,
+<: } :>
+    CLKOUT4_DUTY_CYCLE   => <=: mmcm_clkout4_duty_cycle :>,
+<: if { !$is_plle2}  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKOUT4_USE_FINE_PS  => "<=: mmcm_clkout4_use_fine_ps :>",
+<: } else  { :>
+    CLKOUT4_USE_FINE_PS  => <=: mmcm_clkout4_use_fine_ps :>,
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks> 5}  {  :>
+    CLKOUT5_DIVIDE       => <=: mmcm_clkout5_divide :>,
+<: if { !$is_plle3}  {  :>
+    CLKOUT5_PHASE        => <=: mmcm_clkout5_phase :>,
+<: } :>
+    CLKOUT5_DUTY_CYCLE   => <=: mmcm_clkout5_duty_cycle :>,
+<: if { !$is_plle2}  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKOUT5_USE_FINE_PS  => "<=: mmcm_clkout5_use_fine_ps :>",
+<: } else  { :>
+    CLKOUT5_USE_FINE_PS  => <=: mmcm_clkout5_use_fine_ps :>,
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks> 6}  {  :>
+    CLKOUT6_DIVIDE       => <=: mmcm_clkout6_divide :>,
+<: if { !$is_plle3}  {  :>
+    CLKOUT6_PHASE        => <=: mmcm_clkout6_phase :>,
+<: } :>
+    CLKOUT6_DUTY_CYCLE   => <=: mmcm_clkout6_duty_cycle :>,
+<: if { !$is_plle2}  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    CLKOUT6_USE_FINE_PS  => "<=: mmcm_clkout6_use_fine_ps :>",
+<: } else  { :>
+    CLKOUT6_USE_FINE_PS  => <=: mmcm_clkout6_use_fine_ps :>,
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { $mmcm_ss_en}  {  :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if { $is_v8 || $is_k8}  {  :>
+    SS_EN                => "<=: mmcm_ss_en :>",
+<: } else  { :>
+    SS_EN                => "<=: mmcm_ss_en :>",
+<: } :>
+    SS_MODE              => "<=: mmcm_ss_mode :>",
+    SS_MOD_PERIOD        => <=: mmcm_ss_mod_period :>,
+<: } :>
+<: } :>
+<: if { !$is_plle3}  {  :>
+<: if { $use_inclk_switchover}  {  :>
+    CLKIN1_PERIOD        => <=: clkin1_period :>,
+    CLKIN2_PERIOD        => <=: clkin2_period :>)
+<: } else  { :>
+    CLKIN1_PERIOD        => <=: clkin1_period :>)
+<: } :>
+<: } else  { :>
+    CLKIN_PERIOD         => <=: clkin1_period :>)
+<: } :>
+  port map
+    -- Output clocks
+   (
+    CLKFBOUT            => clkfbout_<=: ComponentName :>,
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+    CLKFBOUTB           => clkfboutb_unused,
+<: } :>
+    CLKOUT0             => <: print $out1_port$u_score$ComponentName :>,
+<: if { !$is_plle2}  {  :>
+<: if { $use_clkout1_bar}  {  :>
+    CLKOUT0B            => clkout0b,
+<: } elseif { $num_out_clks< 2}  { :>
+    CLKOUT0B            => clkout0b_unused,
+<: } else  { :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide_f && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+    CLKOUT0B            => clkout0b_unused,
+<: } else  { :>
+    CLKOUT0B            => <: print $out2_port$u_score$ComponentName :>,
+<: } :>
+<: } else  { :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+    CLKOUT0B            => clkout0b_unused,
+<: } else  { :>
+    CLKOUT0B            => <: print $out2_port$u_score$ComponentName :>,
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks< 2}  {  :>
+    CLKOUT1             => clkout1_unused,
+<: } else  { :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide_f && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+    CLKOUT1             => <: print $out2_port$u_score$ComponentName :>,
+<: } else  { :>
+    CLKOUT1             => clkout1_unused,
+<: } :>
+<: } else  { :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+    CLKOUT1             => <: print $out2_port$u_score$ComponentName :>,
+<: } else  { :>
+    CLKOUT1             => clkout1_unused,
+<: } :>
+<: } :>
+<: } :>
+<: if { !$is_plle2}  {  :>
+<: if { $use_clkout2_bar}  {  :>
+    CLKOUT1B            => clkout1b,
+<: } elseif { $num_out_clks< 3}  { :>
+    CLKOUT1B            => clkout1b_unused,
+<: } else  { :>
+<: if {(!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) && ($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && (!$is_plle2)) }  {  :>
+    CLKOUT1B            => <: print $out3_port$u_score$ComponentName :>,
+<: } else  { :>
+    CLKOUT1B            => clkout1b_unused,
+<: } :>
+<: } :>
+<: } :>
+<: if { !$is_plle3}  {  :>
+<: if { ($mmcm_ss_en) || ($num_out_clks< 3)}  {  :>
+    CLKOUT2             => clkout2_unused,
+<: } else  { :>
+<: if {(!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) && ($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && (!$is_plle2)) }  {  :>
+    CLKOUT2             => clkout2_unused,
+<: } else  { :>
+    CLKOUT2             => <: print $out3_port$u_score$ComponentName :>,
+<: } :>
+<: } :>
+<: if { !$is_plle2}  {  :>
+<: if { (!$mmcm_ss_en) && ($use_clkout3_bar)}  {  :>
+    CLKOUT2B            => clkout2b,
+<: } elseif { $num_out_clks< 4}  { :>
+    CLKOUT2B            => clkout2b_unused,
+<: } else  { :>
+<: if {(!($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && ($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && (!$is_plle2)) }  {  :>
+    CLKOUT2B            => <: print $out4_port$u_score$ComponentName :>,
+<: } else  { :>
+    CLKOUT2B            => clkout2b_unused,
+<: } :>
+<: } :>
+<: } :>
+<: if { ($mmcm_ss_en) || ($num_out_clks< 4)}  {  :>
+    CLKOUT3             => clkout3_unused,
+<: } else  { :>
+<: if {(!($mmcm_clkout2_divide == $mmcm_clkout1_divide && ($mmcm_clkout2_phase - $mmcm_clkout1_phase) == 180 && $mmcm_clkout2_duty_cycle == $mmcm_clkout1_duty_cycle && $mmcm_clkout2_use_fine_ps == $mmcm_clkout1_use_fine_ps) && ($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && (!$is_plle2)) }  {  :>
+    CLKOUT3             => clkout3_unused,
+<: } else  { :>
+    CLKOUT3             => <: print $out4_port$u_score$ComponentName :>,
+<: } :>
+<: } :>
+<: if { !$is_plle2}  {  :>
+<: if { $use_clkout4_bar}  {  :>
+    CLKOUT3B            => clkout3b,
+<: } elseif { $num_out_clks< 5}  { :>
+    CLKOUT3B            => clkout3b_unused,
+<: } else  { :>
+<: if {(!($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && ($mmcm_clkout4_divide == $mmcm_clkout3_divide && ($mmcm_clkout4_phase - $mmcm_clkout3_phase) == 180 && $mmcm_clkout4_duty_cycle == $mmcm_clkout3_duty_cycle && $mmcm_clkout4_use_fine_ps == $mmcm_clkout3_use_fine_ps) && (!$is_plle2)) }  {  :>
+    CLKOUT3B            => <: print $out5_port$u_score$ComponentName :>,
+<: } else  { :>
+    CLKOUT3B            => clkout3b_unused,
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks< 5}  {  :>
+    CLKOUT4             => clkout4_unused,
+<: } else  { :>
+<: if {(!($mmcm_clkout3_divide == $mmcm_clkout2_divide && ($mmcm_clkout3_phase - $mmcm_clkout2_phase) == 180 && $mmcm_clkout3_duty_cycle == $mmcm_clkout2_duty_cycle && $mmcm_clkout3_use_fine_ps == $mmcm_clkout2_use_fine_ps) && ($mmcm_clkout4_divide == $mmcm_clkout3_divide && ($mmcm_clkout4_phase - $mmcm_clkout3_phase) == 180 && $mmcm_clkout4_duty_cycle == $mmcm_clkout3_duty_cycle && $mmcm_clkout4_use_fine_ps == $mmcm_clkout3_use_fine_ps) && (!$is_plle2)) }  {  :>
+    CLKOUT4             => clkout4_unused,
+<: } else  { :>
+    CLKOUT4             => <: print $out5_port$u_score$ComponentName :>,
+<: } :>
+<: } :>
+<: if { $num_out_clks< 6}  {  :>
+    CLKOUT5             => clkout5_unused,
+<: } else  { :>
+    CLKOUT5             => <: print $out6_port$u_score$ComponentName :>,
+<: } :>
+<: if { !$is_plle2}  {  :>
+<: if { $num_out_clks< 7}  {  :>
+    CLKOUT6             => clkout6_unused,
+<: } else  { :>
+    CLKOUT6             => <: print $out7_port$u_score$ComponentName :>,
+<: } :>
+<: } :>
+<: } :>
+    -- Input clock control
+<: if { $use_phase_alignment}  {  :>
+<: if { (!$ext_feedback)  && (!$auto_ext_feedback) && ($mmcm_compensation != "INTERNAL") }  {  :>
+    CLKFBIN             => clkfbout_buf_<=: ComponentName :>,
+<: } elseif  { ($auto_ext_feedback) && ($mmcm_compensation != "INTERNAL")}  { :>
+    CLKFBIN             => clkfb_in_buf_out,
+<: } elseif { ($mmcm_compensation != "INTERNAL") } { :>
+    CLKFBIN             => <=: fbin_port :>,
+<: } :>
+<: if { ($mmcm_compensation == "INTERNAL") } { :>
+      .CLKFBIN           (clkfbout_<=: ComponentName :>),
+<: } :>
+<: } else  { :>
+    <:  if { (!$use_phase_alignment && $mmcm_compensation == "BUF_IN") } { :>
+    .CLKFBIN             (clkfbout_buf_<=: ComponentName :>),
+    <: } else  { :>
+    .CLKFBIN             (clkfbout_<=: ComponentName :>),
+    <: } :>
+<: } :>
+<: if { !$is_plle3}  {  :>
+    CLKIN1              => <: print $PRIMARY_PORT$u_score$ComponentName :>,
+<: } else  { :>
+    CLKIN               => <: print $PRIMARY_PORT$u_score$ComponentName :>,
+<: } :>
+<: if { !$is_plle3}  {  :>
+<: if { $use_inclk_switchover}  {  :>
+    CLKIN2              => <: print $SECONDARY_PORT$u_score$ComponentName :>,
+    CLKINSEL            => <=: clk_in_sel_port :>,
+<: } else  { :>
+    CLKIN2              => '0',
+    -- Tied to always select the primary input clock
+    CLKINSEL            => '1',
+<: } :>
+<: } :>
+    -- Ports for dynamic reconfiguration
+<: if { $use_dyn_reprog}  {  :>
+    DADDR               => <=: daddr_port :>,
+    DCLK                => <=: dclk_port :>,
+    DEN                 => <=: den_port :>,
+    DI                  => <=: din_port :>,
+    DO                  => <=: dout_port :>,
+    DRDY                => <=: drdy_port :>,
+    DWE                 => <=: dwe_port :>,
+<: } else  { :>
+    DADDR               => (others => '0'),
+    DCLK                => '0',
+    DEN                 => '0',
+    DI                  => (others => '0'),
+    DO                  => do_unused,
+    DRDY                => drdy_unused,
+    DWE                 => '0',
+<: } :>
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :> 
+    CLKOUTPHYEN         => '1',
+    CLKOUTPHY           => clkoutphy,
+<: } else  { :>
+    CLKOUTPHYEN         => '0',
+    CLKOUTPHY           => open,
+<: } :>
+<: } :>
+<: if { $is_v8 || $is_k8 }  {  :>
+<: if { !$is_plle3}  {  :>
+<: if { $has_cddc}  {  :>
+    CDDCDONE            => <=: cddcdone_port :>,
+    CDDCREQ             => <=: cddcreq_port :>,
+<: } else  { :>
+    CDDCDONE            => open,
+    CDDCREQ             => '0',
+<: } :>
+<: } :>
+<: } :>
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+    -- Ports for dynamic phase shift
+<: if { $use_dyn_phase_shift}  {  :>
+    PSCLK               => <=: psclk_port :>,
+    PSEN                => <=: psen_port :>,
+    PSINCDEC            => <=: psincdec_port :>,
+    PSDONE              => <=: psdone_port :>,
+<: } else  { :>
+    PSCLK               => '0',
+    PSEN                => '0',
+    PSINCDEC            => '0',
+    PSDONE              => psdone_unused,
+<: } :>
+<: } :>
+    -- Other control and status signals
+    LOCKED              => <=: locked_port :>_int,
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+<: if { $use_inclk_stopped}  {  :>
+    CLKINSTOPPED        => <=: input_clk_stopped_port :>,
+<: } else  { :>
+    CLKINSTOPPED        => clkinstopped_unused,
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+    CLKFBSTOPPED        => <=: clkfb_stopped_port :>,
+<: } else  { :>
+    CLKFBSTOPPED        => clkfbstopped_unused,
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+    PWRDWN              => <=: power_down_port :>,
+<: } else  { :>
+    PWRDWN              => '0',
+<: } :>
+<: if { $use_reset}  {  :>
+    RST                 => reset_high);
+<: } else  { :>
+    RST                 => '0');
+<: } :>
+
+<: if { $use_reset}  {  :>
+<: if { $reset_active_high}  {  :>
+  reset_high <= <=: reset_port :>; 
+<: } else { :>
+  reset_high <= not <=: reset_port :>; 
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+  <=: locked_port :> <= <=: locked_port :>_int;
+<: } :>

@@ -1,0 +1,207 @@
+port
+ (
+<: if { $c_has_AXI } { :>
+    -- System interface
+   s_axi_aclk       : in  std_logic;                                      
+   s_axi_aresetn    : in  std_logic;                                      
+   -- AXI Write address channel signals                                        
+   s_axi_awaddr     : in  std_logic_vector((11-1) downto 0);                  
+   s_axi_awvalid    : in  std_logic;                                      
+   s_axi_awready    : out std_logic;                                      
+   -- AXI Write data channel signals                                           
+   s_axi_wdata      : in  std_logic_vector((32-1) downto 0);                  
+   s_axi_wstrb      : in  std_logic_vector(((32/8)-1) downto 0);              
+   s_axi_wvalid     : in  std_logic;                                      
+   s_axi_wready     : out std_logic;                                      
+   -- AXI Write response channel signals                                       
+   s_axi_bresp      : out std_logic_vector(1 downto 0);                   
+   s_axi_bvalid     : out std_logic;                                      
+   s_axi_bready     : in  std_logic;                                      
+   -- AXI Read address channel signals                                         
+   s_axi_araddr     : in  std_logic_vector((11-1) downto 0);                  
+   s_axi_arvalid    : in  std_logic;                                      
+   s_axi_arready    : out std_logic;                                      
+   -- AXI Read address channel signals                                         
+   s_axi_rdata      : out std_logic_vector((32-1) downto 0);                  
+   s_axi_rresp      : out std_logic_vector(1 downto 0);                   
+   s_axi_rvalid     : out std_logic;                                      
+   s_axi_rready     : in  std_logic;                                      
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { $clkin2_diff}  {  :>
+  <=: SECONDARY_PORT :>_p         : in  std_logic;
+  <=: SECONDARY_PORT :>_n         : in  std_logic;
+<: } else  { :>
+  <=: SECONDARY_PORT :>           : in  std_logic;
+<: } :>
+  clk_in_sel        : in  std_logic;
+<: } :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+  clkfb_in_p        : in  std_logic;
+  clkfb_in_n        : in  std_logic;
+<: } else  { :>
+  clkfb_in          : in  std_logic;
+<: } :>
+<: } :>
+  -- Reset that only drives logic in example design
+  COUNTER_RESET     : in  std_logic;
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+  clkoutphy         : out std_logic;
+<: } :>
+<: } :>
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2)} { :>
+  CLK_OUT           : out std_logic_vector(<=: num_out_clks :> - 2 downto 1);
+<:   } else { :>
+  CLK_OUT           : out std_logic_vector(<=: num_out_clks :> downto 1);
+<: } :>
+<:   } else { :>
+  CLK_OUT           : out std_logic_vector(<=: num_out_clks :> downto 1);
+<: } :>
+  -- High bits of counters driven by clocks
+<: ;#all dynamic signals tied off -> use no dynamic forms for last :>
+<: if { !$mmcm_ss_en }  {  :>
+<: if { $clkout_last_nodyn ||( $clkfbout_last_nodyn && $ext_feedback && $exdes_connectfb && !$auto_ext_feedback) }  {  :>
+<: if { $num_out_clks== 1}  {  :>
+  COUNT             : out std_logic
+<: } else  { :>
+  COUNT             : out std_logic_vector(<=: num_out_clks :> downto 1)
+<: } :>
+<: } else  { :>
+<: if { $num_out_clks== 1}  {  :>
+  COUNT             : out std_logic;
+<: } else  { :>
+  COUNT             : out std_logic_vector(<=: num_out_clks :> downto 1);
+<: } :>
+<: } :>
+<: } else  { :>
+<: if { $clkout_last_nodyn ||( $clkfbout_last_nodyn && $ext_feedback && $exdes_connectfb && !$auto_ext_feedback) }  {  :>
+<: if { $num_out_clks== 1}  {  :>
+  COUNT             : out std_logic
+<: } elseif { $num_out_clks> 2}   { :>
+  COUNT             : out std_logic_vector(<=: num_out_clks :> -2 downto 1)
+<: } else  { :>
+  COUNT             : out std_logic_vector(<=: num_out_clks :> downto 1)
+<: } :>
+<: } else  { :>
+<: if { $num_out_clks== 1}  {  :>
+  COUNT             : out std_logic;
+<: } elseif { $num_out_clks> 2}   { :>
+  COUNT             : out std_logic_vector(<=: num_out_clks :> -2 downto 1);
+<: } else  { :>
+  COUNT             : out std_logic_vector(<=: num_out_clks :> downto 1);
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_bar_clks>= 1}  {  :>
+<: if { $use_clkout1_bar}  {  :>
+  COUNTB_1            : out std_logic;
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+  COUNTB_2            : out std_logic;
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+  COUNTB_3            : out std_logic;
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+  COUNTB_4            : out std_logic;
+<: } :>
+<: } :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+  clkfb_out_p       : out std_logic;
+<: if { $clkfbout_last_nodyn}  {  :>
+  clkfb_out_n       : out std_logic
+<: } else  { :>
+  clkfb_out_n       : out std_logic;
+<: } :>
+<: } else  { :>
+<: if { $clkfbout_last_nodyn}  {  :>
+  clkfb_out         : out std_logic
+<: } else  { :>
+  clkfb_out         : out std_logic;
+<: } :>
+<: } :>
+<: } :>
+<: ;#only print the header if the signals actually exist :>
+<: if { $has_control}  {  :>
+  -- Status and control signals
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_last}  {  :>
+<: if { $reset_active_high}  {  :>
+  reset             : in  std_logic
+<: } else { :>
+  resetn            : in  std_logic
+<: } :>
+<: } else  { :>
+<: if { $reset_active_high}  {  :>
+  reset             : in  std_logic;
+<: } else { :>
+  resetn            : in  std_logic;
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+  power_down        : in  std_logic
+<: } else  { :>
+  power_down        : in  std_logic;
+<: } :>
+<: } :>
+<: if { $use_freeze}  {  :>
+<: if { $freeze_last}  {  :>
+  FREEZE            : in  std_logic
+<: } else  { :>
+  FREEZE            : in  std_logic;
+<: } :>
+<: } :>
+<: if { $use_status}  {  :>
+<: if { $status_last}  {  :>
+  STATUS            : out std_logic_vector(2 downto <=: status_low :>)
+<: } else  { :>
+  STATUS            : out std_logic_vector(2 downto <=: status_low :>);
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+  input_clk_stopped : out std_logic
+<: } else  { :>
+  input_clk_stopped : out std_logic;
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+  clkfb_stopped : out std_logic
+<: } else  { :>
+  clkfb_stopped : out std_logic;
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+  locked            : out std_logic
+<: } else  { :>
+  locked            : out std_logic;
+<: } :>
+<: } :>
+<: if { $is_v8 || $is_k8 }  {  :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+  <=: cddcdone_port :>   : out    std_logic; 
+  <=: cddcreq_port :>    : in     std_logic;
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_clk_valid}  {  :>
+  CLK_VALID         : out std_logic;
+<: } :>
+ -- Clock in ports
+<: if { $clkin1_diff}  {  :>
+  <=: PRIMARY_PORT :>_p         : in  std_logic;
+  <=: PRIMARY_PORT :>_n         : in  std_logic
+<: } else  { :>
+  <=: PRIMARY_PORT :>           : in  std_logic
+<: } :>
+ );

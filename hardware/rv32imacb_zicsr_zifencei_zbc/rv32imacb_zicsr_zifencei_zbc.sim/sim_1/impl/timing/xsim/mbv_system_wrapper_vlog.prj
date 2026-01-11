@@ -1,0 +1,6 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "C:/AMDDesignTools/2025.2/Vivado/data/rsb/busdef" --include "../../../../../rv32imafcb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/f0b6/hdl/verilog" --include "../../../../../rv32imafcb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/00fe/hdl/verilog" --include "../../../../../rv32imafcb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/ec67/hdl" --include "../../../../../rv32imafcb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/a415" --include "C:/AMDDesignTools/2025.2/Vivado/data/xilinx_vip/include" \
+"mbv_system_wrapper_time_impl.v" \
+
+# Do not sort compile order
+nosort

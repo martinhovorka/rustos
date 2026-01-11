@@ -1,0 +1,92 @@
+<: ;#CLKOUT1B // :>
+<: if { $use_clkout1_bar}  {  :>
+<: if { [string equal -nocase $clkout1b_buf "No_buffer"]}  {  :>
+  CLK_OUT1B <= clkout0b;
+<: } else  { :>
+  clkout1b_buf : <=: clkout1b_buf :>
+<: if { [string equal -nocase $clkout1b_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT1_BUFR_DIV)
+<: } :>
+  port map
+   (O   => CLK_OUT1B,
+<: if { [string equal -nocase $clkout1b_buf "BUFR"]}  {  :>
+    CE  => clk_out1_ce,
+    CLR => clk_out1_clr,
+<: } elseif  { $clkout1b_ce_used}  { :>
+    CE  => clk_out1_ce,
+<: } :>
+    I   => clkout0b);
+<: } :>
+<: } :>
+
+<: ;#CLKOUT2B // :>
+<: if { $num_out_clks>= 2}  {  :>
+<: if { $use_clkout2_bar}  {  :>
+
+<: if { [string equal -nocase $clkout2_buf "No_buffer"]}  {  :>
+  clk_out2 <= clkout1b;
+<: } else  {;#BUFG/BUFR/BUFH :>
+  clkout2b_buf : <=: clkout2b_buf :>
+<: if { [string equal -nocase $clkout2b_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT2_BUFR_DIV)
+<: } :>
+  port map
+   (O   => CLK_OUT2B,
+<: if { [string equal -nocase $clkout2b_buf "BUFR"]}  {  :>
+    CE  => clk_out2_ce,
+    CLR => clk_out2_clr,
+<: } elseif  { $clkout2b_ce_used}  { :>
+    CE  => clk_out2_ce,
+<: } :>
+    I   => clkout1b);
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 3}  {  :>
+<: if { $use_clkout3_bar}  {  :>
+
+<: if { [string equal -nocase $clkout3b_buf "No_buffer"]}  {  :>
+  CLK_OUT3B <= clkout2b;
+<: } else  {;#BUFG/BUFR/BUFH :>
+  clkout3b_buf : <=: clkout3b_buf :>
+<: if { [string equal -nocase $clkout3b_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT3_BUFR_DIV)
+<: } :>
+  port map
+   (O   => CLK_OUT3B,
+<: if { [string equal -nocase $clkout3b_buf "BUFR"]}  {  :>
+    CE  => clk_out3_ce,
+    CLR => clk_out3_clr,
+<: } elseif  { $clkout3b_ce_used}  { :>
+    CE  => clk_out3_ce,
+<: } :>
+    I   => clkout2b);
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 4}  {  :>
+<: if { $use_clkout4_bar}  {  :>
+
+<: if { [string equal -nocase $clkout4b_buf "No_buffer"]}  {  :>
+  CLK_OUT4B <= clkout3b;
+<: } else  {;#BUFG/BUFR/BUFH :>
+  clkout4b_buf : <=: clkout4b_buf :>
+<: if { [string equal -nocase $clkout4b_buf "BUFR"]}  {  :>
+  generic map
+   (BUFR_DIVIDE  => CLK_OUT4_BUFR_DIV)
+<: } :>
+  port map
+   (O   => CLK_OUT4B,
+<: if { [string equal -nocase $clkout4b_buf "BUFR"]}  {  :>
+    CE  => clk_out4_ce,
+    CLR => clk_out4_clr,
+<: } elseif  { $clkout4b_ce_used}  { :>
+    CE  => clk_out4_ce,
+<: } :>
+    I   => clkout3b);
+<: } :>
+<: } :>
+<: } :>

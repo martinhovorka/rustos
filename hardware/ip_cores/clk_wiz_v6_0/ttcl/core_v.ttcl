@@ -1,0 +1,330 @@
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName [ttcl_string_concat $ComponentName "_clk_wiz"] :>
+<: setFileExtension ".v" :>
+<: ;#all other variables :>
+<#: ttcl/variables.ttcl :>
+<: set comment "//" :>
+// file: <=: ComponentName :>.v
+<#: ttcl/disclaimer.ttcl :>
+<#: ttcl/notes.ttcl :>
+
+`timescale 1ps/1ps
+
+module <=: ComponentName :>_clk_wiz 
+<: if { $bufr_div_attr_use}  {  :>
+#( //BUFR divide parameter(s)
+<: if { $clkout1_clr_used}  {  :>
+<: if { $clkout1_bufr_last}  {  :>
+  parameter CLK_OUT1_BUFR_DIV  = "1"
+<: } else  { :>
+  parameter CLK_OUT1_BUFR_DIV  = "1",
+<: } :>
+<: } :>
+<: if { $clkout2_clr_used}  {  :>
+<: if { $clkout2_bufr_last}  {  :>
+  parameter CLK_OUT2_BUFR_DIV  = "1"
+<: } else  { :>
+  parameter CLK_OUT2_BUFR_DIV  = "1",
+<: } :>
+<: } :>
+<: if { $clkout3_clr_used}  {  :>
+<: if { $clkout3_bufr_last}  {  :>
+  parameter CLK_OUT3_BUFR_DIV  = "1"
+<: } else  { :>
+  parameter CLK_OUT3_BUFR_DIV  = "1",
+<: } :>
+<: } :>
+<: if { $clkout4_clr_used}  {  :>
+<: if { $clkout4_bufr_last}  {  :>
+  parameter CLK_OUT4_BUFR_DIV  = "1"
+<: } else  { :>
+  parameter CLK_OUT4_BUFR_DIV  = "1",
+<: } :>
+<: } :>
+<: if { $clkout5_clr_used}  {  :>
+<: if { $clkout5_bufr_last}  {  :>
+  parameter CLK_OUT5_BUFR_DIV  = "1"
+<: } else  { :>
+  parameter CLK_OUT5_BUFR_DIV  = "1",
+<: } :>
+<: } :>
+<: if { $clkout6_clr_used}  {  :>
+<: if { $clkout6_bufr_last}  {  :>
+  parameter CLK_OUT6_BUFR_DIV  = "1"
+<: } else  { :>
+  parameter CLK_OUT6_BUFR_DIV  = "1",
+<: } :>
+<: } :>
+<: if { $clkout7_clr_used}  {  :>
+  parameter CLK_OUT7_BUFR_DIV  = "1"
+<: } :>
+ )
+<: } :>
+
+ (// Clock in ports
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+<: if { $C_Enable_PLL0}  { :>
+  output           clk_mon_in0,
+<: } :>
+<: if { $C_Enable_PLL1}  { :>
+  output           clk_mon_in1,
+<: } :>
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { $clkin2_diff}  {  :>
+  input         <=: SECONDARY_PORT :>_p,
+  input         <=: SECONDARY_PORT :>_n,
+<: } else  { :>
+  input         <=: SECONDARY_PORT :>,
+<: } :>
+  input         <=: clk_in_sel_port :>,
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+  input         <=: fbin_p_port :>,
+  input         <=: fbin_n_port :>,
+<: } else  { :>
+  input         <=: fbin_port :>,
+<: } :>
+<: } :>
+<: } :>
+  // Clock out ports
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+  output        clkoutphy,
+<: } :>
+<: } :>
+<: if { $clkout1_ce_used && !$safe_clk_startup}  {  :>
+  input         <=: out1_port :>_ce,
+<: } :>
+<: if { $clkout1_clr_used && !$safe_clk_startup}  {  :>
+  input         <=: out1_port :>_clr,
+<: } :>
+<: if { $clkout1_last}  {  :>
+  output        <=: out1_port :>
+<: } else  { :>
+  output        <=: out1_port :>,
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+  output        <=: out1_port :>B,
+<: } :>
+<: if { $num_out_clks>= 2}  {  :>
+<: if { $clkout2_ce_used && !$safe_clk_startup}  {  :>
+  input         <=: out2_port :>_ce,
+<: } :>
+<: if { $clkout2_clr_used && !$safe_clk_startup}  {  :>
+  input         <=: out2_port :>_clr,
+<: } :>
+<: if { $clkout2_last}  {  :>
+  output        <=: out2_port :>
+<: } else  { :>
+  output        <=: out2_port :>,
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+  output        <=: out2_port :>B,
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 3) && (!$mmcm_ss_en)}  {  :>
+<: if { $clkout3_ce_used && !$safe_clk_startup}  {  :>
+  input         <=: out3_port :>_ce,
+<: } :>
+<: if { $clkout3_clr_used && !$safe_clk_startup}  {  :>
+  input         <=: out3_port :>_clr,
+<: } :>
+<: if { $clkout3_last}  {  :>
+  output        <=: out3_port :>
+<: } else  { :>
+  output        <=: out3_port :>,
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+  output        <=: out3_port :>B,
+<: } :>
+<: } :>
+<: if { ($num_out_clks>= 4) && (!$mmcm_ss_en)}  {  :>
+<: if { $clkout4_ce_used && !$safe_clk_startup}  {  :>
+  input         <=: out4_port :>_ce,
+<: } :>
+<: if { $clkout4_clr_used && !$safe_clk_startup}  {  :>
+  input         <=: out4_port :>_clr,
+<: } :>
+<: if { $clkout4_last}  {  :>
+  output        <=: out4_port :>
+<: } else  { :>
+  output        <=: out4_port :>,
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+  output        <=: out4_port :>B,
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+<: if { $clkout5_ce_used && !$safe_clk_startup}  {  :>
+  input         <=: out5_port :>_ce,
+<: } :>
+<: if { $clkout5_clr_used && !$safe_clk_startup}  {  :>
+  input         <=: out5_port :>_clr,
+<: } :>
+<: if { $clkout5_last}  {  :>
+  output        <=: out5_port :>
+<: } else  { :>
+  output        <=: out5_port :>,
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+<: if { $clkout6_ce_used && !$safe_clk_startup}  {  :>
+  input         <=: out6_port :>_ce,
+<: } :>
+<: if { $clkout6_clr_used && !$safe_clk_startup}  {  :>
+  input         <=: out6_port :>_clr,
+<: } :>
+<: if { $clkout6_last}  {  :>
+  output        <=: out6_port :>
+<: } else  { :>
+  output        <=: out6_port :>,
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+<: if { $clkout7_ce_used && !$safe_clk_startup}  {  :>
+  input         <=: out7_port :>_ce,
+<: } :>
+<: if { $clkout7_clr_used && !$safe_clk_startup}  {  :>
+  input         <=: out7_port :>_clr,
+<: } :>
+<: if { $clkout7_last}  {  :>
+  output        <=: out7_port :>
+<: } else  { :>
+  output        <=: out7_port :>,
+<: } :>
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback  || $auto_sing_feedback}  {  :>
+<: if { $clkfbout_last}  {  :>
+  output        <=: fbout_port :>
+<: } else  { :>
+  output        <=: fbout_port :>,
+<: } :>
+<: } elseif  { $auto_diff_feedback}  { :>
+  output        <=: fbout_p_port :>,
+<: if { $clkfbout_last}  {  :>
+  output        <=: fbout_n_port :>
+<: } else  { :>
+  output        <=: fbout_n_port :>,
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_dyn_reprog}  {  :>
+  // Dynamic reconfiguration ports
+  input   [6:0] <=: daddr_port :>,
+  input         <=: dclk_port :>,
+  input         <=: den_port :>,
+  input  [15:0] <=: din_port :>,
+  output [15:0] <=: dout_port :>,
+  output        <=: drdy_port :>,
+<: if { $dyn_reprog_last}  {  :>
+  input         <=: dwe_port :>
+<: } else  { :>
+  input         <=: dwe_port :>,
+<: } :>
+<: } :>
+<: if { $use_dyn_phase_shift}  {  :>
+  // Dynamic phase shift ports
+  input         <=: psclk_port :>,
+  input         <=: psen_port :>,
+  input         <=: psincdec_port :>,
+<: if { $dyn_phase_shift_last}  {  :>
+  output        <=: psdone_port :>
+<: } else  { :>
+  output        <=: psdone_port :>,
+<: } :>
+<: } :>
+<: ;#only print the header if the signals actually exist :>
+<: if { $has_control}  {  :>
+  // Status and control signals
+<: } :>
+<: if { $use_reset}  {  :>
+<: if { $reset_last}  {  :>
+  input         <=: reset_port :>
+<: } else  { :>
+  input         <=: reset_port :>,
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+  input         <=: power_down_port :>
+<: } else  { :>
+  input         <=: power_down_port :>,
+<: } :>
+<: } :>
+<: if { $use_freeze}  {  :>
+<: if { $freeze_last}  {  :>
+  input         FREEZE
+<: } else  { :>
+  input         FREEZE,
+<: } :>
+<: } :>
+<: if { $use_status}  {  :>
+<: if { $status_last}  {  :>
+  output [2:<=: status_low :>]  <=: status_port :>
+<: } else  { :>
+  output [2:<=: status_low :>]  <=: status_port :>,
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+  output        <=: input_clk_stopped_port :>
+<: } else  { :>
+  output        <=: input_clk_stopped_port :>,
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+  output        <=: clkfb_stopped_port :>
+<: } else  { :>
+  output        <=: clkfb_stopped_port :>,
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+  output        <=: locked_port :>
+<: } else  { :>
+  output        <=: locked_port :>,
+<: } :>
+<: } :>
+<: if { $is_v8 || $is_k8 }  {  :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+  output        <=: cddcdone_port :>,
+  input         <=: cddcreq_port :>,
+<: } :>
+<: } :>
+<: } :>
+<: if { $clkin1_diff}  {  :>
+  input         <=: PRIMARY_PORT :>_p,
+  input         <=: PRIMARY_PORT :>_n
+<: } else  { :>
+  input         <=: PRIMARY_PORT :>
+<: } :>
+ );
+  // Input buffering
+  //------------------------------------
+<#: ttcl/input_buf_v.ttcl :>
+  // Clocking PRIMITIVE
+  //------------------------------------
+<#: ttcl/mmcm_v.ttcl :>
+// Clock Monitor clock assigning
+//--------------------------------------
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+<: if { $C_Enable_PLL0}  { :>
+ assign clk_mon_in0 = <: print $PRIMARY_PORT$u_score$ComponentName :>;
+<: } :>
+<: if { $C_Enable_PLL1}  { :>
+assign clk_mon_in1 = <: print $SECONDARY_PORT$u_score$ComponentName :>;
+<: } :>
+<: } :>
+ // Output buffering
+  //-----------------------------------
+<#: ttcl/output_buf_v.ttcl :>
+
+endmodule

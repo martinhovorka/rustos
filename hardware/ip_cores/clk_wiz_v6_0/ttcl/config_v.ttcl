@@ -1,0 +1,24 @@
+<: ;#Component and file information :>
+<#: ttcl/variables.ttcl :>
+<: if { !$use_fast_sim } { ttcl_return} :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory [ttcl_string_concat $ComponentName "/simulation/functional"] :>
+<: setFileName [ttcl_string_concat $ComponentName "_config"] :>
+<: setFileExtension ".v" :>
+<: ;#all other variables :>
+<: set comment "//" :>
+// file: <=: ComponentName :>_config.v
+<#: ttcl/disclaimer.ttcl :>
+
+config cfg_xilinx;
+design <=: ComponentName :>_tb;
+default liblist unisims_ver unifast_ver;
+<: if { !$is_plle2}  {  :>
+cell MMCME2_ADV use unifast_ver.MMCME2_ADV;
+instance <=: ComponentName :>_tb.dut.inst.clknetwork.mmcm_adv_inst use unifast_ver.MMCME2_ADV;
+<: } else  { :>
+cell PLLE2_ADV use unifast_ver.PLLE2_ADV;
+instance <=: ComponentName :>_tb.dut.inst.clknetwork.plle2_adv_inst use unifast_ver.PLLE2_ADV;
+<: } :>
+endconfig
+

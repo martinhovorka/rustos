@@ -1,0 +1,425 @@
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory [ttcl_add $ComponentName "/example_design"] :>
+<: setFileName [ttcl_add $ComponentName "_exdes"] :>
+<: setFileExtension ".vhd" :>
+<: set family [getStringValue "C_FAMILY"] :>
+<: set ext_rst_width [getIntValue "C_EXT_RST_WIDTH"] :>
+<: set aux_rst_width [getIntValue "C_AUX_RST_WIDTH"] :>
+<: set ext_rst_high [getIntValue "C_EXT_RESET_HIGH"] :>
+<: set aux_rst_high [getIntValue "C_AUX_RESET_HIGH"] :>
+<: set num_bus_rst [getIntValue "C_NUM_BUS_RST"] :>
+<: set num_perp_rst [getIntValue "C_NUM_PERP_RST"] :>
+<: set num_bus_rstn [getIntValue "C_NUM_INTERCONNECT_ARESETN"] :>
+<: set num_perp_rstn [getIntValue "C_NUM_PERP_ARESETN"] :>
+
+-- file: <=: ComponentName :>_exdes.vhd
+-- (c) Copyright 2009 - 2013 Advanced Micro Devices, Inc. All rights reserved.
+-- 
+-- This file contains confidential and proprietary information
+-- of Advanced Micro Devices, Inc. and is protected under U.S. and
+-- international copyright and other intellectual property
+-- laws.
+-- 
+-- DISCLAIMER
+-- This disclaimer is not a license and does not grant any
+-- rights to the materials distributed herewith. Except as
+-- otherwise provided in a valid license issued to you by
+-- AMD, and to the maximum extent permitted by applicable
+-- law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+-- WITH ALL FAULTS, AND AMD HEREBY DISCLAIMS ALL WARRANTIES
+-- AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+-- BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+-- INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+-- (2) AMD shall not be liable (whether in contract or tort,
+-- including negligence, or under any other theory of
+-- liability) for any loss or damage of any kind or nature
+-- related to, arising under or in connection with these
+-- materials, including for any direct, or any indirect,
+-- special, incidental, or consequential loss or damage
+-- (including loss of data, profits, goodwill, or any type of
+-- loss or damage suffered as a result of any action brought
+-- by a third party) even if such damage or loss was
+-- reasonably foreseeable or AMD had been advised of the
+-- possibility of the same.
+-- 
+-- CRITICAL APPLICATIONS
+-- AMD products are not designed or intended to be fail-
+-- safe, or for use in any application requiring fail-safe
+-- performance, such as life-support or safety devices or
+-- systems, Class III medical devices, nuclear facilities,
+-- applications related to the deployment of airbags, or any
+-- other applications that could lead to death, personal
+-- injury, or severe property or environmental damage
+-- (individually and collectively, "Critical
+-- Applications"). Customer assumes the sole risk and
+-- liability of any use of AMD products in Critical
+-- Applications, subject only to applicable laws and
+-- regulations governing limitations on product liability.
+-- 
+-- THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+-- PART OF THIS FILE AT ALL TIMES.
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_misc.all;
+
+entity <=: ComponentName:>_exdes is
+       port (
+        clk_in                    : in std_logic;
+        debug_rst_active_detect   : out std_logic;
+        debug_rst_inactive_detect : out std_logic;
+        ext_rst_active_detect     : out std_logic;
+        ext_rst_inactive_detect   : out std_logic;
+        aux_rst_active_detect     : out std_logic;
+        aux_rst_inactive_detect   : out std_logic;
+        test_done                 : out std_logic;
+        error_detected            : out std_logic;
+        timeout_reached           : out std_logic;
+        local_dcm_locked          : in std_logic
+    );
+end entity;
+architecture exdes of <=: ComponentName:>_exdes is
+    ------------------------------------------------------------------------
+    component <=: ComponentName:>
+       port (
+        slowest_sync_clk     : in  std_logic;
+        ext_reset_in         : in  std_logic;
+        aux_reset_in         : in  std_logic;
+        mb_debug_sys_rst     : in  std_logic;-- from MDM
+        dcm_locked           : in  std_logic := '1';-- DCM locked information
+        mb_reset             : out std_logic := '0';-- to Microblaze active high reset
+        bus_struct_reset     : out std_logic_vector(0 to <=: num_bus_rst:> - 1)             := (others => '0');-- active high resets
+        peripheral_reset     : out std_logic_vector(0 to <=: num_perp_rst:> - 1)            := (others => '0');
+        interconnect_aresetn : out std_logic_vector(0 to (<=: num_bus_rstn:>-1)):= (others => '1');-- active low resets
+        peripheral_aresetn   : out std_logic_vector(0 to (<=: num_perp_rstn:>-1))        := (others => '1')
+    );
+    end component;
+    ------------------------------------------------------------------------
+constant C_FAMILY                 : string    := "<=: family:>";
+constant C_EXT_RST_WIDTH          : integer   := <=: ext_rst_width:>;
+constant C_AUX_RST_WIDTH          : integer   := <=: aux_rst_width:>;
+constant C_EXT_RESET_HIGH         : std_logic := '<=: ext_rst_high:>'; -- High active input
+constant C_AUX_RESET_HIGH         : std_logic := '<=: aux_rst_high:>'; -- High active input
+constant C_NUM_BUS_RST            : integer   := <=: num_bus_rst:>;
+constant C_NUM_PERP_RST           : integer   := <=: num_perp_rst:>;
+constant C_NUM_INTERCONNECT_ARESETN : integer   := <=: num_bus_rstn:>;
+constant C_NUM_PERP_ARESETN         : integer   := <=: num_perp_rstn:>;
+-----------------------------------------------------------
+constant EXT_ACTIVE_WIDTH : integer := C_EXT_RST_WIDTH+2;
+constant EXT_DEACTIVE_WIDTH : integer := C_EXT_RST_WIDTH-1;
+constant AUX_ACTIVE_WIDTH : integer := C_AUX_RST_WIDTH+2;
+constant AUX_DEACTIVE_WIDTH : integer := C_AUX_RST_WIDTH-1;
+-----------------------------------------------------------
+
+-- local signals
+signal slow_clock_int         : std_logic := '0';
+signal local_debug_sys_reset  : std_logic := '0';
+<: if { $ext_rst_high == 1 } { :>
+signal local_ext_reset        : std_logic := '0'; -- this is deactive state of reset
+<: } else { :>
+signal local_ext_reset        : std_logic := '1'; -- this is deactive state of reset
+<: } :>
+<: if { $aux_rst_high == 1 } { :>
+signal local_aux_reset        : std_logic := '0';
+<: } else { :>
+signal local_aux_reset        : std_logic := '1';
+<: } :>
+--signal local_dcm_locked       : std_logic := '1';
+-----------------------------------------------------------
+signal start_flag             : std_logic := '0';
+signal test_complete_flag     : std_logic := '0';
+
+signal dbg_rst_active_act : std_logic := '0';
+signal ext_rst_active_act : std_logic := '0';
+signal aux_rst_active_act : std_logic := '0';
+
+signal error_detected_int : std_logic := '0';
+signal dbg_reset_activated : std_logic := '0';
+signal ext_reset_activated : std_logic := '0';
+signal aux_reset_activated : std_logic := '0';
+signal dbg_cnt_value : integer range 0 to EXT_ACTIVE_WIDTH+10;
+signal ext_cnt_value : integer range 0 to EXT_ACTIVE_WIDTH+10;
+signal aux_cnt_value : integer range 0 to AUX_ACTIVE_WIDTH+10;
+signal enable_check : std_logic := '0';
+signal stop_err_cnt : std_logic := '0';
+signal err_chk_cnt  : integer range 0 to 200;
+
+signal pher_rst : std_logic;
+signal pher_rstn : std_logic;
+signal intr_rst : std_logic;
+signal intr_rst1 : std_logic;
+signal intr_rstn : std_logic;
+--
+signal mb_reset_out_tb               : std_logic;
+signal bus_struct_reset_out_tb       : std_logic_vector(0 to C_NUM_BUS_RST - 1);
+signal peripheral_reset_out_tb       : std_logic_vector(0 to C_NUM_PERP_RST - 1);
+signal interconnect_aresetn_out_tb   : std_logic_vector(0 to (C_NUM_INTERCONNECT_ARESETN-1));
+signal peripheral_aresetn_out_tb     : std_logic_vector(0 to (C_NUM_PERP_ARESETN-1));
+--
+
+signal system_counter : integer range 0 to 10000;
+signal err_chk_val : integer range 0 to 100 := 39;
+begin ---Architechture begin
+
+pher_rst <=  and_reduce(peripheral_reset_out_tb);
+pher_rstn <=  and_reduce(peripheral_aresetn_out_tb);
+intr_rst <=  and_reduce(bus_struct_reset_out_tb);
+intr_rstn <=  and_reduce(interconnect_aresetn_out_tb);
+
+--Free running counter for timeout logic
+process (clk_in,system_counter) begin
+  if clk_in = '1' and clk_in'event then
+   if system_counter = 10000 then
+     timeout_reached <= '1';
+   else
+     system_counter <= system_counter + 1;
+     timeout_reached <= '0';
+   end if;
+  end if;
+end process;
+
+--Reset Generator Logic
+process (clk_in,system_counter) begin
+ if clk_in = '1' and clk_in'event then
+   if system_counter = 500 then local_debug_sys_reset <= '1'; end if;
+   if system_counter = 500+EXT_ACTIVE_WIDTH then local_debug_sys_reset <= '0'; end if;
+   if system_counter = 1000 then local_debug_sys_reset <= '1'; end if;
+   if system_counter = 1000+EXT_DEACTIVE_WIDTH then local_debug_sys_reset <= '0'; end if;
+<: if { $ext_rst_high == 1 } { :>
+   if system_counter = 1500 then local_ext_reset <= '1'; end if;
+   if system_counter = 1500+EXT_ACTIVE_WIDTH then local_ext_reset <= '0'; end if;
+   if system_counter = 2000 then local_ext_reset <= '1'; end if;
+   if system_counter = 2000+EXT_DEACTIVE_WIDTH then local_ext_reset <= '0'; end if;
+<: } else { :>
+   if system_counter = 1500 then local_ext_reset <= '0'; end if;
+   if system_counter = 1500+EXT_ACTIVE_WIDTH then local_ext_reset <= '1'; end if;
+   if system_counter = 2000 then local_ext_reset <= '0'; end if;
+   if system_counter = 2000+EXT_DEACTIVE_WIDTH then local_ext_reset <= '1'; end if;
+<: } :>
+<: if { $aux_rst_high == 1 } { :>
+   if system_counter = 2500 then local_aux_reset <= '1'; end if;
+   if system_counter = 2500+AUX_ACTIVE_WIDTH then local_aux_reset <= '0'; end if;
+   if system_counter = 3000 then local_aux_reset <= '1'; end if;
+   if system_counter = 3000+AUX_DEACTIVE_WIDTH then local_aux_reset <= '0'; end if;
+<: } else { :>
+   if system_counter = 2500 then local_aux_reset <= '0'; end if;
+   if system_counter = 2500+AUX_ACTIVE_WIDTH then local_aux_reset <= '1'; end if;
+   if system_counter = 3000 then local_aux_reset <= '0'; end if;
+   if system_counter = 3000+AUX_DEACTIVE_WIDTH then local_aux_reset <= '1'; end if;
+<: } :>
+   if system_counter = 4500 and error_detected_int = '0' then test_done <= '1'; else test_done <= '0'; end if;
+ end if;
+end process;
+
+--
+--Monitor Logic
+--
+process (clk_in,local_debug_sys_reset,local_ext_reset,local_aux_reset)
+begin
+ if clk_in = '1' and clk_in'event then
+  if system_counter > 500 then
+   if local_debug_sys_reset = '1' then
+     dbg_reset_activated <= '1';
+     debug_rst_inactive_detect <= '0';
+     debug_rst_active_detect <= '0';
+    end if;
+
+  if local_debug_sys_reset = '0' and dbg_reset_activated = '1' then
+    dbg_reset_activated <= '0';
+    if dbg_cnt_value >= C_EXT_RST_WIDTH then
+     debug_rst_inactive_detect <= '0';
+     debug_rst_active_detect <= '1';
+     dbg_rst_active_act <= '1';
+    elsif dbg_cnt_value < C_EXT_RST_WIDTH then
+     debug_rst_inactive_detect <= '1';
+     debug_rst_active_detect <= '0';
+     dbg_rst_active_act <= '0';
+    end if;
+  end if;
+
+<: if { $ext_rst_high == 1 } { :>
+   if local_ext_reset = '1' then
+<: } else { :>
+   if local_ext_reset = '0' then
+<: } :>
+     ext_reset_activated <= '1';
+     ext_rst_inactive_detect <= '0';
+     ext_rst_active_detect <= '0';
+   end if;
+
+<: if { $ext_rst_high == 1 } { :>
+  if local_ext_reset = '0' and ext_reset_activated = '1' then
+<: } else { :>
+  if local_ext_reset = '1' and ext_reset_activated = '1' then
+<: } :>
+    ext_reset_activated <= '0';
+    if ext_cnt_value >= C_EXT_RST_WIDTH then
+     ext_rst_inactive_detect <= '0';
+     ext_rst_active_detect <= '1';
+     ext_rst_active_act <= '1';
+    elsif ext_cnt_value < C_EXT_RST_WIDTH then
+     ext_rst_inactive_detect <= '1';
+     ext_rst_active_detect <= '0';
+     ext_rst_active_act <= '0';
+    end if;
+  end if;
+
+<: if { $aux_rst_high == 1 } { :>
+   if local_aux_reset = '1' then
+<: } else { :>
+   if local_aux_reset = '0' then
+<: } :>
+     aux_reset_activated <= '1';
+     aux_rst_inactive_detect <= '0';
+     aux_rst_active_detect <= '0';
+   end if;
+
+<: if { $aux_rst_high == 1 } { :>
+  if local_aux_reset = '0' and aux_reset_activated = '1' then
+<: } else { :>
+  if local_aux_reset = '1' and aux_reset_activated = '1' then
+<: } :>
+    aux_reset_activated <= '0';
+    if aux_cnt_value >= C_AUX_RST_WIDTH then
+     aux_rst_inactive_detect <= '0';
+     aux_rst_active_detect <= '1';
+     aux_rst_active_act <= '1';
+    elsif aux_cnt_value < C_AUX_RST_WIDTH then
+     aux_rst_inactive_detect <= '1';
+     aux_rst_active_detect <= '0';
+     aux_rst_active_act <= '0';
+    end if;
+  end if;
+
+ end if;
+ end if;
+end process;
+
+process (clk_in,dbg_reset_activated) begin
+ if clk_in = '1' and clk_in'event then
+  if dbg_reset_activated = '1' then
+    dbg_cnt_value <= dbg_cnt_value + 1;
+  else
+    dbg_cnt_value <= 0;
+  end if;
+ end if;
+end process;
+
+process (clk_in,ext_reset_activated) begin
+ if clk_in = '1' and clk_in'event then
+  if ext_reset_activated = '1' then
+    ext_cnt_value <= ext_cnt_value + 1;
+  else
+    ext_cnt_value <= 0;
+  end if;
+ end if;
+end process;
+
+process (clk_in,aux_reset_activated) begin
+ if clk_in = '1' and clk_in'event then
+   intr_rst1 <= intr_rst;
+  if aux_reset_activated = '1' then
+    aux_cnt_value <= aux_cnt_value + 1;
+  else
+    aux_cnt_value <= 0;
+  end if;
+ end if;
+end process;
+
+process (clk_in,intr_rst,intr_rst1,system_counter,err_chk_cnt) begin
+ if clk_in = '1' and clk_in'event then
+if system_counter > 500 and err_chk_cnt > 5 then
+ if intr_rst1 = '1' and intr_rst = '0' then
+  err_chk_val <= err_chk_cnt + 1;
+  else 
+      err_chk_val <= err_chk_val;
+ end if;
+ else
+    err_chk_val <= 39;
+end if;
+end if;
+end process;
+
+
+P1: process(clk_in)is
+begin
+    if (clk_in'event and clk_in = '1') then
+          if(stop_err_cnt = '1')then
+              enable_check <= '0';
+          elsif(dbg_cnt_value >= C_EXT_RST_WIDTH or aux_cnt_value >= C_AUX_RST_WIDTH or ext_cnt_value >= C_EXT_RST_WIDTH) then
+              enable_check <= '1';
+
+          end if;
+    end if;
+end process P1;
+
+RESET_CHECK_P:process (clk_in,
+         pher_rst,
+	 pher_rstn,
+	 intr_rst,
+	 intr_rstn,
+	 mb_reset_out_tb,
+	 enable_check
+	 ) is
+begin
+  if clk_in = '1' and clk_in'event then
+   stop_err_cnt <= '0';
+  if system_counter > 500 then
+    if enable_check = '1' then
+      err_chk_cnt <= err_chk_cnt + 1;
+    else
+      err_chk_cnt <= 0;
+    end if;
+
+  if err_chk_cnt = 5 then
+    if mb_reset_out_tb = '1' and pher_rst = '1' and pher_rstn = '0' and intr_rst = '1' and intr_rstn = '0' then
+        error_detected <= '0';
+        error_detected_int <= '0';
+    else
+        error_detected <= '1';
+        error_detected_int <= '1';
+    end  if;
+  elsif err_chk_cnt = err_chk_val+16 then
+    if mb_reset_out_tb = '1' and pher_rst = '0' and pher_rstn = '1' and intr_rst = '0' and intr_rstn = '1' then
+        error_detected <= '0';
+        error_detected_int <= '0';
+    else
+        error_detected <= '1';
+        error_detected_int <= '1';
+    end if;
+  elsif err_chk_cnt = err_chk_val+32 then
+    if mb_reset_out_tb = '0' and pher_rst = '0' and pher_rstn = '1' and intr_rst = '0' and intr_rstn = '1' then
+        error_detected <= '0';
+        error_detected_int <= '0';
+    else
+        error_detected <= '1';
+        error_detected_int <= '1';
+    end if;
+        stop_err_cnt <= '1';
+   else
+        error_detected <= '0';
+        error_detected_int <= '0';
+   end if;
+end if;
+  end if;
+end process RESET_CHECK_P;
+---------------------------------------------------------------------------------
+DUT: <=: ComponentName:>
+      port map (
+                ------------------------------------------------------------
+                slowest_sync_clk      => clk_in                       , -- in
+                ext_reset_in          => local_ext_reset              , -- in
+                aux_reset_in          => local_aux_reset              , -- in
+                mb_debug_sys_rst      => local_debug_sys_reset        , -- in
+                dcm_locked            => local_dcm_locked, --local_dcm_locked      , -- in
+                ------------------------------------------------------------
+                mb_reset              => mb_reset_out_tb              , -- out
+                bus_struct_reset      => bus_struct_reset_out_tb      , -- out
+                peripheral_reset      => peripheral_reset_out_tb      , -- out
+                interconnect_aresetn  => interconnect_aresetn_out_tb  , -- out
+                peripheral_aresetn    => peripheral_aresetn_out_tb      -- out
+                ------------------------------------------------------------
+      );
+
+end exdes;

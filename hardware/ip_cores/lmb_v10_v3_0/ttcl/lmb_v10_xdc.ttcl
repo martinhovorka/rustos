@@ -1,0 +1,10 @@
+<: set CompName [getComponentNameString] :>
+<: setOutputDirectory "./" :>
+<: setFileName $CompName :>
+<: setFileExtension ".xdc" :>
+<: set lmb_num_slaves [getIntValue "c_lmb_num_slaves"] :>
+<: set lmb_protocol [getIntValue "c_lmb_protocol"] :>
+<: getDisclaimer "#" :>
+<: if {$lmb_num_slaves > 1 || $lmb_protocol != 0} { :>
+set_false_path -through [get_ports "SYS_Rst"]
+<: } :>

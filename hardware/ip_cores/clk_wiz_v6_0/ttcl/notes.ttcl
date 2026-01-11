@@ -1,0 +1,36 @@
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> User entered comments
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> <=: notes :>
+<=: comment :>
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> <=: outclk_sum_row0a :>
+<=: comment :> <=: outclk_sum_row0b :>
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> <=: outclk_sum_row1 :>
+<: if { $num_out_clks>= 2}  {  :>
+<=: comment :> <=: outclk_sum_row2 :>
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks>= 3)}  {  :>
+<=: comment :> <=: outclk_sum_row3 :>
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks>= 4)}  {  :>
+<=: comment :> <=: outclk_sum_row4 :>
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+<=: comment :> <=: outclk_sum_row5 :>
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+<=: comment :> <=: outclk_sum_row6 :>
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+<=: comment :> <=: outclk_sum_row7 :>
+<: } :>
+<=: comment :>
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> <=: inclk_sum_row0 :>
+<=: comment :>----------------------------------------------------------------------------
+<=: comment :> <=: inclk_sum_row1 :>
+<: if { $use_inclk_switchover}  {  :>
+<=: comment :> <=: inclk_sum_row2 :>
+<: } :>

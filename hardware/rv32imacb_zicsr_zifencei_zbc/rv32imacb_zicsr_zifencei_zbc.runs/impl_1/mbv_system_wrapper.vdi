@@ -1,0 +1,1102 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Sat Jan 10 23:05:13 2026
+# Process ID         : 8628
+# Current directory  : C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1
+# Command line       : vivado.exe -log mbv_system_wrapper.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source mbv_system_wrapper.tcl -notrace
+# Log file           : C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1/mbv_system_wrapper.vdi
+# Journal file       : C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1\vivado.jou
+# Running On         : STUDIOPC
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : AMD Ryzen Threadripper 2950X 16-Core Processor 
+# CPU Frequency      : 4000 MHz
+# CPU Physical cores : 16
+# CPU Logical cores  : 32
+# Host memory        : 34228 MB
+# Swap memory        : 2147 MB
+# Total Virtual      : 36375 MB
+# Available Virtual  : 20096 MB
+#-----------------------------------------------------------
+source mbv_system_wrapper.tcl -notrace
+create_project: Time (s): cpu = 00:00:12 ; elapsed = 00:00:09 . Memory (MB): peak = 529.254 ; gain = 218.441
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/AMDDesignTools/2025.2/Vivado/data/ip'.
+add_files: Time (s): cpu = 00:00:15 ; elapsed = 00:00:17 . Memory (MB): peak = 688.238 ; gain = 105.109
+Command: link_design -top mbv_system_wrapper -part xc7a35ticsg324-1L
+Design is defaulting to srcset: sources_1
+Design is defaulting to constrset: constrs_1
+INFO: [Device 21-403] Loading part xc7a35ticsg324-1L
+INFO: [Project 1-5699] Read binary netlist with skipMacroContent - 1
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0.dcp' for cell 'mbv_system_i/mbv_axi_ethernetlite'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_3/mbv_system_axi_gpio_0_3.dcp' for cell 'mbv_system_i/mbv_axi_gpio_dip_switches'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_6/mbv_system_axi_gpio_0_6.dcp' for cell 'mbv_system_i/mbv_axi_gpio_iic_pullups'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_4/mbv_system_axi_gpio_0_4.dcp' for cell 'mbv_system_i/mbv_axi_gpio_led_4_bits'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_5/mbv_system_axi_gpio_0_5.dcp' for cell 'mbv_system_i/mbv_axi_gpio_led_rgb'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_2/mbv_system_axi_gpio_0_2.dcp' for cell 'mbv_system_i/mbv_axi_gpio_push_buttons'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_0/mbv_system_axi_gpio_0_0.dcp' for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_0_19'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_1/mbv_system_axi_gpio_0_1.dcp' for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_26_41'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_iic_0_0/mbv_system_axi_iic_0_0.dcp' for cell 'mbv_system_i/mbv_axi_iic'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_intc_1/mbv_system_mbv_riscv_axi_intc_1.dcp' for cell 'mbv_system_i/mbv_axi_interrupt_controller'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1.dcp' for cell 'mbv_system_i/mbv_axi_quad_spi'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0.dcp' for cell 'mbv_system_i/mbv_axi_quad_spi_flash'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/mbv_system_mbv_riscv_axi_periph_1.dcp' for cell 'mbv_system_i/mbv_axi_smartconnect'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_timebase_wdt_0_0/mbv_system_axi_timebase_wdt_0_0.dcp' for cell 'mbv_system_i/mbv_axi_timebase_watchdog_timer'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_uartlite_0_0/mbv_system_axi_uartlite_0_0.dcp' for cell 'mbv_system_i/mbv_axi_uartlite'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1.dcp' for cell 'mbv_system_i/mbv_clocking_wizard'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_fit_timer_0_0/mbv_system_fit_timer_0_0.dcp' for cell 'mbv_system_i/mbv_fixed_interval_timer_1_millisecond'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.dcp' for cell 'mbv_system_i/mbv_microblaze_debug_module_v'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.dcp' for cell 'mbv_system_i/mbv_microblaze_v'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_rst_clk_wiz_1_100M_1/mbv_system_rst_clk_wiz_1_100M_1.dcp' for cell 'mbv_system_i/mbv_processor_system_reset'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_lmb_bram_1/mbv_system_lmb_bram_1.dcp' for cell 'mbv_system_i/mbv_local_memory/mbv_block_memory_generator'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_dlmb_bram_if_cntlr_1/mbv_system_dlmb_bram_if_cntlr_1.dcp' for cell 'mbv_system_i/mbv_local_memory/mbv_data_lmb_bram_controller'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_dlmb_v10_1/mbv_system_dlmb_v10_1.dcp' for cell 'mbv_system_i/mbv_local_memory/mbv_data_local_memory_bus'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_ilmb_bram_if_cntlr_1/mbv_system_ilmb_bram_if_cntlr_1.dcp' for cell 'mbv_system_i/mbv_local_memory/mbv_instruction_lmb_bram_controller'
+INFO: [Project 1-454] Reading design checkpoint 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_ilmb_v10_1/mbv_system_ilmb_v10_1.dcp' for cell 'mbv_system_i/mbv_local_memory/mbv_instruction_local_memory_bus'
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:02 . Memory (MB): peak = 1043.672 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 1561 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2025.2
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc] for cell 'mbv_system_i/mbv_microblaze_v/U0'
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:4]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:4]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:4]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:4]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:7]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:7]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:7]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:7]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:10]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:10]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:10]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:10]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:13]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:13]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:13]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPIP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:13]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:16]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:16]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:16]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-1' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:16]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:19]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:19]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:19]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-2' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:19]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:22]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:22]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:22]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:22]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:25]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:25]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:25]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:25]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:28]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:28]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:28]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-3' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:28]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:31]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:31]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:31]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:31]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:34]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:34]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:34]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:34]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I1/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:37]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I2/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:37]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I3/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:37]
+WARNING: [Vivado_Tcl 4-2057] Waiver ID 'DPOP-4' object list specifies likely unusable hierarchical instance 'mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/Base.Core/Data_Flow_I/MUL_Unit_I/Use_HW_MUL.RV32_MUL.Using_DSP48_Architectures.dsp_module_I4/Using_DSP48E1.DSP48E1_I1'. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc:37]
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc] for cell 'mbv_system_i/mbv_microblaze_v/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_1/bd_e941_psr_aclk_0_board.xdc] for cell 'mbv_system_i/mbv_axi_smartconnect/inst/clk_map/psr_aclk/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_1/bd_e941_psr_aclk_0_board.xdc] for cell 'mbv_system_i/mbv_axi_smartconnect/inst/clk_map/psr_aclk/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/smartconnect.xdc] for cell 'mbv_system_i/mbv_axi_smartconnect/inst'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/smartconnect.xdc] for cell 'mbv_system_i/mbv_axi_smartconnect/inst'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_intc_1/mbv_system_mbv_riscv_axi_intc_1.xdc] for cell 'mbv_system_i/mbv_axi_interrupt_controller/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_intc_1/mbv_system_mbv_riscv_axi_intc_1.xdc] for cell 'mbv_system_i/mbv_axi_interrupt_controller/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1_board.xdc] for cell 'mbv_system_i/mbv_clocking_wizard/inst'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1_board.xdc] for cell 'mbv_system_i/mbv_clocking_wizard/inst'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1.xdc] for cell 'mbv_system_i/mbv_clocking_wizard/inst'
+INFO: [Timing 38-35] Done setting XDC timing constraints. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1.xdc:54]
+INFO: [Timing 38-2] Deriving generated clocks [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1.xdc:54]
+get_clocks: Time (s): cpu = 00:00:11 ; elapsed = 00:00:10 . Memory (MB): peak = 1746.164 ; gain = 575.223
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1.xdc] for cell 'mbv_system_i/mbv_clocking_wizard/inst'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_rst_clk_wiz_1_100M_1/mbv_system_rst_clk_wiz_1_100M_1_board.xdc] for cell 'mbv_system_i/mbv_processor_system_reset/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_rst_clk_wiz_1_100M_1/mbv_system_rst_clk_wiz_1_100M_1_board.xdc] for cell 'mbv_system_i/mbv_processor_system_reset/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_uartlite_0_0/mbv_system_axi_uartlite_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_uartlite/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_uartlite_0_0/mbv_system_axi_uartlite_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_uartlite/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi_flash/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi_flash/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi_flash/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi_flash/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_0/mbv_system_axi_gpio_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_0_19/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_0/mbv_system_axi_gpio_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_0_19/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_1/mbv_system_axi_gpio_0_1_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_26_41/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_1/mbv_system_axi_gpio_0_1_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_26_41/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_2/mbv_system_axi_gpio_0_2_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_push_buttons/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_2/mbv_system_axi_gpio_0_2_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_push_buttons/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_3/mbv_system_axi_gpio_0_3_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_dip_switches/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_3/mbv_system_axi_gpio_0_3_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_dip_switches/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_4/mbv_system_axi_gpio_0_4_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_led_4_bits/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_4/mbv_system_axi_gpio_0_4_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_led_4_bits/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_5/mbv_system_axi_gpio_0_5_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_led_rgb/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_5/mbv_system_axi_gpio_0_5_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_led_rgb/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_ethernetlite/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_ethernetlite/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0.xdc] for cell 'mbv_system_i/mbv_axi_ethernetlite/U0'
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-10' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0.xdc:79]
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-10' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0.xdc:81]
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0.xdc] for cell 'mbv_system_i/mbv_axi_ethernetlite/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1_board.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1_board.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_iic_0_0/mbv_system_axi_iic_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_iic/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_iic_0_0/mbv_system_axi_iic_0_0_board.xdc] for cell 'mbv_system_i/mbv_axi_iic/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_6/mbv_system_axi_gpio_0_6_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_iic_pullups/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_6/mbv_system_axi_gpio_0_6_board.xdc] for cell 'mbv_system_i/mbv_axi_gpio_iic_pullups/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_intc_1/mbv_system_mbv_riscv_axi_intc_1_clocks.xdc] for cell 'mbv_system_i/mbv_axi_interrupt_controller/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_intc_1/mbv_system_mbv_riscv_axi_intc_1_clocks.xdc] for cell 'mbv_system_i/mbv_axi_interrupt_controller/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc] for cell 'mbv_system_i/mbv_microblaze_debug_module_v/U0'
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-1' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc:30]
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-1' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc:31]
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-2' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc:39]
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-7' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc:40]
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-10' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc:41]
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-11' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc:42]
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-13' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc:46]
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-15' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc:48]
+WARNING: [Vivado_Tcl 4-919] Waiver ID 'CDC-15' -from list should not be empty. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc:49]
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1.xdc] for cell 'mbv_system_i/mbv_microblaze_debug_module_v/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0_clocks.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi_flash/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0_clocks.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi_flash/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0_clocks.xdc] for cell 'mbv_system_i/mbv_axi_ethernetlite/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0_clocks.xdc] for cell 'mbv_system_i/mbv_axi_ethernetlite/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1_clocks.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1_clocks.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi/U0'
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.rd_pntr_cdc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.rd_pntr_cdc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_dc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_dc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.rd_pntr_cdc_dc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.rd_pntr_cdc_dc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.rd_pntr_cdc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.rd_pntr_cdc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_dc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.wr_pntr_cdc_dc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.rd_pntr_cdc_dc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+WARNING: [XPM_CDC_GRAY: TCL-1000] The source and destination clocks are the same. 
+     Instance: mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_cdc_pntr.rd_pntr_cdc_dc_inst 
+  This will add unnecessary latency to the design. Please check the design for the following: 
+ 1) Manually instantiated XPM_CDC modules: AMD recommends that you remove these modules. 
+ 2) AMD IP that contains XPM_CDC modules: Verify the connections to the IP to determine whether you can safely ignore this message.
+ [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_gray.tcl:16]
+INFO: [Project 1-1714] 254 XPM XDC files have been applied to the design.
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Generating merged BMM file for the design top 'mbv_system_wrapper'...
+INFO: [Memdata 28-144] Successfully populated the BRAM INIT strings from the following elf files: c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/data/riscv_bootloop.elf 
+INFO: [Project 1-1687] 6 scoped IP constraints or related sub-commands were skipped due to synthesis logic optimizations usually triggered by constant connectivity or unconnected output pins. To review the skipped constraints and messages, run the command 'set_param netlist.IPMsgFiltering false' before opening the design.
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.041 . Memory (MB): peak = 1746.164 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 189 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 49 instances
+  LUT6_2 => LUT6_2 (LUT5, LUT6): 84 instances
+  RAM16X1D => RAM32X1D (RAMD32(x2)): 32 instances
+  RAM16X1S => RAM32X1S (RAMS32): 4 instances
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 18 instances
+  RAM64X1S => RAM64X1S (RAMS64E): 2 instances
+
+41 Infos, 75 Warnings, 0 Critical Warnings and 0 Errors encountered.
+link_design completed successfully
+link_design: Time (s): cpu = 00:00:47 ; elapsed = 00:00:48 . Memory (MB): peak = 1746.164 ; gain = 1057.926
+Command: opt_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35ti'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35ti'
+Running DRC as a precondition to command opt_design
+
+Starting DRC Task
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Project 1-461] DRC finished with 0 Errors
+INFO: [Project 1-462] Please refer to the DRC report (report_drc) for more information.
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 1746.164 ; gain = 0.000
+
+Starting Cache Timing Information Task
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+Ending Cache Timing Information Task | Checksum: 17791da8e
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:02 . Memory (MB): peak = 1746.164 ; gain = 0.000
+
+Starting Logic Optimization Task
+
+Phase 1 Initialization
+
+Phase 1.1 Core Generation And Design Setup
+Phase 1.1 Core Generation And Design Setup | Checksum: 17791da8e
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.072 . Memory (MB): peak = 2194.602 ; gain = 0.000
+
+Phase 1.2 Setup Constraints And Sort Netlist
+Phase 1.2 Setup Constraints And Sort Netlist | Checksum: 17791da8e
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.140 . Memory (MB): peak = 2194.602 ; gain = 0.000
+Phase 1 Initialization | Checksum: 17791da8e
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.149 . Memory (MB): peak = 2194.602 ; gain = 0.000
+
+Phase 2 Timer Update And Timing Data Collection
+
+Phase 2.1 Detect if minReqCache needed
+Phase 2.1 Detect if minReqCache needed | Checksum: 17791da8e
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.246 . Memory (MB): peak = 2196.773 ; gain = 2.172
+
+Phase 2.2 Timer Update
+Phase 2.2 Timer Update | Checksum: 17791da8e
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 2196.773 ; gain = 2.172
+
+Phase 2.3 Timing Data Collection
+Phase 2.3 Timing Data Collection | Checksum: 17791da8e
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 2196.773 ; gain = 2.172
+Phase 2 Timer Update And Timing Data Collection | Checksum: 17791da8e
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 2196.773 ; gain = 2.172
+
+Phase 3 Retarget
+INFO: [Opt 31-1851] Number of loadless carry chains removed were: 0
+INFO: [Opt 31-1834] Total Chains To Be Transformed Were: 0 AND Number of Transformed insts Created are: 0
+INFO: [Opt 31-1566] Pulled 23 inverters resulting in an inversion of 112 pins
+INFO: [Opt 31-138] Pushed 8 inverter(s) to 17 load pin(s).
+INFO: [Opt 31-49] Retargeted 0 cell(s).
+Phase 3 Retarget | Checksum: 175a83230
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 2196.773 ; gain = 2.172
+Retarget | Checksum: 175a83230
+INFO: [Opt 31-389] Phase Retarget created 108 cells and removed 195 cells
+INFO: [Opt 31-1021] In phase Retarget, 369 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 4 Constant propagation
+INFO: [Opt 31-138] Pushed 1 inverter(s) to 2 load pin(s).
+Phase 4 Constant propagation | Checksum: 143a37e06
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2196.773 ; gain = 2.172
+Constant propagation | Checksum: 143a37e06
+INFO: [Opt 31-389] Phase Constant propagation created 138 cells and removed 349 cells
+INFO: [Opt 31-1021] In phase Constant propagation, 323 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 5 Sweep
+INFO: [Constraints 18-11670] Building netlist checker database with flags, 0x8
+Done building netlist checker database: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.038 . Memory (MB): peak = 2196.773 ; gain = 0.000
+INFO: [Constraints 18-11670] Building netlist checker database with flags, 0x8
+Done building netlist checker database: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.035 . Memory (MB): peak = 2196.773 ; gain = 0.000
+Phase 5 Sweep | Checksum: 1f17a47dd
+
+Time (s): cpu = 00:00:09 ; elapsed = 00:00:08 . Memory (MB): peak = 2196.773 ; gain = 2.172
+Sweep | Checksum: 1f17a47dd
+INFO: [Opt 31-389] Phase Sweep created 18 cells and removed 763 cells
+INFO: [Opt 31-1021] In phase Sweep, 406 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 6 BUFG optimization
+INFO: [Opt 31-194] Inserted BUFG mbv_system_i/mbv_microblaze_debug_module_v/U0/Use_E2.BSCAN_I/tck_BUFG_inst to drive 51 load(s) on clock net mbv_system_i/mbv_microblaze_debug_module_v/U0/Use_E2.BSCAN_I/tck_BUFG
+INFO: [Opt 31-193] Inserted 1 BUFG(s) on clock nets
+Phase 6 BUFG optimization | Checksum: 21dd6cbeb
+
+Time (s): cpu = 00:00:10 ; elapsed = 00:00:09 . Memory (MB): peak = 2196.773 ; gain = 2.172
+BUFG optimization | Checksum: 21dd6cbeb
+INFO: [Opt 31-662] Phase BUFG optimization created 1 cells of which 1 are BUFGs and removed 0 cells.
+
+Phase 7 Shift Register Optimization
+INFO: [Opt 31-1064] SRL Remap converted 0 SRLs to 0 registers and converted 0 registers of register chains to 0 SRLs
+Phase 7 Shift Register Optimization | Checksum: 21dd6cbeb
+
+Time (s): cpu = 00:00:10 ; elapsed = 00:00:09 . Memory (MB): peak = 2196.773 ; gain = 2.172
+Shift Register Optimization | Checksum: 21dd6cbeb
+INFO: [Opt 31-389] Phase Shift Register Optimization created 0 cells and removed 0 cells
+
+Phase 8 Post Processing Netlist
+Phase 8 Post Processing Netlist | Checksum: 2303dad8a
+
+Time (s): cpu = 00:00:10 ; elapsed = 00:00:09 . Memory (MB): peak = 2196.773 ; gain = 2.172
+Post Processing Netlist | Checksum: 2303dad8a
+INFO: [Opt 31-389] Phase Post Processing Netlist created 0 cells and removed 0 cells
+INFO: [Opt 31-1021] In phase Post Processing Netlist, 398 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 9 Finalization
+
+Phase 9.1 Finalizing Design Cores and Updating Shapes
+Phase 9.1 Finalizing Design Cores and Updating Shapes | Checksum: 236287289
+
+Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 2196.773 ; gain = 2.172
+
+Phase 9.2 Verifying Netlist Connectivity
+
+Starting Connectivity Check Task
+
+Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.119 . Memory (MB): peak = 2196.773 ; gain = 0.000
+Phase 9.2 Verifying Netlist Connectivity | Checksum: 236287289
+
+Time (s): cpu = 00:00:12 ; elapsed = 00:00:11 . Memory (MB): peak = 2196.773 ; gain = 2.172
+Phase 9 Finalization | Checksum: 236287289
+
+Time (s): cpu = 00:00:12 ; elapsed = 00:00:11 . Memory (MB): peak = 2196.773 ; gain = 2.172
+Opt_design Change Summary
+=========================
+
+
+-------------------------------------------------------------------------------------------------------------------------
+|  Phase                        |  #Cells created  |  #Cells Removed  |  #Constrained objects preventing optimizations  |
+-------------------------------------------------------------------------------------------------------------------------
+|  Retarget                     |             108  |             195  |                                            369  |
+|  Constant propagation         |             138  |             349  |                                            323  |
+|  Sweep                        |              18  |             763  |                                            406  |
+|  BUFG optimization            |               1  |               0  |                                              0  |
+|  Shift Register Optimization  |               0  |               0  |                                              0  |
+|  Post Processing Netlist      |               0  |               0  |                                            398  |
+-------------------------------------------------------------------------------------------------------------------------
+
+
+Ending Logic Optimization Task | Checksum: 236287289
+
+Time (s): cpu = 00:00:12 ; elapsed = 00:00:11 . Memory (MB): peak = 2196.773 ; gain = 2.172
+
+Starting Power Optimization Task
+INFO: [Pwropt 34-132] Skipping clock gating for clocks with a period < 2.00 ns.
+INFO: [Pwropt 34-9] Applying IDT optimizations ...
+INFO: [Pwropt 34-10] Applying ODC optimizations ...
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+
+
+Starting PowerOpt Patch Enables Task
+INFO: [Pwropt 34-162] WRITE_MODE attribute of 0 BRAM(s) out of a total of 46 has been updated to save power. Run report_power_opt to get a complete listing of the BRAMs updated.
+INFO: [Pwropt 34-201] Structural ODC has moved 4 WE to EN ports
+Number of BRAM Ports augmented: 2 newly gated: 5 Total Ports: 92
+Ending PowerOpt Patch Enables Task | Checksum: 2b5e3ea3a
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.376 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Ending Power Optimization Task | Checksum: 2b5e3ea3a
+
+Time (s): cpu = 00:00:19 ; elapsed = 00:00:11 . Memory (MB): peak = 2276.211 ; gain = 79.438
+
+Starting Final Cleanup Task
+Ending Final Cleanup Task | Checksum: 2b5e3ea3a
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.046 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Common 17-83] Releasing license: Implementation
+74 Infos, 75 Warnings, 0 Critical Warnings and 0 Errors encountered.
+opt_design completed successfully
+opt_design: Time (s): cpu = 00:00:40 ; elapsed = 00:00:30 . Memory (MB): peak = 2276.211 ; gain = 530.047
+INFO: [Vivado 12-24828] Executing command : report_drc -file mbv_system_wrapper_drc_opted.rpt -pb mbv_system_wrapper_drc_opted.pb -rpx mbv_system_wrapper_drc_opted.rpx
+Command: report_drc -file mbv_system_wrapper_drc_opted.rpt -pb mbv_system_wrapper_drc_opted.pb -rpx mbv_system_wrapper_drc_opted.rpx
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado_Tcl 2-168] The results of DRC are in file C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1/mbv_system_wrapper_drc_opted.rpt.
+report_drc completed successfully
+report_drc: Time (s): cpu = 00:00:07 ; elapsed = 00:00:06 . Memory (MB): peak = 2276.211 ; gain = 0.000
+generate_parallel_reports: Time (s): cpu = 00:00:07 ; elapsed = 00:00:06 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.083 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.096 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote PlaceStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.125 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1/mbv_system_wrapper_opt.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:08 ; elapsed = 00:00:05 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Command: place_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35ti'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35ti'
+INFO: [Common 17-83] Releasing license: Implementation
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+Running DRC as a precondition to command place_design
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+INFO: [Place 30-611] Multithreading enabled for place_design using a maximum of 2 CPUs
+
+Starting Placer Task
+
+Phase 1 Placer Initialization
+
+Phase 1.1 Placer Initialization Netlist Sorting
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.040 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Phase 1.1 Placer Initialization Netlist Sorting | Checksum: 1b7298ff4
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.050 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.038 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device | Checksum: 22df4b3c4
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 1.3 Build Placer Netlist Model
+Phase 1.3 Build Placer Netlist Model | Checksum: 2710d19d9
+
+Time (s): cpu = 00:00:19 ; elapsed = 00:00:13 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 1.4 Constrain Clocks/Macros
+Phase 1.4 Constrain Clocks/Macros | Checksum: 2710d19d9
+
+Time (s): cpu = 00:00:19 ; elapsed = 00:00:13 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Phase 1 Placer Initialization | Checksum: 2710d19d9
+
+Time (s): cpu = 00:00:19 ; elapsed = 00:00:13 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 2 Global Placement
+
+Phase 2.1 Floorplanning
+Phase 2.1 Floorplanning | Checksum: 2cfe4b583
+
+Time (s): cpu = 00:00:28 ; elapsed = 00:00:18 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 2.2 Update Timing before SLR Path Opt
+Phase 2.2 Update Timing before SLR Path Opt | Checksum: 26db6d57e
+
+Time (s): cpu = 00:00:35 ; elapsed = 00:00:22 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 2.3 Post-Processing in Floorplanning
+Phase 2.3 Post-Processing in Floorplanning | Checksum: 26db6d57e
+
+Time (s): cpu = 00:00:35 ; elapsed = 00:00:22 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 2.4 Global Place Phase1
+Phase 2.4 Global Place Phase1 | Checksum: 2eb29de82
+
+Time (s): cpu = 00:01:32 ; elapsed = 00:00:55 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 2.5 Global Place Phase2
+
+Phase 2.5.1 UpdateTiming Before Physical Synthesis
+Phase 2.5.1 UpdateTiming Before Physical Synthesis | Checksum: 270992e88
+
+Time (s): cpu = 00:01:40 ; elapsed = 00:00:59 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 2.5.2 Physical Synthesis In Placer
+INFO: [Physopt 32-1035] Found 33 LUTNM shape to break, 765 LUT instances to create LUTNM shape
+INFO: [Physopt 32-1044] Break lutnm for timing: one critical 24, two critical 9, total 33, new lutff created 0
+INFO: [Physopt 32-1138] End 1 Pass. Optimized 338 nets or LUTs. Breaked 33 LUTs, combined 305 existing LUTs and moved 0 existing LUT
+INFO: [Physopt 32-65] No nets found for high-fanout optimization.
+INFO: [Physopt 32-232] Optimized 0 net. Created 0 new instance.
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-456] No candidate cells for DSP register optimization found in the design.
+INFO: [Physopt 32-775] End 2 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-1123] No candidate cells found for Shift Register to Pipeline optimization
+INFO: [Physopt 32-775] End 2 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-1402] Pass 1: Identified 15 candidate cells for Shift Register optimization.
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-526] No candidate cells for BRAM register optimization found in the design
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-846] No candidate cells for URAM register optimization found in the design
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-846] No candidate cells for URAM register optimization found in the design
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-949] No candidate nets found for dynamic/static region interface net replication
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.039 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Summary of Physical Synthesis Optimizations
+============================================
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+|  Optimization                                     |  Added Cells  |  Removed Cells  |  Optimized Cells/Nets  |  Dont Touch  |  Iterations  |  Elapsed   |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+|  LUT Combining                                    |           33  |            305  |                   338  |           0  |           1  |  00:00:01  |
+|  Retime                                           |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Very High Fanout                                 |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  DSP Register                                     |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Shift Register to Pipeline                       |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Shift Register                                   |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  BRAM Register                                    |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  URAM Register                                    |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Dynamic/Static Region Interface Net Replication  |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Total                                            |           33  |            305  |                   338  |           0  |           9  |  00:00:01  |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Phase 2.5.2 Physical Synthesis In Placer | Checksum: 1e197257b
+
+Time (s): cpu = 00:01:49 ; elapsed = 00:01:06 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Phase 2.5 Global Place Phase2 | Checksum: 28682677a
+
+Time (s): cpu = 00:01:51 ; elapsed = 00:01:07 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Phase 2 Global Placement | Checksum: 28682677a
+
+Time (s): cpu = 00:01:51 ; elapsed = 00:01:07 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 3 Detail Placement
+
+Phase 3.1 Commit Multi Column Macros
+Phase 3.1 Commit Multi Column Macros | Checksum: 25e091739
+
+Time (s): cpu = 00:01:59 ; elapsed = 00:01:11 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 3.2 Commit Most Macros & LUTRAMs
+Phase 3.2 Commit Most Macros & LUTRAMs | Checksum: 15de6f4c3
+
+Time (s): cpu = 00:02:11 ; elapsed = 00:01:19 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 3.3 Area Swap Optimization
+Phase 3.3 Area Swap Optimization | Checksum: 1a004eb5e
+
+Time (s): cpu = 00:02:12 ; elapsed = 00:01:19 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 3.4 Pipeline Register Optimization
+Phase 3.4 Pipeline Register Optimization | Checksum: 207f0187b
+
+Time (s): cpu = 00:02:12 ; elapsed = 00:01:19 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 3.5 Fast Optimization
+Phase 3.5 Fast Optimization | Checksum: 1b7155289
+
+Time (s): cpu = 00:02:26 ; elapsed = 00:01:28 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 3.6 Small Shape Detail Placement
+Phase 3.6 Small Shape Detail Placement | Checksum: 1f745632f
+
+Time (s): cpu = 00:02:45 ; elapsed = 00:01:46 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 3.7 Re-assign LUT pins
+Phase 3.7 Re-assign LUT pins | Checksum: 26c22a67e
+
+Time (s): cpu = 00:02:50 ; elapsed = 00:01:51 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 3.8 Pipeline Register Optimization
+Phase 3.8 Pipeline Register Optimization | Checksum: 273f5ac2a
+
+Time (s): cpu = 00:02:51 ; elapsed = 00:01:52 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 3.9 Fast Optimization
+Phase 3.9 Fast Optimization | Checksum: 167d55411
+
+Time (s): cpu = 00:03:11 ; elapsed = 00:02:05 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Phase 3 Detail Placement | Checksum: 167d55411
+
+Time (s): cpu = 00:03:12 ; elapsed = 00:02:05 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 4 Post Placement Optimization and Clean-Up
+
+Phase 4.1 Post Commit Optimization
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+
+Phase 4.1.1 Post Placement Optimization
+Post Placement Optimization Initialization | Checksum: 1c8d54464
+
+Phase 4.1.1.1 BUFG Insertion
+
+Starting Physical Synthesis Task
+
+Phase 1 Physical Synthesis Initialization
+INFO: [Physopt 32-721] Multithreading enabled for phys_opt_design using a maximum of 2 CPUs
+INFO: [Physopt 32-619] Estimated Timing Summary | WNS=-1.420 | TNS=-29.544 |
+Phase 1 Physical Synthesis Initialization | Checksum: 17f34b32b
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:00.861 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Place 46-33] Processed net mbv_system_i/mbv_microblaze_v/U0/riscv_core_I/sync_reset, BUFG insertion was skipped due to placement/routing conflicts.
+INFO: [Place 46-56] BUFG insertion identified 1 candidate nets. Inserted BUFG: 0, Replicated BUFG Driver: 0, Skipped due to Placement/Routing Conflicts: 1, Skipped due to Timing Degradation: 0, Skipped due to netlist editing failed: 0.
+Ending Physical Synthesis Task | Checksum: 19b5743bd
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:02 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Phase 4.1.1.1 BUFG Insertion | Checksum: 1c8d54464
+
+Time (s): cpu = 00:03:30 ; elapsed = 00:02:17 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 4.1.1.2 Post Placement Timing Optimization
+INFO: [Place 30-746] Post Placement Timing Summary WNS=0.511. For the most accurate timing information please run report_timing.
+Phase 4.1.1.2 Post Placement Timing Optimization | Checksum: 1685dec81
+
+Time (s): cpu = 00:03:43 ; elapsed = 00:02:30 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Time (s): cpu = 00:03:43 ; elapsed = 00:02:30 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Phase 4.1 Post Commit Optimization | Checksum: 1685dec81
+
+Time (s): cpu = 00:03:43 ; elapsed = 00:02:30 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 4.2 Post Placement Cleanup
+Phase 4.2 Post Placement Cleanup | Checksum: 1685dec81
+
+Time (s): cpu = 00:03:43 ; elapsed = 00:02:30 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 4.3 Placer Reporting
+
+Phase 4.3.1 Print Estimated Congestion
+INFO: [Place 30-612] Post-Placement Estimated Congestion 
+ ____________________________________________________
+|           | Global Congestion | Short Congestion  |
+| Direction | Region Size       | Region Size       |
+|___________|___________________|___________________|
+|      North|                1x1|                2x2|
+|___________|___________________|___________________|
+|      South|                1x1|                8x8|
+|___________|___________________|___________________|
+|       East|                1x1|                2x2|
+|___________|___________________|___________________|
+|       West|                1x1|                1x1|
+|___________|___________________|___________________|
+
+Phase 4.3.1 Print Estimated Congestion | Checksum: 1685dec81
+
+Time (s): cpu = 00:03:44 ; elapsed = 00:02:30 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Phase 4.3 Placer Reporting | Checksum: 1685dec81
+
+Time (s): cpu = 00:03:44 ; elapsed = 00:02:30 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 4.4 Final Placement Cleanup
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.040 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Time (s): cpu = 00:03:44 ; elapsed = 00:02:31 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Phase 4 Post Placement Optimization and Clean-Up | Checksum: 20dc2943f
+
+Time (s): cpu = 00:03:44 ; elapsed = 00:02:31 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Ending Placer Task | Checksum: 1cb305653
+
+Time (s): cpu = 00:03:44 ; elapsed = 00:02:31 . Memory (MB): peak = 2276.211 ; gain = 0.000
+117 Infos, 75 Warnings, 0 Critical Warnings and 0 Errors encountered.
+place_design completed successfully
+place_design: Time (s): cpu = 00:03:51 ; elapsed = 00:02:37 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Vivado 12-24838] Running report commands "report_control_sets, report_io, report_utilization" in parallel.
+Running report generation with 2 threads.
+INFO: [Vivado 12-24828] Executing command : report_io -file mbv_system_wrapper_io_placed.rpt
+report_io: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.228 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_control_sets -verbose -file mbv_system_wrapper_control_sets_placed.rpt
+report_control_sets: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.176 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_utilization -file mbv_system_wrapper_utilization_placed.rpt -pb mbv_system_wrapper_utilization_placed.pb
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.085 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Write ShapeDB Complete: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.131 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote PlaceStorage: Time (s): cpu = 00:00:06 ; elapsed = 00:00:02 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.073 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:07 ; elapsed = 00:00:02 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1/mbv_system_wrapper_placed.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:10 ; elapsed = 00:00:06 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Command: phys_opt_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35ti'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35ti'
+
+Starting Initial Update Timing Task
+
+Time (s): cpu = 00:00:13 ; elapsed = 00:00:07 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Vivado_Tcl 4-2279] Estimated Timing Summary | WNS= 0.511 | TNS= 0.000 | 
+INFO: [Vivado_Tcl 4-383] Design worst setup slack (WNS) is greater than or equal to 0.000 ns. All physical synthesis setup optimizations will be skipped.
+INFO: [Vivado_Tcl 4-232] No setup violation found. The netlist was not modified.
+INFO: [Common 17-83] Releasing license: Implementation
+128 Infos, 75 Warnings, 0 Critical Warnings and 0 Errors encountered.
+phys_opt_design completed successfully
+phys_opt_design: Time (s): cpu = 00:00:13 ; elapsed = 00:00:08 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.081 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Write ShapeDB Complete: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.132 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote PlaceStorage: Time (s): cpu = 00:00:06 ; elapsed = 00:00:02 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.072 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:07 ; elapsed = 00:00:02 . Memory (MB): peak = 2276.211 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1/mbv_system_wrapper_physopt.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:10 ; elapsed = 00:00:06 . Memory (MB): peak = 2276.211 ; gain = 0.000
+Command: route_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35ti'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35ti'
+
+
+Starting Routing Task
+INFO: [Route 35-254] Multithreading enabled for route_design using a maximum of 2 CPUs
+
+Phase 1 Build RT Design
+Checksum: PlaceDB: 9fc9180b ConstDB: 0 ShapeSum: 8ae5e1f1 RouteDB: a0815c57
+Post Restoration Checksum: NetGraph: 92e1e9e4 | NumContArr: 5eab6030 | Constraints: c2a8fa9d | Timing: c2a8fa9d
+Phase 1 Build RT Design | Checksum: 276df3f4e
+
+Time (s): cpu = 00:00:38 ; elapsed = 00:00:28 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 2 Router Initialization
+
+Phase 2.1 Fix Topology Constraints
+Phase 2.1 Fix Topology Constraints | Checksum: 276df3f4e
+
+Time (s): cpu = 00:00:38 ; elapsed = 00:00:28 . Memory (MB): peak = 2276.211 ; gain = 0.000
+
+Phase 2.2 Pre Route Cleanup
+Phase 2.2 Pre Route Cleanup | Checksum: 276df3f4e
+
+Time (s): cpu = 00:00:39 ; elapsed = 00:00:28 . Memory (MB): peak = 2276.211 ; gain = 0.000
+ Number of Nodes with overlaps = 0
+
+Phase 2.3 Update Timing
+Phase 2.3 Update Timing | Checksum: 2b1490a52
+
+Time (s): cpu = 00:00:56 ; elapsed = 00:00:39 . Memory (MB): peak = 2281.957 ; gain = 5.746
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.774  | TNS=0.000  | WHS=-0.304 | THS=-261.359|
+
+
+Phase 2.4 Update Timing for Bus Skew
+
+Phase 2.4.1 Update Timing
+Phase 2.4.1 Update Timing | Checksum: 1ee330aec
+
+Time (s): cpu = 00:01:10 ; elapsed = 00:00:46 . Memory (MB): peak = 2306.887 ; gain = 30.676
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.774  | TNS=0.000  | WHS=-0.171 | THS=-1.199 |
+
+Phase 2.4 Update Timing for Bus Skew | Checksum: 2a7bc82a4
+
+Time (s): cpu = 00:01:10 ; elapsed = 00:00:46 . Memory (MB): peak = 2322.984 ; gain = 46.773
+
+Phase 2.5 Soft Constraint Pins - Fast Budgeting
+Phase 2.5 Soft Constraint Pins - Fast Budgeting | Checksum: 2a7bc82a4
+
+Time (s): cpu = 00:01:10 ; elapsed = 00:00:47 . Memory (MB): peak = 2360.746 ; gain = 84.535
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 0.00326876 %
+  Global Horizontal Routing Utilization  = 0.000910984 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 26130
+    (Failed Nets is the sum of unrouted and partially routed nets)
+  Number of Unrouted Nets             = 26130
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 1
+
+Phase 2 Router Initialization | Checksum: 2968568ab
+
+Time (s): cpu = 00:01:11 ; elapsed = 00:00:47 . Memory (MB): peak = 2360.746 ; gain = 84.535
+
+Phase 3 Global Routing
+Phase 3 Global Routing | Checksum: 2968568ab
+
+Time (s): cpu = 00:01:11 ; elapsed = 00:00:47 . Memory (MB): peak = 2360.746 ; gain = 84.535
+
+Phase 4 Initial Routing
+
+Phase 4.1 Initial Net Routing Pass
+Phase 4.1 Initial Net Routing Pass | Checksum: 23d12186f
+
+Time (s): cpu = 00:01:28 ; elapsed = 00:00:57 . Memory (MB): peak = 2360.746 ; gain = 84.535
+Phase 4 Initial Routing | Checksum: 23d12186f
+
+Time (s): cpu = 00:01:28 ; elapsed = 00:00:57 . Memory (MB): peak = 2360.746 ; gain = 84.535
+
+Phase 5 Rip-up And Reroute
+
+Phase 5.1 Global Iteration 0
+ Number of Nodes with overlaps = 5156
+ Number of Nodes with overlaps = 1095
+ Number of Nodes with overlaps = 265
+ Number of Nodes with overlaps = 73
+ Number of Nodes with overlaps = 23
+ Number of Nodes with overlaps = 8
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.254 | TNS=-1.044 | WHS=N/A    | THS=N/A    |
+
+Phase 5.1 Global Iteration 0 | Checksum: 33d9c5992
+
+Time (s): cpu = 00:02:20 ; elapsed = 00:01:38 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Phase 5.2 Global Iteration 1
+ Number of Nodes with overlaps = 313
+ Number of Nodes with overlaps = 127
+ Number of Nodes with overlaps = 33
+ Number of Nodes with overlaps = 14
+ Number of Nodes with overlaps = 4
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.192  | TNS=0.000  | WHS=N/A    | THS=N/A    |
+
+Phase 5.2 Global Iteration 1 | Checksum: 192b02880
+
+Time (s): cpu = 00:02:28 ; elapsed = 00:01:44 . Memory (MB): peak = 2366.719 ; gain = 90.508
+Phase 5 Rip-up And Reroute | Checksum: 192b02880
+
+Time (s): cpu = 00:02:29 ; elapsed = 00:01:44 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Phase 6 Delay and Skew Optimization
+
+Phase 6.1 Delay CleanUp
+
+Phase 6.1.1 Update Timing
+Phase 6.1.1 Update Timing | Checksum: 2239ef176
+
+Time (s): cpu = 00:02:31 ; elapsed = 00:01:45 . Memory (MB): peak = 2366.719 ; gain = 90.508
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.271  | TNS=0.000  | WHS=N/A    | THS=N/A    |
+
+Phase 6.1 Delay CleanUp | Checksum: 13db9911f
+
+Time (s): cpu = 00:02:31 ; elapsed = 00:01:45 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Phase 6.2 Clock Skew Optimization
+Phase 6.2 Clock Skew Optimization | Checksum: 13db9911f
+
+Time (s): cpu = 00:02:31 ; elapsed = 00:01:45 . Memory (MB): peak = 2366.719 ; gain = 90.508
+Phase 6 Delay and Skew Optimization | Checksum: 13db9911f
+
+Time (s): cpu = 00:02:31 ; elapsed = 00:01:45 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Phase 7 Post Hold Fix
+
+Phase 7.1 Hold Fix Iter
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.271  | TNS=0.000  | WHS=0.014  | THS=0.000  |
+
+Phase 7.1 Hold Fix Iter | Checksum: 1f1df142d
+
+Time (s): cpu = 00:02:34 ; elapsed = 00:01:47 . Memory (MB): peak = 2366.719 ; gain = 90.508
+Phase 7 Post Hold Fix | Checksum: 1f1df142d
+
+Time (s): cpu = 00:02:34 ; elapsed = 00:01:47 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Phase 8 Route finalize
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 11.7362 %
+  Global Horizontal Routing Utilization  = 13.7188 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 0
+    (Failed Nets is the sum of unrouted and partially routed nets)
+  Number of Unrouted Nets             = 0
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 0
+
+Phase 8 Route finalize | Checksum: 1f1df142d
+
+Time (s): cpu = 00:02:34 ; elapsed = 00:01:47 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Phase 9 Verifying routed nets
+
+ Verification completed successfully
+Phase 9 Verifying routed nets | Checksum: 1f1df142d
+
+Time (s): cpu = 00:02:35 ; elapsed = 00:01:47 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Phase 10 Depositing Routes
+Phase 10 Depositing Routes | Checksum: 1b7532237
+
+Time (s): cpu = 00:02:41 ; elapsed = 00:01:53 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Phase 11 Post Process Routing
+Phase 11 Post Process Routing | Checksum: 1b7532237
+
+Time (s): cpu = 00:02:42 ; elapsed = 00:01:53 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Phase 12 Post Router Timing
+INFO: [Route 35-57] Estimated Timing Summary | WNS=0.271  | TNS=0.000  | WHS=0.014  | THS=0.000  |
+
+INFO: [Route 35-327] The final timing numbers are based on the router estimated timing analysis. For a complete and accurate timing signoff, please run report_timing_summary.
+Phase 12 Post Router Timing | Checksum: 1b7532237
+
+Time (s): cpu = 00:02:42 ; elapsed = 00:01:53 . Memory (MB): peak = 2366.719 ; gain = 90.508
+Total Elapsed time in route_design: 113.472 secs
+
+Phase 13 Post-Route Event Processing
+Phase 13 Post-Route Event Processing | Checksum: 1fba6bc91
+
+Time (s): cpu = 00:02:42 ; elapsed = 00:01:54 . Memory (MB): peak = 2366.719 ; gain = 90.508
+INFO: [Route 35-16] Router Completed Successfully
+Ending Routing Task | Checksum: 1fba6bc91
+
+Time (s): cpu = 00:02:42 ; elapsed = 00:01:54 . Memory (MB): peak = 2366.719 ; gain = 90.508
+
+Routing Is Done.
+INFO: [Common 17-83] Releasing license: Implementation
+142 Infos, 75 Warnings, 0 Critical Warnings and 0 Errors encountered.
+route_design completed successfully
+route_design: Time (s): cpu = 00:02:43 ; elapsed = 00:01:54 . Memory (MB): peak = 2366.719 ; gain = 90.508
+INFO: [Vivado 12-24828] Executing command : report_drc -file mbv_system_wrapper_drc_routed.rpt -pb mbv_system_wrapper_drc_routed.pb -rpx mbv_system_wrapper_drc_routed.rpx
+Command: report_drc -file mbv_system_wrapper_drc_routed.rpt -pb mbv_system_wrapper_drc_routed.pb -rpx mbv_system_wrapper_drc_routed.rpx
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado_Tcl 2-168] The results of DRC are in file C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1/mbv_system_wrapper_drc_routed.rpt.
+report_drc completed successfully
+report_drc: Time (s): cpu = 00:00:11 ; elapsed = 00:00:07 . Memory (MB): peak = 2366.719 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_methodology -file mbv_system_wrapper_methodology_drc_routed.rpt -pb mbv_system_wrapper_methodology_drc_routed.pb -rpx mbv_system_wrapper_methodology_drc_routed.rpx
+Command: report_methodology -file mbv_system_wrapper_methodology_drc_routed.rpt -pb mbv_system_wrapper_methodology_drc_routed.pb -rpx mbv_system_wrapper_methodology_drc_routed.rpx
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [DRC 23-133] Running Methodology with 2 threads
+INFO: [Vivado_Tcl 2-1520] The results of Report Methodology are in file C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1/mbv_system_wrapper_methodology_drc_routed.rpt.
+report_methodology completed successfully
+report_methodology: Time (s): cpu = 00:00:31 ; elapsed = 00:00:17 . Memory (MB): peak = 2366.719 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_timing_summary -max_paths 10 -routable_nets -report_unconstrained -file mbv_system_wrapper_timing_summary_routed.rpt -pb mbv_system_wrapper_timing_summary_routed.pb -rpx mbv_system_wrapper_timing_summary_routed.rpx -warn_on_violation 
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1L, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 2 CPUs
+WARNING: [Timing 38-436] There are set_bus_skew constraint(s) in this design. Please run report_bus_skew to ensure that bus skew requirements are met.
+report_timing_summary: Time (s): cpu = 00:00:10 ; elapsed = 00:00:08 . Memory (MB): peak = 2366.719 ; gain = 0.000
+INFO: [Vivado 12-24838] Running report commands "report_incremental_reuse, report_route_status" in parallel.
+Running report generation with 2 threads.
+INFO: [Vivado 12-24828] Executing command : report_incremental_reuse -file mbv_system_wrapper_incremental_reuse_routed.rpt
+INFO: [Vivado_Tcl 4-1062] Incremental flow is disabled. No incremental reuse Info to report.
+INFO: [Vivado 12-24828] Executing command : report_route_status -file mbv_system_wrapper_route_status.rpt -pb mbv_system_wrapper_route_status.pb
+INFO: [Vivado 12-24828] Executing command : report_power -file mbv_system_wrapper_power_routed.rpt -pb mbv_system_wrapper_power_summary_routed.pb -rpx mbv_system_wrapper_power_routed.rpx
+Command: report_power -file mbv_system_wrapper_power_routed.rpt -pb mbv_system_wrapper_power_summary_routed.pb -rpx mbv_system_wrapper_power_routed.rpx
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+WARNING: [Power 33-332] Found switching activity that implies high-fanout reset nets being asserted for excessive periods of time which may result in inaccurate power analysis.
+Resolution: To review and fix problems, please run Power Constraints Advisor in the GUI from Tools > Power Constraints Advisor or run report_power with the -advisory option to generate a text report.
+159 Infos, 77 Warnings, 0 Critical Warnings and 0 Errors encountered.
+report_power completed successfully
+report_power: Time (s): cpu = 00:00:14 ; elapsed = 00:00:10 . Memory (MB): peak = 2366.719 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_clock_utilization -file mbv_system_wrapper_clock_utilization_routed.rpt
+INFO: [Vivado 12-24828] Executing command : report_bus_skew -warn_on_violation -file mbv_system_wrapper_bus_skew_routed.rpt -pb mbv_system_wrapper_bus_skew_routed.pb -rpx mbv_system_wrapper_bus_skew_routed.rpx
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1L, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 2 CPUs
+generate_parallel_reports: Time (s): cpu = 00:01:09 ; elapsed = 00:00:44 . Memory (MB): peak = 2366.719 ; gain = 0.000
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 2366.719 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2366.719 ; gain = 0.000
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.130 . Memory (MB): peak = 2381.574 ; gain = 14.855
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:02 ; elapsed = 00:00:00.469 . Memory (MB): peak = 2402.625 ; gain = 35.906
+Wrote PlaceStorage: Time (s): cpu = 00:00:05 ; elapsed = 00:00:02 . Memory (MB): peak = 2403.254 ; gain = 0.629
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.069 . Memory (MB): peak = 2403.254 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.012 . Memory (MB): peak = 2403.254 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:07 ; elapsed = 00:00:02 . Memory (MB): peak = 2403.254 ; gain = 36.535
+INFO: [Common 17-1381] The checkpoint 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/impl_1/mbv_system_wrapper_routed.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:10 ; elapsed = 00:00:06 . Memory (MB): peak = 2403.254 ; gain = 36.535
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_quad_spi_flash>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_quad_spi_flash/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_quad_spi_flash>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.TX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_quad_spi>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_quad_spi/U0/NO_DUAL_QUAD_MODE.QSPI_NORMAL/QSPI_ENHANCED_MD_GEN.QSPI_CORE_INTERFACE_I/FIFO_EXISTS.RX_FIFO_II/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_quad_spi>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/TX_PONG_GEN.TX_PONG_I/xpm_mem_gen.xpm_memory_inst_2/xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_ethernetlite>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/TX_PONG_GEN.TX_PONG_I/xpm_mem_gen.xpm_memory_inst_1/xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_ethernetlite>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/TX_PING/xpm_mem_gen.xpm_memory_inst_2/xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_ethernetlite>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/TX_PING/xpm_mem_gen.xpm_memory_inst_1/xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_ethernetlite>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/RX_PONG_GEN.RX_PONG_I/xpm_mem_gen.xpm_memory_inst_2/xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_ethernetlite>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/RX_PONG_GEN.RX_PONG_I/xpm_mem_gen.xpm_memory_inst_1/xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_ethernetlite>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/RX_PING/xpm_mem_gen.xpm_memory_inst_2/xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_ethernetlite>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-208] The XPM instance: <mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/RX_PING/xpm_mem_gen.xpm_memory_inst_1/xpm_memory_base_inst> is part of IP: <mbv_system_i/mbv_axi_ethernetlite>. This XPM instance will be excluded from the .mmi because updatemem is prohibited from making changes to an XPM that is part of an IP.
+INFO: [Memdata 28-167] Found XPM memory block mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/EMAC_I/TX/INST_TX_INTRFCE/I_TX_FIFO/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to auto. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/EMAC_I/TX/INST_TX_INTRFCE/I_TX_FIFO/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst block.
+INFO: [Memdata 28-167] Found XPM memory block mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/EMAC_I/RX/INST_RX_INTRFCE/I_RX_FIFO/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst with a P_MEMORY_PRIMITIVE property set to auto. A value of block is required. You will not be able to use the updatemem program to update the bitstream with new data for the mbv_system_i/mbv_axi_ethernetlite/U0/XEMAC_I/EMAC_I/RX/INST_RX_INTRFCE/I_RX_FIFO/gnuram_async_fifo.xpm_fifo_base_inst/gen_sdpram.xpm_memory_base_inst block.
+Command: write_bitstream -force mbv_system_wrapper.bit
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35ti'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35ti'
+Running DRC as a precondition to command write_bitstream
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado 12-3199] DRC finished with 0 Errors
+INFO: [Vivado 12-3200] Please refer to the DRC report (report_drc) for more information.
+Integrating Hard IP ELF/MEM with the PDI.
+INFO: [Designutils 20-2272] Running write_bitstream with 2 threads.
+Loading data files...
+Loading site data...
+Loading route data...
+Processing options...
+Creating bitmap...
+Creating bitstream...
+Writing bitstream ./mbv_system_wrapper.bit...
+INFO: [Vivado 12-1842] Bitgen Completed Successfully.
+INFO: [Common 17-83] Releasing license: Implementation
+187 Infos, 77 Warnings, 0 Critical Warnings and 0 Errors encountered.
+write_bitstream completed successfully
+write_bitstream: Time (s): cpu = 00:00:38 ; elapsed = 00:00:26 . Memory (MB): peak = 2804.562 ; gain = 401.309
+INFO: [Common 17-206] Exiting Vivado at Sat Jan 10 23:13:24 2026...

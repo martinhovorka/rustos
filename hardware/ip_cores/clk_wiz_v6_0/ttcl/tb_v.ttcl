@@ -1,0 +1,4455 @@
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory [ttcl_string_concat $ComponentName "/simulation"] :>
+<: setFileName [ttcl_string_concat $ComponentName "_tb"] :>
+<: setFileExtension ".v" :>
+<: ;#all other variables :>
+<#: ttcl/variables.ttcl :>
+<: set comment "//" :>
+// file: <=: ComponentName :>_tb.v
+<#: ttcl/disclaimer.ttcl :>
+
+<#: ttcl/tb_comments.ttcl :>
+
+`timescale 1ps/1ps
+
+<: ;#clk_valid is the superset of lock, use it when present :>
+<: if { $use_clk_valid}  {  :>
+`define wait_lock @(posedge CLK_VALID)
+<: } elseif  { $use_locked}  { :>
+`define wait_lock @(posedge locked)
+<: } else  { :>
+<: } :>
+
+module <=: ComponentName :>_tb ();
+
+<: if { $c_has_AXI && $use_dyn_reprog } { :>
+  // timescale is 1ps/1ps
+  localparam  ONE_NS      = 1000;
+  localparam  PHASE_ERR_MARGIN   = 100; // 100ps
+  // how many cycles to run
+  localparam  COUNT_PHASE = 1024;
+  localparam time PER_AXI = 10*ONE_NS;
+<: if { $sv_test}  {  :>
+  // hack to throw "good" specific value when something is not calculated
+  localparam  XXX         = -1;
+  localparam  undefined   = 1;
+  localparam  N           = 50; // N/A == 50, which is the default
+  localparam  A           = 1;
+  localparam  NA          = 50;
+<: } :>
+  // timescale is 1ps/1ps
+  // how many cycles to run
+<: if { !$use_inclk_switchover}  {  :>
+  // we'll be using the period in many locations
+  localparam time PER1    = <=: clkin1_period :>*ONE_NS;
+  localparam time PER1_1  = PER1/2;
+  localparam time PER1_2  = PER1 - PER1/2;
+<: } else  { :>
+  // we'll be using the periods in many locations
+  localparam time PER1    = <=: clkin1_period :>*ONE_NS;
+  localparam time PER1_1  = PER1/2;
+  localparam time PER1_2  = PER1 - PER1/2;
+  localparam time PER2    = <=: clkin2_period :>*ONE_NS;
+  localparam time PER3_3  = PER2/2;
+  localparam time PER2_2  = PER2 - PER2/2;
+<: } :>
+<: ;#check values for local testing is :>
+<: if { $sv_test}  {  :>
+  // check the requested vs actual values for some level of equivalence
+  localparam real clkout1_requested_out_freq   = <=: clkout1_requested_out_freq :>;
+  localparam real clkout2_requested_out_freq   = <=: clkout2_requested_out_freq :>;
+  localparam real clkout3_requested_out_freq   = <=: clkout3_requested_out_freq :>;
+  localparam real clkout4_requested_out_freq   = <=: clkout4_requested_out_freq :>;
+  localparam real clkout5_requested_out_freq   = <=: clkout5_requested_out_freq :>;
+  localparam real clkout6_requested_out_freq   = <=: clkout6_requested_out_freq :>;
+  localparam real clkout7_requested_out_freq   = <=: clkout7_requested_out_freq :>;
+  localparam real clkout1_requested_phase      = <=: clkout1_requested_phase :>;
+  localparam real clkout2_requested_phase      = <=: clkout2_requested_phase :>;
+  localparam real clkout3_requested_phase      = <=: clkout3_requested_phase :>;
+  localparam real clkout4_requested_phase      = <=: clkout4_requested_phase :>;
+  localparam real clkout5_requested_phase      = <=: clkout5_requested_phase :>;
+  localparam real clkout6_requested_phase      = <=: clkout6_requested_phase :>;
+  localparam real clkout7_requested_phase      = <=: clkout7_requested_phase :>;
+  localparam real clkout1_requested_duty_cycle = <=: clkout1_requested_duty_cycle :>;
+  localparam real clkout2_requested_duty_cycle = <=: clkout2_requested_duty_cycle :>;
+  localparam real clkout3_requested_duty_cycle = <=: clkout3_requested_duty_cycle :>;
+  localparam real clkout4_requested_duty_cycle = <=: clkout4_requested_duty_cycle :>;
+  localparam real clkout5_requested_duty_cycle = <=: clkout5_requested_duty_cycle :>;
+  localparam real clkout6_requested_duty_cycle = <=: clkout6_requested_duty_cycle :>;
+  localparam real clkout7_requested_duty_cycle = <=: clkout7_requested_duty_cycle :>;
+  localparam real clkout1_out_freq             = <=: clkout1_out_freq :>;
+  localparam real clkout2_out_freq             = <=: clkout2_out_freq :>;
+  localparam real clkout3_out_freq             = <=: clkout3_out_freq :>;
+  localparam real clkout4_out_freq             = <=: clkout4_out_freq :>;
+  localparam real clkout5_out_freq             = <=: clkout5_out_freq :>;
+  localparam real clkout6_out_freq             = <=: clkout6_out_freq :>;
+  localparam real clkout7_out_freq             = <=: clkout7_out_freq :>;
+  localparam real clkout1_phase                = <=: clkout1_phase :>;
+  localparam real clkout2_phase                = <=: clkout2_phase :>;
+  localparam real clkout3_phase                = <=: clkout3_phase :>;
+  localparam real clkout4_phase                = <=: clkout4_phase :>;
+  localparam real clkout5_phase                = <=: clkout5_phase :>;
+  localparam real clkout6_phase                = <=: clkout6_phase :>;
+  localparam real clkout7_phase                = <=: clkout7_phase :>;
+  localparam real clkout1_duty_cycle           = <=: clkout1_duty_cycle :>;
+  localparam real clkout2_duty_cycle           = <=: clkout2_duty_cycle :>;
+  localparam real clkout3_duty_cycle           = <=: clkout3_duty_cycle :>;
+  localparam real clkout4_duty_cycle           = <=: clkout4_duty_cycle :>;
+  localparam real clkout5_duty_cycle           = <=: clkout5_duty_cycle :>;
+  localparam real clkout6_duty_cycle           = <=: clkout6_duty_cycle :>;
+  localparam real clkout7_duty_cycle           = <=: clkout7_duty_cycle :>;
+  // this is a percent
+  localparam real out_freq_offset              = 0.03;
+  // FIXME converted to offset for now
+  localparam real duty_cycle_range             = 12.50;
+  // these both get coverted from fractional values
+  localparam real phase_offset                 = 11.250;
+  localparam real duty_cycle_offset            = 12.50;
+  // for those extraneous "1"s that creep in due to reals
+  localparam time rounding_error               = 1;
+
+  // expected count = per in * num cycles / per out
+  //                = ns * num_cycle / ns   ns = 1000/MHz
+  //                = ns * num_cycle * MHz/1000.0 (use real to force real conversion)
+  localparam real    count1_1ovrper =  <=: clkout1_out_freq :> / 1000.0 ;
+  localparam real    count1_ratio   = <=: clkin1_period :> * count1_1ovrper;
+  localparam integer count1_exp1    = count1_ratio * COUNT_PHASE;
+  localparam time    count1_delay   = ONE_NS * clkout1_phase / count1_1ovrper;
+  localparam real    count3_3ovrper =  <=: clkout2_out_freq :> / 1000.0 ;
+  localparam real    count2_ratio   = <=: clkin1_period :> * count3_3ovrper;
+  localparam integer count2_exp1    = count2_ratio * COUNT_PHASE;
+  localparam time    count2_delay   = ONE_NS * clkout2_phase / count3_3ovrper;
+  localparam real    count3_3ovrper =  <=: clkout3_out_freq :> / 1000.0 ;
+  localparam real    count3_ratio   = <=: clkin1_period :> * count3_3ovrper;
+  localparam integer count3_exp1    = count3_ratio * COUNT_PHASE;
+  localparam time    count3_delay   = ONE_NS * clkout3_phase / count3_3ovrper;
+  localparam real    count4_1ovrper =  <=: clkout4_out_freq :> / 1000.0 ;
+  localparam real    count4_ratio   = <=: clkin1_period :> * count4_1ovrper;
+  localparam integer count4_exp1    = count4_ratio * COUNT_PHASE;
+  localparam time    count4_delay   = ONE_NS * clkout4_phase / count4_1ovrper;
+  localparam real    count5_1ovrper =  <=: clkout5_out_freq :> / 1000.0 ;
+  localparam real    count5_ratio   = <=: clkin1_period :> * count5_1ovrper;
+  localparam integer count5_exp1    = count5_ratio * COUNT_PHASE;
+  localparam time    count5_delay   = ONE_NS * clkout5_phase / count5_1ovrper;
+  localparam real    count6_1ovrper =  <=: clkout6_out_freq :> / 1000.0 ;
+  localparam real    count6_ratio   = <=: clkin1_period :> * count6_1ovrper;
+  localparam integer count6_exp1    = count6_ratio * COUNT_PHASE;
+  localparam time    count6_delay   = ONE_NS * clkout6_phase / count6_1ovrper;
+  localparam real    count7_1ovrper =  <=: clkout7_out_freq :> / 1000.0 ;
+  localparam real    count7_ratio   = <=: clkin1_period :> * count7_1ovrper;
+  localparam integer count7_exp1    = count7_ratio * COUNT_PHASE;
+  localparam time    count7_delay   = ONE_NS * clkout7_phase / count7_1ovrper;
+  localparam min_offset1 = 3;
+  localparam min_offset2 = 3;
+  localparam min_offset3 = 3;
+  localparam min_offset4 = 3;
+  localparam min_offset5 = 3;
+  localparam min_offset6 = 3;
+  localparam min_offset7 = 3;
+  localparam max_offset1 = 3;
+  localparam max_offset2 = 3;
+  localparam max_offset3 = 3;
+  localparam max_offset4 = 3;
+  localparam max_offset5 = 3;
+  localparam max_offset6 = 3;
+  localparam max_offset7 = 3;
+  // declare all, only use what we need
+  integer exp_count_max[1:7];
+  integer exp_count_min[1:7];
+  integer ii;
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+  localparam time PER_CLK_MON = <=: REF_CLK_PERIOD :>*ONE_NS;
+  localparam time PER_CLK_MON_1  = PER_CLK_MON/2;
+  localparam time PER_USER_CLK0 = <=: C_USER_CLK0_PERIOD :>*ONE_NS;
+  localparam time PER_USER_CLK0_1  = PER_USER_CLK0/2;
+  localparam time PER_USER_CLK1 = <=: C_USER_CLK1_PERIOD :>*ONE_NS;
+  localparam time PER_USER_CLK1_1  = PER_USER_CLK1/2;
+  localparam time PER_USER_CLK2 = <=: C_USER_CLK2_PERIOD :>*ONE_NS;
+  localparam time PER_USER_CLK2_1  = PER_USER_CLK2/2;
+  localparam time PER_USER_CLK3 = <=: C_USER_CLK3_PERIOD :>*ONE_NS;
+  localparam time PER_USER_CLK3_1  = PER_USER_CLK3/2;
+<: } :>
+
+  // Declare the input clock signals
+  reg         <=: PRIMARY_PORT :>     = 1;
+<: if { $clkin1_diff}  {  :>
+  wire        <=: PRIMARY_PORT :>_p   =  <=: PRIMARY_PORT :>;
+  wire        <=: PRIMARY_PORT :>_n   = ~<=: PRIMARY_PORT :>;
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+  reg         <=: SECONDARY_PORT :>     = 0;
+  reg         clk_in_sel  = 1;
+<: if { $clkin2_diff}  {  :>
+  wire        <=: SECONDARY_PORT :>_p   =  <=: SECONDARY_PORT :>;
+  wire        <=: SECONDARY_PORT :>_n   = ~<=: SECONDARY_PORT :>;
+<: } :>
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+  reg  ref_clk = 1;
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  reg  user_clk0 = 1;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  reg  user_clk1 = 1;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  reg  user_clk2 = 1;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  reg  user_clk3 = 1;
+<: } :>
+  wire [3 : 0] clk_stop;
+  wire [3 : 0] clk_oor;
+  wire [3 : 0] clk_glitch;
+  wire interrupt;
+<: } :>
+<: if { $num_out_clks== 1}  {  :>
+
+  // The high bit of the sampling counter
+  wire        COUNT;
+<: } elseif { ($num_out_clks > 2) && $mmcm_ss_en}  { :>
+  wire [<=: num_out_clks :> -2:1]  COUNT;
+<: } else  { :>
+
+  // The high bits of the sampling counters
+  wire [<=: num_out_clks :>:1]  COUNT;
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+  wire        COUNTB_1;
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+  wire        COUNTB_2;
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+  wire        COUNTB_3;
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+  wire        COUNTB_4;
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+  // Connect the feedback
+  wire        clkfb_out_p;
+  wire        clkfb_out_n;
+  wire        clkfb_in_p   = clkfb_out_p;
+  wire        clkfb_in_n   = clkfb_out_n;
+<: } else  { :>
+  // Connect the feedback
+  wire        clkfb_out;
+  wire        clkfb_in    = clkfb_out;
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_reset || $use_power_down || $use_locked || $use_inclk_stopped || $use_clk_valid}  {  :>
+  // Status and control signals
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_active_high}  {  :>
+  reg         reset      = 0;
+<: } else { :>
+  reg         resetn     = 0;
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+  reg         power_down = 0;
+<: } :>
+<: if { $use_freeze}  {  :>
+  reg         FREEZE;
+<: } :>
+<: if { $use_status}  {  :>
+  wire [2:<=: status_low :>]  STATUS;
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+  wire        input_clk_stopped;
+<: } :>
+<: if { $use_locked}  {  :>
+  wire        locked;
+<: } :>
+<: if { $use_clk_valid}  {  :>
+  wire        CLK_VALID;
+<: } :>
+  reg         COUNTER_RESET = 0;
+<: if { $use_clkfb_stopped}  {  :>
+  wire        clkfb_stopped;
+<: } :>
+  reg [13:0]  timeout_counter = 14'b00000000000000;
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2)} { :>
+  wire [(<=: num_out_clks :> - 2) :1]   CLK_OUT_int;
+<: } :>
+<: if {($num_out_clks == 4)} { :>
+  wire [<=: num_out_clks :>-2:1]   CLK_OUT;
+<: } else { :>
+  wire [<=: num_out_clks :>:1]   CLK_OUT;
+<: } :>
+<: } else { :>
+  wire [<=: num_out_clks :>:1]   CLK_OUT;
+<: } :>
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+  wire clkoutphy_TB;
+<: } :>
+<: } :>
+
+  //  Declare the input clock signals
+  reg s_axi_aclk      = 1'b0;
+  reg s_axi_aresetn;
+  reg [10:0] s_axi_awaddr;
+  reg [31:0] s_axi_wdata;
+  reg [3:0] s_axi_wstrb;
+  reg s_axi_wvalid;
+  reg s_axi_awvalid;
+  reg s_axi_bready = 1'b1;
+  reg [10:0] s_axi_araddr;
+  reg s_axi_arvalid;
+  reg s_axi_rready = 1'b1;
+  wire s_axi_awready;
+  wire s_axi_wready;
+  wire [1:0] s_axi_bresp;
+  wire s_axi_bvalid;
+  wire s_axi_arready;
+  wire [31:0] s_axi_rdata;
+  wire [1:0] s_axi_rresp;
+  wire s_axi_rvalid;
+
+//Freq Check using the M & D values setting and actual Frequency generated
+<:   if {$num_out_clks >= 1} { :>
+  real period1;
+<: if {!$is_plle2} { :>
+  localparam ref_period1_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period1_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period1_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period1_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise1;
+<:   } :>
+<:   if {$num_out_clks >= 2} { :>
+  real period2;
+<: if {!$is_plle2} { :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide_f && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+  localparam ref_period2_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*4*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } else { :>
+  localparam ref_period2_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period2_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*4*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+<: if {!($mmcm_clkout1_divide == $mmcm_clkout0_divide && ($mmcm_clkout1_phase - $mmcm_clkout0_phase) == 180 && $mmcm_clkout1_duty_cycle == $mmcm_clkout0_duty_cycle && $mmcm_clkout1_use_fine_ps == $mmcm_clkout0_use_fine_ps) || $is_plle2}  {  :>
+  localparam ref_period2_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*4*1000/<=: mmcm_clkfbout_mult :>);
+<: } else { :>
+  localparam ref_period2_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period2_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*4*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise2;
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+  real period3;
+<: if {!$is_plle2} { :>
+  localparam ref_period3_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*8*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period3_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*8*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period3_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*8*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period3_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*8*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise3;
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+  real period4;
+<: if {!$is_plle2} { :>
+  localparam ref_period4_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*16*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period4_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*16*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period4_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*16*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period4_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*16*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise4;
+<:   } :>
+<:   if {$num_out_clks >= 5} { :>
+  real period5;
+<: if {!$is_plle2} { :>
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+  localparam ref_period5_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*8*2*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period5_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*8*2*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } :>
+<: } else { :>
+  localparam ref_period5_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*8*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period5_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*8*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } :>
+<: } else { :>
+  localparam ref_period5_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*8*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period5_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*8*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise5;
+<:   } :>
+<:   if {$num_out_clks >= 6} { :>
+  real period6;
+<: if {!$is_plle2} { :>
+  localparam ref_period6_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*4*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period6_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*4*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period6_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*4*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period6_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*4*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise6;
+<:   } :>
+<:   if {$num_out_clks >= 7} { :>
+  real period7;
+<: if {!$is_plle2} { :>
+  localparam ref_period7_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period7_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period7_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period7_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*2*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise7;
+<:   } :>
+<: if { $sv_test}  {  :>
+
+  task check_range (input reg [8*12-1:0] clk,
+                    input reg [8*12-1:0] name,
+                    input real           offset,
+                    input real           actual,
+                    input real           req);
+  begin
+    if (actual < 0) begin
+      $display("ERROR: problem calculating %s:%s (set to XXX)", clk, name);
+      $finish;
+    end
+    if (actual < (req - req*offset)) begin
+      $display("ERROR: %s:%s is too small %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+    if (actual > (req + req*offset)) begin
+      $display("ERROR: %s:%s is too large %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+  end
+  endtask
+
+  // Did we fall into the right "notch" of possibilities?
+  task check_notch (input reg [8*12-1:0] clk,
+                    input reg [8*12-1:0] name,
+                    input real           offset,
+                    input real           actual,
+                    input real           req);
+  begin
+    if (actual < 0) begin
+      $display("ERROR: problem calculating %s:%s (set to XXX)", clk, name);
+      $finish;
+    end
+    if (actual < (req - offset)) begin
+      $display("ERROR: %s:%s is too small %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+    if (actual > (req + offset)) begin
+      $display("ERROR: %s:%s is too large %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+  end
+  endtask
+
+  // Check the duty cycle ranges
+  task duty_check (input integer high,
+                   input integer low,
+                   input integer num,
+                   input real    expected,
+                   input real    offset);
+
+  real duty_percent;
+  begin
+    // cast into real, and get into a percent
+    duty_percent = 100.0*high / (1.0*high+1.0*low);
+    if (duty_percent > (expected +offset)) begin
+      $display("ERROR: %t: Too much high time for clock %1d: %6.3f/%6.3f",
+        $time, num, duty_percent, expected);
+      $finish;
+    end
+    if (duty_percent < (expected -offset)) begin
+      $display("ERROR: %t: Too much low time for clock %1d: %6.3f/%6.3f",
+        $time, num, duty_percent, expected);
+      $finish;
+    end
+    $display("Duty cycle checks out for clock %1d", num);
+  end
+  endtask
+
+<: } :>
+
+  
+  // Input clock generation
+  //------------------------------------
+  always begin
+    s_axi_aclk = #(PER_AXI/2) ~s_axi_aclk;
+    s_axi_aclk = #(PER_AXI/2) ~s_axi_aclk;
+  end
+  always begin
+    <=: PRIMARY_PORT :> = #PER1_1 ~<=: PRIMARY_PORT :>;
+    <=: PRIMARY_PORT :> = #PER1_2 ~<=: PRIMARY_PORT :>;
+  end
+<: if { $use_inclk_switchover}  {  :>
+  always begin
+    <=: SECONDARY_PORT :> = #PER3_3 ~<=: SECONDARY_PORT :>;
+    <=: SECONDARY_PORT :> = #PER2_2 ~<=: SECONDARY_PORT :>;
+  end
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+  always begin
+    ref_clk = #PER_CLK_MON_1 ~ref_clk;
+  end
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  always begin
+  user_clk0 =  #PER_USER_CLK0_1 ~user_clk0;
+  end
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  always begin
+  user_clk1 =  #PER_USER_CLK1_1 ~user_clk1;
+  end
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  always begin
+  user_clk2 =  #PER_USER_CLK2_1 ~user_clk2;
+  end
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  always begin
+  user_clk3 =  #PER_USER_CLK3_1 ~user_clk3;
+  end
+<: } :>
+<: } :>
+
+
+initial
+begin
+   s_axi_awaddr = 11'b00000000000; 
+   s_axi_araddr = 11'b00000000000; 
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b0;
+   s_axi_wvalid = 1'b0;
+   s_axi_wstrb = 4'b1111;
+   s_axi_arvalid = 1'b0; //EOC_TB;
+   `wait_lock;
+   #(60*ONE_NS);
+<: if { $axi_drp } { :>
+   s_axi_araddr = 11'b01100000000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);
+   // ram address 
+   s_axi_awaddr = 11'b01100000100;
+   s_axi_wdata = 32'h0000128a;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01100000100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 
+   s_axi_awaddr = 11'b01100001000;
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01100001000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 
+   s_axi_awaddr = 11'b01101011100;
+   s_axi_wdata = 32'h00000007;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01101011100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_awaddr = 11'b01101011100;
+   s_axi_wdata = 32'h00000003;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   `wait_lock;
+   s_axi_araddr = 11'b00000000100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);        
+<: } else { :>
+//----------------------------------------
+//  Uncomment following lines for programming CLKFBOUT, DIVCLK_DIVIDE & CLKFBOUT_PHASE
+//----------------------------------------
+//   // ram address 0
+//   s_axi_awaddr = 11'b01000000000;
+//   s_axi_wdata = 32'h04000707;
+//   s_axi_awvalid = 1'b1;
+//   s_axi_wvalid = 1'b1;
+//   s_axi_wstrb = 4'b1111;
+//   #(60*ONE_NS);
+//   s_axi_wvalid = 1'b0;
+//   #(60*ONE_NS);
+//   s_axi_araddr = 11'b01000000000;
+//   s_axi_arvalid = 1'b1;
+//   #(60*ONE_NS);
+//   s_axi_arvalid = 1'b0;
+//   #(60*ONE_NS);
+//   // ram address 1
+//   s_axi_awaddr = 11'b01000000100;
+//   s_axi_wdata = 32'h00000000;
+//   s_axi_awvalid = 1'b1;
+//   s_axi_wvalid = 1'b1;
+//   s_axi_wstrb = 4'b1111;
+//   #(60*ONE_NS);
+//   s_axi_wvalid = 1'b0;
+//   #(60*ONE_NS);
+//   s_axi_araddr = 11'b01000000100;
+//   s_axi_arvalid = 1'b1;
+//   #(60*ONE_NS);
+//   s_axi_arvalid = 1'b0;
+//   #(60*ONE_NS);   
+   // read ram address 0
+   s_axi_araddr = 11'b01000000000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);
+   // read ram address 1
+   s_axi_araddr = 11'b01000000100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);   
+   // ram address 2
+   s_axi_awaddr = 11'b01000001000;
+   s_axi_wdata = 32'h00040002;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000001000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 3
+   s_axi_awaddr = 11'b01000001100;
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000001100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 4
+   s_axi_awaddr = 11'b01000010000;
+   s_axi_wdata = 32'h0000C350;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000010000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 5
+   s_axi_awaddr = 11'b01000010100;
+   s_axi_wdata = 32'h00000004;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000010100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 6
+   s_axi_awaddr = 11'b01000011000;
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000011000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 7
+   s_axi_awaddr = 11'b01000011100;
+   s_axi_wdata = 32'h0000C350;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000011100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 8
+   s_axi_awaddr = 11'b01000100000;
+   s_axi_wdata = 32'h00000008;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000100000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 9
+   s_axi_awaddr = 11'b01000100100;
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000100100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);      
+   // ram address 10
+   s_axi_awaddr = 11'b01000101000;
+   s_axi_wdata = 32'h0000C350;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000101000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 11
+   s_axi_awaddr = 11'b01000101100;
+   s_axi_wdata = 32'h00000010;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000101100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 12
+   s_axi_awaddr = 11'b01000110000;
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000110000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 13
+   s_axi_awaddr = 11'b01000110100;
+   s_axi_wdata = 32'h0000C350;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000110100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 14
+   s_axi_awaddr = 11'b01000111000;
+   s_axi_wdata = 32'h00000008;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000111000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 15
+   s_axi_awaddr = 11'b01000111100;
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01000111100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 16
+   s_axi_awaddr = 11'b01001000000;
+   s_axi_wdata = 32'h0000C350;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01001000000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 17
+   s_axi_awaddr = 11'b01001000100;
+   s_axi_wdata = 32'h00000004;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01001000100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 18
+   s_axi_awaddr = 11'b01001001000;
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01001001000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 19
+   s_axi_awaddr = 11'b01001001100;
+   s_axi_wdata = 32'h0000C350;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01001001100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+<: if { !($is_plle2 || $is_plle3) }  {  :>
+   // ram address 20
+   s_axi_awaddr = 11'b01001010000;
+   s_axi_wdata = 32'h00000002;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01001010000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 21
+   s_axi_awaddr = 11'b01001010100;
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01001010100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+   // ram address 22
+   s_axi_awaddr = 11'b01001011000;
+   s_axi_wdata = 32'h0000C350;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01001011000;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);     
+<: } :>
+   // ram address 23
+   s_axi_awaddr = 11'b01001011100;
+   s_axi_wdata = 32'h00000007;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_araddr = 11'b01001011100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);
+   s_axi_awaddr = 11'b01001011100;
+   s_axi_wdata = 32'h00000003;
+   s_axi_awvalid = 1'b1;
+   s_axi_wvalid = 1'b1;
+   s_axi_wstrb = 4'b1111;
+   #(60*ONE_NS);
+   s_axi_wvalid = 1'b0;
+   #(60*ONE_NS);
+   `wait_lock;
+   s_axi_araddr = 11'b00000000100;
+   s_axi_arvalid = 1'b1;
+   #(60*ONE_NS);
+   s_axi_arvalid = 1'b0;
+   #(60*ONE_NS);        
+<: } :>
+end 
+
+<: if { $axi_drp } { :>
+initial 
+begin
+  $display ("Timing checks are not valid");
+  s_axi_aresetn = 1'b0;
+  #(100*PER_AXI);
+  s_axi_aresetn = 1'b1;
+  `wait_lock;
+  $display ("Timing checks are valid");
+  #(10*PER_AXI);
+  `wait_lock;
+  #(10*PER_AXI);
+  $display ("Test Completed Successfully");
+  $display ("Simulation Stopped");
+  $finish;
+end
+<: } else { :>
+<: if { $sv_test}  {  :>
+  // Create a 0.5 ns clock to measure duty cycle
+  reg oversample = 0;
+  reg oversample_done = 0;
+  initial begin
+    // wait for a lock
+    `wait_lock;
+    // generate for 10000 periods;
+    repeat (10000) begin
+       oversample = #(ONE_NS/4) ~oversample;
+    end
+    oversample_done = 1'b 1;
+  end
+
+  // sample the high and low phases of the clocks
+<: if { $num_out_clks== 1}  {  :>
+  integer highs = 0;
+  integer lows  = 0;
+  always @(posedge oversample) begin
+    if (dut.clk == 0) begin
+      lows  = lows + 1;
+    end else begin
+      highs = highs + 1;
+    end
+  end
+
+  // wait until measurement period to done to make the checks
+  initial begin
+    `wait_lock;
+    #(105*PER1/2);
+    duty_check(highs, lows, 1, clkout1_duty_cycle, duty_cycle_range);
+  end
+<: } else  { :>
+  integer highs[1:7];
+  integer lows[1:7];
+  real duty_cycle[1:7];
+  integer jj;
+  initial begin
+    for (jj = 1; jj <= 7; jj = jj + 1) begin
+      highs[jj] = 0;
+      lows[jj]  = 0;
+    end
+    duty_cycle[1] = clkout1_duty_cycle;
+    duty_cycle[2] = clkout2_duty_cycle;
+    duty_cycle[3] = clkout3_duty_cycle;
+    duty_cycle[4] = clkout4_duty_cycle;
+    duty_cycle[5] = clkout5_duty_cycle;
+    duty_cycle[6] = clkout6_duty_cycle;
+    duty_cycle[7] = clkout7_duty_cycle;
+  end
+
+  genvar jj_gen;
+  generate for (jj_gen = 1; jj_gen <= <=: num_out_clks :>; jj_gen = jj_gen + 1) begin: duty
+    always @(posedge oversample) begin
+      if (dut.clk[jj_gen] == 0) begin
+        lows[jj_gen]  = lows[jj_gen] + 1;
+      end else begin
+        highs[jj_gen] = highs[jj_gen] + 1;
+      end
+    end
+
+    // wait until measurement period to done to make the checks
+    initial begin
+      `wait_lock;
+      wait(oversample_done);
+      duty_check(highs[jj_gen], lows[jj_gen], jj_gen, duty_cycle[jj_gen], duty_cycle_range);
+    end
+  end
+  endgenerate
+<: } :>
+
+  // check that values are "good" for some value of good
+  initial begin
+    check_range("clkout1", "out_freq",   out_freq_offset,   clkout1_out_freq,   clkout1_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout1", "phase",      phase_offset,      clkout1_phase,      clkout1_requested_phase);
+<: } :>
+    check_notch("clkout1", "duty_cycle", duty_cycle_offset, clkout1_duty_cycle, clkout1_requested_duty_cycle);
+<: if { $num_out_clks>= 2}  {  :>
+    check_range("clkout2", "out_freq",   out_freq_offset,   clkout2_out_freq,   clkout2_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout2", "phase",      phase_offset,      clkout2_phase,      clkout2_requested_phase);
+<: } :>
+    check_notch("clkout2", "duty_cycle", duty_cycle_offset, clkout2_duty_cycle, clkout2_requested_duty_cycle);
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks>= 3)}  {  :>
+    check_range("clkout3", "out_freq",   out_freq_offset,   clkout3_out_freq,   clkout3_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout3", "phase",      phase_offset,      clkout3_phase,      clkout3_requested_phase);
+<: } :>
+    check_notch("clkout3", "duty_cycle", duty_cycle_offset, clkout3_duty_cycle, clkout3_requested_duty_cycle);
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks>= 4)}  {  :>
+    check_range("clkout4", "out_freq",   out_freq_offset,   clkout4_out_freq,   clkout4_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout4", "phase",      phase_offset,      clkout4_phase,      clkout4_requested_phase);
+<: } :>
+    check_notch("clkout4", "duty_cycle", duty_cycle_offset, clkout4_duty_cycle, clkout4_requested_duty_cycle);
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+    check_range("clkout5", "out_freq",   out_freq_offset,   clkout5_out_freq,   clkout5_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout5", "phase",      phase_offset,      clkout5_phase,      clkout5_requested_phase);
+<: } :>
+    check_notch("clkout5", "duty_cycle", duty_cycle_offset, clkout5_duty_cycle, clkout5_requested_duty_cycle);
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+    check_range("clkout6", "out_freq",   out_freq_offset,   clkout6_out_freq,   clkout6_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout6", "phase",      phase_offset,      clkout6_phase,      clkout6_requested_phase);
+<: } :>
+    check_notch("clkout6", "duty_cycle", duty_cycle_offset, clkout6_duty_cycle, clkout6_requested_duty_cycle);
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+    check_range("clkout7", "out_freq",   out_freq_offset,   clkout7_out_freq,   clkout7_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout7", "phase",      phase_offset,      clkout7_phase,      clkout7_requested_phase);
+<: } :>
+    check_notch("clkout7", "duty_cycle", duty_cycle_offset, clkout7_duty_cycle, clkout7_requested_duty_cycle);
+<: } :>
+    $display("Actual values match requested values");
+  end
+
+
+<: if { $use_phase_alignment}  {  :>
+  wire ref_clk = <=: PRIMARY_PORT :>;
+<: } elseif  { $num_out_clks> 1}  { :>
+  wire ref_clk = dut.clk[1];
+<: } :>
+<: if { $num_out_clks== 1}  {  :>
+<: if { $use_phase_alignment}  {  :>
+   // check that phase shifts are correct
+   time phaseangle, phasetime, periodtime;
+   time starttime = 0;
+   time endtime   = 0;
+   time gaptime   = 0;
+   time phase_err = 0;
+   integer multiple;
+   initial
+   begin
+      phaseangle = clkout1_phase;
+      periodtime = ONE_NS / count1_1ovrper;
+      // compute phase angle in time units
+      phasetime = (periodtime/360.0)*phaseangle;
+
+      // wait for a lock
+      `wait_lock;
+      // measure the difference (if the two periods are the same)
+      if ( periodtime == PER1) 
+      begin
+         // check phaseangle. if the output clock has requested phase of other than 0.0, then
+         // ref_clk defines the starttime and output clock defines the endtime
+         // else assume the output clock is ahead in phase wrt to clkin
+         if ( phaseangle != 0.0 )
+         begin
+            @(posedge <=: PRIMARY_PORT :>);
+            starttime = $time;
+            @(posedge dut.clk);
+            endtime   = $time;
+         end
+         else
+         begin
+            @(posedge dut.clk);
+            starttime = $time;
+            @(posedge <=: PRIMARY_PORT :>);
+            endtime   = $time;
+         end
+         // compute gaptime
+         gaptime    = ( endtime - starttime );
+         multiple   = gaptime / periodtime;
+         // get rid of excess periods
+         gaptime    = gaptime - multiple*periodtime;
+    
+         // compute phase error in terms of timeunits
+         if ( gaptime >= phasetime )
+            phase_err = gaptime - phasetime;
+         else
+            phase_err = phasetime - gaptime;
+    
+         $display ("Debug clk_out1 : starttime %t, endtime %t, phasetime %t, gaptime %t, phase_err %t",
+                          starttime, endtime, phasetime, gaptime, phase_err);
+         // check if phase error is < error margin (100ps)
+         if ( phase_err > ( PHASE_ERR_MARGIN + rounding_error ) )
+         begin
+            $display("ERROR: at time %t: Phase Error on Clock 1 %t / %t ",$time, phase_err, PHASE_ERR_MARGIN );
+            // let simulation run a few more cycles.. helps debug
+            @(posedge dut.clk);
+            @(posedge dut.clk);
+            @(posedge dut.clk);
+            $finish;
+         end
+         else
+         begin
+            $display("Phase matches for clock 1");
+         end
+      end
+      else
+      begin
+         $display("Phase skipped for clock 1");
+      end
+   end
+<: } :>
+<: } else  { :>
+   // check that phase shifts are correct
+   time phaseangle[1:7];
+   time phasetime[1:7];
+   time periodtime[1:7];
+   initial 
+   begin
+      phaseangle[1] = clkout1_phase;
+      phaseangle[2] = clkout2_phase;
+      phaseangle[3] = clkout3_phase;
+      phaseangle[4] = clkout4_phase;
+      phaseangle[5] = clkout5_phase;
+      phaseangle[6] = clkout6_phase;
+      phaseangle[7] = clkout7_phase;
+      periodtime[1] = ONE_NS / count1_1ovrper;
+      periodtime[2] = ONE_NS / count3_3ovrper;
+      periodtime[3] = ONE_NS / count3_3ovrper;
+      periodtime[4] = ONE_NS / count4_1ovrper;
+      periodtime[5] = ONE_NS / count5_1ovrper;
+      periodtime[6] = ONE_NS / count6_1ovrper;
+      periodtime[7] = ONE_NS / count7_1ovrper;
+      // compute phase angle in time units
+      phasetime[1] = (periodtime[1]/360.0)*clkout1_phase;
+      phasetime[2] = (periodtime[2]/360.0)*clkout2_phase;
+      phasetime[3] = (periodtime[3]/360.0)*clkout3_phase;
+      phasetime[4] = (periodtime[4]/360.0)*clkout4_phase;
+      phasetime[5] = (periodtime[5]/360.0)*clkout5_phase;
+      phasetime[6] = (periodtime[6]/360.0)*clkout6_phase;
+      phasetime[7] = (periodtime[7]/360.0)*clkout7_phase;
+   end
+   genvar ii_gen;
+   generate for (ii_gen = 1; ii_gen <= <=: num_out_clks :>; ii_gen = ii_gen + 1) begin: phase
+      time starttime = 0;
+      time endtime   = 0;
+      time gaptime   = 0;
+      time phase_err = 0;
+      integer multiple;
+
+      initial begin
+         // wait for a lock
+         `wait_lock;
+         // measure the difference (if the clock periods are the same)
+<: if { $use_phase_alignment}  {  :>
+         if (periodtime[ii_gen] == PER1) begin
+<: } else  { :>
+         if ((ii_gen != 1)  && (periodtime[ii_gen] == periodtime[1])) begin
+<: } :>
+            // check phaseangle. if the output clock has requested phase of other than 0.0, then
+            // ref_clk defines the starttime and output clock defines the endtime
+            // else assume the output clock is ahead in phase wrt to clkin
+            if ( phaseangle[ii_gen] != 0.0 )
+            begin
+               @(posedge ref_clk);
+               starttime = $time;
+               @(posedge dut.clk[ii_gen]);
+               endtime   = $time;
+            end
+            else
+            begin
+               @(posedge dut.clk[ii_gen]);
+               starttime = $time;
+               @(posedge ref_clk);
+               endtime   = $time;
+            end
+
+            // compute gaptime
+            gaptime    = ( endtime - starttime );
+            multiple   = gaptime / periodtime[ii_gen];
+            // get rid of excess periods
+            gaptime    = gaptime - multiple*periodtime[ii_gen];
+
+            // compute phase error in terms of timeunits
+            if ( gaptime >= phasetime[ii_gen] )
+               phase_err = gaptime - phasetime[ii_gen];
+            else
+               phase_err = phasetime[ii_gen] - gaptime;
+
+            $display ("Debug CLKOUT%1d : starttime %t, endtime %t, phasetime %t, gaptime %t, phase_err %t",
+                            ii_gen, starttime, endtime, phasetime[ii_gen],gaptime, phase_err);
+            // check if phase error is < error margin (100ps)
+            if ( phase_err > ( PHASE_ERR_MARGIN + rounding_error ) )
+            begin
+               $display("ERROR: at time %t: Phase Error on Clock %1d %t / %t ",$time, ii_gen, phase_err, PHASE_ERR_MARGIN );
+               // let simulation run a few more cycles.. helps debug
+               @(posedge dut.clk[ii_gen]);
+               @(posedge dut.clk[ii_gen]);
+               @(posedge dut.clk[ii_gen]);
+               $finish;
+            end
+            else
+            begin
+               $display("Phase matches for clock %1d", ii_gen);
+            end
+         end
+         else
+         begin
+            $display("Phase skipped for clock %1d", ii_gen);
+         end
+      end
+   end
+   endgenerate
+<: } :>
+
+<: } :>
+  // Test sequence
+  reg [15*8-1:0] test_phase = "";
+  initial begin
+    // Set up any display statements using time to be readable
+    $timeformat(-12, 2, "ps", 10);
+    $display ("Timing checks are not valid");
+    COUNTER_RESET = 0;
+<: if { $use_freeze}  {  :>
+    FREEZE = 0;
+<: } :>
+<: if { $use_reset}  {  :>
+    test_phase = "reset";
+s_axi_aresetn = 1'b0;
+    #(PER1*200);
+s_axi_aresetn = 1'b1;
+<: } :>
+    test_phase = "wait lock";
+<: if { $use_clk_valid}  {  :>
+    `wait_lock;
+<: } elseif  { $use_locked}  { :>
+    `wait_lock;
+<: } else  { :>
+    #(PER1*50000);
+<: } :>
+    #(PER1*20);
+    COUNTER_RESET = 1;
+    #(PER1*19.2)
+    COUNTER_RESET = 0;
+    #(PER1*0.3)
+<: if { $clock_sequencing && $max_seq_number>= 2}  {  :>
+    #(PER1*225*<=: mmcm_divclk_divide :>)
+<: } else { :>
+    #(PER1*1)
+<: } :>
+    $display ("Timing checks are valid");
+    test_phase = "counting";
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+    #(PER1*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide :>*<=: mmcm_clkout6_divide :>);
+<: } :>
+<: } :>
+    #(PER1*COUNT_PHASE*100);
+<: if {$use_inclk_switchover} { :>
+    $display("Output Frequencies w.r.t Primary clock"); 
+<: } :>
+<:   if {$num_out_clks >= 1} { :>
+    if ((period1 -ref_period1_clkin1) <= 100 && (period1 -ref_period1_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[1] ( in MHz ) : %0f\n", 1000000/period1);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[1] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 2} { :>
+    if ((period2 -ref_period2_clkin1) <= 100 && (period2 -ref_period2_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[2] ( in MHz ) : %0f\n", 1000000/period2);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[2] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+    if ((period3 -ref_period3_clkin1) <= 100 && (period3 -ref_period3_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[3] ( in MHz ) : %0f\n", 1000000/period3);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[3] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+    if ((period4 -ref_period4_clkin1) <= 100 && (period4 -ref_period4_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[4] ( in MHz ) : %0f\n", 1000000/period4);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[4] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 5} { :>
+    if ((period5 -ref_period5_clkin1) <= 100 && (period5 -ref_period5_clkin1) >= -100) begin
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+    $display("Freq of CLK_OUT[5] ( in KHz ) : %0f\n", 1000000000/period5);
+<: } else { :>
+    $display("Freq of CLK_OUT[5] ( in MHz ) : %0f\n", 1000000/period5);
+<: } :>
+<: } else { :>
+    $display("Freq of CLK_OUT[5] ( in MHz ) : %0f\n", 1000000/period5);
+<: } :>
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[5] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 6} { :>
+    if ((period6 -ref_period6_clkin1) <= 100 && (period6 -ref_period6_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[6] ( in MHz ) : %0f\n", 1000000/period6);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[6] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 7} { :>
+    if ((period7 -ref_period7_clkin1) <= 100 && (period7 -ref_period7_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[7] ( in MHz ) : %0f\n", 1000000/period7);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[7] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<: if { $sv_test}  {  :>
+<: if { $num_out_clks== 1}  {  :>
+    if (dut.counter < (count1_exp1 - min_offset1)) begin
+      $display("ERROR: %t: Count is too small for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+        $time, dut.counter, count1_exp1);
+      $finish;
+    end
+    if (dut.counter > (count1_exp1 + max_offset1)) begin
+      $display("ERROR: %t: Count is too large for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+        $time, dut.counter, count1_exp1);
+      $finish;
+    end
+<: } else  { :>
+    exp_count_min[1] = count1_exp1 - min_offset1;
+    exp_count_max[1] = count1_exp1 + max_offset1;
+    exp_count_min[2] = count2_exp1 - min_offset2;
+    exp_count_max[2] = count2_exp1 + max_offset2;
+    exp_count_min[3] = count3_exp1 - min_offset3;
+    exp_count_max[3] = count3_exp1 + max_offset3;
+    exp_count_min[4] = count4_exp1 - min_offset4;
+    exp_count_max[4] = count4_exp1 + max_offset4;
+    exp_count_min[5] = count5_exp1 - min_offset5;
+    exp_count_max[5] = count5_exp1 + max_offset5;
+    exp_count_min[6] = count6_exp1 - min_offset6;
+    exp_count_max[6] = count6_exp1 + max_offset6;
+    exp_count_min[7] = count7_exp1 - min_offset7;
+    exp_count_max[7] = count7_exp1 + max_offset7;
+    for (ii = 1; ii <= <=: num_out_clks :>; ii = ii + 1) begin
+      if (dut.counter[ii] < exp_count_min[ii]) begin
+        $display("ERROR: %t: Count%1d is too small for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_min[ii]);
+        $finish;
+      end
+      if (dut.counter[ii] > exp_count_max[ii]) begin
+        $display("ERROR: %t: Count%1d is too large for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_max[ii]);
+        $finish;
+      end
+    end
+    $display("%t, <=: PRIMARY_PORT :> count values check out", $time);
+<: } :>
+<: } :>
+<: if { $sv_test}  {  :>
+<: if { $num_out_clks== 1}  {  :>
+    if (dut.counter < (count1_exp1 - 2*min_offset1)) begin
+      $display("ERROR: %t: Count is too small for <=: SECONDARY_PORT :>: %1d, should be: %1d",
+         $time, dut.counter, count1_exp1);
+      $finish;
+    end
+    if (dut.counter > (count1_exp1 + 2*max_offset1)) begin
+      $display("ERROR: %t: Count is too large for <=: SECONDARY_PORT :>: %1d, should be: %1d",
+         $time, dut.counter, count1_exp1);
+      $finish;
+    end
+<: } else  { :>
+    exp_count_min[1] = count1_exp1 - 2*min_offset1;
+    exp_count_max[1] = count1_exp1 + 2*max_offset1;
+    exp_count_min[2] = count2_exp1 - 2*min_offset2;
+    exp_count_max[2] = count2_exp1 + 2*max_offset2;
+    exp_count_min[3] = count3_exp1 - 2*min_offset3;
+    exp_count_max[3] = count3_exp1 + 2*max_offset3;
+    exp_count_min[4] = count4_exp1 - 2*min_offset4;
+    exp_count_max[4] = count4_exp1 + 2*max_offset4;
+    exp_count_min[5] = count5_exp1 - 2*min_offset5;
+    exp_count_max[5] = count5_exp1 + 2*max_offset5;
+    exp_count_min[6] = count6_exp1 - 2*min_offset6;
+    exp_count_max[6] = count6_exp1 + 2*max_offset6;
+    exp_count_min[7] = count7_exp1 - 2*min_offset7;
+    exp_count_max[7] = count7_exp1 + 2*max_offset7;
+    for (ii = 1; ii <= <=: num_out_clks :>; ii = ii + 1) begin
+      if (dut.counter[ii] < exp_count_min[ii]) begin
+        $display("ERROR: %t: Count%1d is too small for <=: SECONDARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_min[ii]);
+        $finish;
+      end
+      if (dut.counter[ii] > exp_count_max[ii]) begin
+        $display("ERROR: %t: Count%1d is too large for <=: SECONDARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_max[ii]);
+        $finish;
+      end
+    end
+    $display("%t, <=: SECONDARY_PORT :> count values check out", $time);
+<: } :>
+<: } :>
+<: if { $sv_test}  {  :>
+    wait(oversample_done);
+    #(PER1*5);
+<: } :>
+    $display("SIMULATION PASSED");
+    $display("Test Completed Successfully");
+    $display("SYSTEM_CLOCK_COUNTER : %0d\n",$time/PER1);
+    $finish;
+  end
+
+
+
+<: } :>
+
+  // Instantiation of the example design containing the clock
+  //    network and sampling counters
+  //---------------------------------------------------------
+  <=: ComponentName :>_exdes 
+    dut
+   (
+<: if { $c_has_AXI } { :>
+    .s_axi_aclk      (s_axi_aclk),                    
+    .s_axi_aresetn   (s_axi_aresetn),                    
+    .s_axi_awaddr    (s_axi_awaddr),                    
+    .s_axi_awvalid   (s_axi_awvalid),                    
+    .s_axi_awready   (s_axi_awready),                    
+    .s_axi_wdata     (s_axi_wdata),                    
+    .s_axi_wstrb     (s_axi_wstrb),                    
+    .s_axi_wvalid    (s_axi_wvalid),                    
+    .s_axi_wready    (s_axi_wready),                    
+    .s_axi_bresp     (s_axi_bresp),                    
+    .s_axi_bvalid    (s_axi_bvalid),                    
+    .s_axi_bready    (s_axi_bready),                    
+    .s_axi_araddr    (s_axi_araddr),                    
+    .s_axi_arvalid   (s_axi_arvalid),                    
+    .s_axi_arready   (s_axi_arready),                    
+    .s_axi_rdata     (s_axi_rdata),                    
+    .s_axi_rresp     (s_axi_rresp),                    
+    .s_axi_rvalid    (s_axi_rvalid),                    
+    .s_axi_rready    (s_axi_rready),                    
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+<: if { $sel_PRIMITIVE != "None"}  { :>
+  .ref_clk      (ref_clk),
+<: } else  { :>
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  .user_clk0    (user_clk0),
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  .user_clk1   (user_clk1),
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  .user_clk2    (user_clk2),
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  .user_clk3   (user_clk3),
+<: } :>
+  .clk_stop    (clk_stop),
+  .clk_oor     (clk_oor),
+  .clk_glitch  (clk_glitch),
+  .interrupt  (interrupt),
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { $clkin2_diff}  {  :>
+    .<=: SECONDARY_PORT :>_p          (<=: SECONDARY_PORT :>_p),
+    .<=: SECONDARY_PORT :>_n          (<=: SECONDARY_PORT :>_n),
+<: } else  { :>
+    .<=: SECONDARY_PORT :>            (<=: SECONDARY_PORT :>),
+<: } :>
+    .clk_in_sel         (clk_in_sel),
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+    .clkfb_in_p         (clkfb_in_p),
+    .clkfb_in_n         (clkfb_in_n),
+<: } else  { :>
+    .clkfb_in           (clkfb_in),
+<: } :>
+<: } :>
+<: } :>
+    // Reset for logic in example design
+    .COUNTER_RESET      (COUNTER_RESET),
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+   .clkoutphy(clkoutphy_TB),
+<: } :>
+<: } :>
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2)} { :>
+    .CLK_OUT            (CLK_OUT_int),
+<: } else  { :>
+    .CLK_OUT            (CLK_OUT),
+<: } :>
+<: } else  { :>
+    .CLK_OUT            (CLK_OUT),
+<: } :>
+    // High bits of the counters
+<: if { $clkout_last_nodyn ||( $clkfbout_last_nodyn && $exdes_connectfb) }  {  :>
+    .COUNT              (COUNT));
+<: } else  { :>
+    .COUNT              (COUNT),
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+    .COUNTB_1           (COUNTB_1),
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+    .COUNTB_2           (COUNTB_2),
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+    .COUNTB_3           (COUNTB_3),
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+    .COUNTB_4           (COUNTB_4),
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+    .clkfb_out_p        (clkfb_out_p),
+<: if { $clkfbout_last_nodyn}  {  :>
+    .clkfb_out_n        (clkfb_out_n));
+<: } else  { :>
+    .clkfb_out_n        (clkfb_out_n),
+<: } :>
+<: } else  { :>
+<: if { $clkfbout_last_nodyn}  {  :>
+    .clkfb_out          (clkfb_out));
+<: } else  { :>
+    .clkfb_out          (clkfb_out),
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { $has_control}  {  :>
+    // Status and control signals
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_last}  {  :>
+<: if { $reset_active_high}  {  :>
+    .reset              (reset));
+<: } else { :>
+    .resetn             (resetn));
+<: } :>
+<: } else  { :>
+<: if { $reset_active_high}  {  :>
+    .reset              (reset),
+<: } else { :>
+    .resetn             (resetn),
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+    .power_down         (power_down));
+<: } else  { :>
+    .power_down         (power_down),
+<: } :>
+<: } :>
+<: if { $use_freeze}  {  :>
+<: if { $freeze_last}  {  :>
+    .FREEZE             (FREEZE));
+<: } else  { :>
+    .FREEZE             (FREEZE),
+<: } :>
+<: } :>
+<: if { $use_status}  {  :>
+<: if { $status_last}  {  :>
+    .STATUS             (STATUS));
+<: } else  { :>
+    .STATUS             (STATUS),
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+    .input_clk_stopped  (input_clk_stopped));
+<: } else  { :>
+    .input_clk_stopped  (input_clk_stopped),
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+    .clkfb_stopped  (clkfb_stopped));
+<: } else  { :>
+    .clkfb_stopped  (clkfb_stopped),
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+    .locked             (locked));
+<: } else  { :>
+    .locked             (locked),
+<: } :>
+<: } :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+    .<=: cddcdone_port :>           (), 
+    .<=: cddcreq_port :>            (1'b0),
+<: } :>
+<: } :>
+<: if { $use_clk_valid}  {  :>
+    .CLK_VALID          (CLK_VALID),
+<: } :>
+   // Clock in ports
+<: if { $sel_PRIMITIVE != "None"}  { :>
+<: if { $clkin1_diff}  {  :>
+    .<=: PRIMARY_PORT :>_p          (<=: PRIMARY_PORT :>_p),
+    .<=: PRIMARY_PORT :>_n          (<=: PRIMARY_PORT :>_n)
+<: } else  { :>
+    .<=: PRIMARY_PORT :>            (<=: PRIMARY_PORT :>)
+<: } :>
+<: } else  { :>
+  .ref_clk      (ref_clk)
+<: } :>
+);
+// Freq Check 
+<:   if {$num_out_clks >= 1} { :>
+initial
+  prev_rise1 = 0;
+
+always @(posedge CLK_OUT[1])
+begin
+  if (prev_rise1 != 0)
+    period1 = $time - prev_rise1;
+  prev_rise1 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 2} { :>
+initial
+  prev_rise2 = 0;
+
+always @(posedge CLK_OUT[2])
+begin
+  if (prev_rise2 != 0)
+    period2 = $time - prev_rise2;
+  prev_rise2 = $time;
+end
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+initial
+  prev_rise3 = 0;
+
+always @(posedge CLK_OUT[3])
+begin
+  if (prev_rise3 != 0)
+    period3 = $time - prev_rise3;
+  prev_rise3 = $time;
+end
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+initial
+  prev_rise4 = 0;
+
+always @(posedge CLK_OUT[4])
+begin
+  if (prev_rise4 != 0)
+    period4 = $time - prev_rise4;
+  prev_rise4 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 5} { :>
+initial
+  prev_rise5 = 0;
+
+always @(posedge CLK_OUT[5])
+begin
+  if (prev_rise5 != 0)
+    period5 = $time - prev_rise5;
+  prev_rise5 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 6} { :>
+initial
+  prev_rise6 = 0;
+
+always @(posedge CLK_OUT[6])
+begin
+  if (prev_rise6 != 0)
+    period6 = $time - prev_rise6;
+  prev_rise6 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 7} { :>
+initial
+  prev_rise7 = 0;
+
+always @(posedge CLK_OUT[7])
+begin
+  if (prev_rise7 != 0)
+    period7 = $time - prev_rise7;
+  prev_rise7 = $time;
+end
+<:   } :>
+<: } elseif { $C_ENABLE_CLOCK_MONITOR } { :>
+<: if { $sv_test}  {  :>
+  // hack to throw "good" specific value when something is not calculated
+  localparam  XXX         = -1;
+  localparam  undefined   = 1;
+  localparam  N           = 50; // N/A == 50, which is the default
+  localparam  A           = 1;
+  localparam  NA          = 50;
+<: } :>
+  // timescale is 1ps/1ps
+  localparam  ONE_NS      = 1000;
+  localparam  PHASE_ERR_MARGIN   = 100; // 100ps
+  // how many cycles to run
+  localparam  COUNT_PHASE = 1024;
+  localparam time PER_AXI = 10*ONE_NS;
+  localparam time PER_CLK_MON = <=: REF_CLK_PERIOD :>*ONE_NS;
+  localparam time PER_CLK_MON_1  = PER_CLK_MON/2;
+  localparam time PER_USER_CLK0 = <=: C_USER_CLK0_PERIOD :>*ONE_NS;
+  localparam time PER_USER_CLK0_1  = PER_USER_CLK0/2;
+  localparam time PER_USER_CLK1 = <=: C_USER_CLK1_PERIOD :>*ONE_NS;
+  localparam time PER_USER_CLK1_1  = PER_USER_CLK1/2;
+  localparam time PER_USER_CLK2 = <=: C_USER_CLK2_PERIOD :>*ONE_NS;
+  localparam time PER_USER_CLK2_1  = PER_USER_CLK2/2;
+  localparam time PER_USER_CLK3 = <=: C_USER_CLK3_PERIOD :>*ONE_NS;
+  localparam time PER_USER_CLK3_1  = PER_USER_CLK3/2;
+<: if { !$use_inclk_switchover}  {  :>
+  // we'll be using the period in many locations
+  localparam time PER1    = <=: clkin1_period :>*ONE_NS;
+  localparam time PER1_1  = PER1/2;
+  localparam time PER1_2  = PER1 - PER1/2;
+<: } else  { :>
+  // we'll be using the periods in many locations
+  localparam time PER1    = <=: clkin1_period :>*ONE_NS;
+  localparam time PER1_1  = PER1/2;
+  localparam time PER1_2  = PER1 - PER1/2;
+  localparam time PER2    = <=: clkin2_period :>*ONE_NS;
+  localparam time PER3_3  = PER2/2;
+  localparam time PER2_2  = PER2 - PER2/2;
+<: } :>
+<: ;#check values for local testing is :>
+<: if { $sv_test}  {  :>
+  // check the requested vs actual values for some level of equivalence
+  localparam real clkout1_requested_out_freq   = <=: clkout1_requested_out_freq :>;
+  localparam real clkout2_requested_out_freq   = <=: clkout2_requested_out_freq :>;
+  localparam real clkout3_requested_out_freq   = <=: clkout3_requested_out_freq :>;
+  localparam real clkout4_requested_out_freq   = <=: clkout4_requested_out_freq :>;
+  localparam real clkout5_requested_out_freq   = <=: clkout5_requested_out_freq :>;
+  localparam real clkout6_requested_out_freq   = <=: clkout6_requested_out_freq :>;
+  localparam real clkout7_requested_out_freq   = <=: clkout7_requested_out_freq :>;
+  localparam real clkout1_requested_phase      = <=: clkout1_requested_phase :>;
+  localparam real clkout2_requested_phase      = <=: clkout2_requested_phase :>;
+  localparam real clkout3_requested_phase      = <=: clkout3_requested_phase :>;
+  localparam real clkout4_requested_phase      = <=: clkout4_requested_phase :>;
+  localparam real clkout5_requested_phase      = <=: clkout5_requested_phase :>;
+  localparam real clkout6_requested_phase      = <=: clkout6_requested_phase :>;
+  localparam real clkout7_requested_phase      = <=: clkout7_requested_phase :>;
+  localparam real clkout1_requested_duty_cycle = <=: clkout1_requested_duty_cycle :>;
+  localparam real clkout2_requested_duty_cycle = <=: clkout2_requested_duty_cycle :>;
+  localparam real clkout3_requested_duty_cycle = <=: clkout3_requested_duty_cycle :>;
+  localparam real clkout4_requested_duty_cycle = <=: clkout4_requested_duty_cycle :>;
+  localparam real clkout5_requested_duty_cycle = <=: clkout5_requested_duty_cycle :>;
+  localparam real clkout6_requested_duty_cycle = <=: clkout6_requested_duty_cycle :>;
+  localparam real clkout7_requested_duty_cycle = <=: clkout7_requested_duty_cycle :>;
+  localparam real clkout1_out_freq             = <=: clkout1_out_freq :>;
+  localparam real clkout2_out_freq             = <=: clkout2_out_freq :>;
+  localparam real clkout3_out_freq             = <=: clkout3_out_freq :>;
+  localparam real clkout4_out_freq             = <=: clkout4_out_freq :>;
+  localparam real clkout5_out_freq             = <=: clkout5_out_freq :>;
+  localparam real clkout6_out_freq             = <=: clkout6_out_freq :>;
+  localparam real clkout7_out_freq             = <=: clkout7_out_freq :>;
+  localparam real clkout1_phase                = <=: clkout1_phase :>;
+  localparam real clkout2_phase                = <=: clkout2_phase :>;
+  localparam real clkout3_phase                = <=: clkout3_phase :>;
+  localparam real clkout4_phase                = <=: clkout4_phase :>;
+  localparam real clkout5_phase                = <=: clkout5_phase :>;
+  localparam real clkout6_phase                = <=: clkout6_phase :>;
+  localparam real clkout7_phase                = <=: clkout7_phase :>;
+  localparam real clkout1_duty_cycle           = <=: clkout1_duty_cycle :>;
+  localparam real clkout2_duty_cycle           = <=: clkout2_duty_cycle :>;
+  localparam real clkout3_duty_cycle           = <=: clkout3_duty_cycle :>;
+  localparam real clkout4_duty_cycle           = <=: clkout4_duty_cycle :>;
+  localparam real clkout5_duty_cycle           = <=: clkout5_duty_cycle :>;
+  localparam real clkout6_duty_cycle           = <=: clkout6_duty_cycle :>;
+  localparam real clkout7_duty_cycle           = <=: clkout7_duty_cycle :>;
+  // this is a percent
+  localparam real out_freq_offset              = 0.03;
+  // FIXME converted to offset for now
+  localparam real duty_cycle_range             = 12.50;
+  // these both get coverted from fractional values
+  localparam real phase_offset                 = 11.250;
+  localparam real duty_cycle_offset            = 12.50;
+  // for those extraneous "1"s that creep in due to reals
+  localparam time rounding_error               = 1;
+
+  // expected count = per in * num cycles / per out
+  //                = ns * num_cycle / ns   ns = 1000/MHz
+  //                = ns * num_cycle * MHz/1000.0 (use real to force real conversion)
+  localparam real    count1_1ovrper =  <=: clkout1_out_freq :> / 1000.0 ;
+  localparam real    count1_ratio   = <=: clkin1_period :> * count1_1ovrper;
+  localparam integer count1_exp1    = count1_ratio * COUNT_PHASE;
+  localparam time    count1_delay   = ONE_NS * clkout1_phase / count1_1ovrper;
+  localparam real    count3_3ovrper =  <=: clkout2_out_freq :> / 1000.0 ;
+  localparam real    count2_ratio   = <=: clkin1_period :> * count3_3ovrper;
+  localparam integer count2_exp1    = count2_ratio * COUNT_PHASE;
+  localparam time    count2_delay   = ONE_NS * clkout2_phase / count3_3ovrper;
+  localparam real    count3_3ovrper =  <=: clkout3_out_freq :> / 1000.0 ;
+  localparam real    count3_ratio   = <=: clkin1_period :> * count3_3ovrper;
+  localparam integer count3_exp1    = count3_ratio * COUNT_PHASE;
+  localparam time    count3_delay   = ONE_NS * clkout3_phase / count3_3ovrper;
+  localparam real    count4_1ovrper =  <=: clkout4_out_freq :> / 1000.0 ;
+  localparam real    count4_ratio   = <=: clkin1_period :> * count4_1ovrper;
+  localparam integer count4_exp1    = count4_ratio * COUNT_PHASE;
+  localparam time    count4_delay   = ONE_NS * clkout4_phase / count4_1ovrper;
+  localparam real    count5_1ovrper =  <=: clkout5_out_freq :> / 1000.0 ;
+  localparam real    count5_ratio   = <=: clkin1_period :> * count5_1ovrper;
+  localparam integer count5_exp1    = count5_ratio * COUNT_PHASE;
+  localparam time    count5_delay   = ONE_NS * clkout5_phase / count5_1ovrper;
+  localparam real    count6_1ovrper =  <=: clkout6_out_freq :> / 1000.0 ;
+  localparam real    count6_ratio   = <=: clkin1_period :> * count6_1ovrper;
+  localparam integer count6_exp1    = count6_ratio * COUNT_PHASE;
+  localparam time    count6_delay   = ONE_NS * clkout6_phase / count6_1ovrper;
+  localparam real    count7_1ovrper =  <=: clkout7_out_freq :> / 1000.0 ;
+  localparam real    count7_ratio   = <=: clkin1_period :> * count7_1ovrper;
+  localparam integer count7_exp1    = count7_ratio * COUNT_PHASE;
+  localparam time    count7_delay   = ONE_NS * clkout7_phase / count7_1ovrper;
+  localparam min_offset1 = 3;
+  localparam min_offset2 = 3;
+  localparam min_offset3 = 3;
+  localparam min_offset4 = 3;
+  localparam min_offset5 = 3;
+  localparam min_offset6 = 3;
+  localparam min_offset7 = 3;
+  localparam max_offset1 = 3;
+  localparam max_offset2 = 3;
+  localparam max_offset3 = 3;
+  localparam max_offset4 = 3;
+  localparam max_offset5 = 3;
+  localparam max_offset6 = 3;
+  localparam max_offset7 = 3;
+  // declare all, only use what we need
+  integer exp_count_max[1:7];
+  integer exp_count_min[1:7];
+  integer ii;
+<: } :>
+  // Declare the input clock signals
+  reg         <=: PRIMARY_PORT :>     = 1;
+<: if { $clkin1_diff}  {  :>
+  wire        <=: PRIMARY_PORT :>_p   =  <=: PRIMARY_PORT :>;
+  wire        <=: PRIMARY_PORT :>_n   = ~<=: PRIMARY_PORT :>;
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+  reg         <=: SECONDARY_PORT :>     = 0;
+  reg         clk_in_sel  = 1;
+<: if { $clkin2_diff}  {  :>
+  wire        <=: SECONDARY_PORT :>_p   =  <=: SECONDARY_PORT :>;
+  wire        <=: SECONDARY_PORT :>_n   = ~<=: SECONDARY_PORT :>;
+<: } :>
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+  reg  ref_clk = 1 ;
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  reg  user_clk0 = 1 ;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  reg  user_clk1 = 1;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  reg  user_clk2 = 1;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  reg  user_clk3 = 1;
+<: } :>
+  wire [3 : 0] clk_stop;
+  wire [3 : 0] clk_oor;
+  wire [3 : 0] clk_glitch;
+  wire interrupt;
+<: } :>
+<: if { $num_out_clks== 1}  {  :>
+
+  // The high bit of the sampling counter
+  wire        COUNT;
+<: } elseif { ($num_out_clks > 2) && $mmcm_ss_en}  { :>
+  wire [<=: num_out_clks :> -2:1]  COUNT;
+<: } else  { :>
+
+  // The high bits of the sampling counters
+  wire [<=: num_out_clks :>:1]  COUNT;
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+  wire        COUNTB_1;
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+  wire        COUNTB_2;
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+  wire        COUNTB_3;
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+  wire        COUNTB_4;
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+  // Connect the feedback
+  wire        clkfb_out_p;
+  wire        clkfb_out_n;
+  wire        clkfb_in_p   = clkfb_out_p;
+  wire        clkfb_in_n   = clkfb_out_n;
+<: } else  { :>
+  // Connect the feedback
+  wire        clkfb_out;
+  wire        clkfb_in    = clkfb_out;
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_reset || $use_power_down || $use_locked || $use_inclk_stopped || $use_clk_valid}  {  :>
+  // Status and control signals
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_active_high}  {  :>
+  reg         reset      = 0;
+<: } else { :>
+  reg         resetn     = 0;
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+  reg         power_down = 0;
+<: } :>
+<: if { $use_freeze}  {  :>
+  reg         FREEZE;
+<: } :>
+<: if { $use_status}  {  :>
+  wire [2:<=: status_low :>]  STATUS;
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+  wire        input_clk_stopped;
+<: } :>
+<: if { $use_locked}  {  :>
+  wire        locked;
+<: } :>
+<: if { $use_clk_valid}  {  :>
+  wire        CLK_VALID;
+<: } :>
+  reg         COUNTER_RESET = 0;
+<: if { $use_clkfb_stopped}  {  :>
+  wire        clkfb_stopped;
+<: } :>
+  reg [13:0]  timeout_counter = 14'b00000000000000;
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2)} { :>
+  wire [(<=: num_out_clks :> - 2) :1]   CLK_OUT_int;
+<: } :>
+<: if {($num_out_clks == 4)} { :>
+  wire [<=: num_out_clks :>-2:1]   CLK_OUT;
+<: } else { :>
+  wire [<=: num_out_clks :>:1]   CLK_OUT;
+<: } :>
+<: } else { :>
+  wire [<=: num_out_clks :>:1]   CLK_OUT;
+<: } :>
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+  wire clkoutphy_TB;
+<: } :>
+<: } :>
+
+  //  Declare the input clock signals
+  reg s_axi_aclk      = 1'b0;
+  reg s_axi_aresetn;
+  reg [10:0] s_axi_awaddr;
+  reg [31:0] s_axi_wdata;
+  reg [3:0] s_axi_wstrb;
+  reg s_axi_wvalid;
+  reg s_axi_awvalid;
+  reg s_axi_bready = 1'b1;
+  reg [10:0] s_axi_araddr;
+  reg s_axi_arvalid;
+  reg s_axi_rready = 1'b1;
+  wire s_axi_awready;
+  wire s_axi_wready;
+  wire [1:0] s_axi_bresp;
+  wire s_axi_bvalid;
+  wire s_axi_arready;
+  wire [31:0] s_axi_rdata;
+  wire [1:0] s_axi_rresp;
+  wire s_axi_rvalid;
+
+  //Freq Check using the M & D values setting and actual Frequency generated
+<:   if {$num_out_clks >= 1} { :>
+  real period1;
+<: if {!$is_plle2} { :>
+  localparam ref_period1_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout0_divide_f :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period1_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout0_divide_f :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period1_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout0_divide :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period1_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout0_divide :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise1;
+<:   } :>
+<:   if {$num_out_clks >= 2} { :>
+  real period2;
+<: if {!$is_plle2} { :>
+  localparam ref_period2_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout1_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period2_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout1_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period2_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout1_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period2_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout1_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise2;
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+  real period3;
+<: if {!$is_plle2} { :>
+  localparam ref_period3_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout2_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period3_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout2_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period3_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout2_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period3_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout2_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise3;
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+  real period4;
+<: if {!$is_plle2} { :>
+  localparam ref_period4_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout3_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period4_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout3_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period4_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout3_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period4_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout3_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise4;
+<:   } :>
+<:   if {$num_out_clks >= 5} { :>
+  real period5;
+<: if {!$is_plle2} { :>
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+  localparam ref_period5_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*<=: mmcm_clkout6_divide :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period5_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*<=: mmcm_clkout6_divide :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } :>
+<: } else { :>
+  localparam ref_period5_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period5_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } :>
+<: } else { :>
+  localparam ref_period5_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period5_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise5;
+<:   } :>
+<:   if {$num_out_clks >= 6} { :>
+  real period6;
+<: if {!$is_plle2} { :>
+  localparam ref_period6_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout5_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period6_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout5_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period6_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout5_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period6_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout5_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise6;
+<:   } :>
+<:   if {$num_out_clks >= 7} { :>
+  real period7;
+<: if {!$is_plle2} { :>
+  localparam ref_period7_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout6_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period7_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout6_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period7_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout6_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period7_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout6_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise7;
+<:   } :>
+<: if { $sv_test}  {  :>
+
+  task check_range (input reg [8*12-1:0] clk,
+                    input reg [8*12-1:0] name,
+                    input real           offset,
+                    input real           actual,
+                    input real           req);
+  begin
+    if (actual < 0) begin
+      $display("ERROR: problem calculating %s:%s (set to XXX)", clk, name);
+      $finish;
+    end
+    if (actual < (req - req*offset)) begin
+      $display("ERROR: %s:%s is too small %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+    if (actual > (req + req*offset)) begin
+      $display("ERROR: %s:%s is too large %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+  end
+  endtask
+
+  // Did we fall into the right "notch" of possibilities?
+  task check_notch (input reg [8*12-1:0] clk,
+                    input reg [8*12-1:0] name,
+                    input real           offset,
+                    input real           actual,
+                    input real           req);
+  begin
+    if (actual < 0) begin
+      $display("ERROR: problem calculating %s:%s (set to XXX)", clk, name);
+      $finish;
+    end
+    if (actual < (req - offset)) begin
+      $display("ERROR: %s:%s is too small %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+    if (actual > (req + offset)) begin
+      $display("ERROR: %s:%s is too large %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+  end
+  endtask
+
+  // Check the duty cycle ranges
+  task duty_check (input integer high,
+                   input integer low,
+                   input integer num,
+                   input real    expected,
+                   input real    offset);
+
+  real duty_percent;
+  begin
+    // cast into real, and get into a percent
+    duty_percent = 100.0*high / (1.0*high+1.0*low);
+    if (duty_percent > (expected +offset)) begin
+      $display("ERROR: %t: Too much high time for clock %1d: %6.3f/%6.3f",
+        $time, num, duty_percent, expected);
+      $finish;
+    end
+    if (duty_percent < (expected -offset)) begin
+      $display("ERROR: %t: Too much low time for clock %1d: %6.3f/%6.3f",
+        $time, num, duty_percent, expected);
+      $finish;
+    end
+    $display("Duty cycle checks out for clock %1d", num);
+  end
+  endtask
+
+<: } :>
+
+  // Input clock generation
+  //------------------------------------
+  always begin
+    s_axi_aclk = #(PER_AXI/2) ~s_axi_aclk;
+    s_axi_aclk = #(PER_AXI/2) ~s_axi_aclk;
+  end
+  always begin
+    <=: PRIMARY_PORT :> = #PER1_1 ~<=: PRIMARY_PORT :>;
+    <=: PRIMARY_PORT :> = #PER1_2 ~<=: PRIMARY_PORT :>;
+  end
+<: if { $use_inclk_switchover}  {  :>
+  always begin
+    <=: SECONDARY_PORT :> = #PER3_3 ~<=: SECONDARY_PORT :>;
+    <=: SECONDARY_PORT :> = #PER2_2 ~<=: SECONDARY_PORT :>;
+  end
+<: } :>
+
+  always begin
+    ref_clk = #PER_CLK_MON_1 ~ref_clk;
+  end
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  always begin
+  user_clk0 =  #PER_USER_CLK0_1 ~user_clk0;
+  end
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  always begin
+  user_clk1 =  #PER_USER_CLK1_1 ~user_clk1;
+  end
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  always begin
+  user_clk2 =  #PER_USER_CLK2_1 ~user_clk2;
+  end
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  always begin
+  user_clk3 =  #PER_USER_CLK3_1 ~user_clk3;
+  end
+<: } :>
+
+
+<: if { $sv_test}  {  :>
+  // Create a 0.5 ns clock to measure duty cycle
+  reg oversample = 0;
+  reg oversample_done = 0;
+  initial begin
+    // wait for a lock
+    `wait_lock;
+    // generate for 10000 periods;
+    repeat (10000) begin
+       oversample = #(ONE_NS/4) ~oversample;
+    end
+    oversample_done = 1'b 1;
+  end
+
+  // sample the high and low phases of the clocks
+<: if { $num_out_clks== 1}  {  :>
+  integer highs = 0;
+  integer lows  = 0;
+  always @(posedge oversample) begin
+    if (dut.clk == 0) begin
+      lows  = lows + 1;
+    end else begin
+      highs = highs + 1;
+    end
+  end
+
+  // wait until measurement period to done to make the checks
+  initial begin
+    `wait_lock;
+    #(105*PER1/2);
+    duty_check(highs, lows, 1, clkout1_duty_cycle, duty_cycle_range);
+  end
+<: } else  { :>
+  integer highs[1:7];
+  integer lows[1:7];
+  real duty_cycle[1:7];
+  integer jj;
+  initial begin
+    for (jj = 1; jj <= 7; jj = jj + 1) begin
+      highs[jj] = 0;
+      lows[jj]  = 0;
+    end
+    duty_cycle[1] = clkout1_duty_cycle;
+    duty_cycle[2] = clkout2_duty_cycle;
+    duty_cycle[3] = clkout3_duty_cycle;
+    duty_cycle[4] = clkout4_duty_cycle;
+    duty_cycle[5] = clkout5_duty_cycle;
+    duty_cycle[6] = clkout6_duty_cycle;
+    duty_cycle[7] = clkout7_duty_cycle;
+  end
+
+  genvar jj_gen;
+  generate for (jj_gen = 1; jj_gen <= <=: num_out_clks :>; jj_gen = jj_gen + 1) begin: duty
+    always @(posedge oversample) begin
+      if (dut.clk[jj_gen] == 0) begin
+        lows[jj_gen]  = lows[jj_gen] + 1;
+      end else begin
+        highs[jj_gen] = highs[jj_gen] + 1;
+      end
+    end
+
+    // wait until measurement period to done to make the checks
+    initial begin
+      `wait_lock;
+      wait(oversample_done);
+      duty_check(highs[jj_gen], lows[jj_gen], jj_gen, duty_cycle[jj_gen], duty_cycle_range);
+    end
+  end
+  endgenerate
+<: } :>
+
+  // check that values are "good" for some value of good
+  initial begin
+    check_range("clkout1", "out_freq",   out_freq_offset,   clkout1_out_freq,   clkout1_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout1", "phase",      phase_offset,      clkout1_phase,      clkout1_requested_phase);
+<: } :>
+    check_notch("clkout1", "duty_cycle", duty_cycle_offset, clkout1_duty_cycle, clkout1_requested_duty_cycle);
+<: if { $num_out_clks>= 2}  {  :>
+    check_range("clkout2", "out_freq",   out_freq_offset,   clkout2_out_freq,   clkout2_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout2", "phase",      phase_offset,      clkout2_phase,      clkout2_requested_phase);
+<: } :>
+    check_notch("clkout2", "duty_cycle", duty_cycle_offset, clkout2_duty_cycle, clkout2_requested_duty_cycle);
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks>= 3)}  {  :>
+    check_range("clkout3", "out_freq",   out_freq_offset,   clkout3_out_freq,   clkout3_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout3", "phase",      phase_offset,      clkout3_phase,      clkout3_requested_phase);
+<: } :>
+    check_notch("clkout3", "duty_cycle", duty_cycle_offset, clkout3_duty_cycle, clkout3_requested_duty_cycle);
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks>= 4)}  {  :>
+    check_range("clkout4", "out_freq",   out_freq_offset,   clkout4_out_freq,   clkout4_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout4", "phase",      phase_offset,      clkout4_phase,      clkout4_requested_phase);
+<: } :>
+    check_notch("clkout4", "duty_cycle", duty_cycle_offset, clkout4_duty_cycle, clkout4_requested_duty_cycle);
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+    check_range("clkout5", "out_freq",   out_freq_offset,   clkout5_out_freq,   clkout5_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout5", "phase",      phase_offset,      clkout5_phase,      clkout5_requested_phase);
+<: } :>
+    check_notch("clkout5", "duty_cycle", duty_cycle_offset, clkout5_duty_cycle, clkout5_requested_duty_cycle);
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+    check_range("clkout6", "out_freq",   out_freq_offset,   clkout6_out_freq,   clkout6_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout6", "phase",      phase_offset,      clkout6_phase,      clkout6_requested_phase);
+<: } :>
+    check_notch("clkout6", "duty_cycle", duty_cycle_offset, clkout6_duty_cycle, clkout6_requested_duty_cycle);
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+    check_range("clkout7", "out_freq",   out_freq_offset,   clkout7_out_freq,   clkout7_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout7", "phase",      phase_offset,      clkout7_phase,      clkout7_requested_phase);
+<: } :>
+    check_notch("clkout7", "duty_cycle", duty_cycle_offset, clkout7_duty_cycle, clkout7_requested_duty_cycle);
+<: } :>
+    $display("Actual values match requested values");
+  end
+
+
+<: if { $use_phase_alignment}  {  :>
+  wire ref_clk = <=: PRIMARY_PORT :>;
+<: } elseif  { $num_out_clks> 1}  { :>
+  wire ref_clk = dut.clk[1];
+<: } :>
+<: if { $num_out_clks== 1}  {  :>
+<: if { $use_phase_alignment}  {  :>
+   // check that phase shifts are correct
+   time phaseangle, phasetime, periodtime;
+   time starttime = 0;
+   time endtime   = 0;
+   time gaptime   = 0;
+   time phase_err = 0;
+   integer multiple;
+   initial
+   begin
+      phaseangle = clkout1_phase;
+      periodtime = ONE_NS / count1_1ovrper;
+      // compute phase angle in time units
+      phasetime = (periodtime/360.0)*phaseangle;
+
+      // wait for a lock
+      `wait_lock;
+      // measure the difference (if the two periods are the same)
+      if ( periodtime == PER1) 
+      begin
+         // check phaseangle. if the output clock has requested phase of other than 0.0, then
+         // ref_clk defines the starttime and output clock defines the endtime
+         // else assume the output clock is ahead in phase wrt to clkin
+         if ( phaseangle != 0.0 )
+         begin
+            @(posedge <=: PRIMARY_PORT :>);
+            starttime = $time;
+            @(posedge dut.clk);
+            endtime   = $time;
+         end
+         else
+         begin
+            @(posedge dut.clk);
+            starttime = $time;
+            @(posedge <=: PRIMARY_PORT :>);
+            endtime   = $time;
+         end
+         // compute gaptime
+         gaptime    = ( endtime - starttime );
+         multiple   = gaptime / periodtime;
+         // get rid of excess periods
+         gaptime    = gaptime - multiple*periodtime;
+    
+         // compute phase error in terms of timeunits
+         if ( gaptime >= phasetime )
+            phase_err = gaptime - phasetime;
+         else
+            phase_err = phasetime - gaptime;
+    
+         $display ("Debug clk_out1 : starttime %t, endtime %t, phasetime %t, gaptime %t, phase_err %t",
+                          starttime, endtime, phasetime, gaptime, phase_err);
+         // check if phase error is < error margin (100ps)
+         if ( phase_err > ( PHASE_ERR_MARGIN + rounding_error ) )
+         begin
+            $display("ERROR: at time %t: Phase Error on Clock 1 %t / %t ",$time, phase_err, PHASE_ERR_MARGIN );
+            // let simulation run a few more cycles.. helps debug
+            @(posedge dut.clk);
+            @(posedge dut.clk);
+            @(posedge dut.clk);
+            $finish;
+         end
+         else
+         begin
+            $display("Phase matches for clock 1");
+         end
+      end
+      else
+      begin
+         $display("Phase skipped for clock 1");
+      end
+   end
+<: } :>
+<: } else  { :>
+   // check that phase shifts are correct
+   time phaseangle[1:7];
+   time phasetime[1:7];
+   time periodtime[1:7];
+   initial 
+   begin
+      phaseangle[1] = clkout1_phase;
+      phaseangle[2] = clkout2_phase;
+      phaseangle[3] = clkout3_phase;
+      phaseangle[4] = clkout4_phase;
+      phaseangle[5] = clkout5_phase;
+      phaseangle[6] = clkout6_phase;
+      phaseangle[7] = clkout7_phase;
+      periodtime[1] = ONE_NS / count1_1ovrper;
+      periodtime[2] = ONE_NS / count3_3ovrper;
+      periodtime[3] = ONE_NS / count3_3ovrper;
+      periodtime[4] = ONE_NS / count4_1ovrper;
+      periodtime[5] = ONE_NS / count5_1ovrper;
+      periodtime[6] = ONE_NS / count6_1ovrper;
+      periodtime[7] = ONE_NS / count7_1ovrper;
+      // compute phase angle in time units
+      phasetime[1] = (periodtime[1]/360.0)*clkout1_phase;
+      phasetime[2] = (periodtime[2]/360.0)*clkout2_phase;
+      phasetime[3] = (periodtime[3]/360.0)*clkout3_phase;
+      phasetime[4] = (periodtime[4]/360.0)*clkout4_phase;
+      phasetime[5] = (periodtime[5]/360.0)*clkout5_phase;
+      phasetime[6] = (periodtime[6]/360.0)*clkout6_phase;
+      phasetime[7] = (periodtime[7]/360.0)*clkout7_phase;
+   end
+   genvar ii_gen;
+   generate for (ii_gen = 1; ii_gen <= <=: num_out_clks :>; ii_gen = ii_gen + 1) begin: phase
+      time starttime = 0;
+      time endtime   = 0;
+      time gaptime   = 0;
+      time phase_err = 0;
+      integer multiple;
+
+      initial begin
+         // wait for a lock
+         `wait_lock;
+         // measure the difference (if the clock periods are the same)
+<: if { $use_phase_alignment}  {  :>
+         if (periodtime[ii_gen] == PER1) begin
+<: } else  { :>
+         if ((ii_gen != 1)  && (periodtime[ii_gen] == periodtime[1])) begin
+<: } :>
+            // check phaseangle. if the output clock has requested phase of other than 0.0, then
+            // ref_clk defines the starttime and output clock defines the endtime
+            // else assume the output clock is ahead in phase wrt to clkin
+            if ( phaseangle[ii_gen] != 0.0 )
+            begin
+               @(posedge ref_clk);
+               starttime = $time;
+               @(posedge dut.clk[ii_gen]);
+               endtime   = $time;
+            end
+            else
+            begin
+               @(posedge dut.clk[ii_gen]);
+               starttime = $time;
+               @(posedge ref_clk);
+               endtime   = $time;
+            end
+
+            // compute gaptime
+            gaptime    = ( endtime - starttime );
+            multiple   = gaptime / periodtime[ii_gen];
+            // get rid of excess periods
+            gaptime    = gaptime - multiple*periodtime[ii_gen];
+
+            // compute phase error in terms of timeunits
+            if ( gaptime >= phasetime[ii_gen] )
+               phase_err = gaptime - phasetime[ii_gen];
+            else
+               phase_err = phasetime[ii_gen] - gaptime;
+
+            $display ("Debug CLKOUT%1d : starttime %t, endtime %t, phasetime %t, gaptime %t, phase_err %t",
+                            ii_gen, starttime, endtime, phasetime[ii_gen],gaptime, phase_err);
+            // check if phase error is < error margin (100ps)
+            if ( phase_err > ( PHASE_ERR_MARGIN + rounding_error ) )
+            begin
+               $display("ERROR: at time %t: Phase Error on Clock %1d %t / %t ",$time, ii_gen, phase_err, PHASE_ERR_MARGIN );
+               // let simulation run a few more cycles.. helps debug
+               @(posedge dut.clk[ii_gen]);
+               @(posedge dut.clk[ii_gen]);
+               @(posedge dut.clk[ii_gen]);
+               $finish;
+            end
+            else
+            begin
+               $display("Phase matches for clock %1d", ii_gen);
+            end
+         end
+         else
+         begin
+            $display("Phase skipped for clock %1d", ii_gen);
+         end
+      end
+   end
+   endgenerate
+<: } :>
+
+<: } :>
+  // Test sequence
+  reg [15*8-1:0] test_phase = "";
+  initial begin
+    // Set up any display statements using time to be readable
+    $timeformat(-12, 2, "ps", 10);
+    $display ("Timing checks are not valid");
+    COUNTER_RESET = 0;
+<: if { $use_freeze}  {  :>
+    FREEZE = 0;
+<: } :>
+<: if { $use_reset}  {  :>
+    test_phase = "reset";
+<: if { $reset_active_high}  {  :>
+    s_axi_aresetn = 1'b0;
+    #(PER1*200);
+    s_axi_aresetn = 1'b1;
+<: } else { :>
+    s_axi_aresetn = 1'b0;
+    #(PER1*200);
+    s_axi_aresetn = 1'b1;
+<: } :>
+<: } :>
+    test_phase = "wait lock";
+<: if { $use_clk_valid}  {  :>
+    `wait_lock;
+<: } elseif  { $use_locked}  { :>
+    `wait_lock;
+<: } else  { :>
+    #(PER1*50000);
+<: } :>
+    #(PER1*20);
+    COUNTER_RESET = 1;
+    #(PER1*19.2)
+    COUNTER_RESET = 0;
+    #(PER1*0.3)
+<: if { $clock_sequencing && $max_seq_number>= 2}  {  :>
+    #(PER1*225*<=: mmcm_divclk_divide :>)
+<: } else { :>
+    #(PER1*1)
+<: } :>
+    $display ("Timing checks are valid");
+    test_phase = "counting";
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+    #(PER1*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide :>*<=: mmcm_clkout6_divide :>);
+<: } :>
+<: } :>
+    #(PER1*COUNT_PHASE);
+<: if {$use_inclk_switchover} { :>
+    $display("Output Frequencies w.r.t Primary clock"); 
+<: } :>
+<:   if {$num_out_clks >= 1} { :>
+    if ((period1 -ref_period1_clkin1) <= 100 && (period1 -ref_period1_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[1] ( in MHz ) : %0f\n", 1000000/period1);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[1] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 2} { :>
+    if ((period2 -ref_period2_clkin1) <= 100 && (period2 -ref_period2_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[2] ( in MHz ) : %0f\n", 1000000/period2);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[2] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+    if ((period3 -ref_period3_clkin1) <= 100 && (period3 -ref_period3_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[3] ( in MHz ) : %0f\n", 1000000/period3);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[3] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+    if ((period4 -ref_period4_clkin1) <= 100 && (period4 -ref_period4_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[4] ( in MHz ) : %0f\n", 1000000/period4);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[4] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 5} { :>
+    if ((period5 -ref_period5_clkin1) <= 100 && (period5 -ref_period5_clkin1) >= -100) begin
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+    $display("Freq of CLK_OUT[5] ( in KHz ) : %0f\n", 1000000000/period5);
+<: } else { :>
+    $display("Freq of CLK_OUT[5] ( in MHz ) : %0f\n", 1000000/period5);
+<: } :>
+<: } else { :>
+    $display("Freq of CLK_OUT[5] ( in MHz ) : %0f\n", 1000000/period5);
+<: } :>
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[5] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 6} { :>
+    if ((period6 -ref_period6_clkin1) <= 100 && (period6 -ref_period6_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[6] ( in MHz ) : %0f\n", 1000000/period6);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[6] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 7} { :>
+    if ((period7 -ref_period7_clkin1) <= 100 && (period7 -ref_period7_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[7] ( in MHz ) : %0f\n", 1000000/period7);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[7] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<: if { $sv_test}  {  :>
+<: if { $num_out_clks== 1}  {  :>
+    if (dut.counter < (count1_exp1 - min_offset1)) begin
+      $display("ERROR: %t: Count is too small for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+        $time, dut.counter, count1_exp1);
+      $finish;
+    end
+    if (dut.counter > (count1_exp1 + max_offset1)) begin
+      $display("ERROR: %t: Count is too large for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+        $time, dut.counter, count1_exp1);
+      $finish;
+    end
+<: } else  { :>
+    exp_count_min[1] = count1_exp1 - min_offset1;
+    exp_count_max[1] = count1_exp1 + max_offset1;
+    exp_count_min[2] = count2_exp1 - min_offset2;
+    exp_count_max[2] = count2_exp1 + max_offset2;
+    exp_count_min[3] = count3_exp1 - min_offset3;
+    exp_count_max[3] = count3_exp1 + max_offset3;
+    exp_count_min[4] = count4_exp1 - min_offset4;
+    exp_count_max[4] = count4_exp1 + max_offset4;
+    exp_count_min[5] = count5_exp1 - min_offset5;
+    exp_count_max[5] = count5_exp1 + max_offset5;
+    exp_count_min[6] = count6_exp1 - min_offset6;
+    exp_count_max[6] = count6_exp1 + max_offset6;
+    exp_count_min[7] = count7_exp1 - min_offset7;
+    exp_count_max[7] = count7_exp1 + max_offset7;
+    for (ii = 1; ii <= <=: num_out_clks :>; ii = ii + 1) begin
+      if (dut.counter[ii] < exp_count_min[ii]) begin
+        $display("ERROR: %t: Count%1d is too small for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_min[ii]);
+        $finish;
+      end
+      if (dut.counter[ii] > exp_count_max[ii]) begin
+        $display("ERROR: %t: Count%1d is too large for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_max[ii]);
+        $finish;
+      end
+    end
+    $display("%t, <=: PRIMARY_PORT :> count values check out", $time);
+<: } :>
+<: } :>
+<: if { $sv_test}  {  :>
+    wait(oversample_done);
+    #(PER1*5);
+<: } :>
+    $display("SIMULATION PASSED");
+    $display("Test Completed Successfully");
+    $display("SYSTEM_CLOCK_COUNTER : %0d\n",$time/PER1);
+    $finish;
+  end
+ <: if { $use_locked}  {  :>
+   always@(posedge <=: PRIMARY_PORT :>) begin
+      timeout_counter <= timeout_counter + 1'b1;
+      if (timeout_counter == 16'b1100000000000000) begin
+         if (locked != 1'b1) begin
+            $display("ERROR : NO LOCK signal");
+            $display("SYSTEM_CLOCK_COUNTER : %0d\n",$time/PER1);
+            $finish;
+         end
+      end
+   end
+<: } :>
+
+initial
+begin
+   s_axi_awaddr = 11'b00000000000; 
+   s_axi_araddr = 11'b00000000000; 
+   s_axi_wdata = 32'h00000000;
+   s_axi_awvalid = 1'b0;
+   s_axi_wvalid = 1'b0;
+   s_axi_wstrb = 4'b1111;
+   s_axi_arvalid = 1'b0; //EOC_TB;
+end  
+
+
+  // Instantiation of the example design containing the clock
+  //    network and sampling counters
+  //---------------------------------------------------------
+  <=: ComponentName :>_exdes 
+    dut
+   (
+<: if { $c_has_AXI } { :>
+    .s_axi_aclk      (s_axi_aclk),                    
+    .s_axi_aresetn   (s_axi_aresetn),                    
+    .s_axi_awaddr    (s_axi_awaddr),                    
+    .s_axi_awvalid   (s_axi_awvalid),                    
+    .s_axi_awready   (s_axi_awready),                    
+    .s_axi_wdata     (s_axi_wdata),                    
+    .s_axi_wstrb     (s_axi_wstrb),                    
+    .s_axi_wvalid    (s_axi_wvalid),                    
+    .s_axi_wready    (s_axi_wready),                    
+    .s_axi_bresp     (s_axi_bresp),                    
+    .s_axi_bvalid    (s_axi_bvalid),                    
+    .s_axi_bready    (s_axi_bready),                    
+    .s_axi_araddr    (s_axi_araddr),                    
+    .s_axi_arvalid   (s_axi_arvalid),                    
+    .s_axi_arready   (s_axi_arready),                    
+    .s_axi_rdata     (s_axi_rdata),                    
+    .s_axi_rresp     (s_axi_rresp),                    
+    .s_axi_rvalid    (s_axi_rvalid),                    
+    .s_axi_rready    (s_axi_rready),                    
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+<: if { $sel_PRIMITIVE != "None"}  { :>
+  .ref_clk      (ref_clk),
+<: } else  { :>
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  .user_clk0    (user_clk0),
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  .user_clk1   (user_clk1),
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  .user_clk2    (user_clk2),
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  .user_clk3   (user_clk3),
+<: } :>
+  .clk_stop    (clk_stop),
+  .clk_oor     (clk_oor),
+  .clk_glitch  (clk_glitch),
+  .interrupt  (interrupt),
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { $clkin2_diff}  {  :>
+    .<=: SECONDARY_PORT :>_p          (<=: SECONDARY_PORT :>_p),
+    .<=: SECONDARY_PORT :>_n          (<=: SECONDARY_PORT :>_n),
+<: } else  { :>
+    .<=: SECONDARY_PORT :>            (<=: SECONDARY_PORT :>),
+<: } :>
+    .clk_in_sel         (clk_in_sel),
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+    .clkfb_in_p         (clkfb_in_p),
+    .clkfb_in_n         (clkfb_in_n),
+<: } else  { :>
+    .clkfb_in           (clkfb_in),
+<: } :>
+<: } :>
+<: } :>
+    // Reset for logic in example design
+    .COUNTER_RESET      (COUNTER_RESET),
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+   .clkoutphy(clkoutphy_TB),
+<: } :>
+<: } :>
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2)} { :>
+    .CLK_OUT            (CLK_OUT_int),
+<: } else  { :>
+    .CLK_OUT            (CLK_OUT),
+<: } :>
+<: } else  { :>
+    .CLK_OUT            (CLK_OUT),
+<: } :>
+    // High bits of the counters
+<: if { $clkout_last_nodyn ||( $clkfbout_last_nodyn && $exdes_connectfb) }  {  :>
+    .COUNT              (COUNT));
+<: } else  { :>
+    .COUNT              (COUNT),
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+    .COUNTB_1           (COUNTB_1),
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+    .COUNTB_2           (COUNTB_2),
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+    .COUNTB_3           (COUNTB_3),
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+    .COUNTB_4           (COUNTB_4),
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+    .clkfb_out_p        (clkfb_out_p),
+<: if { $clkfbout_last_nodyn}  {  :>
+    .clkfb_out_n        (clkfb_out_n));
+<: } else  { :>
+    .clkfb_out_n        (clkfb_out_n),
+<: } :>
+<: } else  { :>
+<: if { $clkfbout_last_nodyn}  {  :>
+    .clkfb_out          (clkfb_out));
+<: } else  { :>
+    .clkfb_out          (clkfb_out),
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { $has_control}  {  :>
+    // Status and control signals
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_last}  {  :>
+<: if { $reset_active_high}  {  :>
+    .reset              (reset));
+<: } else { :>
+    .resetn             (resetn));
+<: } :>
+<: } else  { :>
+<: if { $reset_active_high}  {  :>
+    .reset              (reset),
+<: } else { :>
+    .resetn             (resetn),
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+    .power_down         (power_down));
+<: } else  { :>
+    .power_down         (power_down),
+<: } :>
+<: } :>
+<: if { $use_freeze}  {  :>
+<: if { $freeze_last}  {  :>
+    .FREEZE             (FREEZE));
+<: } else  { :>
+    .FREEZE             (FREEZE),
+<: } :>
+<: } :>
+<: if { $use_status}  {  :>
+<: if { $status_last}  {  :>
+    .STATUS             (STATUS));
+<: } else  { :>
+    .STATUS             (STATUS),
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+    .input_clk_stopped  (input_clk_stopped));
+<: } else  { :>
+    .input_clk_stopped  (input_clk_stopped),
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+    .clkfb_stopped  (clkfb_stopped));
+<: } else  { :>
+    .clkfb_stopped  (clkfb_stopped),
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+    .locked             (locked));
+<: } else  { :>
+    .locked             (locked),
+<: } :>
+<: } :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+    .<=: cddcdone_port :>           (), 
+    .<=: cddcreq_port :>            (1'b0),
+<: } :>
+<: } :>
+<: if { $use_clk_valid}  {  :>
+    .CLK_VALID          (CLK_VALID),
+<: } :>
+   // Clock in ports
+<: if { $sel_PRIMITIVE != "None"}  { :>
+<: if { $clkin1_diff}  {  :>
+    .<=: PRIMARY_PORT :>_p          (<=: PRIMARY_PORT :>_p),
+    .<=: PRIMARY_PORT :>_n          (<=: PRIMARY_PORT :>_n)
+<: } else  { :>
+    .<=: PRIMARY_PORT :>            (<=: PRIMARY_PORT :>)
+<: } :>
+<: } else  { :>
+  .ref_clk      (ref_clk)
+<: } :>
+);
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2)} { :>
+   assign CLK_OUT[2:1] = CLK_OUT_int[2:1];
+<: if {($num_out_clks > 4)} { :>
+   assign CLK_OUT[4:3] = 2'b00;
+   assign CLK_OUT[<=: num_out_clks :>:5] = CLK_OUT_int[<=: num_out_clks :> -2:3];
+<: } :>
+<: } :>
+<: } :>
+// Freq Check 
+<:   if {$num_out_clks >= 1} { :>
+initial
+  prev_rise1 = 0;
+
+always @(posedge CLK_OUT[1])
+begin
+  if (prev_rise1 != 0)
+    period1 = $time - prev_rise1;
+  prev_rise1 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 2} { :>
+initial
+  prev_rise2 = 0;
+
+always @(posedge CLK_OUT[2])
+begin
+  if (prev_rise2 != 0)
+    period2 = $time - prev_rise2;
+  prev_rise2 = $time;
+end
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+initial
+  prev_rise3 = 0;
+
+always @(posedge CLK_OUT[3])
+begin
+  if (prev_rise3 != 0)
+    period3 = $time - prev_rise3;
+  prev_rise3 = $time;
+end
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+initial
+  prev_rise4 = 0;
+
+always @(posedge CLK_OUT[4])
+begin
+  if (prev_rise4 != 0)
+    period4 = $time - prev_rise4;
+  prev_rise4 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 5} { :>
+initial
+  prev_rise5 = 0;
+
+always @(posedge CLK_OUT[5])
+begin
+  if (prev_rise5 != 0)
+    period5 = $time - prev_rise5;
+  prev_rise5 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 6} { :>
+initial
+  prev_rise6 = 0;
+
+always @(posedge CLK_OUT[6])
+begin
+  if (prev_rise6 != 0)
+    period6 = $time - prev_rise6;
+  prev_rise6 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 7} { :>
+initial
+  prev_rise7 = 0;
+
+always @(posedge CLK_OUT[7])
+begin
+  if (prev_rise7 != 0)
+    period7 = $time - prev_rise7;
+  prev_rise7 = $time;
+end
+<:   } :>
+
+<: } else  { :>
+<: if { $sv_test}  {  :>
+  // hack to throw "good" specific value when something is not calculated
+  localparam  XXX         = -1;
+  localparam  undefined   = 1;
+  localparam  N           = 50; // N/A == 50, which is the default
+  localparam  A           = 1;
+  localparam  NA          = 50;
+<: } :>
+  // timescale is 1ps/1ps
+  localparam  ONE_NS      = 1000;
+  localparam  PHASE_ERR_MARGIN   = 100; // 100ps
+  // how many cycles to run
+  localparam  COUNT_PHASE = 1024;
+<: if { !$use_inclk_switchover}  {  :>
+  // we'll be using the period in many locations
+  localparam time PER1    = <=: clkin1_period :>*ONE_NS;
+  localparam time PER1_1  = PER1/2;
+  localparam time PER1_2  = PER1 - PER1/2;
+<: } else  { :>
+  // we'll be using the periods in many locations
+  localparam time PER1    = <=: clkin1_period :>*ONE_NS;
+  localparam time PER1_1  = PER1/2;
+  localparam time PER1_2  = PER1 - PER1/2;
+  localparam time PER2    = <=: clkin2_period :>*ONE_NS;
+  localparam time PER3_3  = PER2/2;
+  localparam time PER2_2  = PER2 - PER2/2;
+<: } :>
+<: ;#check values for local testing is :>
+<: if { $sv_test}  {  :>
+  // check the requested vs actual values for some level of equivalence
+  localparam real clkout1_requested_out_freq   = <=: clkout1_requested_out_freq :>;
+  localparam real clkout2_requested_out_freq   = <=: clkout2_requested_out_freq :>;
+  localparam real clkout3_requested_out_freq   = <=: clkout3_requested_out_freq :>;
+  localparam real clkout4_requested_out_freq   = <=: clkout4_requested_out_freq :>;
+  localparam real clkout5_requested_out_freq   = <=: clkout5_requested_out_freq :>;
+  localparam real clkout6_requested_out_freq   = <=: clkout6_requested_out_freq :>;
+  localparam real clkout7_requested_out_freq   = <=: clkout7_requested_out_freq :>;
+  localparam real clkout1_requested_phase      = <=: clkout1_requested_phase :>;
+  localparam real clkout2_requested_phase      = <=: clkout2_requested_phase :>;
+  localparam real clkout3_requested_phase      = <=: clkout3_requested_phase :>;
+  localparam real clkout4_requested_phase      = <=: clkout4_requested_phase :>;
+  localparam real clkout5_requested_phase      = <=: clkout5_requested_phase :>;
+  localparam real clkout6_requested_phase      = <=: clkout6_requested_phase :>;
+  localparam real clkout7_requested_phase      = <=: clkout7_requested_phase :>;
+  localparam real clkout1_requested_duty_cycle = <=: clkout1_requested_duty_cycle :>;
+  localparam real clkout2_requested_duty_cycle = <=: clkout2_requested_duty_cycle :>;
+  localparam real clkout3_requested_duty_cycle = <=: clkout3_requested_duty_cycle :>;
+  localparam real clkout4_requested_duty_cycle = <=: clkout4_requested_duty_cycle :>;
+  localparam real clkout5_requested_duty_cycle = <=: clkout5_requested_duty_cycle :>;
+  localparam real clkout6_requested_duty_cycle = <=: clkout6_requested_duty_cycle :>;
+  localparam real clkout7_requested_duty_cycle = <=: clkout7_requested_duty_cycle :>;
+  localparam real clkout1_out_freq             = <=: clkout1_out_freq :>;
+  localparam real clkout2_out_freq             = <=: clkout2_out_freq :>;
+  localparam real clkout3_out_freq             = <=: clkout3_out_freq :>;
+  localparam real clkout4_out_freq             = <=: clkout4_out_freq :>;
+  localparam real clkout5_out_freq             = <=: clkout5_out_freq :>;
+  localparam real clkout6_out_freq             = <=: clkout6_out_freq :>;
+  localparam real clkout7_out_freq             = <=: clkout7_out_freq :>;
+  localparam real clkout1_phase                = <=: clkout1_phase :>;
+  localparam real clkout2_phase                = <=: clkout2_phase :>;
+  localparam real clkout3_phase                = <=: clkout3_phase :>;
+  localparam real clkout4_phase                = <=: clkout4_phase :>;
+  localparam real clkout5_phase                = <=: clkout5_phase :>;
+  localparam real clkout6_phase                = <=: clkout6_phase :>;
+  localparam real clkout7_phase                = <=: clkout7_phase :>;
+  localparam real clkout1_duty_cycle           = <=: clkout1_duty_cycle :>;
+  localparam real clkout2_duty_cycle           = <=: clkout2_duty_cycle :>;
+  localparam real clkout3_duty_cycle           = <=: clkout3_duty_cycle :>;
+  localparam real clkout4_duty_cycle           = <=: clkout4_duty_cycle :>;
+  localparam real clkout5_duty_cycle           = <=: clkout5_duty_cycle :>;
+  localparam real clkout6_duty_cycle           = <=: clkout6_duty_cycle :>;
+  localparam real clkout7_duty_cycle           = <=: clkout7_duty_cycle :>;
+  // this is a percent
+  localparam real out_freq_offset              = 0.03;
+  // FIXME converted to offset for now
+  localparam real duty_cycle_range             = 12.50;
+  // these both get coverted from fractional values
+  localparam real phase_offset                 = 11.250;
+  localparam real duty_cycle_offset            = 12.50;
+  // for those extraneous "1"s that creep in due to reals
+  localparam time rounding_error               = 1;
+
+  // expected count = per in * num cycles / per out
+  //                = ns * num_cycle / ns   ns = 1000/MHz
+  //                = ns * num_cycle * MHz/1000.0 (use real to force real conversion)
+  localparam real    count1_1ovrper =  <=: clkout1_out_freq :> / 1000.0 ;
+  localparam real    count1_ratio   = <=: clkin1_period :> * count1_1ovrper;
+  localparam integer count1_exp1    = count1_ratio * COUNT_PHASE;
+  localparam time    count1_delay   = ONE_NS * clkout1_phase / count1_1ovrper;
+  localparam real    count3_3ovrper =  <=: clkout2_out_freq :> / 1000.0 ;
+  localparam real    count2_ratio   = <=: clkin1_period :> * count3_3ovrper;
+  localparam integer count2_exp1    = count2_ratio * COUNT_PHASE;
+  localparam time    count2_delay   = ONE_NS * clkout2_phase / count3_3ovrper;
+  localparam real    count3_3ovrper =  <=: clkout3_out_freq :> / 1000.0 ;
+  localparam real    count3_ratio   = <=: clkin1_period :> * count3_3ovrper;
+  localparam integer count3_exp1    = count3_ratio * COUNT_PHASE;
+  localparam time    count3_delay   = ONE_NS * clkout3_phase / count3_3ovrper;
+  localparam real    count4_1ovrper =  <=: clkout4_out_freq :> / 1000.0 ;
+  localparam real    count4_ratio   = <=: clkin1_period :> * count4_1ovrper;
+  localparam integer count4_exp1    = count4_ratio * COUNT_PHASE;
+  localparam time    count4_delay   = ONE_NS * clkout4_phase / count4_1ovrper;
+  localparam real    count5_1ovrper =  <=: clkout5_out_freq :> / 1000.0 ;
+  localparam real    count5_ratio   = <=: clkin1_period :> * count5_1ovrper;
+  localparam integer count5_exp1    = count5_ratio * COUNT_PHASE;
+  localparam time    count5_delay   = ONE_NS * clkout5_phase / count5_1ovrper;
+  localparam real    count6_1ovrper =  <=: clkout6_out_freq :> / 1000.0 ;
+  localparam real    count6_ratio   = <=: clkin1_period :> * count6_1ovrper;
+  localparam integer count6_exp1    = count6_ratio * COUNT_PHASE;
+  localparam time    count6_delay   = ONE_NS * clkout6_phase / count6_1ovrper;
+  localparam real    count7_1ovrper =  <=: clkout7_out_freq :> / 1000.0 ;
+  localparam real    count7_ratio   = <=: clkin1_period :> * count7_1ovrper;
+  localparam integer count7_exp1    = count7_ratio * COUNT_PHASE;
+  localparam time    count7_delay   = ONE_NS * clkout7_phase / count7_1ovrper;
+  localparam min_offset1 = 3;
+  localparam min_offset2 = 3;
+  localparam min_offset3 = 3;
+  localparam min_offset4 = 3;
+  localparam min_offset5 = 3;
+  localparam min_offset6 = 3;
+  localparam min_offset7 = 3;
+  localparam max_offset1 = 3;
+  localparam max_offset2 = 3;
+  localparam max_offset3 = 3;
+  localparam max_offset4 = 3;
+  localparam max_offset5 = 3;
+  localparam max_offset6 = 3;
+  localparam max_offset7 = 3;
+  // declare all, only use what we need
+  integer exp_count_max[1:7];
+  integer exp_count_min[1:7];
+  integer ii;
+<: } :>
+
+  // Declare the input clock signals
+  reg         <=: PRIMARY_PORT :>     = 1;
+<: if { $clkin1_diff}  {  :>
+  wire        <=: PRIMARY_PORT :>_p   =  <=: PRIMARY_PORT :>;
+  wire        <=: PRIMARY_PORT :>_n   = ~<=: PRIMARY_PORT :>;
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+  reg         <=: SECONDARY_PORT :>     = 0;
+  reg         clk_in_sel  = 1;
+<: if { $clkin2_diff}  {  :>
+  wire        <=: SECONDARY_PORT :>_p   =  <=: SECONDARY_PORT :>;
+  wire        <=: SECONDARY_PORT :>_n   = ~<=: SECONDARY_PORT :>;
+<: } :>
+<: } :>
+<: if { $num_out_clks== 1}  {  :>
+
+  // The high bit of the sampling counter
+  wire        COUNT;
+<: } elseif { ($num_out_clks > 2) && $mmcm_ss_en}  { :>
+  wire [<=: num_out_clks :> -2:1]  COUNT;
+<: } else  { :>
+
+  // The high bits of the sampling counters
+  wire [<=: num_out_clks :>:1]  COUNT;
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+  wire        COUNTB_1;
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+  wire        COUNTB_2;
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+  wire        COUNTB_3;
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+  wire        COUNTB_4;
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+  // Connect the feedback
+  wire        clkfb_out_p;
+  wire        clkfb_out_n;
+  wire        clkfb_in_p   = clkfb_out_p;
+  wire        clkfb_in_n   = clkfb_out_n;
+<: } else  { :>
+  // Connect the feedback
+  wire        clkfb_out;
+  wire        clkfb_in    = clkfb_out;
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_reset || $use_power_down || $use_locked || $use_inclk_stopped || $use_clk_valid}  {  :>
+  // Status and control signals
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_active_high}  {  :>
+  reg         reset      = 0;
+<: } else { :>
+  reg         resetn     = 0;
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+  reg         power_down = 0;
+<: } :>
+<: if { $use_freeze}  {  :>
+  reg         FREEZE;
+<: } :>
+<: if { $use_status}  {  :>
+  wire [2:<=: status_low :>]  STATUS;
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+  wire        input_clk_stopped;
+<: } :>
+<: if { $use_locked}  {  :>
+  wire        locked;
+<: } :>
+<: if { $use_clk_valid}  {  :>
+  wire        CLK_VALID;
+<: } :>
+  reg         COUNTER_RESET = 0;
+<: if { $use_clkfb_stopped}  {  :>
+  wire        clkfb_stopped;
+<: } :>
+  reg [13:0]  timeout_counter = 14'b00000000000000;
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2)} { :>
+  wire [(<=: num_out_clks :> - 2) :1]   CLK_OUT_int;
+<: } :>
+<: if {($num_out_clks == 4)} { :>
+  wire [<=: num_out_clks :>-2:1]   CLK_OUT;
+<: } else { :>
+  wire [<=: num_out_clks :>:1]   CLK_OUT;
+<: } :>
+<: } else { :>
+  wire [<=: num_out_clks :>:1]   CLK_OUT;
+<: } :>
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+  wire clkoutphy_TB;
+<: } :>
+<: } :>
+
+
+
+//Freq Check using the M & D values setting and actual Frequency generated
+<:   if {$num_out_clks >= 1} { :>
+  real period1;
+<: if {!$is_plle2} { :>
+  localparam ref_period1_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout0_divide_f :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period1_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout0_divide_f :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period1_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout0_divide :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period1_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout0_divide :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise1;
+<:   } :>
+<:   if {$num_out_clks >= 2} { :>
+  real period2;
+<: if {!$is_plle2} { :>
+  localparam ref_period2_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout1_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period2_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout1_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period2_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout1_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period2_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout1_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise2;
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+  real period3;
+<: if {!$is_plle2} { :>
+  localparam ref_period3_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout2_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period3_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout2_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period3_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout2_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period3_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout2_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise3;
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+  real period4;
+<: if {!$is_plle2} { :>
+  localparam ref_period4_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout3_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period4_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout3_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period4_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout3_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period4_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout3_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise4;
+<:   } :>
+<:   if {$num_out_clks >= 5} { :>
+  real period5;
+<: if {!$is_plle2} { :>
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+  localparam ref_period5_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*<=: mmcm_clkout6_divide :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period5_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*<=: mmcm_clkout6_divide :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } :>
+<: } else { :>
+  localparam ref_period5_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period5_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } :>
+<: } else { :>
+  localparam ref_period5_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period5_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise5;
+<:   } :>
+<:   if {$num_out_clks >= 6} { :>
+  real period6;
+<: if {!$is_plle2} { :>
+  localparam ref_period6_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout5_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period6_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout5_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period6_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout5_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period6_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout5_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise6;
+<:   } :>
+<:   if {$num_out_clks >= 7} { :>
+  real period7;
+<: if {!$is_plle2} { :>
+  localparam ref_period7_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout6_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period7_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout6_divide_tb :>*1000/<=: mmcm_clkfbout_mult_f :>);
+<: } :>
+<: } else { :>
+  localparam ref_period7_clkin1 = (<=: mmcm_clkin1_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout6_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: if {$use_inclk_switchover} { :>
+  localparam ref_period7_clkin2 = (<=: mmcm_clkin2_period :>*<=: mmcm_divclk_divide :>*<=: mmcm_clkout6_divide_tb :>*1000/<=: mmcm_clkfbout_mult :>);
+<: } :>
+<: } :>
+  time prev_rise7;
+<:   } :>
+<: if { $sv_test}  {  :>
+
+  task check_range (input reg [8*12-1:0] clk,
+                    input reg [8*12-1:0] name,
+                    input real           offset,
+                    input real           actual,
+                    input real           req);
+  begin
+    if (actual < 0) begin
+      $display("ERROR: problem calculating %s:%s (set to XXX)", clk, name);
+      $finish;
+    end
+    if (actual < (req - req*offset)) begin
+      $display("ERROR: %s:%s is too small %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+    if (actual > (req + req*offset)) begin
+      $display("ERROR: %s:%s is too large %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+  end
+  endtask
+
+  // Did we fall into the right "notch" of possibilities?
+  task check_notch (input reg [8*12-1:0] clk,
+                    input reg [8*12-1:0] name,
+                    input real           offset,
+                    input real           actual,
+                    input real           req);
+  begin
+    if (actual < 0) begin
+      $display("ERROR: problem calculating %s:%s (set to XXX)", clk, name);
+      $finish;
+    end
+    if (actual < (req - offset)) begin
+      $display("ERROR: %s:%s is too small %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+    if (actual > (req + offset)) begin
+      $display("ERROR: %s:%s is too large %6.3f/%6.3f", clk, name, actual, req);
+      $finish;
+    end
+  end
+  endtask
+
+  // Check the duty cycle ranges
+  task duty_check (input integer high,
+                   input integer low,
+                   input integer num,
+                   input real    expected,
+                   input real    offset);
+
+  real duty_percent;
+  begin
+    // cast into real, and get into a percent
+    duty_percent = 100.0*high / (1.0*high+1.0*low);
+    if (duty_percent > (expected +offset)) begin
+      $display("ERROR: %t: Too much high time for clock %1d: %6.3f/%6.3f",
+        $time, num, duty_percent, expected);
+      $finish;
+    end
+    if (duty_percent < (expected -offset)) begin
+      $display("ERROR: %t: Too much low time for clock %1d: %6.3f/%6.3f",
+        $time, num, duty_percent, expected);
+      $finish;
+    end
+    $display("Duty cycle checks out for clock %1d", num);
+  end
+  endtask
+
+<: } :>
+
+  // Input clock generation
+  //------------------------------------
+  always begin
+    <=: PRIMARY_PORT :> = #PER1_1 ~<=: PRIMARY_PORT :>;
+    <=: PRIMARY_PORT :> = #PER1_2 ~<=: PRIMARY_PORT :>;
+  end
+<: if { $use_inclk_switchover}  {  :>
+  always begin
+    <=: SECONDARY_PORT :> = #PER3_3 ~<=: SECONDARY_PORT :>;
+    <=: SECONDARY_PORT :> = #PER2_2 ~<=: SECONDARY_PORT :>;
+  end
+<: } :>
+
+<: if { $sv_test}  {  :>
+  // Create a 0.5 ns clock to measure duty cycle
+  reg oversample = 0;
+  reg oversample_done = 0;
+  initial begin
+    // wait for a lock
+    `wait_lock;
+    // generate for 10000 periods;
+    repeat (10000) begin
+       oversample = #(ONE_NS/4) ~oversample;
+    end
+    oversample_done = 1'b 1;
+  end
+
+  // sample the high and low phases of the clocks
+<: if { $num_out_clks== 1}  {  :>
+  integer highs = 0;
+  integer lows  = 0;
+  always @(posedge oversample) begin
+    if (dut.clk == 0) begin
+      lows  = lows + 1;
+    end else begin
+      highs = highs + 1;
+    end
+  end
+
+  // wait until measurement period to done to make the checks
+  initial begin
+    `wait_lock;
+    #(105*PER1/2);
+    duty_check(highs, lows, 1, clkout1_duty_cycle, duty_cycle_range);
+  end
+<: } else  { :>
+  integer highs[1:7];
+  integer lows[1:7];
+  real duty_cycle[1:7];
+  integer jj;
+  initial begin
+    for (jj = 1; jj <= 7; jj = jj + 1) begin
+      highs[jj] = 0;
+      lows[jj]  = 0;
+    end
+    duty_cycle[1] = clkout1_duty_cycle;
+    duty_cycle[2] = clkout2_duty_cycle;
+    duty_cycle[3] = clkout3_duty_cycle;
+    duty_cycle[4] = clkout4_duty_cycle;
+    duty_cycle[5] = clkout5_duty_cycle;
+    duty_cycle[6] = clkout6_duty_cycle;
+    duty_cycle[7] = clkout7_duty_cycle;
+  end
+
+  genvar jj_gen;
+  generate for (jj_gen = 1; jj_gen <= <=: num_out_clks :>; jj_gen = jj_gen + 1) begin: duty
+    always @(posedge oversample) begin
+      if (dut.clk[jj_gen] == 0) begin
+        lows[jj_gen]  = lows[jj_gen] + 1;
+      end else begin
+        highs[jj_gen] = highs[jj_gen] + 1;
+      end
+    end
+
+    // wait until measurement period to done to make the checks
+    initial begin
+      `wait_lock;
+      wait(oversample_done);
+      duty_check(highs[jj_gen], lows[jj_gen], jj_gen, duty_cycle[jj_gen], duty_cycle_range);
+    end
+  end
+  endgenerate
+<: } :>
+
+  // check that values are "good" for some value of good
+  initial begin
+    check_range("clkout1", "out_freq",   out_freq_offset,   clkout1_out_freq,   clkout1_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout1", "phase",      phase_offset,      clkout1_phase,      clkout1_requested_phase);
+<: } :>
+    check_notch("clkout1", "duty_cycle", duty_cycle_offset, clkout1_duty_cycle, clkout1_requested_duty_cycle);
+<: if { $num_out_clks>= 2}  {  :>
+    check_range("clkout2", "out_freq",   out_freq_offset,   clkout2_out_freq,   clkout2_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout2", "phase",      phase_offset,      clkout2_phase,      clkout2_requested_phase);
+<: } :>
+    check_notch("clkout2", "duty_cycle", duty_cycle_offset, clkout2_duty_cycle, clkout2_requested_duty_cycle);
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks>= 3)}  {  :>
+    check_range("clkout3", "out_freq",   out_freq_offset,   clkout3_out_freq,   clkout3_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout3", "phase",      phase_offset,      clkout3_phase,      clkout3_requested_phase);
+<: } :>
+    check_notch("clkout3", "duty_cycle", duty_cycle_offset, clkout3_duty_cycle, clkout3_requested_duty_cycle);
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks>= 4)}  {  :>
+    check_range("clkout4", "out_freq",   out_freq_offset,   clkout4_out_freq,   clkout4_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout4", "phase",      phase_offset,      clkout4_phase,      clkout4_requested_phase);
+<: } :>
+    check_notch("clkout4", "duty_cycle", duty_cycle_offset, clkout4_duty_cycle, clkout4_requested_duty_cycle);
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+    check_range("clkout5", "out_freq",   out_freq_offset,   clkout5_out_freq,   clkout5_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout5", "phase",      phase_offset,      clkout5_phase,      clkout5_requested_phase);
+<: } :>
+    check_notch("clkout5", "duty_cycle", duty_cycle_offset, clkout5_duty_cycle, clkout5_requested_duty_cycle);
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+    check_range("clkout6", "out_freq",   out_freq_offset,   clkout6_out_freq,   clkout6_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout6", "phase",      phase_offset,      clkout6_phase,      clkout6_requested_phase);
+<: } :>
+    check_notch("clkout6", "duty_cycle", duty_cycle_offset, clkout6_duty_cycle, clkout6_requested_duty_cycle);
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+    check_range("clkout7", "out_freq",   out_freq_offset,   clkout7_out_freq,   clkout7_requested_out_freq);
+<: if { $use_phase_alignment}  {  :>
+    check_notch("clkout7", "phase",      phase_offset,      clkout7_phase,      clkout7_requested_phase);
+<: } :>
+    check_notch("clkout7", "duty_cycle", duty_cycle_offset, clkout7_duty_cycle, clkout7_requested_duty_cycle);
+<: } :>
+    $display("Actual values match requested values");
+  end
+
+
+<: if { $use_phase_alignment}  {  :>
+  wire ref_clk = <=: PRIMARY_PORT :>;
+<: } elseif  { $num_out_clks> 1}  { :>
+  wire ref_clk = dut.clk[1];
+<: } :>
+<: if { $num_out_clks== 1}  {  :>
+<: if { $use_phase_alignment}  {  :>
+   // check that phase shifts are correct
+   time phaseangle, phasetime, periodtime;
+   time starttime = 0;
+   time endtime   = 0;
+   time gaptime   = 0;
+   time phase_err = 0;
+   integer multiple;
+   initial
+   begin
+      phaseangle = clkout1_phase;
+      periodtime = ONE_NS / count1_1ovrper;
+      // compute phase angle in time units
+      phasetime = (periodtime/360.0)*phaseangle;
+
+      // wait for a lock
+      `wait_lock;
+      // measure the difference (if the two periods are the same)
+      if ( periodtime == PER1) 
+      begin
+         // check phaseangle. if the output clock has requested phase of other than 0.0, then
+         // ref_clk defines the starttime and output clock defines the endtime
+         // else assume the output clock is ahead in phase wrt to clkin
+         if ( phaseangle != 0.0 )
+         begin
+            @(posedge <=: PRIMARY_PORT :>);
+            starttime = $time;
+            @(posedge dut.clk);
+            endtime   = $time;
+         end
+         else
+         begin
+            @(posedge dut.clk);
+            starttime = $time;
+            @(posedge <=: PRIMARY_PORT :>);
+            endtime   = $time;
+         end
+         // compute gaptime
+         gaptime    = ( endtime - starttime );
+         multiple   = gaptime / periodtime;
+         // get rid of excess periods
+         gaptime    = gaptime - multiple*periodtime;
+    
+         // compute phase error in terms of timeunits
+         if ( gaptime >= phasetime )
+            phase_err = gaptime - phasetime;
+         else
+            phase_err = phasetime - gaptime;
+    
+         $display ("Debug clk_out1 : starttime %t, endtime %t, phasetime %t, gaptime %t, phase_err %t",
+                          starttime, endtime, phasetime, gaptime, phase_err);
+         // check if phase error is < error margin (100ps)
+         if ( phase_err > ( PHASE_ERR_MARGIN + rounding_error ) )
+         begin
+            $display("ERROR: at time %t: Phase Error on Clock 1 %t / %t ",$time, phase_err, PHASE_ERR_MARGIN );
+            // let simulation run a few more cycles.. helps debug
+            @(posedge dut.clk);
+            @(posedge dut.clk);
+            @(posedge dut.clk);
+            $finish;
+         end
+         else
+         begin
+            $display("Phase matches for clock 1");
+         end
+      end
+      else
+      begin
+         $display("Phase skipped for clock 1");
+      end
+   end
+<: } :>
+<: } else  { :>
+   // check that phase shifts are correct
+   time phaseangle[1:7];
+   time phasetime[1:7];
+   time periodtime[1:7];
+   initial 
+   begin
+      phaseangle[1] = clkout1_phase;
+      phaseangle[2] = clkout2_phase;
+      phaseangle[3] = clkout3_phase;
+      phaseangle[4] = clkout4_phase;
+      phaseangle[5] = clkout5_phase;
+      phaseangle[6] = clkout6_phase;
+      phaseangle[7] = clkout7_phase;
+      periodtime[1] = ONE_NS / count1_1ovrper;
+      periodtime[2] = ONE_NS / count3_3ovrper;
+      periodtime[3] = ONE_NS / count3_3ovrper;
+      periodtime[4] = ONE_NS / count4_1ovrper;
+      periodtime[5] = ONE_NS / count5_1ovrper;
+      periodtime[6] = ONE_NS / count6_1ovrper;
+      periodtime[7] = ONE_NS / count7_1ovrper;
+      // compute phase angle in time units
+      phasetime[1] = (periodtime[1]/360.0)*clkout1_phase;
+      phasetime[2] = (periodtime[2]/360.0)*clkout2_phase;
+      phasetime[3] = (periodtime[3]/360.0)*clkout3_phase;
+      phasetime[4] = (periodtime[4]/360.0)*clkout4_phase;
+      phasetime[5] = (periodtime[5]/360.0)*clkout5_phase;
+      phasetime[6] = (periodtime[6]/360.0)*clkout6_phase;
+      phasetime[7] = (periodtime[7]/360.0)*clkout7_phase;
+   end
+   genvar ii_gen;
+   generate for (ii_gen = 1; ii_gen <= <=: num_out_clks :>; ii_gen = ii_gen + 1) begin: phase
+      time starttime = 0;
+      time endtime   = 0;
+      time gaptime   = 0;
+      time phase_err = 0;
+      integer multiple;
+
+      initial begin
+         // wait for a lock
+         `wait_lock;
+         // measure the difference (if the clock periods are the same)
+<: if { $use_phase_alignment}  {  :>
+         if (periodtime[ii_gen] == PER1) begin
+<: } else  { :>
+         if ((ii_gen != 1)  && (periodtime[ii_gen] == periodtime[1])) begin
+<: } :>
+            // check phaseangle. if the output clock has requested phase of other than 0.0, then
+            // ref_clk defines the starttime and output clock defines the endtime
+            // else assume the output clock is ahead in phase wrt to clkin
+            if ( phaseangle[ii_gen] != 0.0 )
+            begin
+               @(posedge ref_clk);
+               starttime = $time;
+               @(posedge dut.clk[ii_gen]);
+               endtime   = $time;
+            end
+            else
+            begin
+               @(posedge dut.clk[ii_gen]);
+               starttime = $time;
+               @(posedge ref_clk);
+               endtime   = $time;
+            end
+
+            // compute gaptime
+            gaptime    = ( endtime - starttime );
+            multiple   = gaptime / periodtime[ii_gen];
+            // get rid of excess periods
+            gaptime    = gaptime - multiple*periodtime[ii_gen];
+
+            // compute phase error in terms of timeunits
+            if ( gaptime >= phasetime[ii_gen] )
+               phase_err = gaptime - phasetime[ii_gen];
+            else
+               phase_err = phasetime[ii_gen] - gaptime;
+
+            $display ("Debug CLKOUT%1d : starttime %t, endtime %t, phasetime %t, gaptime %t, phase_err %t",
+                            ii_gen, starttime, endtime, phasetime[ii_gen],gaptime, phase_err);
+            // check if phase error is < error margin (100ps)
+            if ( phase_err > ( PHASE_ERR_MARGIN + rounding_error ) )
+            begin
+               $display("ERROR: at time %t: Phase Error on Clock %1d %t / %t ",$time, ii_gen, phase_err, PHASE_ERR_MARGIN );
+               // let simulation run a few more cycles.. helps debug
+               @(posedge dut.clk[ii_gen]);
+               @(posedge dut.clk[ii_gen]);
+               @(posedge dut.clk[ii_gen]);
+               $finish;
+            end
+            else
+            begin
+               $display("Phase matches for clock %1d", ii_gen);
+            end
+         end
+         else
+         begin
+            $display("Phase skipped for clock %1d", ii_gen);
+         end
+      end
+   end
+   endgenerate
+<: } :>
+
+<: } :>
+  // Test sequence
+  reg [15*8-1:0] test_phase = "";
+  initial begin
+    // Set up any display statements using time to be readable
+    $timeformat(-12, 2, "ps", 10);
+    $display ("Timing checks are not valid");
+    COUNTER_RESET = 0;
+<: if { $use_freeze}  {  :>
+    FREEZE = 0;
+<: } :>
+<: if { $use_reset}  {  :>
+    test_phase = "reset";
+<: if { $reset_active_high}  {  :>
+    reset = 1;
+    #(PER1*200);
+    reset = 0;
+<: } else { :>
+    resetn = 0;
+    #(PER1*200);
+    resetn = 1;
+<: } :>
+<: } :>
+    test_phase = "wait lock";
+<: if { $use_clk_valid}  {  :>
+    `wait_lock;
+<: } elseif  { $use_locked}  { :>
+    `wait_lock;
+<: } else  { :>
+    #(PER1*50000);
+<: } :>
+    #(PER1*20);
+    COUNTER_RESET = 1;
+    #(PER1*19.2)
+    COUNTER_RESET = 0;
+    #(PER1*0.3)
+<: if { $clock_sequencing && $max_seq_number>= 2}  {  :>
+    #(PER1*225*<=: mmcm_divclk_divide :>)
+<: } else { :>
+    #(PER1*1)
+<: } :>
+    $display ("Timing checks are valid");
+    test_phase = "counting";
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+    #(PER1*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide :>*<=: mmcm_clkout6_divide :>);
+<: } :>
+<: } :>
+    #(PER1*COUNT_PHASE);
+<: if {$use_inclk_switchover} { :>
+    $display("Output Frequencies w.r.t Primary clock"); 
+<: } :>
+<:   if {$num_out_clks >= 1} { :>
+    if ((period1 -ref_period1_clkin1) <= 100 && (period1 -ref_period1_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[1] ( in MHz ) : %0f\n", 1000000/period1);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[1] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 2} { :>
+    if ((period2 -ref_period2_clkin1) <= 100 && (period2 -ref_period2_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[2] ( in MHz ) : %0f\n", 1000000/period2);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[2] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+    if ((period3 -ref_period3_clkin1) <= 100 && (period3 -ref_period3_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[3] ( in MHz ) : %0f\n", 1000000/period3);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[3] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+    if ((period4 -ref_period4_clkin1) <= 100 && (period4 -ref_period4_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[4] ( in MHz ) : %0f\n", 1000000/period4);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[4] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 5} { :>
+    if ((period5 -ref_period5_clkin1) <= 100 && (period5 -ref_period5_clkin1) >= -100) begin
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+    $display("Freq of CLK_OUT[5] ( in KHz ) : %0f\n", 1000000000/period5);
+<: } else { :>
+    $display("Freq of CLK_OUT[5] ( in MHz ) : %0f\n", 1000000/period5);
+<: } :>
+<: } else { :>
+    $display("Freq of CLK_OUT[5] ( in MHz ) : %0f\n", 1000000/period5);
+<: } :>
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[5] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 6} { :>
+    if ((period6 -ref_period6_clkin1) <= 100 && (period6 -ref_period6_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[6] ( in MHz ) : %0f\n", 1000000/period6);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[6] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 7} { :>
+    if ((period7 -ref_period7_clkin1) <= 100 && (period7 -ref_period7_clkin1) >= -100) begin
+    $display("Freq of CLK_OUT[7] ( in MHz ) : %0f\n", 1000000/period7);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[7] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<: if { $sv_test}  {  :>
+<: if { $num_out_clks== 1}  {  :>
+    if (dut.counter < (count1_exp1 - min_offset1)) begin
+      $display("ERROR: %t: Count is too small for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+        $time, dut.counter, count1_exp1);
+      $finish;
+    end
+    if (dut.counter > (count1_exp1 + max_offset1)) begin
+      $display("ERROR: %t: Count is too large for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+        $time, dut.counter, count1_exp1);
+      $finish;
+    end
+<: } else  { :>
+    exp_count_min[1] = count1_exp1 - min_offset1;
+    exp_count_max[1] = count1_exp1 + max_offset1;
+    exp_count_min[2] = count2_exp1 - min_offset2;
+    exp_count_max[2] = count2_exp1 + max_offset2;
+    exp_count_min[3] = count3_exp1 - min_offset3;
+    exp_count_max[3] = count3_exp1 + max_offset3;
+    exp_count_min[4] = count4_exp1 - min_offset4;
+    exp_count_max[4] = count4_exp1 + max_offset4;
+    exp_count_min[5] = count5_exp1 - min_offset5;
+    exp_count_max[5] = count5_exp1 + max_offset5;
+    exp_count_min[6] = count6_exp1 - min_offset6;
+    exp_count_max[6] = count6_exp1 + max_offset6;
+    exp_count_min[7] = count7_exp1 - min_offset7;
+    exp_count_max[7] = count7_exp1 + max_offset7;
+    for (ii = 1; ii <= <=: num_out_clks :>; ii = ii + 1) begin
+      if (dut.counter[ii] < exp_count_min[ii]) begin
+        $display("ERROR: %t: Count%1d is too small for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_min[ii]);
+        $finish;
+      end
+      if (dut.counter[ii] > exp_count_max[ii]) begin
+        $display("ERROR: %t: Count%1d is too large for <=: PRIMARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_max[ii]);
+        $finish;
+      end
+    end
+    $display("%t, <=: PRIMARY_PORT :> count values check out", $time);
+<: } :>
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+    $display ("Timing checks are not valid");
+    test_phase = "change clocks";
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_active_high}  {  :>
+    reset = 1;
+<: } else { :>
+    resetn = 0;
+<: } :>
+<: } :>
+    #(PER2*1);
+    clk_in_sel = 0;
+    #(PER2*2);
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_active_high}  {  :>
+    reset = 0;
+<: } else { :>
+    resetn = 1;
+<: } :>
+<: } :>
+    #(PER2*2);
+<: if { $use_clk_valid}  {  :>
+    `wait_lock;
+<: } elseif  { $use_locked}  { :>
+    `wait_lock;
+<: } else  { :>
+    #(PER2*50000);
+<: } :>
+    #(PER2*20);
+    COUNTER_RESET = 1;
+    #(PER2*19.2)
+    COUNTER_RESET = 0;
+    #(PER2*0.3)
+<: if { $clock_sequencing && $max_seq_number>= 2}  {  :>
+    #(PER2*1000)
+<: } else { :>
+    #(PER2*1)
+<: } :>
+    $display ("Timing checks are valid");
+    test_phase = "counting";
+<:   if {$mmcm_clkout4_cascade} { :>
+<:   if {$num_out_clks >= 7 } { :>
+    #(PER2*<=: mmcm_divclk_divide :>*<=: mmcm_clkout4_divide :>*<=: mmcm_clkout6_divide :>);
+<: } :>
+<: } :>
+    #(PER2*COUNT_PHASE);
+    $display("Output Frequencies w.r.t Secondary clock"); 
+<:   if {$num_out_clks >= 1} { :>
+    if ((period1 -ref_period1_clkin2) <= 100 && (period1 -ref_period1_clkin2) >= -100) begin
+    $display("Freq of CLK_OUT[1] ( in MHz ) : %0f\n", 1000000/period1);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[1] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 2} { :>
+    if ((period2 -ref_period2_clkin2) <= 100 && (period2 -ref_period2_clkin2) >= -100) begin
+    $display("Freq of CLK_OUT[2] ( in MHz ) : %0f\n", 1000000/period2);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[2] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+    if ((period3 -ref_period3_clkin2) <= 100 && (period3 -ref_period3_clkin2) >= -100) begin
+    $display("Freq of CLK_OUT[3] ( in MHz ) : %0f\n", 1000000/period3);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[3] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+    if ((period4 -ref_period4_clkin2) <= 100 && (period4 -ref_period4_clkin2) >= -100) begin
+    $display("Freq of CLK_OUT[4] ( in MHz ) : %0f\n", 1000000/period4);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[4] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 5} { :>
+    if ((period5 -ref_period5_clkin2) <= 100 && (period5 -ref_period5_clkin2) >= -100) begin
+    $display("Freq of CLK_OUT[5] ( in MHz ) : %0f\n", 1000000/period5);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[5] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 6} { :>
+    if ((period6 -ref_period6_clkin2) <= 100 && (period6 -ref_period6_clkin2) >= -100) begin
+    $display("Freq of CLK_OUT[6] ( in MHz ) : %0f\n", 1000000/period6);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[6] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<:   if {$num_out_clks >= 7} { :>
+    if ((period7 -ref_period7_clkin2) <= 100 && (period7 -ref_period7_clkin2) >= -100) begin
+    $display("Freq of CLK_OUT[7] ( in MHz ) : %0f\n", 1000000/period7);
+    end else 
+    begin
+    $display("ERROR: Freq of CLK_OUT[7] is not correct"); 
+    $finish;
+    end 
+<: } :>
+<: if { $sv_test}  {  :>
+<: if { $num_out_clks== 1}  {  :>
+    if (dut.counter < (count1_exp1 - 2*min_offset1)) begin
+      $display("ERROR: %t: Count is too small for <=: SECONDARY_PORT :>: %1d, should be: %1d",
+         $time, dut.counter, count1_exp1);
+      $finish;
+    end
+    if (dut.counter > (count1_exp1 + 2*max_offset1)) begin
+      $display("ERROR: %t: Count is too large for <=: SECONDARY_PORT :>: %1d, should be: %1d",
+         $time, dut.counter, count1_exp1);
+      $finish;
+    end
+<: } else  { :>
+    exp_count_min[1] = count1_exp1 - 2*min_offset1;
+    exp_count_max[1] = count1_exp1 + 2*max_offset1;
+    exp_count_min[2] = count2_exp1 - 2*min_offset2;
+    exp_count_max[2] = count2_exp1 + 2*max_offset2;
+    exp_count_min[3] = count3_exp1 - 2*min_offset3;
+    exp_count_max[3] = count3_exp1 + 2*max_offset3;
+    exp_count_min[4] = count4_exp1 - 2*min_offset4;
+    exp_count_max[4] = count4_exp1 + 2*max_offset4;
+    exp_count_min[5] = count5_exp1 - 2*min_offset5;
+    exp_count_max[5] = count5_exp1 + 2*max_offset5;
+    exp_count_min[6] = count6_exp1 - 2*min_offset6;
+    exp_count_max[6] = count6_exp1 + 2*max_offset6;
+    exp_count_min[7] = count7_exp1 - 2*min_offset7;
+    exp_count_max[7] = count7_exp1 + 2*max_offset7;
+    for (ii = 1; ii <= <=: num_out_clks :>; ii = ii + 1) begin
+      if (dut.counter[ii] < exp_count_min[ii]) begin
+        $display("ERROR: %t: Count%1d is too small for <=: SECONDARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_min[ii]);
+        $finish;
+      end
+      if (dut.counter[ii] > exp_count_max[ii]) begin
+        $display("ERROR: %t: Count%1d is too large for <=: SECONDARY_PORT :>: %1d, should be: %1d",
+          $time, ii, dut.counter[ii], exp_count_max[ii]);
+        $finish;
+      end
+    end
+    $display("%t, <=: SECONDARY_PORT :> count values check out", $time);
+<: } :>
+<: } :>
+<: } :>
+<: if { $sv_test}  {  :>
+    wait(oversample_done);
+    #(PER1*5);
+<: } :>
+    $display("SIMULATION PASSED");
+    $display("Test Completed Successfully");
+    $display("SYSTEM_CLOCK_COUNTER : %0d\n",$time/PER1);
+    $finish;
+  end
+
+
+<: if { $use_locked}  {  :>
+   always@(posedge <=: PRIMARY_PORT :>) begin
+      timeout_counter <= timeout_counter + 1'b1;
+      if (timeout_counter == 16'b1100000000000000) begin
+         if (locked != 1'b1) begin
+            $display("ERROR : NO LOCK signal");
+            $display("SYSTEM_CLOCK_COUNTER : %0d\n",$time/PER1);
+            $finish;
+         end
+      end
+   end
+<: } :>
+
+  // Instantiation of the example design containing the clock
+  //    network and sampling counters
+  //---------------------------------------------------------
+  <=: ComponentName :>_exdes 
+    dut
+   (// Clock in ports
+<: if { $use_inclk_switchover}  {  :>
+<: if { $clkin2_diff}  {  :>
+    .<=: SECONDARY_PORT :>_p          (<=: SECONDARY_PORT :>_p),
+    .<=: SECONDARY_PORT :>_n          (<=: SECONDARY_PORT :>_n),
+<: } else  { :>
+    .<=: SECONDARY_PORT :>            (<=: SECONDARY_PORT :>),
+<: } :>
+    .clk_in_sel         (clk_in_sel),
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+    .clkfb_in_p         (clkfb_in_p),
+    .clkfb_in_n         (clkfb_in_n),
+<: } else  { :>
+    .clkfb_in           (clkfb_in),
+<: } :>
+<: } :>
+<: } :>
+    // Reset for logic in example design
+    .COUNTER_RESET      (COUNTER_RESET),
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+   .clkoutphy(clkoutphy_TB),
+<: } :>
+<: } :>
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2)} { :>
+    .CLK_OUT            (CLK_OUT_int),
+<: } else  { :>
+    .CLK_OUT            (CLK_OUT),
+<: } :>
+<: } else  { :>
+    .CLK_OUT            (CLK_OUT),
+<: } :>
+    // High bits of the counters
+<: if { $clkout_last_nodyn ||( $clkfbout_last_nodyn && $exdes_connectfb) }  {  :>
+    .COUNT              (COUNT));
+<: } else  { :>
+    .COUNT              (COUNT),
+<: } :>
+<: if { $use_clkout1_bar}  {  :>
+    .COUNTB_1           (COUNTB_1),
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+    .COUNTB_2           (COUNTB_2),
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+    .COUNTB_3           (COUNTB_3),
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+    .COUNTB_4           (COUNTB_4),
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+    .clkfb_out_p        (clkfb_out_p),
+<: if { $clkfbout_last_nodyn}  {  :>
+    .clkfb_out_n        (clkfb_out_n));
+<: } else  { :>
+    .clkfb_out_n        (clkfb_out_n),
+<: } :>
+<: } else  { :>
+<: if { $clkfbout_last_nodyn}  {  :>
+    .clkfb_out          (clkfb_out));
+<: } else  { :>
+    .clkfb_out          (clkfb_out),
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: if { $has_control}  {  :>
+    // Status and control signals
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_last}  {  :>
+<: if { $reset_active_high}  {  :>
+    .reset              (reset));
+<: } else { :>
+    .resetn             (resetn));
+<: } :>
+<: } else  { :>
+<: if { $reset_active_high}  {  :>
+    .reset              (reset),
+<: } else { :>
+    .resetn             (resetn),
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+    .power_down         (power_down));
+<: } else  { :>
+    .power_down         (power_down),
+<: } :>
+<: } :>
+<: if { $use_freeze}  {  :>
+<: if { $freeze_last}  {  :>
+    .FREEZE             (FREEZE));
+<: } else  { :>
+    .FREEZE             (FREEZE),
+<: } :>
+<: } :>
+<: if { $use_status}  {  :>
+<: if { $status_last}  {  :>
+    .STATUS             (STATUS));
+<: } else  { :>
+    .STATUS             (STATUS),
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+    .input_clk_stopped  (input_clk_stopped));
+<: } else  { :>
+    .input_clk_stopped  (input_clk_stopped),
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+    .clkfb_stopped  (clkfb_stopped));
+<: } else  { :>
+    .clkfb_stopped  (clkfb_stopped),
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+    .locked             (locked));
+<: } else  { :>
+    .locked             (locked),
+<: } :>
+<: } :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+    .<=: cddcdone_port :>           (), 
+    .<=: cddcreq_port :>            (1'b0),
+<: } :>
+<: } :>
+<: if { $use_clk_valid}  {  :>
+    .CLK_VALID          (CLK_VALID),
+<: } :>
+<: if { $clkin1_diff}  {  :>
+    .<=: PRIMARY_PORT :>_p          (<=: PRIMARY_PORT :>_p),
+    .<=: PRIMARY_PORT :>_n          (<=: PRIMARY_PORT :>_n)
+<: } else  { :>
+    .<=: PRIMARY_PORT :>            (<=: PRIMARY_PORT :>)
+<: } :>
+);
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2)} { :>
+   assign CLK_OUT[2:1] = CLK_OUT_int[2:1];
+<: if {($num_out_clks > 4)} { :>
+   assign CLK_OUT[4:3] = 2'b00;
+   assign CLK_OUT[<=: num_out_clks :>:5] = CLK_OUT_int[<=: num_out_clks :> -2:3];
+<: } :>
+<: } :>
+<: } :>
+
+// Freq Check 
+<:   if {$num_out_clks >= 1} { :>
+initial
+  prev_rise1 = 0;
+
+always @(posedge CLK_OUT[1])
+begin
+  if (prev_rise1 != 0)
+    period1 = $time - prev_rise1;
+  prev_rise1 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 2} { :>
+initial
+  prev_rise2 = 0;
+
+always @(posedge CLK_OUT[2])
+begin
+  if (prev_rise2 != 0)
+    period2 = $time - prev_rise2;
+  prev_rise2 = $time;
+end
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 3)} { :>
+initial
+  prev_rise3 = 0;
+
+always @(posedge CLK_OUT[3])
+begin
+  if (prev_rise3 != 0)
+    period3 = $time - prev_rise3;
+  prev_rise3 = $time;
+end
+<:   } :>
+<:   if {(!$mmcm_ss_en) && ($num_out_clks >= 4)} { :>
+initial
+  prev_rise4 = 0;
+
+always @(posedge CLK_OUT[4])
+begin
+  if (prev_rise4 != 0)
+    period4 = $time - prev_rise4;
+  prev_rise4 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 5} { :>
+initial
+  prev_rise5 = 0;
+
+always @(posedge CLK_OUT[5])
+begin
+  if (prev_rise5 != 0)
+    period5 = $time - prev_rise5;
+  prev_rise5 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 6} { :>
+initial
+  prev_rise6 = 0;
+
+always @(posedge CLK_OUT[6])
+begin
+  if (prev_rise6 != 0)
+    period6 = $time - prev_rise6;
+  prev_rise6 = $time;
+end
+<:   } :>
+<:   if {$num_out_clks >= 7} { :>
+initial
+  prev_rise7 = 0;
+
+always @(posedge CLK_OUT[7])
+begin
+  if (prev_rise7 != 0)
+    period7 = $time - prev_rise7;
+  prev_rise7 = $time;
+end
+<:   } :>
+<: } :>
+
+endmodule

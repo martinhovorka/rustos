@@ -1,0 +1,127 @@
+<: if { [string equal -nocase $clkin1_buf "No_buffer"]}  {  :>
+  <: print $PRIMARY_PORT$u_score$ComponentName :> <= <=: PRIMARY_PORT :>;
+<: } elseif  { [string equal -nocase $clkin1_buf "Single_ended_clock_capable_pin"]}  { :>
+<: if { $is_v8 || $is_k8 }  {  :>
+  clkin1_ibuf : IBUF
+<: } else  { :>
+  clkin1_ibufg : IBUF
+<: } :>
+  port map
+   (O => <: print $PRIMARY_PORT$u_score$ComponentName :>,
+    I => <=: PRIMARY_PORT :>);
+<: } elseif  { [string equal -nocase $clkin1_buf "Differential_clock_capable_pin"]}  { :>
+<: if { $is_v8 || $is_k8 }  {  :>
+  clkin1_ibufds : IBUFDS
+<: } else  { :>
+  clkin1_ibufgds : IBUFDS
+<: } :>
+  port map
+   (O  => <: print $PRIMARY_PORT$u_score$ComponentName :>,
+    I  => <=: PRIMARY_PORT :>_p,
+    IB => <=: PRIMARY_PORT :>_n);
+<: } elseif  { [string equal -nocase $clkin1_buf "Single_ended_non_clock_pin"]}  { :>
+  clkin1_ibuf0 : IBUF
+  port map
+   (O => <: print $PRIMARY_PORT$u_score$ComponentName :>_buf,
+    I => <=: PRIMARY_PORT :>);
+
+  clkin1_bufg1 : BUFG
+  port map
+   (O => <: print $PRIMARY_PORT$u_score$ComponentName :>,
+    I => <: print $PRIMARY_PORT$u_score$ComponentName :>_buf);
+<: } elseif  { [string equal -nocase $clkin1_buf "Differential_non_clock_pin"]}  { :>
+  clkin1_ibufds0 : IBUFDS
+  port map
+   (O  => <: print $PRIMARY_PORT$u_score$ComponentName :>_buf,
+    I  => <=: PRIMARY_PORT :>_p,
+    IB => <=: PRIMARY_PORT :>_n);
+
+  clkin1_bufg1 : BUFG
+  port map
+   (O => <: print $PRIMARY_PORT$u_score$ComponentName :>,
+    I => <: print $PRIMARY_PORT$u_score$ComponentName :>_buf);
+<: } else  {;#BUFG :>
+  clkin1_bufg : BUFG
+  port map
+   (O => <: print $PRIMARY_PORT$u_score$ComponentName :>,
+    I => <=: PRIMARY_PORT :>);
+<: } :>
+
+<: if { !$is_plle3}  {  :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { [string equal -nocase $clkin2_buf "No_buffer"]}  {  :>
+  <: print $SECONDARY_PORT$u_score$ComponentName :> <= <=: SECONDARY_PORT :>;
+<: } elseif  { [string equal -nocase $clkin2_buf "Single_ended_clock_capable_pin"]}  { :>
+<: if { $is_v8 || $is_k8 }  {  :>
+  clkin2_ibuf : IBUF
+<: } else  { :>
+  clkin2_ibufg : IBUF
+<: } :>
+  port map
+   (O => <: print $SECONDARY_PORT$u_score$ComponentName :>,
+    I => <=: SECONDARY_PORT :>);
+<: } elseif  { [string equal -nocase $clkin2_buf "Differential_clock_capable_pin"]}  { :>
+<: if { $is_v8 || $is_k8 }  {  :>
+  clkin2_ibufds : IBUFDS
+<: } else  { :>
+  clkin2_ibufgds : IBUFDS
+<: } :>
+  port map
+   (O  => <: print $SECONDARY_PORT$u_score$ComponentName :>,
+    I  => <=: SECONDARY_PORT :>_p,
+    IB => <=: SECONDARY_PORT :>_n);
+<: } elseif  { [string equal -nocase $clkin2_buf "Single_ended_non_clock_pin"]}  { :>
+  clkin2_ibuf0 : IBUF
+  port map
+   (O => <: print $SECONDARY_PORT$u_score$ComponentName :>_buf,
+    I => <=: SECONDARY_PORT :>);
+
+  clkin2_bufg1 : BUFG
+  port map
+   (O => <: print $SECONDARY_PORT$u_score$ComponentName :>,
+    I => <: print $SECONDARY_PORT$u_score$ComponentName :>_buf);
+<: } elseif  { [string equal -nocase $clkin2_buf "Differential_non_clock_pin"]}  { :>
+  clkin2_ibufds0 : IBUFDS
+  port map
+   (O  => <: print $SECONDARY_PORT$u_score$ComponentName :>_buf,
+    I  => <=: SECONDARY_PORT :>_p,
+    IB => <=: SECONDARY_PORT :>_n);
+
+  clkin2_bufg1 : BUFG
+  port map
+   (O => <: print $SECONDARY_PORT$u_score$ComponentName :>,
+    I => <: print $SECONDARY_PORT$u_score$ComponentName :>_buf);
+<: } else  {;#BUFG :>
+  clkin2_bufg : BUFG
+  port map
+   (O => <: print $SECONDARY_PORT$u_score$ComponentName :>,
+    I => <=: SECONDARY_PORT :>);
+<: } :>
+<: } :>
+<: } :>
+<: if  { $auto_sing_feedback }  { :>
+
+  -- input buffer for feedback clock
+<: if { $is_v8 || $is_k8 }  {  :>
+  clkfb_ibuf: IBUF
+<: } else  { :>
+  clkfb_ibufg: IBUF
+<: } :>
+  port map
+   (O  => clkfb_in_buf_out,
+    I  => <=: fbin_port :>);
+<: } :>
+<: if  { $auto_diff_feedback }  { :>
+
+  -- differential buffer for feedback clock
+<: if { $is_v8 || $is_k8 }  {  :>
+  clkfb_ibufds: IBUFDS
+<: } else  { :>
+  clkfb_ibufgds: IBUFDS
+<: } :>
+  port map
+   (O  => clkfb_in_buf_out,
+    I  => <=: fbin_p_port :>,
+    IB => <=: fbin_n_port :>);
+<: } :>
+

@@ -1,0 +1,1132 @@
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory [ttcl_string_concat $ComponentName "/example_design"] :>
+<: setFileName [ttcl_string_concat $ComponentName "_exdes"] :>
+<: setFileExtension ".v" :>
+<: ;#all other variables :>
+<#: ttcl/variables.ttcl :>
+<: set comment "//" :>
+// file: <=: ComponentName :>_exdes.v
+<#: ttcl/disclaimer.ttcl :>
+
+<#: ttcl/exdes_comments.ttcl :>
+
+`timescale 1ps/1ps
+
+module <=: ComponentName :>_exdes 
+ (
+<: if { $c_has_AXI } { :>
+  input s_axi_aclk,
+  input s_axi_aresetn,
+  input [11-1 : 0] s_axi_awaddr,
+  input s_axi_awvalid,
+  output s_axi_awready,
+  input [32-1 : 0] s_axi_wdata,
+  input [(32/8)-1 : 0] s_axi_wstrb,
+  input s_axi_wvalid,
+  output s_axi_wready,
+  output [1 : 0] s_axi_bresp,
+  output s_axi_bvalid,
+  input s_axi_bready,
+  input [11-1 : 0] s_axi_araddr,
+  input s_axi_arvalid,
+  output s_axi_arready,
+  output [32-1 : 0] s_axi_rdata,
+  output [1 : 0] s_axi_rresp,
+  output s_axi_rvalid,
+  input s_axi_rready,
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+<: if { $sel_PRIMITIVE != "None"}  { :>
+  input  ref_clk,
+<: } else  { :>
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  input  user_clk0,
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  input  user_clk1,
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  input  user_clk2,
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  input  user_clk3,
+<: } :>
+  output [3 : 0] clk_stop,
+  output [3 : 0] clk_oor,
+  output [3 : 0] clk_glitch,
+  output  interrupt,
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { $clkin2_diff}  {  :>
+  input         <=: SECONDARY_PORT :>_p,
+  input         <=: SECONDARY_PORT :>_n,
+<: } else  { :>
+  input         <=: SECONDARY_PORT :>,
+<: } :>
+  input         clk_in_sel,
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback  && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+  input         clkfb_in_p,
+  input         clkfb_in_n,
+<: } else  { :>
+  input         clkfb_in,
+<: } :>
+<: } :>
+<: } :>
+  // Reset that only drives logic in example design
+  input         COUNTER_RESET,
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+  output        clkoutphy,
+<: } :>
+<: } :>
+<: if {$mmcm_ss_en} { :>
+<: if {($num_out_clks > 2) } { :>
+  output [(<=: num_out_clks :> - 2) :1]   CLK_OUT,
+<:   } else { :>
+  output [<=: num_out_clks :>:1]   CLK_OUT,
+<: } :>
+<:   } else { :>
+  output [<=: num_out_clks :>:1]   CLK_OUT,
+<: } :>
+  // High bits of counters driven by clocks
+<: ;#all dynamic signals tied off -> use no dynamic forms for last :>
+<: if { !$mmcm_ss_en }  {  :>
+<: if { $clkout_last_nodyn ||( $clkfbout_last_nodyn && $ext_feedback && $exdes_connectfb && !$auto_ext_feedback) }  {  :>
+<: if { $num_out_clks== 1}  {  :>
+  output        COUNT
+<: } else  { :>
+  output [<=: num_out_clks :>:1]  COUNT
+<: } :>
+<: } else  { :>
+<: if { $num_out_clks== 1}  {  :>
+  output        COUNT,
+<: } else  { :>
+  output [<=: num_out_clks :>:1]  COUNT,
+<: } :>
+<: } :>
+<: } else { :>
+<: if { $clkout_last_nodyn ||( $clkfbout_last_nodyn && $ext_feedback && $exdes_connectfb && !$auto_ext_feedback) }  {  :>
+<: if { $num_out_clks== 1}  {  :>
+  output        COUNT
+<: } elseif { $num_out_clks > 2}  { :>
+  output [(<=: num_out_clks :> - 2):1]  COUNT
+<: } else  { :>
+  output [<=: num_out_clks :>:1]  COUNT
+<: } :>
+<: } else  { :>
+<: if { $num_out_clks== 1}  {  :>
+  output        COUNT,
+<: } elseif { $num_out_clks > 2}  { :>
+  output [(<=: num_out_clks :> - 2):1]  COUNT,
+<: } else  { :>
+  output [<=: num_out_clks :>:1]  COUNT,
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_bar_clks>= 1}  {  :>
+<: if { $use_clkout1_bar}  {  :>
+  output        COUNTB_1,
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+  output        COUNTB_2,
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+  output        COUNTB_3,
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+  output        COUNTB_4,
+<: } :>
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if {( $ext_feedback && !$exdes_connectfb)  || $auto_ext_feedback}  {  :>
+<: if { $auto_diff_feedback}  {  :>
+  output        clkfb_out_p,
+<: if { $clkfbout_last_nodyn}  {  :>
+  output        clkfb_out_n
+<: } else  { :>
+  output        clkfb_out_n,
+<: } :>
+<: } else  { :>
+<: if { $clkfbout_last_nodyn}  {  :>
+  output        clkfb_out
+<: } else  { :>
+  output        clkfb_out,
+<: } :>
+<: } :>
+<: } :>
+<: } :>
+<: ;#only print the header if the signals actually exist :>
+<: if { $has_control}  {  :>
+  // Status and control signals
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_last}  {  :>
+<: if { $reset_active_high}  {  :>
+  input         reset
+<: } else { :>
+  input         resetn
+<: } :>
+<: } else  { :>
+<: if { $reset_active_high}  {  :>
+  input         reset,
+<: } else { :>
+  input         resetn,
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+  input         power_down
+<: } else  { :>
+  input         power_down,
+<: } :>
+<: } :>
+<: if { $use_freeze}  {  :>
+<: if { $freeze_last}  {  :>
+  input         FREEZE
+<: } else  { :>
+  input         FREEZE,
+<: } :>
+<: } :>
+<: if { $use_status}  {  :>
+<: if { $status_last}  {  :>
+  output [2:<=: status_low :>]  STATUS
+<: } else  { :>
+  output [2:<=: status_low :>]  STATUS,
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+  output        input_clk_stopped
+<: } else  { :>
+  output        input_clk_stopped,
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+  output        clkfb_stopped
+<: } else  { :>
+  output        clkfb_stopped,
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+  output        locked
+<: } else  { :>
+  output        locked,
+<: } :>
+<: } :>
+<: if { $is_v8 || $is_k8 }  {  :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+  output        <=: cddcdone_port :>,
+  input         <=: cddcreq_port :>,
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_clk_valid}  {  :>
+  output        CLK_VALID,
+<: } :>
+ // Clock in ports
+<: if { $sel_PRIMITIVE != "None"}  { :>
+<: if { $clkin1_diff}  {  :>
+  input         <=: PRIMARY_PORT :>_p,
+  input         <=: PRIMARY_PORT :>_n
+<: } else  { :>
+  input         <=: PRIMARY_PORT :>
+<: } :>
+<: } else  { :>
+  input  ref_clk
+<: } :>
+ );
+
+  // Parameters for the counters
+  //-------------------------------
+ localparam  ONE_NS      = 1000;
+ localparam time PER1    = 10*ONE_NS;
+ localparam time PER1_1  = PER1/2;  
+ // Counter width
+<: if { $sv_test}  {  :>
+  localparam    C_W       = 21;
+<: } else  { :>
+  localparam    C_W       = 16;
+<: } :>
+  // Clock to Q delay of 100ps
+  localparam TCQ  = 100;
+<: if { $num_out_clks> 2}  {  :>
+  // Number of counters
+<: if { !$mmcm_ss_en}  {  :>
+  localparam    NUM_C     = <=: num_out_clks :>;
+<: } else {:>
+// clkout3 and clkout4 are not available when SS_EN (Spread Spectrum enable) is true
+  localparam    NUM_C     = <=: num_out_clks :> - 2;
+<: } :>
+  genvar        count_gen;
+<: } elseif  { $num_out_clks> 1} { :>
+  localparam    NUM_C     = <=: num_out_clks :>;
+  genvar        count_gen;
+<: } :>
+<: if { $num_bar_clks>= 1}  {  :>
+  // Number of counters
+  localparam    NUM_CB    = 4;
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+  wire ref_clk_buf;
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  wire user_clk0_buf;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  wire user_clk1_buf;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  wire user_clk2_buf;
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  wire user_clk3_buf ;
+<: } :>
+<: } :>
+<: if { $use_dyn_reprog && !$c_has_AXI}  { :>
+
+  // This example design doesn't use the dynamic reconfiguration feature
+  wire [6:0]    daddr     = 0;
+  wire          dclk      = 0;
+  wire          den       = 0;
+  wire [15:0]   DI        = 0;
+  wire [15:0]   DO;
+  wire          drdy;
+  wire          dwe       = 0;
+<: } :>
+<: if { $use_dyn_phase_shift}  {  :>
+  // This example design doesn't use the dynamic phase shift feature
+  
+  reg          psclk     = 1'b 0;
+  wire          psen      = 1'b 0;
+  wire          psincdec  = 1'b 0;
+  wire          psdone;
+<: } :>
+<: if { $use_locked}  {  :>
+  // When the clock goes out of lock, reset the counters
+<: if { $use_reset}  {  :>
+<: if { $c_has_AXI}  {  :>
+  wire          reset_int = (!locked)  || (!s_axi_aresetn)  || COUNTER_RESET;
+<: } else { :>
+<: if { $reset_active_high}  {  :>
+  wire          reset_int = (!locked)  || reset  || COUNTER_RESET;
+<: } else { :>
+  wire          reset_int = (!locked)  || (!resetn)  || COUNTER_RESET;
+<: } :>
+<: } :>
+<: } else  { :>
+  wire          reset_int = (!locked)  || COUNTER_RESET;
+<: } :>
+<: } else  { :>
+  // Create reset for the counters
+<: if { $use_reset}  {  :>
+<: if { $c_has_AXI}  {  :>
+  wire          reset_int = (!s_axi_aresetn)  || COUNTER_RESET;
+<: } else { :>
+<: if { $reset_active_high}  {  :>
+  wire          reset_int = reset  || COUNTER_RESET;
+<: } else { :>
+  wire          reset_int = !resetn  || COUNTER_RESET;
+<: } :>
+<: } :>
+<: } else  { :>
+  wire          reset_int = COUNTER_RESET;
+<: } :>
+<: } :>
+
+<: if { $num_out_clks== 1}  {  :>
+  (* ASYNC_REG = "TRUE" *)  reg rst_sync;
+  (* ASYNC_REG = "TRUE" *)  reg rst_sync_int;
+  (* ASYNC_REG = "TRUE" *)  reg rst_sync_int1;
+  (* ASYNC_REG = "TRUE" *)  reg rst_sync_int2;
+<: } else  { :>
+  (* ASYNC_REG = "TRUE" *)  reg [NUM_C:1] rst_sync;
+  (* ASYNC_REG = "TRUE" *)  reg [NUM_C:1] rst_sync_int;
+  (* ASYNC_REG = "TRUE" *)  reg [NUM_C:1] rst_sync_int1;
+  (* ASYNC_REG = "TRUE" *)  reg [NUM_C:1] rst_sync_int2;
+<: } :>
+
+
+<: if { $exdes_connectfb}  {  :>
+
+  // Connect the feedback on chip
+  wire          clkfb_out;
+  wire          clkfb_in;
+<: } :>
+<: if { $num_out_clks== 1}  {  :>
+
+  // Declare the clocks and counter
+  wire           clk_int;
+  wire           clk;
+  reg  [C_W-1:0] counter;
+<: } else  { :>
+  // Declare the clocks and counters
+<: if { !$mmcm_ss_en}  {  :>
+  wire [NUM_C:1] clk_int;
+<: } else {:>
+  wire [(NUM_C + 2):1] clk_int;
+<: } :>
+  wire [NUM_C:1] clk;
+  reg [C_W-1:0]  counter [NUM_C:1];
+<: } :>
+<: if { $num_bar_clks>= 1}  {  :>
+  wire [NUM_CB:1]  clkb;
+  wire [NUM_CB:1]  clkb_int;
+  reg [C_W-1:0]  counterb [NUM_CB:1];
+<: } :>
+  wire      <=: PRIMARY_PORT :>_buf;
+  wire      <=: SECONDARY_PORT :>_buf;
+  wire      clkfb_in_buf;
+
+
+<: ;#insert BUFG's for simplicity :>
+<: if { $exdes_buffer_clkin1 || $exdes_buffer_clkin2 || $exdes_buffer_clkfbin}  {  :>
+
+  // Insert BUFGs on all input clocks that don't already have them
+  //--------------------------------------------------------------
+<: if { $exdes_buffer_clkin1}  {  :>
+  BUFG clkin1_buf
+   (.O (<=: PRIMARY_PORT :>_buf),
+    .I (<=: PRIMARY_PORT :>));
+<: } :>
+<: if { $exdes_buffer_clkin2}  {  :>
+  BUFG clkin2_buf
+   (.O (<=: SECONDARY_PORT :>_buf),
+    .I (<=: SECONDARY_PORT :>));
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $exdes_buffer_clkfbin }  {  :>
+  IBUF clkfbin_buf
+   (.O (clkfb_in_buf),
+    .I (clkfb_in));
+<: } :>
+<: } :>
+<: } :>
+<: ;#never will buffering clkfbin happen with connecting :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $exdes_connectfb}  {  :>
+
+  // Connect the feedback on chip- duplicate the delay for clk_out1
+<: if { [string equal -nocase $clkout1_buf "No_buffer"]}  {  :>
+  assign        clkfb_in  = clkfb_out;
+<: } else { :>
+  <=: clkfb_buf :> clkfb_buf
+   (.O (clkfb_in),
+    .I (clkfb_out));
+<: } :>
+<: } elseif  { $ext_feedback}  { :>
+  wire          clkfb_out_int;
+<: } :>
+<: if { $ext_feedback  && !$exdes_connectfb}  {  :>
+  wire          clkfb_bufg_out;
+  wire          clkfb_oddr_out;
+<: } :>
+<: } :>
+
+
+<: if { $use_dyn_phase_shift}  {  :>
+  always begin
+    psclk = #(PER1_1/2) ~psclk;
+    psclk = #(PER1_1/2) ~psclk;
+  end
+<: } :>
+
+  // Instantiation of the clocking network
+  //--------------------------------------
+  <=: ComponentName :> clknetwork
+   (
+<: if { $c_has_AXI } { :>
+    .s_axi_aclk      (s_axi_aclk),                    
+    .s_axi_aresetn   (s_axi_aresetn),                    
+    .s_axi_awaddr    (s_axi_awaddr),                    
+    .s_axi_awvalid   (s_axi_awvalid),                    
+    .s_axi_awready   (s_axi_awready),                    
+    .s_axi_wdata     (s_axi_wdata),                    
+    .s_axi_wstrb     (s_axi_wstrb),                    
+    .s_axi_wvalid    (s_axi_wvalid),                    
+    .s_axi_wready    (s_axi_wready),                    
+    .s_axi_bresp     (s_axi_bresp),                    
+    .s_axi_bvalid    (s_axi_bvalid),                    
+    .s_axi_bready    (s_axi_bready),                    
+    .s_axi_araddr    (s_axi_araddr),                    
+    .s_axi_arvalid   (s_axi_arvalid),                    
+    .s_axi_arready   (s_axi_arready),                    
+    .s_axi_rdata     (s_axi_rdata),                    
+    .s_axi_rresp     (s_axi_rresp),                    
+    .s_axi_rvalid    (s_axi_rvalid),                    
+    .s_axi_rready    (s_axi_rready),                    
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+<: if { $sel_PRIMITIVE != "None"}  { :>
+  .ref_clk  (ref_clk_buf),
+<: } else  { :>
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  .user_clk0 (user_clk0_buf),
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  .user_clk1 (user_clk1_buf),
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  .user_clk2 (user_clk2_buf),
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  .user_clk3 (user_clk3_buf),
+<: } :>
+  .clk_stop (clk_stop),
+  .clk_oor (clk_oor),
+  .clk_glitch (clk_glitch),
+  .interrupt (interrupt),
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { $exdes_buffer_clkin2}  {  :>
+    .<=: SECONDARY_PORT :>            (<=: SECONDARY_PORT :>_buf),
+<: } elseif  { $clkin2_diff}  { :>
+    .<=: SECONDARY_PORT :>_p          (<=: SECONDARY_PORT :>_p),
+    .<=: SECONDARY_PORT :>_n          (<=: SECONDARY_PORT :>_n),
+<: } else  { :>
+    .<=: SECONDARY_PORT :>            (<=: SECONDARY_PORT :>),
+<: } :>
+    .<=: clk_in_sel_port :>         (clk_in_sel),
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $exdes_buffer_clkfbin}  {  :>
+    .<=: fbin_port :>           (clkfb_in_buf),
+<: } elseif  { $ext_feedback || $auto_ext_feedback}  { :>
+<: if { $auto_diff_feedback}  {  :>
+    .<=: fbin_p_port :>         (clkfb_in_p),
+    .<=: fbin_n_port :>         (clkfb_in_n),
+<: } else  { :>
+    .<=: fbin_port :>           (clkfb_in),
+<: } :>
+<: } :>
+<: } :>
+    // Clock out ports
+<: if { $is_plle3}  {  :>
+<: if { $enable_clkoutphy}  {  :>
+   .clkoutphy                   (clkoutphy),
+<: } :>
+<: } :>
+<: ;#dynamic ports exist, use normal last form for ports :>
+<: if { $clkout1_ce_used && !$safe_clk_startup}  {  :>
+    .<=: out1_port :>_ce        (1'b 1),
+<: } :>
+<: if { $clkout1_clr_used && !$safe_clk_startup}  {  :>
+    .<=: out1_port :>_clr       (1'b 0),
+<: } :>
+<: if { $clkout1_last}  {  :>
+    .<=: out1_port :>           (clk_int));
+<: } else  { :>
+<: if { $num_out_clks== 1}  {  :>
+    .<=: out1_port :>           (clk_int),
+<: } else  { :>
+    .<=: out1_port :>           (clk_int[1]),
+<: } :>
+<: } :>
+<: if { $use_clkout1_bar} { :>
+    .<=: out1_port :>B          (clkb_int[1]),
+<: } :>
+<: if { $num_out_clks>= 2}  {  :>
+<: if { $clkout2_ce_used && !$safe_clk_startup}  {  :>
+    .<=: out2_port :>_ce        (1'b 1),
+<: } :>
+<: if { $clkout2_clr_used && !$safe_clk_startup}  {  :>
+    .<=: out2_port :>_clr       (1'b 0),
+<: } :>
+<: if { $clkout2_last}  {  :>
+    .<=: out2_port :>           (clk_int[2]));
+<: } else  { :>
+    .<=: out2_port :>           (clk_int[2]),
+<: } :>
+<: } :>
+<: if { $use_clkout2_bar} { :>
+    .<=: out2_port :>B          (clkb_int[2]),
+<: } :>
+<: if {  (!$mmcm_ss_en) &&  ($num_out_clks>= 3)}  {  :>
+<: if { $clkout3_ce_used && !$safe_clk_startup}  {  :>
+    .<=: out3_port :>_ce        (1'b 1),
+<: } :>
+<: if { $clkout3_clr_used && !$safe_clk_startup}  {  :>
+    .<=: out3_port :>_clr       (1'b 0),
+<: } :>
+<: if { $clkout3_last}  {  :>
+    .<=: out3_port :>           (clk_int[3]));
+<: } else  { :>
+    .<=: out3_port :>           (clk_int[3]),
+<: } :>
+<: if { $use_clkout3_bar} { :>
+    .<=: out3_port :>B          (clkb_int[3]),
+<: } :>
+<: } :>
+<: if {  (!$mmcm_ss_en) &&  ($num_out_clks>= 4)}  {  :>
+<: if { $clkout4_ce_used && !$safe_clk_startup}  {  :>
+    .<=: out4_port :>_ce       (1'b 1),
+<: } :>
+<: if { $clkout4_clr_used && !$safe_clk_startup}  {  :>
+    .<=: out4_port :>_clr       (1'b 0),
+<: } :>
+<: if { $clkout4_last}  {  :>
+    .<=: out4_port :>           (clk_int[4]));
+<: } else  { :>
+    .<=: out4_port :>           (clk_int[4]),
+<: } :>
+<: if { $use_clkout4_bar} { :>
+    .<=: out4_port :>B          (clkb_int[4]),
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+<: if { $clkout5_ce_used && !$safe_clk_startup}  {  :>
+    .<=: out5_port :>_ce        (1'b 1),
+<: } :>
+<: if { $clkout5_clr_used && !$safe_clk_startup}  {  :>
+    .<=: out5_port :>_clr       (1'b 0),
+<: } :>
+<: if { $clkout5_last}  {  :>
+    .<=: out5_port :>           (clk_int[5]));
+<: } else  { :>
+    .<=: out5_port :>           (clk_int[5]),
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+<: if { $clkout6_ce_used && !$safe_clk_startup}  {  :>
+    .<=: out6_port :>_ce        (1'b 1),
+<: } :>
+<: if { $clkout6_clr_used && !$safe_clk_startup}  {  :>
+    .<=: out6_port :>_clr       (1'b 0),
+<: } :>
+<: if { $clkout6_last}  {  :>
+    .<=: out6_port :>           (clk_int[6]));
+<: } else  { :>
+    .<=: out6_port :>           (clk_int[6]),
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+<: if { $clkout7_ce_used && !$safe_clk_startup}  {  :>
+    .<=: out7_port :>_ce        (1'b 1),
+<: } :>
+<: if { $clkout7_clr_used && !$safe_clk_startup}  {  :>
+    .<=: out7_port :>_clr       (1'b 0),
+<: } :>
+<: if { $clkout7_last}  {  :>
+    .<=: out7_port :>           (clk_int[7]));
+<: } else  { :>
+    .<=: out7_port :>           (clk_int[7]),
+<: } :>
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback && !$exdes_connectfb}  {  :>
+<: if { $clkfbout_last}  {  :>
+    .<=: fbout_port :>          (clkfb_out_int));
+<: } else  { :>
+    .<=: fbout_port :>          (clkfb_out_int),
+<: } :>
+<: } elseif  { $exdes_connectfb || $auto_sing_feedback}  { :>
+<: if { $clkfbout_last}  {  :>
+    .<=: fbout_port :>          (clkfb_out));
+<: } else  { :>
+    .<=: fbout_port :>          (clkfb_out),
+<: } :>
+<: } elseif  { $auto_diff_feedback}  { :>
+    .<=: fbout_p_port :>        (clkfb_out_p),
+<: if { $clkfbout_last}  {  :>
+    .<=: fbout_n_port :>        (clkfb_out_n));
+<: } else  { :>
+    .<=: fbout_n_port :>        (clkfb_out_n),
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_dyn_reprog && !$c_has_AXI}  { :>
+    // Dynamic reconfiguration ports
+    .<=: daddr_port :>              (daddr),
+    .<=: dclk_port :>               (dclk),
+    .<=: den_port :>                (den),
+    .<=: din_port :>                (DI),
+    .<=: dout_port :>               (DO),
+    .<=: drdy_port :>               (drdy),
+<: if { $dyn_reprog_last}  {  :>
+    .<=: dwe_port :>                (dwe));
+<: } else  { :>
+    .<=: dwe_port :>                (dwe),
+<: } :>
+<: } :>
+<: if { $use_dyn_phase_shift}  {  :>
+    // Dynamic phase shift ports
+    .<=: psclk_port :>              (psclk),
+    .<=: psen_port :>               (psen),
+    .<=: psincdec_port :>           (psincdec),
+<: if { $dyn_phase_shift_last}  {  :>
+    .<=: psdone_port :>             (psdone));
+<: } else  { :>
+    .<=: psdone_port :>             (psdone),
+<: } :>
+<: } :>
+<: ;#only print the header if the signals actually exist :>
+<: if { $has_control}  {  :>
+    // Status and control signals
+<: } :>
+<: if { $use_reset && !$c_has_AXI}  {  :>
+<: if { $reset_last}  {  :>
+<: if { $reset_active_high}  {  :>
+    .<=: reset_port :>              (reset));
+<: } else { :>
+    .<=: reset_port :>              (resetn));
+<: } :>
+<: } else  { :>
+<: if { $reset_active_high}  {  :>
+    .<=: reset_port :>              (reset),
+<: } else { :>
+    .<=: reset_port :>              (resetn),
+<: } :>
+<: } :>
+<: } :>
+<: if { $use_power_down}  {  :>
+<: if { $power_down_last}  {  :>
+    .<=: power_down_port :>         (1'b0));
+<: } else  { :>
+    .<=: power_down_port :>         (1'b0),
+<: } :>
+<: } :>
+<: if { $use_inclk_stopped}  {  :>
+<: if { $inclk_stopped_last}  {  :>
+    .<=: input_clk_stopped_port :>  (input_clk_stopped));
+<: } else  { :>
+    .<=: input_clk_stopped_port :>  (input_clk_stopped),
+<: } :>
+<: } :>
+<: if { $use_clkfb_stopped}  {  :>
+<: if { $clkfb_stopped_last}  {  :>
+    .<=: clkfb_stopped_port :>  (clkfb_stopped));
+<: } else  { :>
+    .<=: clkfb_stopped_port :>  (clkfb_stopped),
+<: } :>
+<: } :>
+<: if { $use_locked}  {  :>
+<: if { $locked_last}  {  :>
+    .<=: locked_port :>             (locked));
+<: } else  { :>
+    .<=: locked_port :>             (locked),
+<: } :>
+<: } :>
+<: if { $has_cddc}  {  :>
+<: if { !$is_plle3}  {  :>
+    .<=: cddcdone_port :>           (<=: cddcdone_port :>), 
+    .<=: cddcreq_port :>            (<=: cddcreq_port :>), 
+<: } :>
+<: } :>
+   // Clock in ports
+<: if { $sel_PRIMITIVE != "None"}  { :>
+<: if { $exdes_buffer_clkin1}  {  :>
+    .<=: PRIMARY_PORT :>            (<=: PRIMARY_PORT :>_buf)
+<: } elseif  { $clkin1_diff}  { :>
+    .<=: PRIMARY_PORT :>_p          (<=: PRIMARY_PORT :>_p),
+    .<=: PRIMARY_PORT :>_n          (<=: PRIMARY_PORT :>_n)
+<: } else  { :>
+    .<=: PRIMARY_PORT :>            (<=: PRIMARY_PORT :>)
+<: } :>
+<: } else  { :>
+  .ref_clk  (ref_clk_buf)
+<: } :>
+);
+<: if { $num_out_clks== 1}  {  :>
+<: if { $is_v8 || $is_k8 }  {  :>
+  ODDRE1 
+  clkout_oddr
+    (.Q  (CLK_OUT[1]),
+     .C  (clk_int),
+     .D1 (1'b1),
+     .D2 (1'b0),
+     .SR (1'b0));
+<: } else { :>
+  ODDR clk_out_oddr
+   (.Q  (CLK_OUT[1]),
+    .C  (clk_int),
+    .CE (1'b1),
+    .D1 (1'b1),
+    .D2 (1'b0),
+    .R  (1'b0),
+    .S  (1'b0));
+<: } :>
+<:   } else { :>
+<: if {(!$mmcm_ss_en) || ($num_out_clks < 5 )} { :>
+genvar clk_out_pins;
+
+generate 
+  for (clk_out_pins = 1; clk_out_pins <= NUM_C; clk_out_pins = clk_out_pins + 1) 
+  begin: gen_outclk_oddr
+<: if { $is_v8 || $is_k8 }  {  :>
+  ODDRE1 
+  clkout_oddr
+    (.Q  (CLK_OUT[clk_out_pins]),
+     .C  (clk_int[clk_out_pins]),
+     .D1 (1'b1),
+     .D2 (1'b0),
+     .SR (1'b0));
+<: } else { :>
+  ODDR clkout_oddr
+   (.Q  (CLK_OUT[clk_out_pins]),
+    .C  (clk_int[clk_out_pins]),
+    .CE (1'b1),
+    .D1 (1'b1),
+    .D2 (1'b0),
+    .R  (1'b0),
+    .S  (1'b0));
+<: } :>
+  end
+endgenerate
+<:   } else { :>
+genvar clk_out_pins1;
+generate 
+  for (clk_out_pins1 = 1; clk_out_pins1 < 3; clk_out_pins1 = clk_out_pins1 + 1) 
+  begin: gen_outclk_grp1_oddr
+<: if { $is_v8 || $is_k8 }  {  :>
+  ODDRE1 
+  clkout_oddr_grp1
+    (.Q  (CLK_OUT[clk_out_pins1]),
+     .C  (clk_int[clk_out_pins1]),
+     .D1 (1'b1),
+     .D2 (1'b0),
+     .SR (1'b0));
+<: } else { :>
+  ODDR clkout_oddr_grp1
+   (.Q  (CLK_OUT[clk_out_pins1]),
+    .C  (clk_int[clk_out_pins1]),
+    .CE (1'b1),
+    .D1 (1'b1),
+    .D2 (1'b0),
+    .R  (1'b0),
+    .S  (1'b0));
+<: } :>
+  end
+endgenerate
+
+genvar clk_out_pins2;
+generate 
+  for (clk_out_pins2 = 5; clk_out_pins2 <= NUM_C+2; clk_out_pins2 = clk_out_pins2 + 1) 
+  begin: gen_outclk_grp2_oddr
+<: if { $is_v8 || $is_k8 }  {  :>
+  ODDRE1 
+  clkout_oddr_grp2
+    (.Q  (CLK_OUT[clk_out_pins2-2]),
+     .C  (clk_int[clk_out_pins2]),
+     .D1 (1'b1),
+     .D2 (1'b0),
+     .SR (1'b0));
+<: } else { :>
+  ODDR clkout_oddr_grp2
+   (.Q  (CLK_OUT[clk_out_pins2-2]),
+    .C  (clk_int[clk_out_pins2]),
+    .CE (1'b1),
+    .D1 (1'b1),
+    .D2 (1'b0),
+    .R  (1'b0),
+    .S  (1'b0));
+<: } :>
+  end
+endgenerate
+<:   } :>
+<:   } :>
+
+
+  // Connect the output clocks to the design
+  //-----------------------------------------
+<: if { $num_out_clks== 1}  {  :>
+<: if { [string equal -nocase $clkout1_buf "No_buffer"]}  {  :>
+  BUFG clkout1_buf
+   (.O (clk),
+    .I (clk_int));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk = clk_int;
+<: } :>
+<: } elseif  { $num_out_clks>= 1}  { :>
+<: if { [string equal -nocase $clkout1_buf "No_buffer"]}  {  :>
+  BUFG clkout1_buf
+   (.O (clk[1]),
+    .I (clk_int[1]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[1] = clk_int[1];
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 2}  {  :>
+<: if { [string equal -nocase $clkout2_buf "No_buffer"]}  {  :>
+  BUFG clkout2_buf
+   (.O (clk[2]),
+    .I (clk_int[2]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[2] = clk_int[2];
+<: } :>
+<: } :>
+<: if {  (!$mmcm_ss_en) && ($num_out_clks>= 3)}  {  :>
+<: if { [string equal -nocase $clkout3_buf "No_buffer"]}  {  :>
+  BUFG clkout3_buf
+   (.O (clk[3]),
+    .I (clk_int[3]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[3] = clk_int[3];
+<: } :>
+<: } :>
+<: if { (!$mmcm_ss_en) && ($num_out_clks>= 4)}  {  :>
+<: if { [string equal -nocase $clkout4_buf "No_buffer"]}  {  :>
+  BUFG clkout4_buf
+   (.O (clk[4]),
+    .I (clk_int[4]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[4] = clk_int[4];
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 5}  {  :>
+<: if { !$mmcm_ss_en}  {  :>
+<: if { [string equal -nocase $clkout5_buf "No_buffer"]}  {  :>
+  BUFG clkout5_buf
+   (.O (clk[5]),
+    .I (clk_int[5]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[5] = clk_int[5];
+<: } :>
+<: } else {:>
+<: if { [string equal -nocase $clkout5_buf "No_buffer"]}  {  :>
+  BUFG clkout5_buf
+   (.O (clk[3]),
+    .I (clk_int[5]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[3] = clk_int[5];
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 6}  {  :>
+<: if { !$mmcm_ss_en}  {  :>
+<: if { [string equal -nocase $clkout6_buf "No_buffer"]}  {  :>
+  BUFG clkout6_buf
+   (.O (clk[6]),
+    .I (clk_int[6]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[6] = clk_int[6];
+<: } :>
+<: } else {:>
+<: if { [string equal -nocase $clkout6_buf "No_buffer"]}  {  :>
+  BUFG clkout6_buf
+   (.O (clk[4]),
+    .I (clk_int[6]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[4] = clk_int[6];
+<: } :>
+<: } :>
+<: } :>
+<: if { $num_out_clks>= 7}  {  :>
+<: if { !$mmcm_ss_en}  {  :>
+<: if { [string equal -nocase $clkout7_buf "No_buffer"]}  {  :>
+  BUFG clkout7_buf
+   (.O (clk[7]),
+    .I (clk_int[7]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[7] = clk_int[7];
+<: } :>
+<: } else {:>
+<: if { [string equal -nocase $clkout7_buf "No_buffer"]}  {  :>
+  BUFG clkout7_buf
+   (.O (clk[5]),
+    .I (clk_int[7]));
+<: } else  {;#BUFG/BUFR/BUFH :>
+  assign clk[5] = clk_int[7];
+<: } :>
+<: } :>
+<: } :>
+
+
+  // Reset synchronizer
+  //-----------------------------------
+<: if { $num_out_clks== 1}  {  :>
+    always @(posedge reset_int or posedge clk) begin
+       if (reset_int) begin
+            rst_sync <= 1'b1;
+            rst_sync_int <= 1'b1;
+            rst_sync_int1 <= 1'b1;
+            rst_sync_int2 <= 1'b1;
+       end
+       else begin
+            rst_sync <= 1'b0;
+            rst_sync_int <= rst_sync;     
+            rst_sync_int1 <= rst_sync_int; 
+            rst_sync_int2 <= rst_sync_int1;
+       end
+    end
+<: } else  { :>
+  generate for (count_gen = 1; count_gen <= NUM_C; count_gen = count_gen + 1) begin: counters_1
+    always @(posedge reset_int or posedge clk[count_gen]) begin
+       if (reset_int) begin
+            rst_sync[count_gen] <= 1'b1;
+            rst_sync_int[count_gen]<= 1'b1;
+            rst_sync_int1[count_gen]<= 1'b1;
+            rst_sync_int2[count_gen]<= 1'b1;
+       end
+       else begin
+            rst_sync[count_gen] <= 1'b0;
+            rst_sync_int[count_gen] <= rst_sync[count_gen];     
+            rst_sync_int1[count_gen] <= rst_sync_int[count_gen]; 
+            rst_sync_int2[count_gen] <= rst_sync_int1[count_gen];
+       end
+    end
+  end
+  endgenerate
+<: } :>
+
+  // Output clock sampling
+  //-----------------------------------
+<: if { $num_out_clks== 1}  {  :>
+  always @(posedge clk or posedge rst_sync_int2) begin
+    if (rst_sync_int2) begin
+      counter <= #TCQ { C_W { 1'b 0 } };
+    end else begin
+      counter <= #TCQ counter + 1'b 1;
+    end
+  end
+
+<: if { $use_clkout1_bar}  {  :>
+  always @(posedge clkb[1]) begin
+    if (reset_int) begin
+      counterb <= #TCQ { C_W { 1'b 0 } };
+    end else begin
+      counterb <= #TCQ counterb + 1'b 1;
+    end
+  end
+<: } :>
+  // alias the high bit to the output
+  assign COUNT = counter[C_W-1];
+<: if { $use_clkout1_bar}  {  :>
+  assign COUNTB_1 = counterb[C_W-1];
+<: } :>
+<: } else  { :>
+  generate for (count_gen = 1; count_gen <= NUM_C; count_gen = count_gen + 1) begin: counters
+
+    always @(posedge clk[count_gen] or posedge rst_sync_int2[count_gen]) begin
+      if (rst_sync_int2[count_gen]) begin
+        counter[count_gen] <= #TCQ { C_W { 1'b 0 } };
+      end else begin
+        counter[count_gen] <= #TCQ counter[count_gen] + 1'b 1;
+      end
+    end
+    // alias the high bit of each counter to the corresponding
+    //   bit in the output bus
+    assign COUNT[count_gen] = counter[count_gen][C_W-1];
+  end
+  endgenerate
+
+<: if { $use_clkout1_bar}  {  :>
+    always @(posedge clkb[1]) begin
+      if (reset_int) begin
+        counterb[1] <= #TCQ { C_W { 1'b 0 } };
+      end else begin
+        counterb[1] <= #TCQ counterb[1] + 1'b 1;
+      end
+    end
+    // alias the high bit of each counter to the corresponding
+    //   bit in the output bus
+    assign COUNTB_1 = counterb[1][C_W-1];
+<: } :>
+<: if { $use_clkout2_bar}  {  :>
+    always @(posedge clkb[2]) begin
+      if (reset_int) begin
+        counterb[2] <= #TCQ { C_W { 1'b 0 } };
+      end else begin
+        counterb[2] <= #TCQ counterb[2] + 1'b 1;
+      end
+    end
+    // alias the high bit of each counter to the corresponding
+    //   bit in the output bus
+    assign COUNTB_2 = counterb[2][C_W-1];
+<: } :>
+<: if { $use_clkout3_bar}  {  :>
+    always @(posedge clkb[3]) begin
+      if (reset_int) begin
+        counterb[3] <= #TCQ { C_W { 1'b 0 } };
+      end else begin
+        counterb[3] <= #TCQ counterb[3] + 1'b 1;
+      end
+    end
+    // alias the high bit of each counter to the corresponding
+    //   bit in the output bus
+    assign COUNTB_3 = counterb[3][C_W-1];
+<: } :>
+<: if { $use_clkout4_bar}  {  :>
+    always @(posedge clkb[4]) begin
+      if (reset_int) begin
+        counterb[4] <= #TCQ { C_W { 1'b 0 } };
+      end else begin
+        counterb[4] <= #TCQ counterb[4] + 1'b 1;
+      end
+    end
+    // alias the high bit of each counter to the corresponding
+    //   bit in the output bus
+    assign COUNTB_4 = counterb[4][C_W-1];
+<: } :>
+<: } :>
+<: if { ($mmcm_compensation != "INTERNAL")} { :>
+<: if { $ext_feedback && !$exdes_connectfb}  {  :>
+
+  // Instantiate bufg on fbout
+  BUFG clkfbout_bufg
+   (.O  (clkfb_bufg_out),
+    .I  (clkfb_out_int));
+<: } :>
+<: if { $ext_feedback && !$exdes_connectfb}  {  :>
+
+  // Forward the feedback clock off-chip
+<: if { $is_v8 || $is_k8 }  {  :>
+  ODDRE1 
+  clkfbout_oddr
+    (.Q  (clkfb_oddr_out),
+     .C  (clkfb_bufg_out),
+     .D1 (1'b1),
+     .D2 (1'b0),
+     .SR (1'b0));
+<: } else { :>
+  ODDR clkfbout_oddr
+   (.Q  (clkfb_oddr_out),
+    .C  (clkfb_bufg_out),
+    .CE (1'b1),
+    .D1 (1'b1),
+    .D2 (1'b0),
+    .R  (1'b0),
+    .S  (1'b0));
+<: } :>
+<: } :>
+<: if { $ext_feedback && !$exdes_connectfb}  {  :>
+
+  OBUF clkfbout_obuf
+   (.O  (clkfb_out),
+    .I  (clkfb_oddr_out));
+<: } :>
+<: } :>
+
+<: if { $C_ENABLE_CLOCK_MONITOR}  { :>
+  BUFG ref_clk_buf_bufg
+   (.O (ref_clk_buf),
+    .I (ref_clk));
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+  BUFG user_clk0_buf_bufg
+   (.O (user_clk0_buf),
+    .I (user_clk0));
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+  BUFG user_clk1_buf_bufg
+   (.O (user_clk1_buf),
+    .I (user_clk1));
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+  BUFG user_clk2_buf_bufg
+   (.O (user_clk2_buf),
+    .I (user_clk2));
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+  BUFG user_clk3_buf_bufg
+   (.O (user_clk3_buf),
+    .I (user_clk3));
+<: } :>
+<: } :>
+endmodule

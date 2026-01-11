@@ -1,0 +1,141 @@
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory [ttcl_string_concat $ComponentName "/example_design"] :>
+<: set window [getIntValue "C_ENABLE_WINDOW_WDT"] :>
+<: setFileName [ttcl_string_concat $ComponentName "_exdes_tb"] :>
+<: set timer_interval [getIntValue "C_WDT_INTERVAL"] :>
+<: set enable_once [getIntValue "C_WDT_ENABLE_ONCE"] :>
+<: setFileExtension ".vhd" :>
+
+
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_misc.all;
+use ieee.std_logic_textio.all;
+
+library std;
+use std.textio.all;
+
+
+
+entity <=: $ComponentName :>_exdes_tb is
+
+end entity;
+
+architecture tb of <=: $ComponentName :>_exdes_tb is
+
+component <=: $ComponentName :>_exdes 
+   port (
+         clk_in1_p : in std_logic;
+         clk_in1_n : in std_logic;
+         reset : in std_logic;
+         start : in std_logic;
+<: if {($window == 0)} { :>
+         freeze             : in   std_logic;
+<: } else { :>
+         wdt_interrupt : OUT STD_LOGIC;
+         wdt_reset : OUT STD_LOGIC;
+         wdt_reset_pending : OUT STD_LOGIC;
+         wdt_state_vec : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
+<: } :>
+         glow_led      : out std_logic
+);
+end component;
+
+constant clk_per : time := 5 ns;
+signal clock : std_logic := '0';
+signal clock_n : std_logic := '1';
+signal reset : std_logic := '1';
+signal start : std_logic := '0';
+signal status : std_logic := '0';
+signal test : std_logic := '0';
+signal done : std_logic := '0';
+
+signal wdt_interrupt      :std_logic ;
+signal freeze             : std_logic ;
+signal wdt_reset          : std_logic ;
+signal timebase_interrupt : std_logic ;
+signal glow_led : std_logic ;
+signal wdt_reset_pending : STD_LOGIC;
+signal wdt_state_vec : STD_LOGIC_VECTOR(6 DOWNTO 0);
+
+
+begin
+
+process
+begin
+    wait for (clk_per/2);
+    clock <= not clock;
+    clock_n <= not clock_n;
+
+end process;
+
+
+ reset <= '0' after 50 ns;
+ 
+  
+
+start <= '1' after 100 ns;
+
+--test <= '1' after 300 ns;
+
+DUT_TB: <=: $ComponentName :>_exdes
+      port map (
+      clk_in1_p => clock,
+      clk_in1_n => clock_n,
+      reset => reset,
+      start => start,
+<: if {($window == 0)} { :>
+      freeze => freeze , 
+<: } else { :>
+      wdt_interrupt => wdt_interrupt,
+      wdt_reset => wdt_reset,
+      wdt_reset_pending => wdt_reset_pending,
+      wdt_state_vec => wdt_state_vec,
+<: } :>
+      glow_led      => glow_led      
+      );
+
+process (glow_led)
+    procedure simtimeprint is
+      variable outline : line;
+    begin
+      write(outline, string'("## SYSTEM_CYCLE_COUNTER "));
+      write(outline, NOW/clk_per);
+      write(outline, string'(" ns"));
+      writeline(output,outline);
+    end simtimeprint;
+begin
+
+if (glow_led = '1') then
+ simtimeprint;
+ report "Test Completed Successfully" severity failure;
+end if;
+end process;
+<: if {($window == 0)} { :>
+process(clock)
+begin
+freeze <= '0';
+end process;
+<: } else { :>
+<: } :>
+--process(glow_led) is
+--    begin
+--      if (glow_led  = '1') then
+--         report "Pass" severity failure;
+--      else
+--         report "Run more simulation to make counters roll-over" severity note;
+--
+--          end if;
+--        end process;
+
+process
+begin
+     wait for 100000000 ns;
+     report "Test Failed !! Test Timed Out" severity failure;
+end process;
+ 
+end tb;
+

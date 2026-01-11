@@ -1,0 +1,604 @@
+
+*** Running vivado
+    with args -log mbv_system_mbv_riscv_axi_periph_1.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source mbv_system_mbv_riscv_axi_periph_1.tcl
+
+
+
+****** Vivado v2025.2 (64-bit)
+  **** SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+  **** IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+  **** SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+  **** Start of session at: Sat Jan 10 22:56:09 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source mbv_system_mbv_riscv_axi_periph_1.tcl -notrace
+create_project: Time (s): cpu = 00:00:14 ; elapsed = 00:00:13 . Memory (MB): peak = 529.926 ; gain = 218.832
+Command: synth_design -top mbv_system_mbv_riscv_axi_periph_1 -part xc7a35ticsg324-1L -incremental_mode off -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35ti'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35ti'
+INFO: [Device 21-403] Loading part xc7a35ticsg324-1L
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 9236
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1390.598 ; gain = 540.277
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'mbv_system_mbv_riscv_axi_periph_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/synth/mbv_system_mbv_riscv_axi_periph_1.v:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:10]
+INFO: [Synth 8-6157] synthesizing module 'clk_map_imp_1RTLZFD' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5458]
+INFO: [Synth 8-638] synthesizing module 'bd_e941_psr_aclk_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_1/synth/bd_e941_psr_aclk_0.vhd:74]
+	Parameter C_FAMILY bound to: artix7 - type: string 
+	Parameter C_EXT_RST_WIDTH bound to: 4 - type: integer 
+	Parameter C_AUX_RST_WIDTH bound to: 1 - type: integer 
+	Parameter C_EXT_RESET_HIGH bound to: 1'b0 
+	Parameter C_AUX_RESET_HIGH bound to: 1'b0 
+	Parameter C_NUM_BUS_RST bound to: 1 - type: integer 
+	Parameter C_NUM_PERP_RST bound to: 1 - type: integer 
+	Parameter C_NUM_INTERCONNECT_ARESETN bound to: 1 - type: integer 
+	Parameter C_NUM_PERP_ARESETN bound to: 1 - type: integer 
+INFO: [Synth 8-3491] module 'proc_sys_reset' declared at 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:1243' bound to instance 'U0' of component 'proc_sys_reset' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_1/synth/bd_e941_psr_aclk_0.vhd:139]
+INFO: [Synth 8-638] synthesizing module 'proc_sys_reset' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:1302]
+	Parameter INIT bound to: 1'b1 
+INFO: [Synth 8-113] binding component instance 'FDRE_inst' to cell 'FDRE' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:1371]
+	Parameter INIT bound to: 1'b1 
+INFO: [Synth 8-113] binding component instance 'FDRE_BSR' to cell 'FDRE' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:1387]
+	Parameter INIT bound to: 1'b0 
+INFO: [Synth 8-113] binding component instance 'FDRE_BSR_N' to cell 'FDRE' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:1413]
+	Parameter INIT bound to: 1'b1 
+INFO: [Synth 8-113] binding component instance 'FDRE_PER' to cell 'FDRE' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:1436]
+	Parameter INIT bound to: 1'b0 
+INFO: [Synth 8-113] binding component instance 'FDRE_PER_N' to cell 'FDRE' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:1460]
+INFO: [Synth 8-638] synthesizing module 'lpf' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:821]
+INFO: [Synth 8-3491] module 'SRL16' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:165318' bound to instance 'POR_SRL_I' of component 'SRL16' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:873]
+INFO: [Synth 8-6157] synthesizing module 'SRL16' [C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:165318]
+INFO: [Synth 8-6155] done synthesizing module 'SRL16' (0#1) [C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:165318]
+	Parameter DEST_SYNC_FF bound to: 4 - type: integer 
+	Parameter INIT_SYNC_FF bound to: 0 - type: integer 
+	Parameter SIM_ASSERT_CHK bound to: 0 - type: integer 
+	Parameter SRC_INPUT_REG bound to: 0 - type: integer 
+INFO: [Synth 8-3491] module 'xpm_cdc_single' declared at 'C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv:152' bound to instance 'ACT_LO_EXT' of component 'xpm_cdc_single' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:968]
+INFO: [Synth 8-6157] synthesizing module 'xpm_cdc_single' [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv:152]
+INFO: [Synth 8-6155] done synthesizing module 'xpm_cdc_single' (0#1) [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv:152]
+	Parameter DEST_SYNC_FF bound to: 4 - type: integer 
+	Parameter INIT_SYNC_FF bound to: 0 - type: integer 
+	Parameter SIM_ASSERT_CHK bound to: 0 - type: integer 
+	Parameter SRC_INPUT_REG bound to: 0 - type: integer 
+INFO: [Synth 8-3491] module 'xpm_cdc_single' declared at 'C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv:152' bound to instance 'ACT_LO_AUX' of component 'xpm_cdc_single' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:1015]
+INFO: [Synth 8-256] done synthesizing module 'lpf' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:821]
+INFO: [Synth 8-638] synthesizing module 'sequence_psr' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:304]
+INFO: [Synth 8-638] synthesizing module 'upcnt_n' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:126]
+INFO: [Synth 8-256] done synthesizing module 'upcnt_n' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:126]
+INFO: [Synth 8-256] done synthesizing module 'sequence_psr' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:304]
+INFO: [Synth 8-256] done synthesizing module 'proc_sys_reset' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/9438/hdl/proc_sys_reset_v5_0_vh_rfs.vhd:1302]
+INFO: [Synth 8-256] done synthesizing module 'bd_e941_psr_aclk_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_1/synth/bd_e941_psr_aclk_0.vhd:74]
+WARNING: [Synth 8-7071] port 'mb_reset' of module 'bd_e941_psr_aclk_0' is unconnected for instance 'psr_aclk' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5567]
+WARNING: [Synth 8-7071] port 'bus_struct_reset' of module 'bd_e941_psr_aclk_0' is unconnected for instance 'psr_aclk' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5567]
+WARNING: [Synth 8-7071] port 'peripheral_reset' of module 'bd_e941_psr_aclk_0' is unconnected for instance 'psr_aclk' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5567]
+WARNING: [Synth 8-7071] port 'peripheral_aresetn' of module 'bd_e941_psr_aclk_0' is unconnected for instance 'psr_aclk' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5567]
+WARNING: [Synth 8-7023] instance 'psr_aclk' of module 'bd_e941_psr_aclk_0' has 10 connections declared, but only 6 given [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5567]
+INFO: [Synth 8-6155] done synthesizing module 'clk_map_imp_1RTLZFD' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5458]
+INFO: [Synth 8-6157] synthesizing module 'm00_exit_pipeline_imp_8IAQ0Y' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5818]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m00e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_32/synth/bd_e941_m00e_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'xpm_cdc_async_rst' [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv:1175]
+INFO: [Synth 8-6155] done synthesizing module 'xpm_cdc_async_rst' (0#1) [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv:1175]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m00e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_32/synth/bd_e941_m00e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm00_exit_pipeline_imp_8IAQ0Y' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5818]
+INFO: [Synth 8-6157] synthesizing module 'm00_nodes_imp_LTCAJY' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:6060]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m00arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_27/synth/bd_e941_m00arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m00arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_27/synth/bd_e941_m00arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m00awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_29/synth/bd_e941_m00awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m00awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_29/synth/bd_e941_m00awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m00bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_31/synth/bd_e941_m00bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m00bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_31/synth/bd_e941_m00bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m00rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_28/synth/bd_e941_m00rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m00rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_28/synth/bd_e941_m00rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m00wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_30/synth/bd_e941_m00wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m00wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_30/synth/bd_e941_m00wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm00_nodes_imp_LTCAJY' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:6060]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m00s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_26/synth/bd_e941_m00s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m00s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_26/synth/bd_e941_m00s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm01_exit_pipeline_imp_2MZKHU' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:6302]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m01e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_39/synth/bd_e941_m01e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m01e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_39/synth/bd_e941_m01e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm01_exit_pipeline_imp_2MZKHU' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:6302]
+INFO: [Synth 8-6157] synthesizing module 'm01_nodes_imp_1MP9DZS' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:6544]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m01arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_34/synth/bd_e941_m01arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m01arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_34/synth/bd_e941_m01arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m01awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_36/synth/bd_e941_m01awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m01awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_36/synth/bd_e941_m01awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m01bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_38/synth/bd_e941_m01bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m01bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_38/synth/bd_e941_m01bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m01rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_35/synth/bd_e941_m01rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m01rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_35/synth/bd_e941_m01rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m01wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_37/synth/bd_e941_m01wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m01wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_37/synth/bd_e941_m01wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm01_nodes_imp_1MP9DZS' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:6544]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m01s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_33/synth/bd_e941_m01s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m01s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_33/synth/bd_e941_m01s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm02_exit_pipeline_imp_DL8W5E' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:6786]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m02e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_46/synth/bd_e941_m02e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m02e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_46/synth/bd_e941_m02e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm02_exit_pipeline_imp_DL8W5E' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:6786]
+INFO: [Synth 8-6157] synthesizing module 'm02_nodes_imp_1CTGGQR' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:7028]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m02arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_41/synth/bd_e941_m02arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m02arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_41/synth/bd_e941_m02arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m02awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_43/synth/bd_e941_m02awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m02awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_43/synth/bd_e941_m02awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m02bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_45/synth/bd_e941_m02bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m02bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_45/synth/bd_e941_m02bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m02rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_42/synth/bd_e941_m02rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m02rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_42/synth/bd_e941_m02rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m02wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_44/synth/bd_e941_m02wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m02wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_44/synth/bd_e941_m02wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm02_nodes_imp_1CTGGQR' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:7028]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m02s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_40/synth/bd_e941_m02s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m02s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_40/synth/bd_e941_m02s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm03_exit_pipeline_imp_B1S5QA' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:7270]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m03e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_53/synth/bd_e941_m03e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m03e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_53/synth/bd_e941_m03e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm03_exit_pipeline_imp_B1S5QA' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:7270]
+INFO: [Synth 8-6157] synthesizing module 'm03_nodes_imp_E5CY45' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:7568]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m03arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_48/synth/bd_e941_m03arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m03arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_48/synth/bd_e941_m03arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m03awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_50/synth/bd_e941_m03awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m03awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_50/synth/bd_e941_m03awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m03bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_52/synth/bd_e941_m03bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m03bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_52/synth/bd_e941_m03bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m03rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_49/synth/bd_e941_m03rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m03rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_49/synth/bd_e941_m03rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m03wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_51/synth/bd_e941_m03wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m03wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_51/synth/bd_e941_m03wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm03_nodes_imp_E5CY45' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:7568]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m03s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_47/synth/bd_e941_m03s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m03s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_47/synth/bd_e941_m03s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm04_exit_pipeline_imp_IBPE82' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:7810]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m04e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_60/synth/bd_e941_m04e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m04e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_60/synth/bd_e941_m04e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm04_exit_pipeline_imp_IBPE82' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:7810]
+INFO: [Synth 8-6157] synthesizing module 'm04_nodes_imp_O71PIT' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:8052]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m04arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_55/synth/bd_e941_m04arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m04arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_55/synth/bd_e941_m04arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m04awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_57/synth/bd_e941_m04awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m04awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_57/synth/bd_e941_m04awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m04bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_59/synth/bd_e941_m04bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m04bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_59/synth/bd_e941_m04bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m04rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_56/synth/bd_e941_m04rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m04rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_56/synth/bd_e941_m04rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m04wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_58/synth/bd_e941_m04wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m04wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_58/synth/bd_e941_m04wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm04_nodes_imp_O71PIT' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:8052]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m04s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_54/synth/bd_e941_m04s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m04s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_54/synth/bd_e941_m04s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm05_exit_pipeline_imp_NMFWCI' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:8294]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m05e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_67/synth/bd_e941_m05e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m05e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_67/synth/bd_e941_m05e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm05_exit_pipeline_imp_NMFWCI' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:8294]
+INFO: [Synth 8-6157] synthesizing module 'm05_nodes_imp_1K42FIB' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:8536]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m05arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_62/synth/bd_e941_m05arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m05arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_62/synth/bd_e941_m05arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m05awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_64/synth/bd_e941_m05awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m05awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_64/synth/bd_e941_m05awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m05bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_66/synth/bd_e941_m05bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m05bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_66/synth/bd_e941_m05bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m05rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_63/synth/bd_e941_m05rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m05rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_63/synth/bd_e941_m05rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m05wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_65/synth/bd_e941_m05wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m05wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_65/synth/bd_e941_m05wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm05_nodes_imp_1K42FIB' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:8536]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m05s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_61/synth/bd_e941_m05s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m05s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_61/synth/bd_e941_m05s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm06_exit_pipeline_imp_U2CEKI' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:8778]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m06e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_74/synth/bd_e941_m06e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m06e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_74/synth/bd_e941_m06e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm06_exit_pipeline_imp_U2CEKI' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:8778]
+INFO: [Synth 8-6157] synthesizing module 'm06_nodes_imp_1ELL23C' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9020]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m06arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_69/synth/bd_e941_m06arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m06arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_69/synth/bd_e941_m06arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m06awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_71/synth/bd_e941_m06awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m06awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_71/synth/bd_e941_m06awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m06bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_73/synth/bd_e941_m06bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m06bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_73/synth/bd_e941_m06bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m06rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_70/synth/bd_e941_m06rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m06rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_70/synth/bd_e941_m06rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m06wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_72/synth/bd_e941_m06wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m06wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_72/synth/bd_e941_m06wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm06_nodes_imp_1ELL23C' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9020]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m06s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_68/synth/bd_e941_m06s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m06s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_68/synth/bd_e941_m06s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm07_exit_pipeline_imp_Y93TOI' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9262]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m07e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_81/synth/bd_e941_m07e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m07e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_81/synth/bd_e941_m07e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm07_exit_pipeline_imp_Y93TOI' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9262]
+INFO: [Synth 8-6157] synthesizing module 'm07_nodes_imp_C0QXF2' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9504]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m07arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_76/synth/bd_e941_m07arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m07arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_76/synth/bd_e941_m07arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m07awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_78/synth/bd_e941_m07awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m07awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_78/synth/bd_e941_m07awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m07bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_80/synth/bd_e941_m07bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m07bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_80/synth/bd_e941_m07bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m07rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_77/synth/bd_e941_m07rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m07rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_77/synth/bd_e941_m07rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m07wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_79/synth/bd_e941_m07wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m07wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_79/synth/bd_e941_m07wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm07_nodes_imp_C0QXF2' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9504]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m07s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_75/synth/bd_e941_m07s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m07s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_75/synth/bd_e941_m07s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm08_exit_pipeline_imp_1AL7R5U' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9746]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m08e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_88/synth/bd_e941_m08e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m08e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_88/synth/bd_e941_m08e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm08_exit_pipeline_imp_1AL7R5U' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9746]
+INFO: [Synth 8-6157] synthesizing module 'm08_nodes_imp_YWBZA0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9988]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m08arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_83/synth/bd_e941_m08arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m08arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_83/synth/bd_e941_m08arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m08awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_85/synth/bd_e941_m08awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m08awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_85/synth/bd_e941_m08awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m08bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_87/synth/bd_e941_m08bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m08bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_87/synth/bd_e941_m08bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m08rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_84/synth/bd_e941_m08rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m08rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_84/synth/bd_e941_m08rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m08wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_86/synth/bd_e941_m08wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m08wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_86/synth/bd_e941_m08wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm08_nodes_imp_YWBZA0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:9988]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m08s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_82/synth/bd_e941_m08s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m08s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_82/synth/bd_e941_m08s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm09_exit_pipeline_imp_1D1K41U' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:10230]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m09e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_95/synth/bd_e941_m09e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m09e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_95/synth/bd_e941_m09e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm09_exit_pipeline_imp_1D1K41U' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:10230]
+INFO: [Synth 8-6157] synthesizing module 'm09_nodes_imp_1QDC5YM' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:10472]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m09arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_90/synth/bd_e941_m09arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m09arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_90/synth/bd_e941_m09arn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m09awn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_92/synth/bd_e941_m09awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m09awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_92/synth/bd_e941_m09awn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m09bn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_94/synth/bd_e941_m09bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m09bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_94/synth/bd_e941_m09bn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m09rn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_91/synth/bd_e941_m09rn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m09rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_91/synth/bd_e941_m09rn_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m09wn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_93/synth/bd_e941_m09wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m09wn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_93/synth/bd_e941_m09wn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm09_nodes_imp_1QDC5YM' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:10472]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m09s2a_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_89/synth/bd_e941_m09s2a_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m09s2a_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_89/synth/bd_e941_m09s2a_0.sv:53]
+INFO: [Synth 8-6157] synthesizing module 'm10_exit_pipeline_imp_11507FA' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:10714]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m10e_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_102/synth/bd_e941_m10e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m10e_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_102/synth/bd_e941_m10e_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'm10_exit_pipeline_imp_11507FA' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:10714]
+INFO: [Synth 8-6157] synthesizing module 'm10_nodes_imp_1WN5406' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:10956]
+INFO: [Synth 8-6157] synthesizing module 'bd_e941_m10arn_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_97/synth/bd_e941_m10arn_0.sv:53]
+INFO: [Common 17-14] Message 'Synth 8-6157' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m10arn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_97/synth/bd_e941_m10arn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m10awn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_99/synth/bd_e941_m10awn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m10bn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_101/synth/bd_e941_m10bn_0.sv:53]
+INFO: [Synth 8-6155] done synthesizing module 'bd_e941_m10rn_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_98/synth/bd_e941_m10rn_0.sv:53]
+INFO: [Common 17-14] Message 'Synth 8-6155' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+WARNING: [Synth 8-7071] port 'm_axi_awburst' of module 'bd_e941_s00tr_0' is unconnected for instance 's00_transaction_regulator' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:13105]
+WARNING: [Synth 8-7071] port 'm_axi_arburst' of module 'bd_e941_s00tr_0' is unconnected for instance 's00_transaction_regulator' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:13105]
+WARNING: [Synth 8-7023] instance 's00_transaction_regulator' of module 'bd_e941_s00tr_0' has 82 connections declared, but only 80 given [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:13105]
+WARNING: [Synth 8-3848] Net aresetn_out in module/entity clk_map_imp_1RTLZFD does not have driver. [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/synth/bd_e941.v:5526]
+INFO: [Synth 8-7129] Port aclk in module sc_util_v1_0_4_pipeline__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_util_v1_0_4_pipeline__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_util_v1_0_4_pipeline__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_util_v1_0_4_pipeline__parameterized0 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_util_v1_0_4_pipeline__parameterized0 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_util_v1_0_4_pipeline__parameterized0 is either unconnected or has no load
+INFO: [Synth 8-7129] Port din[0] in module sc_util_v1_0_4_onehot_to_binary__parameterized0 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[13] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[12] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[11] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[10] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[9] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[8] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[7] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[6] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[5] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[4] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[3] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[2] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[1] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[0] in module sc_switchboard_v1_0_9_top__parameterized6 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[0] in module sc_switchboard_v1_0_9_top__parameterized5 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_util_v1_0_4_pipeline__parameterized3 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_util_v1_0_4_pipeline__parameterized3 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_util_v1_0_4_pipeline__parameterized3 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_util_v1_0_4_pipeline__parameterized5 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_util_v1_0_4_pipeline__parameterized5 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_util_v1_0_4_pipeline__parameterized5 is either unconnected or has no load
+INFO: [Synth 8-7129] Port din[0] in module sc_util_v1_0_4_onehot_to_binary__parameterized1 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[13] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[12] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[11] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[10] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[9] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[8] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[7] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[6] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[5] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[4] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[3] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[2] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[1] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[0] in module sc_switchboard_v1_0_9_top__parameterized4 is either unconnected or has no load
+INFO: [Synth 8-7129] Port connectivity[0] in module sc_switchboard_v1_0_9_top__parameterized3 is either unconnected or has no load
+INFO: [Synth 8-7129] Port din[0] in module sc_util_v1_0_4_onehot_to_binary is either unconnected or has no load
+INFO: [Synth 8-7129] Port slow_clk in module sc_util_v1_0_4_sample_cycle_ratio is either unconnected or has no load
+INFO: [Synth 8-7129] Port fast_clk in module sc_util_v1_0_4_sample_cycle_ratio is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_util_v1_0_4_pipeline__parameterized11 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_util_v1_0_4_pipeline__parameterized11 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_util_v1_0_4_pipeline__parameterized11 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_node_v1_0_19_reg_slice3 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_node_v1_0_19_reg_slice3 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_node_v1_0_19_reg_slice3 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_req[0] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[0] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tvalid in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[15] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[14] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[13] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[12] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[11] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[10] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[9] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[8] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[7] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[6] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[5] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[4] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[3] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[2] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[1] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_axis_arb_tdata[0] in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port m_axis_arb_tready in module sc_node_v1_0_19_si_handler__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_util_v1_0_4_axic_register_slice is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_util_v1_0_4_axic_register_slice is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_util_v1_0_4_axic_register_slice is either unconnected or has no load
+INFO: [Synth 8-7129] Port m_sc_aclken in module sc_node_v1_0_19_top__parameterized13 is either unconnected or has no load
+INFO: [Synth 8-7129] Port din[0] in module sc_util_v1_0_4_onehot_to_binary__parameterized2 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_util_v1_0_4_pipeline__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_util_v1_0_4_pipeline__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_util_v1_0_4_pipeline__parameterized8 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_util_v1_0_4_pipeline__parameterized10 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_util_v1_0_4_pipeline__parameterized10 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_util_v1_0_4_pipeline__parameterized10 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclk in module sc_node_v1_0_19_reg_slice3__parameterized0 is either unconnected or has no load
+INFO: [Synth 8-7129] Port aclken in module sc_node_v1_0_19_reg_slice3__parameterized0 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_node_v1_0_19_reg_slice3__parameterized0 is either unconnected or has no load
+INFO: [Synth 8-7129] Port areset in module sc_node_v1_0_19_fi_regulator is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[13] in module sc_node_v1_0_19_si_handler__parameterized7 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[12] in module sc_node_v1_0_19_si_handler__parameterized7 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[11] in module sc_node_v1_0_19_si_handler__parameterized7 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[10] in module sc_node_v1_0_19_si_handler__parameterized7 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[9] in module sc_node_v1_0_19_si_handler__parameterized7 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[8] in module sc_node_v1_0_19_si_handler__parameterized7 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[7] in module sc_node_v1_0_19_si_handler__parameterized7 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[6] in module sc_node_v1_0_19_si_handler__parameterized7 is either unconnected or has no load
+INFO: [Synth 8-7129] Port s_sc_info[5] in module sc_node_v1_0_19_si_handler__parameterized7 is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:33 ; elapsed = 00:00:35 . Memory (MB): peak = 1873.906 ; gain = 1023.586
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:33 ; elapsed = 00:00:36 . Memory (MB): peak = 1873.906 ; gain = 1023.586
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:33 ; elapsed = 00:00:36 . Memory (MB): peak = 1873.906 ; gain = 1023.586
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 2363.594 ; gain = 26.301
+INFO: [Netlist 29-17] Analyzing 1 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/ooc.xdc] for cell 'inst'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/ooc.xdc] for cell 'inst'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_1/bd_e941_psr_aclk_0_board.xdc] for cell 'inst/clk_map/psr_aclk/U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/bd_0/ip/ip_1/bd_e941_psr_aclk_0_board.xdc] for cell 'inst/clk_map/psr_aclk/U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/smartconnect.xdc] for cell 'inst'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/smartconnect.xdc] for cell 'inst'
+Parsing XDC File [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_mbv_riscv_axi_periph_1_synth_1/dont_touch.xdc]
+Finished Parsing XDC File [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_mbv_riscv_axi_periph_1_synth_1/dont_touch.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/AMDDesignTools/2025.2/Vivado/data/ip/xpm/xpm_cdc/tcl/xpm_cdc_single.tcl]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/mbv_system_mbv_riscv_axi_periph_1_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/mbv_system_mbv_riscv_axi_periph_1_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+INFO: [Project 1-1714] 179 XPM XDC files have been applied to the design.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.033 . Memory (MB): peak = 2611.672 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1 instances were transformed.
+  SRL16 => SRL16E: 1 instance 
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 2611.672 ; gain = 0.000
+INFO: [Designutils 20-5008] Incremental synthesis strategy off
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:01:51 ; elapsed = 00:01:55 . Memory (MB): peak = 2611.672 ; gain = 1761.352
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a35ticsg324-1L
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:01:51 ; elapsed = 00:01:55 . Memory (MB): peak = 2611.672 ; gain = 1761.352
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:01:52 ; elapsed = 00:01:55 . Memory (MB): peak = 2611.672 ; gain = 1761.352
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'gen_endpoint.w_state_reg' in module 'sc_mmu_v1_0_16_top'
+INFO: [Synth 8-802] inferred FSM for state register 'gen_endpoint.r_state_reg' in module 'sc_mmu_v1_0_16_top'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  iSTATE |                               00 | 00000000000000000000000000000000
+*
+                 W_STALL |                               01 | 00000000000000000000000000000001
+               W_PENDING |                               10 | 00000000000000000000000000000010
+                W_DECERR |                               11 | 00000000000000000000000000000011
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'gen_endpoint.w_state_reg' using encoding 'sequential' in module 'sc_mmu_v1_0_16_top'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  iSTATE |                               00 | 00000000000000000000000000000000
+*
+                 R_STALL |                               01 | 00000000000000000000000000000001
+               R_PENDING |                               10 | 00000000000000000000000000000010
+                R_DECERR |                               11 | 00000000000000000000000000000011
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'gen_endpoint.r_state_reg' using encoding 'sequential' in module 'sc_mmu_v1_0_16_top'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:02:00 ; elapsed = 00:02:04 . Memory (MB): peak = 2611.672 ; gain = 1761.352
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 90 (col length:60)
+BRAMs: 100 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:05:26 ; elapsed = 00:05:34 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:05:35 ; elapsed = 00:05:43 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:05:40 ; elapsed = 00:05:48 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:05:46 ; elapsed = 00:05:55 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:05:51 ; elapsed = 00:06:00 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:05:51 ; elapsed = 00:06:00 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:05:52 ; elapsed = 00:06:01 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:05:52 ; elapsed = 00:06:01 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:05:52 ; elapsed = 00:06:01 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:05:52 ; elapsed = 00:06:01 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+------+------+
+|      |Cell  |Count |
++------+------+------+
+|1     |LUT1  |   460|
+|2     |LUT2  |   254|
+|3     |LUT3  |   285|
+|4     |LUT4  |   108|
+|5     |LUT5  |   155|
+|6     |LUT6  |   352|
+|7     |MUXF7 |    74|
+|8     |MUXF8 |    34|
+|9     |SRL16 |     1|
+|10    |FDCE  |   531|
+|11    |FDRE  |   745|
+|12    |FDSE  |   113|
++------+------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:05:52 ; elapsed = 00:06:01 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:04:12 ; elapsed = 00:04:55 . Memory (MB): peak = 3905.547 ; gain = 2317.461
+Synthesis Optimization Complete : Time (s): cpu = 00:05:52 ; elapsed = 00:06:01 . Memory (MB): peak = 3905.547 ; gain = 3055.227
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 3905.547 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 109 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 3905.547 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1 instances were transformed.
+  SRL16 => SRL16E: 1 instance 
+
+Synth Design complete | Checksum: 5338b770
+INFO: [Common 17-83] Releasing license: Synthesis
+345 Infos, 9 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:06:08 ; elapsed = 00:06:18 . Memory (MB): peak = 3905.547 ; gain = 3251.211
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 3905.547 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_mbv_riscv_axi_periph_1_synth_1/mbv_system_mbv_riscv_axi_periph_1.dcp' has been generated.
+INFO: [Coretcl 2-1648] Added synthesis output to IP cache for IP mbv_system_mbv_riscv_axi_periph_1, cache-ID = e7a3b843bb97bbd0
+INFO: [Coretcl 2-1174] Renamed 612 cell refs.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.012 . Memory (MB): peak = 3905.547 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_mbv_riscv_axi_periph_1_synth_1/mbv_system_mbv_riscv_axi_periph_1.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file mbv_system_mbv_riscv_axi_periph_1_utilization_synth.rpt -pb mbv_system_mbv_riscv_axi_periph_1_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sat Jan 10 23:03:27 2026...

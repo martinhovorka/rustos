@@ -1,0 +1,63 @@
+<: ;#Component and file information :>
+<: setFileUsedIn [list out_of_context synthesis implementation] :>
+<: setOutputDirectory "./" :>
+<: set ComponentName [getComponentNameString] :>
+<: setFileName [ttcl_add $ComponentName "_ooc"] :>
+<: setFileExtension ".xdc" :>
+<: ;#all other variables :>
+<#: ttcl/variables.ttcl :>
+<: set comment "#" :>
+# file: <=: ComponentName :>_ooc.xdc
+<#: ttcl/disclaimer.ttcl :>
+
+#################
+#DEFAULT CLOCK CONSTRAINTS
+
+############################################################
+# Clock Period Constraints                                 #
+############################################################
+<: if {  [string equal -nocase $clkin1_buf "No_buffer"] || [string equal -nocase $clkin1_buf "Global_buffer"]}  {  :>
+create_clock -period <=: clkin1_period :> [get_ports <=: PRIMARY_PORT :>]
+<: } elseif { $clkin1_diff}  {  :>
+# Differential clock only needs one constraint
+#create_clock -period <=: clkin1_period :> [get_ports <=: PRIMARY_PORT :>_p]
+<: } else  { :>
+#create_clock -period <=: clkin1_period :> [get_ports <=: PRIMARY_PORT :>]
+<: } :>
+<: if { $use_inclk_switchover}  {  :>
+<: if { [string equal -nocase $clkin2_buf "No_buffer"] || [string equal -nocase $clkin2_buf "Global_buffer"]}  {  :>
+create_clock -period <=: clkin2_period :> [get_ports <=: SECONDARY_PORT :>]
+<: } elseif { $clkin2_diff}  {  :>
+# Differential clock only needs one constraint
+#create_clock -period <=: clkin2_period :> [get_ports <=: SECONDARY_PORT :>_p]
+<: } else  { :>
+#create_clock -period <=: clkin2_period :> [get_ports <=: SECONDARY_PORT :>]
+<: } :>
+<: } :>
+<: if { !$is_plle3}  {  :>
+<: if {  [string equal -nocase $clkin1_buf "No_buffer"] }  {  :>
+#set_property HD.CLK_SRC BUFGCTRL_X0Y0 [get_ports <=: PRIMARY_PORT :>]
+<: } :>
+<: if {  [string equal -nocase $clkin2_buf "No_buffer"] }  {  :>
+#set_property HD.CLK_SRC BUFGCTRL_X0Y1 [get_ports <=: SECONDARY_PORT :>]
+<: } :>
+<: } :>
+<: if { $c_has_AXI } { :>
+create_clock -period 10 [get_ports s_axi_aclk]
+<: } :>
+<: if { $C_ENABLE_CLOCK_MONITOR } { :>
+create_clock -period <=: REF_CLK_PERIOD :> [get_ports ref_clk]
+<: if { $C_ENABLE_USER_CLOCK0 && !$C_Enable_PLL0 } { :>
+create_clock -period <=: C_USER_CLK0_PERIOD :> [get_ports user_clk0]
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK1 && !$C_Enable_PLL1 } { :>
+create_clock -period <=: C_USER_CLK1_PERIOD :> [get_ports user_clk1]
+ <: } :>
+<: if { $C_ENABLE_USER_CLOCK2 } { :>
+create_clock -period <=: C_USER_CLK2_PERIOD :> [get_ports user_clk2]
+<: } :>
+<: if { $C_ENABLE_USER_CLOCK3 } { :>
+create_clock -period <=: C_USER_CLK3_PERIOD :> [get_ports user_clk3]
+<: } :>
+<: } :>
+

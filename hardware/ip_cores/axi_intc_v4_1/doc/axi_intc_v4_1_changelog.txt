@@ -1,0 +1,338 @@
+2025.2:
+ * Version 4.1 (Rev. 22)
+ * General: Support inline Concat
+
+2025.1.1:
+ * Version 4.1 (Rev. 21)
+ * No changes
+
+2025.1:
+ * Version 4.1 (Rev. 21)
+ * General: Updated IP Catalog taxonomy structure. This change has no impact to the IP.
+
+2024.2.2:
+ * Version 4.1 (Rev. 20)
+ * No changes
+
+2024.2.1:
+ * Version 4.1 (Rev. 20)
+ * No changes
+
+2024.2:
+ * Version 4.1 (Rev. 20)
+ * General: Avoid lint warnings
+
+2024.1.2:
+ * Version 4.1 (Rev. 19)
+ * No changes
+
+2024.1.1:
+ * Version 4.1 (Rev. 19)
+ * No changes
+
+2024.1:
+ * Version 4.1 (Rev. 19)
+ * General: IP packaging adjustments to address warnings from IP Packager integrity check
+ * General: Avoid lint warnings
+
+2023.2.2:
+ * Version 4.1 (Rev. 18)
+ * No changes
+
+2023.2.1:
+ * Version 4.1 (Rev. 18)
+ * No changes
+
+2023.2:
+ * Version 4.1 (Rev. 18)
+ * General: Rebrand to AMD copyright information
+
+2023.1.2:
+ * Version 4.1 (Rev. 17)
+ * No changes
+
+2023.1.1:
+ * Version 4.1 (Rev. 17)
+ * No changes
+
+2023.1:
+ * Version 4.1 (Rev. 17)
+ * No changes
+
+2022.2.2:
+ * Version 4.1 (Rev. 17)
+ * No changes
+
+2022.2.1:
+ * Version 4.1 (Rev. 17)
+ * No changes
+
+2022.2:
+ * Version 4.1 (Rev. 17)
+ * No changes
+
+2022.1.2:
+ * Version 4.1 (Rev. 17)
+ * No changes
+
+2022.1.1:
+ * Version 4.1 (Rev. 17)
+ * No changes
+
+2022.1:
+ * Version 4.1 (Rev. 17)
+ * General: Avoid additional issues when regenerating the IP.
+
+2021.2.2:
+ * Version 4.1 (Rev. 16)
+ * No changes
+
+2021.2.1:
+ * Version 4.1 (Rev. 16)
+ * No changes
+
+2021.2:
+ * Version 4.1 (Rev. 16)
+ * General: Avoid issues when regenerating the IP.
+
+2021.1.1:
+ * Version 4.1 (Rev. 15)
+ * No changes
+
+2021.1:
+ * Version 4.1 (Rev. 15)
+ * No changes
+
+2020.3:
+ * Version 4.1 (Rev. 15)
+ * No changes
+
+2020.2.2:
+ * Version 4.1 (Rev. 15)
+ * No changes
+
+2020.2.1:
+ * Version 4.1 (Rev. 15)
+ * No changes
+
+2020.2:
+ * Version 4.1 (Rev. 15)
+ * General: Consider interrupts and processor clock asynchronous if they have different clock drivers than the AXI clock.
+
+2020.1.1:
+ * Version 4.1 (Rev. 14)
+ * No changes
+
+2020.1:
+ * Version 4.1 (Rev. 14)
+ * No changes
+
+2019.2.2:
+ * Version 4.1 (Rev. 14)
+ * No changes
+
+2019.2.1:
+ * Version 4.1 (Rev. 14)
+ * No changes
+
+2019.2:
+ * Version 4.1 (Rev. 14)
+ * Bug Fix: Handle IVAR reset values greater than 32 bits correctly on Windows
+
+2019.1.3:
+ * Version 4.1 (Rev. 13)
+ * No changes
+
+2019.1.2:
+ * Version 4.1 (Rev. 13)
+ * No changes
+
+2019.1.1:
+ * Version 4.1 (Rev. 13)
+ * No changes
+
+2019.1:
+ * Version 4.1 (Rev. 13)
+ * General: Update parameters C_DISABLE_SYNCHRONIZERS and C_MB_CLK_NOT_CONNECTED when C_HAS_FAST is changed
+
+2018.3.1:
+ * Version 4.1 (Rev. 12)
+ * No changes
+
+2018.3:
+ * Version 4.1 (Rev. 12)
+ * Feature Enhancement: Added support for interrupt vector extended address with fast interrupt
+ * Other: Avoid constraint warnings during OOC synthesis
+
+2018.2:
+ * Version 4.1 (Rev. 11)
+ * General: Avoid warning for IVAR reset value 0x80000000 or greater
+ * General: Updated HDL to avoid lint error. No functional change.
+
+2018.1:
+ * Version 4.1 (Rev. 10)
+ * No changes
+
+2017.4:
+ * Version 4.1 (Rev. 10)
+ * No changes
+
+2017.3:
+ * Version 4.1 (Rev. 10)
+ * No changes
+
+2017.2:
+ * Version 4.1 (Rev. 10)
+ * Feature Enhancement: Issue warning for improper connection of the interrupt bus interface
+
+2017.1:
+ * Version 4.1 (Rev. 9)
+ * No changes
+
+2016.4:
+ * Version 4.1 (Rev. 9)
+ * General: Corrected tooltip and warning messages
+
+2016.3:
+ * Version 4.1 (Rev. 8)
+ * General: Source HDL files are concatenated into a single file to speed up synthesis and simulation. No changes required by the user
+
+2016.2:
+ * Version 4.1 (Rev. 7)
+ * Provided register information for all registers, including description and bit field definitions
+ * Revision change in one or more subcores
+
+2016.1:
+ * Version 4.1 (Rev. 6)
+ * Added Cascade Interrupt Mode bus interface to simplify cascade mode connections
+ * Improved Cascade Interrupt Mode configuration checks
+ * Allow selection of single interrupt output bus interface
+
+2015.4.2:
+ * Version 4.1 (Rev. 5)
+ * No changes
+
+2015.4.1:
+ * Version 4.1 (Rev. 5)
+ * No changes
+
+2015.4:
+ * Version 4.1 (Rev. 5)
+ * No changes
+
+2015.3:
+ * Version 4.1 (Rev. 5)
+ * Supported devices and production status are now determined automatically, to simplify support for future devices
+ * Improved automatic setting of interrupt controller IVAR reset value from connected processor
+ * IP revision number added to HDL module, library, and include file names, to support designs with both locked and upgraded IP instances
+ * Revision change in one or more subcores
+
+2015.2.1:
+ * Version 4.1 (Rev. 4)
+ * No changes
+
+2015.2:
+ * Version 4.1 (Rev. 4)
+ * Corrected help text in customization dialog
+
+2015.1:
+ * Version 4.1 (Rev. 3)
+ * Updated to not use unimplemented synthesis features, no functional changes
+ * Corrected automatic parameter calculation for vector interrupt inputs
+ * Avoid warnings by only generating clock constraints when fast interrupt is used
+ * Avoid warnings by only updating the default value for IVAR registers when fast interrupt is used
+ * Added support for additional Ultrascale devices
+ * Enabled out-of-context clock frequency setting
+
+2014.4.1:
+ * Version 4.1 (Rev. 2)
+ * No changes
+
+2014.4:
+ * Version 4.1 (Rev. 2)
+ * No changes
+
+2014.3:
+ * Version 4.1 (Rev. 2)
+ * Updated subcore references, no functional changes
+
+2014.2:
+ * Version 4.1 (Rev. 1)
+ * No changes
+
+2014.1:
+ * Version 4.1 (Rev. 1)
+ * Allow changing C_IVAR_RESET_VALUE from the default value, to use C_BASE_VECTORS of the processor to initialize IVAR
+ * Corrected OOC constraints
+ * Modified block design propagation to support Concat v2.0
+ * Internal device family name change, no functional changes
+ * Removed unused WebTalk core generation information, no functional changes
+
+2013.4:
+ * Version 4.1
+ * Added Interrupt Level Register to support nested interrupts.
+ * Added validation of hexadecimal parameter syntax and length.
+
+2013.3:
+ * Version 4.0
+ * Hide processor_clk and processor_rst pins when Fast Interrupt is not enabled.
+ * Corrected setting parameters Interrupts Type, Level Type and Edge Type from propagated values.
+ * Fixed XDC critical warning
+ * Support for Automotive Artix-7, Artix-7 Lower Power, Automotive Zynq, Defense Grade Artix-7, Defense Grade Kintex-7, Defense Grade Kintex-7 Lower Power, and Defense Grade Zynq devices at Production status
+ * Added synchronization flip-flops on asynchronous interrupt inputs, which adds a two clock cycle latency by default
+ * Changed edge triggered interrupt detection to avoid using the input as clock, which requires that it is active at least one clock cycle
+
+2013.2:
+ * Version 3.1
+ * Support for Software Interrupts added.
+ * Constraints processing order changed.
+
+2013.1:
+ * Version 3.0
+ * Core up reved for 2013.1
+ * Fixed issue - Intermediate updates in the IVAR register were resetting the IPIER bits when the core was configured in Fast Interrupt mode.
+
+(c) Copyright 2012 - 2025 Advanced Micro Devices, Inc. All rights reserved.
+
+This file contains confidential and proprietary information
+of AMD and is protected under U.S. and international copyright
+and other intellectual property laws.
+
+DISCLAIMER
+This disclaimer is not a license and does not grant any
+rights to the materials distributed herewith. Except as
+otherwise provided in a valid license issued to you by
+AMD, and to the maximum extent permitted by applicable
+law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+WITH ALL FAULTS, AND AMD HEREBY DISCLAIMS ALL WARRANTIES
+AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+(2) AMD shall not be liable (whether in contract or tort,
+including negligence, or under any other theory of
+liability) for any loss or damage of any kind or nature
+related to, arising under or in connection with these
+materials, including for any direct, or any indirect,
+special, incidental, or consequential loss or damage
+(including loss of data, profits, goodwill, or any type of
+loss or damage suffered as a result of any action brought
+by a third party) even if such damage or loss was
+reasonably foreseeable or AMD had been advised of the
+possibility of the same.
+
+CRITICAL APPLICATIONS
+AMD products are not designed or intended to be fail-
+safe, or for use in any application requiring fail-safe
+performance, such as life-support or safety devices or
+systems, Class III medical devices, nuclear facilities,
+applications related to the deployment of airbags, or any
+other applications that could lead to death, personal
+injury, or severe property or environmental damage
+(individually and collectively, "Critical
+Applications"). Customer assumes the sole risk and
+liability of any use of AMD products in Critical
+Applications, subject only to applicable laws and
+regulations governing limitations on product liability.
+
+THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+PART OF THIS FILE AT ALL TIMES.

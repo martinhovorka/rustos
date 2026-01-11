@@ -1,0 +1,5 @@
+<#: ttcl/variables.ttcl :>
+<: if { ($PRIMITIVE == "None" && $C_ENABLE_CLOCK_MONITOR) } { :>
+<: set msg "Example Design cannot be generated for an IP configuration where Clock Monitor is enabled and Primitive is None. Please change the Primitive to generate Example design" :>
+<: send_msg ERROR 1 $msg :>
+<: ttcl_return; } :>

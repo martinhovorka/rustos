@@ -1,0 +1,911 @@
+<: set axi_p [get_property PARAM_VALUE.C_S_AXI_PROTOCOL] :>
+<: if {$axi_p == "AXI4"} { :> 
+<: set deliver true :>
+<: } else { :>
+<: set deliver false :>
+<: } :>
+<: if {!$deliver} {ttcl_return;} :>
+<: set ComponentName [getComponentNameString] :>
+<: set en_mdio [get_property MODELPARAM_VALUE.C_INCLUDE_MDIO] :>
+<: set en_bufg [get_property MODELPARAM_VALUE.C_INCLUDE_GLOBAL_BUFFERS] :>
+<: set en_loop [get_property PARAM_VALUE.C_INCLUDE_INTERNAL_LOOPBACK] :>
+<: set id_wid [get_property PARAM_VALUE.C_S_AXI_ID_WIDTH] :>
+<: if {$id_wid != 0} { :>
+<: set id_w [expr {$id_wid - 1}] :>
+<: if {$id_wid <= 6} { :>
+<: set id_atg [expr {$id_wid - 1}] :>
+<: } else { :>
+<: set id_atg 5 :>
+<: } :>
+<: } else { :>
+<: set id_w $id_wid :>
+<: set id_atg $id_wid :>
+<: } :>
+<: if {$id_wid >= 7} { :>
+<: set mat_wid [expr {$id_wid - 7}]:>
+<: } :>
+<: setOutputDirectory [ttcl_string_concat $ComponentName "/example_design"] :>
+<: setFileName [ttcl_string_concat $ComponentName "_exdes"] :>
+<: set wd [ file dirname [ get_property xml_file_name [ current_ipbom ] ] ] :>
+<: setFileExtension ".vhd" :>
+-- 
+-- (c) Copyright 2008 - 2013 Advanced Micro Devices, Inc. All rights reserved.
+-- 
+-- This file contains confidential and proprietary information
+-- of Advanced Micro Devices, Inc. and is protected under U.S. and
+-- international copyright and other intellectual property
+-- laws.
+-- 
+-- DISCLAIMER
+-- This disclaimer is not a license and does not grant any
+-- rights to the materials distributed herewith. Except as
+-- otherwise provided in a valid license issued to you by
+-- Advanced Micro Devices, and to the maximum extent permitted by applicable
+-- law: (1) THESE MATERIALS ARE MADE AVAILABLE "AS IS" AND
+-- WITH ALL FAULTS, AND AMD HEREBY DISCLAIMS ALL WARRANTIES
+-- AND CONDITIONS, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING
+-- BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, NON-
+-- INFRINGEMENT, OR FITNESS FOR ANY PARTICULAR PURPOSE; and
+-- (2) Advanced Micro Devices shall not be liable (whether in contract or tort,
+-- including negligence, or under any other theory of
+-- liability) for any loss or damage of any kind or nature
+-- related to, arising under or in connection with these
+-- materials, including for any direct, or any indirect,
+-- special, incidental, or consequential loss or damage
+-- (including loss of data, profits, goodwill, or any type of
+-- loss or damage suffered as a result of any action brought
+-- by a third party) even if such damage or loss was
+-- reasonably foreseeable or Advanced Micro Devices had been advised of the
+-- possibility of the same.
+-- 
+-- CRITICAL APPLICATIONS
+-- Advanced Micro Devices products are not designed or intended to be fail-
+-- safe, or for use in any application requiring fail-safe
+-- performance, such as life-support or safety devices or
+-- systems, Class III medical devices, nuclear facilities,
+-- applications related to the deployment of airbags, or any
+-- other applications that could lead to death, personal
+-- injury, or severe property or environmental damage
+-- (individually and collectively, "Critical
+-- Applications"). Customer assumes the sole risk and
+-- liability of any use of Advanced Micro Devices products in Critical
+-- Applications, subject only to applicable laws and
+-- regulations governing limitations on product liability.
+-- 
+-- THIS COPYRIGHT NOTICE AND DISCLAIMER MUST BE RETAINED AS
+-- PART OF THIS FILE AT ALL TIMES.
+-- 
+------------------------------------------------------------------------------
+-- User entered comments
+------------------------------------------------------------------------------------
+-- This is a self-desigined Design to Demonstrate functionality of Ethernetlite IP
+------------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_misc.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+library unisim;
+use unisim.vcomponents.all;
+library work;
+
+entity <=:$ComponentName:>_exdes is
+ PORT (
+    clk_p       : in std_logic;
+    clk_n       : in std_logic;
+    reset       : in std_logic;
+    ip2intc_irpt : OUT STD_LOGIC;
+<: if {$en_bufg == 1} { :>
+    phy_tx_clk  : IN STD_LOGIC;
+    phy_rx_clk  : IN STD_LOGIC;
+<: } :>
+    phy_crs     : IN STD_LOGIC;
+    phy_dv      : IN STD_LOGIC;
+    phy_rx_data : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    phy_col     : IN STD_LOGIC;
+    phy_rx_er   : IN STD_LOGIC;
+    phy_rst_n   : OUT STD_LOGIC;
+    phy_tx_en   : OUT STD_LOGIC;
+<: if {$en_mdio == 1} { :>
+    mdio        : INOUT STD_LOGIC;
+    phy_mdc     : OUT STD_LOGIC;
+<: } :>
+    phy_tx_data : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+<: if {$en_loop == 0} { :>
+    p_phy_crs     : IN STD_LOGIC;
+    p_phy_dv      : IN STD_LOGIC;
+    p_phy_rx_data : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    p_phy_col     : IN STD_LOGIC;
+    p_phy_rx_er   : IN STD_LOGIC;
+    p_phy_rst_n   : OUT STD_LOGIC;
+    p_phy_tx_en   : OUT STD_LOGIC;
+    p_phy_tx_data : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+<: } :>
+    done        : OUT STD_LOGIC;
+    status      : OUT STD_LOGIC_VECTOR(1 DOWNTO 0)
+ );
+end entity;
+
+architecture impl of <=:$ComponentName:>_exdes is
+
+--------------------------------------------------------------------------------------
+-- below attributes are added to reduce the synth warnings in Vivado tool
+  attribute DowngradeIPIdentifiedWarnings: string;
+  attribute DowngradeIPIdentifiedWarnings of impl : architecture is "yes";
+--------------------------------------------------------------------------------------
+
+COMPONENT clk_wiz_0
+port
+ (
+  clk_in1_p         : in     std_logic;
+  clk_in1_n         : in     std_logic;
+  clk_out1          : out    std_logic;
+<: if {$en_loop == 0 || $en_bufg == 0} { :>
+  clk_out2          : out    std_logic;
+<: } :>
+  reset             : in     std_logic;
+  locked            : out    std_logic
+ );
+end COMPONENT;
+
+COMPONENT axi_traffic_gen_0
+  PORT (
+    s_axi_aclk : IN STD_LOGIC;
+    s_axi_aresetn : IN STD_LOGIC;
+    m_axi_lite_ch1_awaddr : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axi_lite_ch1_awprot : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+    m_axi_lite_ch1_awvalid : OUT STD_LOGIC;
+    m_axi_lite_ch1_awready : IN STD_LOGIC;
+    m_axi_lite_ch1_wdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axi_lite_ch1_wstrb : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+    m_axi_lite_ch1_wvalid : OUT STD_LOGIC;
+    m_axi_lite_ch1_wready : IN STD_LOGIC;
+    m_axi_lite_ch1_bresp : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    m_axi_lite_ch1_bvalid : IN STD_LOGIC;
+    m_axi_lite_ch1_bready : OUT STD_LOGIC;
+    m_axi_lite_ch1_araddr : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axi_lite_ch1_arvalid : OUT STD_LOGIC;
+    m_axi_lite_ch1_arready : IN STD_LOGIC;
+    m_axi_lite_ch1_rdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axi_lite_ch1_rvalid : IN STD_LOGIC;
+    m_axi_lite_ch1_rready : OUT STD_LOGIC;
+    m_axi_lite_ch1_rresp : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+<: if {$en_loop == 0} { :>
+    m_axi_lite_ch2_awaddr : out std_logic_vector(31 DOWNTO 0);
+    m_axi_lite_ch2_awprot : out std_logic_vector(2 DOWNTO 0);
+    m_axi_lite_ch2_awvalid : out std_logic;
+    m_axi_lite_ch2_awready : in std_logic;
+    m_axi_lite_ch2_wdata : out std_logic_vector(31 DOWNTO 0);
+    m_axi_lite_ch2_wstrb : out std_logic_vector(3 DOWNTO 0);
+    m_axi_lite_ch2_wvalid : out std_logic;
+    m_axi_lite_ch2_wready : in std_logic;
+    m_axi_lite_ch2_bresp : in std_logic_vector(1 DOWNTO 0);
+    m_axi_lite_ch2_bvalid : in std_logic;
+    m_axi_lite_ch2_bready : out std_logic;
+    m_axi_lite_ch2_araddr : out std_logic_vector(31 DOWNTO 0);
+    m_axi_lite_ch2_arvalid : out std_logic;
+    m_axi_lite_ch2_arready : in std_logic;
+    m_axi_lite_ch2_rdata : in std_logic_vector(31 DOWNTO 0);
+    m_axi_lite_ch2_rvalid : in std_logic;
+    m_axi_lite_ch2_rready : out std_logic;
+    m_axi_lite_ch2_rresp : in std_logic_vector(1 DOWNTO 0);
+<: } :>
+    done : OUT STD_LOGIC;
+    status : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+  );
+END COMPONENT;
+
+COMPONENT atg_full
+  PORT (
+    s_axi_aclk : IN STD_LOGIC;
+    s_axi_aresetn : IN STD_LOGIC;
+    s_axi_awaddr : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_awlen : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    s_axi_awsize : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+    s_axi_awburst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_awlock : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+    s_axi_awcache : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_awprot : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+    s_axi_awqos : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_awuser : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    s_axi_awvalid : IN STD_LOGIC;
+    s_axi_awready : OUT STD_LOGIC;
+    s_axi_wlast : IN STD_LOGIC;
+    s_axi_wdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_wstrb : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_wvalid : IN STD_LOGIC;
+    s_axi_wready : OUT STD_LOGIC;
+    s_axi_bresp : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_bvalid : OUT STD_LOGIC;
+    s_axi_bready : IN STD_LOGIC;
+    s_axi_araddr : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_arlen : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    s_axi_arsize : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+    s_axi_arburst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_arlock : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+    s_axi_arcache : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_arprot : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+    s_axi_arqos : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_aruser : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    s_axi_arvalid : IN STD_LOGIC;
+    s_axi_arready : OUT STD_LOGIC;
+    s_axi_rlast : OUT STD_LOGIC;
+    s_axi_rdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_rresp : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_rvalid : OUT STD_LOGIC;
+    s_axi_rready : IN STD_LOGIC;
+<: if {$id_wid != 0} { :>
+    m_axi_awid : OUT STD_LOGIC_VECTOR(<=:$id_atg:> DOWNTO 0);
+    m_axi_bid : IN STD_LOGIC_VECTOR(<=:$id_atg:> DOWNTO 0);
+    m_axi_arid : OUT STD_LOGIC_VECTOR(<=:$id_atg:> DOWNTO 0);
+    m_axi_rid : IN STD_LOGIC_VECTOR(<=:$id_atg:> DOWNTO 0);
+<: } :>
+    m_axi_awaddr : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axi_awlen : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    m_axi_awsize : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+    m_axi_awburst : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    m_axi_awlock : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+    m_axi_awcache : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+    m_axi_awprot : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+    m_axi_awqos : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+    m_axi_awuser : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    m_axi_awvalid : OUT STD_LOGIC;
+    m_axi_awready : IN STD_LOGIC;
+    m_axi_wlast : OUT STD_LOGIC;
+    m_axi_wdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axi_wstrb : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+    m_axi_wvalid : OUT STD_LOGIC;
+    m_axi_wready : IN STD_LOGIC;
+    m_axi_bresp : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    m_axi_bvalid : IN STD_LOGIC;
+    m_axi_bready : OUT STD_LOGIC;
+    m_axi_araddr : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axi_arlen : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    m_axi_arsize : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+    m_axi_arburst : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    m_axi_arlock : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+    m_axi_arcache : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+    m_axi_arprot : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+    m_axi_arqos : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+    m_axi_aruser : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    m_axi_arvalid : OUT STD_LOGIC;
+    m_axi_arready : IN STD_LOGIC;
+    m_axi_rlast : IN STD_LOGIC;
+    m_axi_rdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axi_rresp : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    m_axi_rvalid : IN STD_LOGIC;
+    m_axi_rready : OUT STD_LOGIC;
+    irq_out : OUT STD_LOGIC;
+    err_out : OUT STD_LOGIC;
+    core_ext_start : IN STD_LOGIC
+  );
+END COMPONENT;
+
+COMPONENT <=:$ComponentName:> 
+  PORT (
+    s_axi_aclk : IN STD_LOGIC;
+    s_axi_aresetn : IN STD_LOGIC;
+    ip2intc_irpt : OUT STD_LOGIC;
+    s_axi_awaddr : IN STD_LOGIC_VECTOR(12 DOWNTO 0);
+    s_axi_awvalid : IN STD_LOGIC;
+    s_axi_awready : OUT STD_LOGIC;
+    s_axi_wdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_wstrb : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_wvalid : IN STD_LOGIC;
+    s_axi_wready : OUT STD_LOGIC;
+    s_axi_bresp : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_bvalid : OUT STD_LOGIC;
+    s_axi_bready : IN STD_LOGIC;
+    s_axi_araddr : IN STD_LOGIC_VECTOR(12 DOWNTO 0);
+    s_axi_arvalid : IN STD_LOGIC;
+    s_axi_arready : OUT STD_LOGIC;
+    s_axi_rdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_rresp : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_rvalid : OUT STD_LOGIC;
+    s_axi_rready : IN STD_LOGIC;
+<: if {$axi_p == "AXI4"} { :>
+<: if {$id_wid != 0} { :>
+    s_axi_awid : IN STD_LOGIC_VECTOR(<=:$id_w:> DOWNTO 0);
+    s_axi_bid : OUT STD_LOGIC_VECTOR(<=:$id_w:> DOWNTO 0);
+    s_axi_arid : IN STD_LOGIC_VECTOR(<=:$id_w:> DOWNTO 0);
+    s_axi_rid : OUT STD_LOGIC_VECTOR(<=:$id_w:> DOWNTO 0);
+<: } :>
+    s_axi_awlen : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    s_axi_awsize : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+    s_axi_awburst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_awcache : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_wlast : IN STD_LOGIC;
+    s_axi_arlen : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    s_axi_arsize : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+    s_axi_arburst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_arcache : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_rlast : OUT STD_LOGIC;
+<: } :>
+    phy_tx_clk : IN STD_LOGIC;
+    phy_rx_clk : IN STD_LOGIC;
+    phy_crs : IN STD_LOGIC;
+    phy_dv : IN STD_LOGIC;
+    phy_rx_data : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    phy_col : IN STD_LOGIC;
+    phy_rx_er : IN STD_LOGIC;
+    phy_rst_n : OUT STD_LOGIC;
+    phy_tx_en : OUT STD_LOGIC;
+<: if {$en_mdio == 1} { :>
+    phy_mdio_i : IN STD_LOGIC;
+    phy_mdio_o : OUT STD_LOGIC;
+    phy_mdio_t : OUT STD_LOGIC;
+    phy_mdc : OUT STD_LOGIC;
+<: } :>
+    phy_tx_data : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
+  );
+END COMPONENT;
+
+<: if {$en_loop == 0} { :>
+COMPONENT <=:$ComponentName:>_partner 
+  PORT (
+    s_axi_aclk : IN STD_LOGIC;
+    s_axi_aresetn : IN STD_LOGIC;
+    ip2intc_irpt : OUT STD_LOGIC;
+    s_axi_awaddr : IN STD_LOGIC_VECTOR(12 DOWNTO 0);
+    s_axi_awvalid : IN STD_LOGIC;
+    s_axi_awready : OUT STD_LOGIC;
+    s_axi_wdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_wstrb : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_wvalid : IN STD_LOGIC;
+    s_axi_wready : OUT STD_LOGIC;
+    s_axi_bresp : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_bvalid : OUT STD_LOGIC;
+    s_axi_bready : IN STD_LOGIC;
+    s_axi_araddr : IN STD_LOGIC_VECTOR(12 DOWNTO 0);
+    s_axi_arvalid : IN STD_LOGIC;
+    s_axi_arready : OUT STD_LOGIC;
+    s_axi_rdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axi_rresp : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_rvalid : OUT STD_LOGIC;
+    s_axi_rready : IN STD_LOGIC;
+<: if {$axi_p == "AXI4"} { :>
+<: if {$id_wid != 0} { :>
+    s_axi_awid : IN STD_LOGIC_VECTOR(<=:$id_w:> DOWNTO 0);
+    s_axi_bid : OUT STD_LOGIC_VECTOR(<=:$id_w:> DOWNTO 0);
+    s_axi_arid : IN STD_LOGIC_VECTOR(<=:$id_w:> DOWNTO 0);
+    s_axi_rid : OUT STD_LOGIC_VECTOR(<=:$id_w:> DOWNTO 0);
+<: } :>
+    s_axi_awlen : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    s_axi_awsize : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+    s_axi_awburst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_awcache : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_wlast : IN STD_LOGIC;
+    s_axi_arlen : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    s_axi_arsize : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+    s_axi_arburst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    s_axi_arcache : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    s_axi_rlast : OUT STD_LOGIC;
+<: } :>
+    phy_tx_clk : IN STD_LOGIC;
+    phy_rx_clk : IN STD_LOGIC;
+    phy_crs : IN STD_LOGIC;
+    phy_dv : IN STD_LOGIC;
+    phy_rx_data : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    phy_col : IN STD_LOGIC;
+    phy_rx_er : IN STD_LOGIC;
+    phy_rst_n : OUT STD_LOGIC;
+    phy_tx_en : OUT STD_LOGIC;
+    phy_tx_data : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
+  );
+END COMPONENT;
+<: } :>
+
+signal axi_clk : std_logic;
+signal phy_clk : std_logic;
+signal locked  : std_logic;
+signal atg_stat :  std_logic_vector(31 DOWNTO 0);
+signal awaddr  :  std_logic_vector(31 downto 0);
+signal awvalid :  std_logic;
+signal awready :  std_logic;
+signal wdata   :  std_logic_vector(31 downto 0);
+signal wstrb   :  std_logic_vector(3 downto 0);
+signal wvalid  :  std_logic;
+signal wready  :  std_logic;
+signal bresp   :  std_logic_vector(1 downto 0);
+signal bvalid  :  std_logic;
+signal bready  :  std_logic;
+signal araddr  :  std_logic_vector(31 downto 0);
+signal arvalid :  std_logic;
+signal arready :  std_logic;
+signal rdata   :  std_logic_vector(31 downto 0);
+signal rvalid  :  std_logic;
+signal rready  :  std_logic;
+signal rresp   :  std_logic_vector(1 downto 0);
+<: if {$id_wid != 0} { :>
+signal awid    :  std_logic_vector(<=:$id_w:> downto 0);
+signal arid    :  std_logic_vector(<=:$id_w:> downto 0);
+signal rid     :  std_logic_vector(<=:$id_w:> downto 0);
+signal bid     :  std_logic_vector(<=:$id_w:> downto 0);
+<: } :>
+<: if {$id_wid > 6} { :>
+signal awid_atg    :  std_logic_vector(<=:$id_atg:> downto 0);
+signal arid_atg    :  std_logic_vector(<=:$id_atg:> downto 0);
+<: if {$en_loop == 0} { :>
+signal p_awid_atg  :  std_logic_vector(<=:$id_atg:> downto 0);
+signal p_arid_atg  :  std_logic_vector(<=:$id_atg:> downto 0);
+<: } :>
+<: if {$id_wid == 7} { :>
+signal width_mat   :  std_logic := '0';
+<: }  else { :>
+signal width_mat   :  std_logic_vector(<=:$mat_wid:> downto 0) := (OTHERS => '0');
+<: } :>
+<: } :>
+signal awlen   :  std_logic_vector(7 downto 0);
+signal arlen   :  std_logic_vector(7 downto 0);
+signal awsize  :  std_logic_vector(2 downto 0);
+signal arsize  :  std_logic_vector(2 downto 0);
+signal awburst :  std_logic_vector(1 downto 0);
+signal arburst :  std_logic_vector(1 downto 0);
+signal awcache :  std_logic_vector(3 downto 0);
+signal arcache :  std_logic_vector(3 downto 0);
+signal wlast   :  std_logic;
+signal rlast   :  std_logic;
+<: if {$en_loop == 0} { :>
+signal p_awaddr  :  std_logic_vector(31 downto 0);
+signal p_awvalid :  std_logic;
+signal p_awready :  std_logic;
+signal p_wdata   :  std_logic_vector(31 downto 0);
+signal p_wstrb   :  std_logic_vector(3 downto 0);
+signal p_wvalid  :  std_logic;
+signal p_wready  :  std_logic;
+signal p_bresp   :  std_logic_vector(1 downto 0);
+signal p_bvalid  :  std_logic;
+signal p_bready  :  std_logic;
+signal p_araddr  :  std_logic_vector(31 downto 0);
+signal p_arvalid :  std_logic;
+signal p_arready :  std_logic;
+signal p_rdata   :  std_logic_vector(31 downto 0);
+signal p_rvalid  :  std_logic;
+signal p_rready  :  std_logic;
+signal p_rresp   :  std_logic_vector(1 downto 0);
+<: if {$id_wid != 0} { :>
+signal p_awid    :  std_logic_vector(<=:$id_w:> downto 0);
+signal p_arid    :  std_logic_vector(<=:$id_w:> downto 0);
+signal p_rid     :  std_logic_vector(<=:$id_w:> downto 0);
+signal p_bid     :  std_logic_vector(<=:$id_w:> downto 0);
+<: } :>
+signal p_awlen   :  std_logic_vector(7 downto 0);
+signal p_arlen   :  std_logic_vector(7 downto 0);
+signal p_awsize  :  std_logic_vector(2 downto 0);
+signal p_arsize  :  std_logic_vector(2 downto 0);
+signal p_awburst :  std_logic_vector(1 downto 0);
+signal p_arburst :  std_logic_vector(1 downto 0);
+signal p_awcache :  std_logic_vector(3 downto 0);
+signal p_arcache :  std_logic_vector(3 downto 0);
+signal p_wlast   :  std_logic;
+signal p_rlast   :  std_logic;
+<: } :>
+<: if {$en_mdio == 1} { :>
+signal mdio_i  :  STD_LOGIC;
+signal mdio_o  :  STD_LOGIC;
+signal mdio_t  :  STD_LOGIC;
+<: } :>
+signal lite_awaddr  :  std_logic_vector(31 downto 0);
+signal lite_awvalid :  std_logic;
+signal lite_awready :  std_logic;
+signal lite_wdata   :  std_logic_vector(31 downto 0);
+signal lite_wstrb   :  std_logic_vector(3 downto 0);
+signal lite_wvalid  :  std_logic;
+signal lite_wready  :  std_logic;
+signal lite_bresp   :  std_logic_vector(1 downto 0);
+signal lite_bvalid  :  std_logic;
+signal lite_bready  :  std_logic;
+signal lite_araddr  :  std_logic_vector(31 downto 0);
+signal lite_arvalid :  std_logic;
+signal lite_arready :  std_logic;
+signal lite_rdata   :  std_logic_vector(31 downto 0);
+signal lite_rvalid  :  std_logic;
+signal lite_rready  :  std_logic;
+signal lite_rresp   :  std_logic_vector(1 downto 0);
+<: if {$en_loop == 0} { :>
+signal p_lite_awaddr  :  std_logic_vector(31 downto 0);
+signal p_lite_awvalid :  std_logic;
+signal p_lite_awready :  std_logic;
+signal p_lite_wdata   :  std_logic_vector(31 downto 0);
+signal p_lite_wstrb   :  std_logic_vector(3 downto 0);
+signal p_lite_wvalid  :  std_logic;
+signal p_lite_wready  :  std_logic;
+signal p_lite_bresp   :  std_logic_vector(1 downto 0);
+signal p_lite_bvalid  :  std_logic;
+signal p_lite_bready  :  std_logic;
+signal p_lite_araddr  :  std_logic_vector(31 downto 0);
+signal p_lite_arvalid :  std_logic;
+signal p_lite_arready :  std_logic;
+signal p_lite_rdata   :  std_logic_vector(31 downto 0);
+signal p_lite_rvalid  :  std_logic;
+signal p_lite_rready  :  std_logic;
+signal p_lite_rresp   :  std_logic_vector(1 downto 0);
+<: } :>
+
+
+begin
+
+status <= atg_stat(1 DOWNTO 0);
+
+<: if {$en_mdio == 1} { :>
+prh : IOBUF
+     port map (
+       IO => mdio,
+       I =>  mdio_o,
+       O =>  mdio_i,
+       T =>  mdio_t);
+<: } :>
+
+CLK_GEN : clk_wiz_0
+   port map ( 
+   clk_in1_p => clk_p,
+   clk_in1_n => clk_n,
+   clk_out1 => axi_clk,
+<: if {$en_loop == 0 || $en_bufg == 0} { :>
+   clk_out2 => phy_clk,
+<: } :>
+   reset => reset,
+   locked => locked            
+ );
+
+ATG_LITE : axi_traffic_gen_0
+  PORT MAP (
+    s_axi_aclk => axi_clk,
+    s_axi_aresetn => locked,
+    m_axi_lite_ch1_awaddr => lite_awaddr,
+    m_axi_lite_ch1_awprot => open,
+    m_axi_lite_ch1_awvalid => lite_awvalid,
+    m_axi_lite_ch1_awready => lite_awready,
+    m_axi_lite_ch1_wdata => lite_wdata,
+    m_axi_lite_ch1_wstrb => lite_wstrb,
+    m_axi_lite_ch1_wvalid => lite_wvalid,
+    m_axi_lite_ch1_wready => lite_wready,
+    m_axi_lite_ch1_bresp => lite_bresp,
+    m_axi_lite_ch1_bvalid => lite_bvalid,
+    m_axi_lite_ch1_bready => lite_bready,
+    m_axi_lite_ch1_araddr => lite_araddr,
+    m_axi_lite_ch1_arvalid => lite_arvalid,
+    m_axi_lite_ch1_arready => lite_arready,
+    m_axi_lite_ch1_rdata => lite_rdata,
+    m_axi_lite_ch1_rvalid => lite_rvalid,
+    m_axi_lite_ch1_rready => lite_rready,
+    m_axi_lite_ch1_rresp => lite_rresp,
+<: if {$en_loop == 0} { :>
+    m_axi_lite_ch2_awaddr => p_lite_awaddr,
+    m_axi_lite_ch2_awprot => open,
+    m_axi_lite_ch2_awvalid => p_lite_awvalid,
+    m_axi_lite_ch2_awready => p_lite_awready,
+    m_axi_lite_ch2_wdata => p_lite_wdata,
+    m_axi_lite_ch2_wstrb => p_lite_wstrb,
+    m_axi_lite_ch2_wvalid => p_lite_wvalid,
+    m_axi_lite_ch2_wready => p_lite_wready,
+    m_axi_lite_ch2_bresp => p_lite_bresp,
+    m_axi_lite_ch2_bvalid => p_lite_bvalid,
+    m_axi_lite_ch2_bready => p_lite_bready,
+    m_axi_lite_ch2_araddr => p_lite_araddr,
+    m_axi_lite_ch2_arvalid => p_lite_arvalid,
+    m_axi_lite_ch2_arready => p_lite_arready,
+    m_axi_lite_ch2_rdata => p_lite_rdata,
+    m_axi_lite_ch2_rvalid => p_lite_rvalid,
+    m_axi_lite_ch2_rready => p_lite_rready,
+    m_axi_lite_ch2_rresp => p_lite_rresp,
+<: } :>
+    done => done,
+    status => atg_stat
+  );
+
+ATG_FULL_DUT : atg_full
+  PORT MAP (
+    s_axi_aclk => axi_clk,
+    s_axi_aresetn => locked,
+    s_axi_awaddr => lite_awaddr,
+    s_axi_awlen => (OTHERS => '0'),
+    s_axi_awsize => "010",
+    s_axi_awburst => (OTHERS => '0'),
+    s_axi_awlock => (OTHERS => '0'),
+    s_axi_awcache => (OTHERS => '0'),
+    s_axi_awprot => "010",
+    s_axi_awqos => (OTHERS => '0'),
+    s_axi_awuser => (OTHERS => '0'),
+    s_axi_awvalid => lite_awvalid,
+    s_axi_awready => lite_awready,
+    s_axi_wlast => '1',
+    s_axi_wdata => lite_wdata,
+    s_axi_wstrb => (OTHERS => '1'),
+    s_axi_wvalid => lite_wvalid,
+    s_axi_wready => lite_wready,
+    s_axi_bresp => lite_bresp,
+    s_axi_bvalid => lite_bvalid,
+    s_axi_bready => lite_bready,
+    s_axi_araddr => lite_araddr,
+    s_axi_arlen => (OTHERS => '0'),
+    s_axi_arsize => "010",
+    s_axi_arburst => (OTHERS => '0'),
+    s_axi_arlock => (OTHERS => '0'),
+    s_axi_arcache => (OTHERS => '0'),
+    s_axi_arprot => "010",
+    s_axi_arqos => (OTHERS => '0'),
+    s_axi_aruser => (OTHERS => '0'),
+    s_axi_arvalid => lite_arvalid,
+    s_axi_arready => lite_arready,
+    s_axi_rlast => open,
+    s_axi_rdata => lite_rdata,
+    s_axi_rresp => lite_rresp,
+    s_axi_rvalid => lite_rvalid,
+    s_axi_rready => lite_rready,
+<: if {$id_wid != 0} { :>
+<: if {$id_wid > 6} { :>
+    m_axi_awid => awid_atg,
+    m_axi_bid => bid(<=:$id_atg:> downto 0),
+    m_axi_arid => arid_atg,
+    m_axi_rid => rid(<=:$id_atg:> downto 0),
+<: } else { :>
+    m_axi_awid => awid,
+    m_axi_bid => bid,
+    m_axi_arid => arid,
+    m_axi_rid => rid,
+<: } :>
+<: } :>
+    m_axi_awaddr => awaddr,
+    m_axi_awlen => awlen,
+    m_axi_awsize => awsize,
+    m_axi_awburst => awburst,
+    m_axi_awlock => open,
+    m_axi_awcache => awcache,
+    m_axi_awprot => open,
+    m_axi_awqos => open,
+    m_axi_awuser => open,
+    m_axi_awvalid => awvalid,
+    m_axi_awready => awready,
+    m_axi_wlast => wlast,
+    m_axi_wdata => wdata,
+    m_axi_wstrb => wstrb,
+    m_axi_wvalid => wvalid,
+    m_axi_wready => wready,
+    m_axi_bresp => bresp,
+    m_axi_bvalid => bvalid,
+    m_axi_bready => bready,
+    m_axi_araddr => araddr,
+    m_axi_arlen => arlen,
+    m_axi_arsize => arsize,
+    m_axi_arburst => arburst,
+    m_axi_arlock => open,
+    m_axi_arcache => arcache,
+    m_axi_arprot => open,
+    m_axi_arqos => open,
+    m_axi_aruser => open,
+    m_axi_arvalid => arvalid,
+    m_axi_arready => arready,
+    m_axi_rlast => rlast,
+    m_axi_rdata => rdata,
+    m_axi_rresp => rresp,
+    m_axi_rvalid => rvalid,
+    m_axi_rready => rready,
+    irq_out => open,
+    err_out => open,
+    core_ext_start => '0'
+  );
+
+<: if {$id_wid > 6} { :>
+<: if {$en_loop == 0} { :>
+  p_awid <= width_mat & p_awid_atg;
+  p_arid <= width_mat & p_arid_atg;
+<: } :>
+  awid <= width_mat & awid_atg;
+  arid <= width_mat & arid_atg;
+<: } :>
+
+<: if {$en_loop == 0} { :>
+ATG_FULL_PARTNER : atg_full
+  PORT MAP (
+    s_axi_aclk => axi_clk,
+    s_axi_aresetn => locked,
+    s_axi_awaddr => p_lite_awaddr,
+    s_axi_awlen => (OTHERS => '0'),
+    s_axi_awsize => "010",
+    s_axi_awburst => (OTHERS => '0'),
+    s_axi_awlock => (OTHERS => '0'),
+    s_axi_awcache => (OTHERS => '0'),
+    s_axi_awprot => "010",
+    s_axi_awqos => (OTHERS => '0'),
+    s_axi_awuser => (OTHERS => '0'),
+    s_axi_awvalid => p_lite_awvalid,
+    s_axi_awready => p_lite_awready,
+    s_axi_wlast => '1',
+    s_axi_wdata => p_lite_wdata,
+    s_axi_wstrb => (OTHERS => '1'),
+    s_axi_wvalid => p_lite_wvalid,
+    s_axi_wready => p_lite_wready,
+    s_axi_bresp => p_lite_bresp,
+    s_axi_bvalid => p_lite_bvalid,
+    s_axi_bready => p_lite_bready,
+    s_axi_araddr => p_lite_araddr,
+    s_axi_arlen => (OTHERS => '0'),
+    s_axi_arsize => "010",
+    s_axi_arburst => (OTHERS => '0'),
+    s_axi_arlock => (OTHERS => '0'),
+    s_axi_arcache => (OTHERS => '0'),
+    s_axi_arprot => "010",
+    s_axi_arqos => (OTHERS => '0'),
+    s_axi_aruser => (OTHERS => '0'),
+    s_axi_arvalid => p_lite_arvalid,
+    s_axi_arready => p_lite_arready,
+    s_axi_rlast => open,
+    s_axi_rdata => p_lite_rdata,
+    s_axi_rresp => p_lite_rresp,
+    s_axi_rvalid => p_lite_rvalid,
+    s_axi_rready => p_lite_rready,
+<: if {$id_wid != 0} { :>
+<: if {$id_wid > 6} { :>
+    m_axi_awid => p_awid_atg,
+    m_axi_bid => p_bid(<=:$id_atg:> downto 0),
+    m_axi_arid => p_arid_atg,
+    m_axi_rid => p_rid(<=:$id_atg:> downto 0),
+<: } else { :>
+    m_axi_awid => p_awid,
+    m_axi_bid => p_bid,
+    m_axi_arid => p_arid,
+    m_axi_rid => p_rid,
+<: } :>
+<: } :>
+    m_axi_awaddr => p_awaddr,
+    m_axi_awlen => p_awlen,
+    m_axi_awsize => p_awsize,
+    m_axi_awburst => p_awburst,
+    m_axi_awlock => open,
+    m_axi_awcache => p_awcache,
+    m_axi_awprot => open,
+    m_axi_awqos => open,
+    m_axi_awuser => open,
+    m_axi_awvalid => p_awvalid,
+    m_axi_awready => p_awready,
+    m_axi_wlast => p_wlast,
+    m_axi_wdata => p_wdata,
+    m_axi_wstrb => p_wstrb,
+    m_axi_wvalid => p_wvalid,
+    m_axi_wready => p_wready,
+    m_axi_bresp => p_bresp,
+    m_axi_bvalid => p_bvalid,
+    m_axi_bready => p_bready,
+    m_axi_araddr => p_araddr,
+    m_axi_arlen => p_arlen,
+    m_axi_arsize => p_arsize,
+    m_axi_arburst => p_arburst,
+    m_axi_arlock => open,
+    m_axi_arcache => p_arcache,
+    m_axi_arprot => open,
+    m_axi_arqos => open,
+    m_axi_aruser => open,
+    m_axi_arvalid => p_arvalid,
+    m_axi_arready => p_arready,
+    m_axi_rlast => p_rlast,
+    m_axi_rdata => p_rdata,
+    m_axi_rresp => p_rresp,
+    m_axi_rvalid => p_rvalid,
+    m_axi_rready => p_rready,
+    irq_out => open,
+    err_out => open,
+    core_ext_start => '0'
+  );
+
+
+PARTNER : <=:$ComponentName:>_partner
+  PORT MAP (
+    s_axi_aclk => axi_clk,
+    s_axi_aresetn => locked,
+    ip2intc_irpt => open,
+    s_axi_awaddr  =>   p_awaddr(12 downto 0),
+    s_axi_awvalid =>   p_awvalid,
+    s_axi_awready =>   p_awready,
+    s_axi_wdata   =>   p_wdata,
+    s_axi_wstrb   =>   p_wstrb,
+    s_axi_wvalid  =>   p_wvalid,
+    s_axi_wready  =>   p_wready,
+    s_axi_bresp   =>   p_bresp,
+    s_axi_bvalid  =>   p_bvalid,
+    s_axi_bready  =>   p_bready,
+    s_axi_araddr  =>   p_araddr(12 downto 0),
+    s_axi_arvalid =>   p_arvalid,
+    s_axi_arready =>   p_arready,
+    s_axi_rdata   =>   p_rdata,
+    s_axi_rresp   =>   p_rresp,
+    s_axi_rvalid  =>   p_rvalid,
+    s_axi_rready  =>   p_rready,
+<: if {$axi_p == "AXI4"} { :>
+<: if {$id_wid != 0} { :>
+    s_axi_awid    =>   p_awid,
+    s_axi_bid     =>   p_bid,
+    s_axi_arid    =>   p_arid,
+    s_axi_rid     =>   p_rid,
+<: } :>
+    s_axi_awlen   =>   p_awlen,
+    s_axi_awsize  =>   p_awsize,
+    s_axi_awburst =>   p_awburst,
+    s_axi_awcache =>   p_awcache,
+    s_axi_wlast   =>   p_wlast,
+    s_axi_arlen   =>   p_arlen,
+    s_axi_arsize  =>   p_arsize,
+    s_axi_arburst =>   p_arburst,
+    s_axi_arcache =>   p_arcache,
+    s_axi_rlast   =>   p_rlast,
+<: } :>
+    phy_tx_clk    =>   phy_clk,
+    phy_rx_clk    =>   phy_clk,
+    phy_crs       =>   p_phy_crs,
+    phy_dv        =>   p_phy_dv,
+    phy_rx_data   =>   p_phy_rx_data,
+    phy_col       =>   p_phy_col,
+    phy_rx_er     =>   p_phy_rx_er,
+    phy_rst_n     =>   p_phy_rst_n,
+    phy_tx_en     =>   p_phy_tx_en,
+    phy_tx_data   =>   p_phy_tx_data
+  );
+<: } :>
+
+DUT : <=:$ComponentName:>
+  PORT MAP (
+    s_axi_aclk => axi_clk,
+    s_axi_aresetn => locked,
+    ip2intc_irpt => ip2intc_irpt,
+    s_axi_awaddr  =>   awaddr(12 downto 0),
+    s_axi_awvalid =>   awvalid,
+    s_axi_awready =>   awready,
+    s_axi_wdata   =>   wdata,
+    s_axi_wstrb   =>   wstrb,
+    s_axi_wvalid  =>   wvalid,
+    s_axi_wready  =>   wready,
+    s_axi_bresp   =>   bresp,
+    s_axi_bvalid  =>   bvalid,
+    s_axi_bready  =>   bready,
+    s_axi_araddr  =>   araddr(12 downto 0),
+    s_axi_arvalid =>   arvalid,
+    s_axi_arready =>   arready,
+    s_axi_rdata   =>   rdata,
+    s_axi_rresp   =>   rresp,
+    s_axi_rvalid  =>   rvalid,
+    s_axi_rready  =>   rready,
+<: if {$axi_p == "AXI4"} { :>
+<: if {$id_wid != 0} { :>
+    s_axi_awid    =>   awid,
+    s_axi_bid     =>   bid,
+    s_axi_arid    =>   arid,
+    s_axi_rid     =>   rid,
+<: } :>
+    s_axi_awlen   =>   awlen,
+    s_axi_awsize  =>   awsize,
+    s_axi_awburst =>   awburst,
+    s_axi_awcache =>   awcache,
+    s_axi_wlast   =>   wlast,
+    s_axi_arlen   =>   arlen,
+    s_axi_arsize  =>   arsize,
+    s_axi_arburst =>   arburst,
+    s_axi_arcache =>   arcache,
+    s_axi_rlast   =>   rlast,
+<: } :>
+<: if {$en_bufg == 1} { :>
+    phy_tx_clk    =>   phy_tx_clk,
+    phy_rx_clk    =>   phy_rx_clk,
+<: } else { :>
+    phy_tx_clk    =>   phy_clk,
+    phy_rx_clk    =>   phy_clk,
+<: } :>
+    phy_crs       =>   phy_crs,
+    phy_dv        =>   phy_dv,
+    phy_rx_data   =>   phy_rx_data,
+    phy_col       =>   phy_col,
+    phy_rx_er     =>   phy_rx_er,
+    phy_rst_n     =>   phy_rst_n,
+    phy_tx_en     =>   phy_tx_en,
+<: if {$en_mdio == 1} { :>
+    phy_mdio_i    =>   mdio_i,
+    phy_mdio_o    =>   mdio_o,
+    phy_mdio_t    =>   mdio_t,
+    phy_mdc       =>   phy_mdc,
+<: } :>
+    phy_tx_data   =>   phy_tx_data
+  );
+
+end impl;

@@ -1,0 +1,46 @@
+<: set axi_p [get_property PARAM_VALUE.C_S_AXI_PROTOCOL] :>
+<: if {$axi_p == "AXI4"} { :> 
+<: set deliver false :>
+<: } else { :>
+<: set deliver true :>
+<: } :>
+<: if {!$deliver} {ttcl_return;} :>
+<: setFileName [ttcl_string_concat "data"] :>
+<: setFileExtension ".coe" :>
+<: set en_loop [get_property PARAM_VALUE.C_INCLUDE_INTERNAL_LOOPBACK] :>
+memory_initialization_radix = 16;
+memory_initialization_vector =
+<: if {$en_loop == 0} { :>
+80000000,
+00000014,
+34333231,
+00003635,
+0000000B,
+00000008,
+24232221,
+00002625,
+0000000B,
+00000008,
+24232221,
+32312625,
+36353433,
+02010014,
+06050403,
+0A090807,
+00000009,
+00000008,
+00000001,
+<: } else { :>
+80000000,
+00000014,
+FFFFFFFF,
+0000FFFF,
+ECAFE500,
+02010014,
+06050403,
+0A090807,
+00000019,
+00000008,
+00000001,
+<: } :>
+A51F12A9;

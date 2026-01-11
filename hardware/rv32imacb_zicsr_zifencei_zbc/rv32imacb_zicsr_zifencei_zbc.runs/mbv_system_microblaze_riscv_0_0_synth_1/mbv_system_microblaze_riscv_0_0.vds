@@ -1,0 +1,1223 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Sat Jan 10 22:56:09 2026
+# Process ID         : 3736
+# Current directory  : C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_microblaze_riscv_0_0_synth_1
+# Command line       : vivado.exe -log mbv_system_microblaze_riscv_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source mbv_system_microblaze_riscv_0_0.tcl
+# Log file           : C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_microblaze_riscv_0_0_synth_1/mbv_system_microblaze_riscv_0_0.vds
+# Journal file       : C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_microblaze_riscv_0_0_synth_1\vivado.jou
+# Running On         : STUDIOPC
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : AMD Ryzen Threadripper 2950X 16-Core Processor 
+# CPU Frequency      : 4000 MHz
+# CPU Physical cores : 16
+# CPU Logical cores  : 32
+# Host memory        : 34228 MB
+# Swap memory        : 2147 MB
+# Total Virtual      : 36375 MB
+# Available Virtual  : 20432 MB
+#-----------------------------------------------------------
+source mbv_system_microblaze_riscv_0_0.tcl -notrace
+create_project: Time (s): cpu = 00:00:15 ; elapsed = 00:00:13 . Memory (MB): peak = 529.527 ; gain = 219.867
+Command: synth_design -top mbv_system_microblaze_riscv_0_0 -part xc7a35ticsg324-1L -incremental_mode off -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35ti'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35ti'
+INFO: [Device 21-403] Loading part xc7a35ticsg324-1L
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 3848
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:14 ; elapsed = 00:00:14 . Memory (MB): peak = 1340.375 ; gain = 540.535
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'mbv_system_microblaze_riscv_0_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/synth/mbv_system_microblaze_riscv_0_0.vhd:140]
+	Parameter C_FREQ bound to: 75000000 - type: integer 
+	Parameter C_USE_CONFIG_RESET bound to: 0 - type: integer 
+	Parameter C_NUM_SYNC_FF_CLK bound to: 2 - type: integer 
+	Parameter C_NUM_SYNC_FF_CLK_IRQ bound to: 1 - type: integer 
+	Parameter C_NUM_SYNC_FF_CLK_DEBUG bound to: 2 - type: integer 
+	Parameter C_NUM_SYNC_FF_DBG_CLK bound to: 1 - type: integer 
+	Parameter C_NUM_SYNC_FF_DBG_TRACE_CLK bound to: 2 - type: integer 
+	Parameter C_FAULT_TOLERANT bound to: 0 - type: integer 
+	Parameter C_ECC_USE_CE_EXCEPTION bound to: 0 - type: integer 
+	Parameter C_LOCKSTEP_SLAVE bound to: 0 - type: integer 
+	Parameter C_LOCKSTEP_MASTER bound to: 0 - type: integer 
+	Parameter C_TEMPORAL_DEPTH bound to: 0 - type: integer 
+	Parameter C_FAMILY bound to: artix7 - type: string 
+	Parameter C_PART bound to: xc7a35ticsg324-1l - type: string 
+	Parameter C_DATA_SIZE bound to: 32 - type: integer 
+	Parameter C_LMB_DATA_SIZE bound to: 32 - type: integer 
+	Parameter C_INSTR_SIZE bound to: 32 - type: integer 
+	Parameter C_IADDR_SIZE bound to: 32 - type: integer 
+	Parameter C_PIADDR_SIZE bound to: 34 - type: integer 
+	Parameter C_DADDR_SIZE bound to: 32 - type: integer 
+	Parameter C_PDADDR_SIZE bound to: 34 - type: integer 
+	Parameter C_INSTANCE bound to: mbv_system_microblaze_riscv_0_0 - type: string 
+	Parameter C_AVOID_PRIMITIVES bound to: 0 - type: integer 
+	Parameter C_OPTIMIZATION bound to: 0 - type: integer 
+	Parameter C_INTERCONNECT bound to: 2 - type: integer 
+	Parameter C_BASE_VECTORS bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_ARCHID bound to: 64'b0000000000000000000000000000000000000000000000000000000000000001 
+	Parameter C_IMPID bound to: 64'b0000000000000000000000000000000000000000000000000000000000000001 
+	Parameter C_HARTID bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_M_AXI_DP_THREAD_ID_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_DP_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_DP_ADDR_WIDTH bound to: 34 - type: integer 
+	Parameter C_M_AXI_DP_EXCLUSIVE_ACCESS bound to: 0 - type: integer 
+	Parameter C_USE_AXI_DP_EXT_ADDR bound to: 0 - type: integer 
+	Parameter C_M_AXI_D_BUS_EXCEPTION bound to: 1 - type: integer 
+	Parameter C_M_AXI_IP_THREAD_ID_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_IP_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_IP_ADDR_WIDTH bound to: 34 - type: integer 
+	Parameter C_M_AXI_I_BUS_EXCEPTION bound to: 1 - type: integer 
+	Parameter C_D_LMB bound to: 1 - type: integer 
+	Parameter C_D_LMB_PROTOCOL bound to: 0 - type: integer 
+	Parameter C_D_LMB_HAS_PROT bound to: 0 - type: integer 
+	Parameter C_D_AXI bound to: 1 - type: integer 
+	Parameter C_I_LMB bound to: 1 - type: integer 
+	Parameter C_I_LMB_PROTOCOL bound to: 0 - type: integer 
+	Parameter C_I_LMB_HAS_PROT bound to: 0 - type: integer 
+	Parameter C_I_AXI bound to: 0 - type: integer 
+	Parameter C_S_AXI bound to: 0 - type: integer 
+	Parameter C_USE_MULDIV bound to: 2 - type: integer 
+	Parameter C_USE_ATOMIC bound to: 1 - type: integer 
+	Parameter C_USE_FPU bound to: 0 - type: integer 
+	Parameter C_USE_COMPRESSION bound to: 1 - type: integer 
+	Parameter C_USE_BITMAN bound to: 15 - type: integer 
+	Parameter C_FSL_LINKS bound to: 0 - type: integer 
+	Parameter C_USE_EXTENDED_FSL_INSTR bound to: 0 - type: integer 
+	Parameter C_MMU_PRIVILEGED_INSTR bound to: 0 - type: integer 
+	Parameter C_FSL_EXCEPTION bound to: 0 - type: integer 
+	Parameter C_IMPRECISE_EXCEPTIONS bound to: 0 - type: integer 
+	Parameter C_MISALIGNED_EXCEPTIONS bound to: 1 - type: integer 
+	Parameter C_ILL_INSTR_EXCEPTION bound to: 2 - type: integer 
+	Parameter C_PMP_ENTRIES bound to: 0 - type: integer 
+	Parameter C_PMP_GRANULARITY bound to: 2 - type: integer 
+	Parameter C_PMP_ENHANCEMENTS bound to: 0 - type: integer 
+	Parameter C_PMP_CFG0 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG1 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG2 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG3 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG4 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG5 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG6 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG7 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG8 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG9 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG10 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG11 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG12 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG13 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG14 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_CFG15 bound to: 32'b00000000000000000000000000000000 
+	Parameter C_PMP_ADDR0 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR1 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR2 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR3 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR4 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR5 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR6 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR7 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR8 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR9 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR10 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR11 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR12 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR13 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR14 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR15 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR16 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR17 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR18 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR19 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR20 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR21 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR22 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR23 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR24 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR25 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR26 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR27 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR28 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR29 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR30 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR31 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR32 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR33 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR34 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR35 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR36 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR37 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR38 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR39 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR40 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR41 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR42 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR43 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR44 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR45 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR46 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR47 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR48 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR49 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR50 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR51 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR52 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR53 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR54 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR55 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR56 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR57 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR58 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR59 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR60 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR61 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR62 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_ADDR63 bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_READ_ONLY bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_PMP_DEBUG_INHIBIT bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_USE_INTERRUPT bound to: 2 - type: integer 
+	Parameter C_USE_NON_SECURE bound to: 0 - type: integer 
+	Parameter C_USE_EXT_BRK bound to: 0 - type: integer 
+	Parameter C_USE_EXT_NM_BRK bound to: 0 - type: integer 
+	Parameter C_TRAP_ENHANCEMENT bound to: 0 - type: integer 
+	Parameter C_USE_SLEEP bound to: 0 - type: integer 
+	Parameter C_USE_MMU bound to: 3 - type: integer 
+	Parameter C_USE_BARREL bound to: 1 - type: integer 
+	Parameter C_USE_COUNTERS bound to: 1 - type: integer 
+	Parameter C_USE_SSTC bound to: 1 - type: integer 
+	Parameter C_USE_BRANCH_TARGET_CACHE bound to: 0 - type: integer 
+	Parameter C_BRANCH_TARGET_CACHE_SIZE bound to: 0 - type: integer 
+	Parameter C_PC_WIDTH bound to: 17 - type: integer 
+	Parameter C_DEBUG_ENABLED bound to: 1 - type: integer 
+	Parameter C_DEBUG_INTERFACE bound to: 0 - type: integer 
+	Parameter C_DEBUG_NUM_PROGBUF bound to: 2 - type: integer 
+	Parameter C_NUMBER_OF_PC_BRK bound to: 8 - type: integer 
+	Parameter C_NUMBER_OF_RD_ADDR_BRK bound to: 4 - type: integer 
+	Parameter C_NUMBER_OF_WR_ADDR_BRK bound to: 4 - type: integer 
+	Parameter C_DEBUG_EVENT_COUNTERS bound to: 13 - type: integer 
+	Parameter C_DEBUG_LATENCY_COUNTERS bound to: 8 - type: integer 
+	Parameter C_DEBUG_COUNTER_WIDTH bound to: 64 - type: integer 
+	Parameter C_DEBUG_TRACE_SIZE bound to: 0 - type: integer 
+	Parameter C_DEBUG_EXTERNAL_TRACE bound to: 1 - type: integer 
+	Parameter C_DEBUG_TRACE_ASYNC_RESET bound to: 0 - type: integer 
+	Parameter C_DEBUG_PROFILE_SIZE bound to: 0 - type: integer 
+	Parameter C_INTERRUPT_IS_EDGE bound to: 0 - type: integer 
+	Parameter C_EDGE_IS_POSITIVE bound to: 1 - type: integer 
+	Parameter C_ASYNC_INTERRUPT bound to: 1 - type: integer 
+	Parameter C_ASYNC_WAKEUP bound to: 3 - type: integer 
+	Parameter C_M0_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S0_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M1_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S1_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M2_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S2_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M3_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S3_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M4_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S4_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M5_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S5_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M6_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S6_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M7_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S7_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M8_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S8_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M9_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S9_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M10_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S10_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M11_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S11_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M12_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S12_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M13_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S13_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M14_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S14_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M15_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S15_AXIS_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_ICACHE_BASEADDR bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_ICACHE_HIGHADDR bound to: 64'b0000000000000000000000000000000000111111111111111111111111111111 
+	Parameter C_USE_ICACHE bound to: 0 - type: integer 
+	Parameter C_ICACHE_BYTE_SIZE bound to: 8192 - type: integer 
+	Parameter C_ICACHE_LINE_LEN bound to: 4 - type: integer 
+	Parameter C_ICACHE_STREAMS bound to: 0 - type: integer 
+	Parameter C_ICACHE_VICTIMS bound to: 0 - type: integer 
+	Parameter C_ICACHE_FORCE_TAG_LUTRAM bound to: 0 - type: integer 
+	Parameter C_ICACHE_DATA_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_IC_THREAD_ID_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_IC_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_IC_ADDR_WIDTH bound to: 34 - type: integer 
+	Parameter C_M_AXI_IC_USER_VALUE bound to: 31 - type: integer 
+	Parameter C_M_AXI_IC_AWUSER_WIDTH bound to: 5 - type: integer 
+	Parameter C_M_AXI_IC_ARUSER_WIDTH bound to: 5 - type: integer 
+	Parameter C_M_AXI_IC_WUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_IC_RUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_IC_BUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_DCACHE_BASEADDR bound to: 64'b0000000000000000000000000000000000000000000000000000000000000000 
+	Parameter C_DCACHE_HIGHADDR bound to: 64'b0000000000000000000000000000000000111111111111111111111111111111 
+	Parameter C_USE_DCACHE bound to: 0 - type: integer 
+	Parameter C_DCACHE_BYTE_SIZE bound to: 8192 - type: integer 
+	Parameter C_DCACHE_LINE_LEN bound to: 4 - type: integer 
+	Parameter C_DCACHE_USE_WRITEBACK bound to: 0 - type: integer 
+	Parameter C_DCACHE_VICTIMS bound to: 0 - type: integer 
+	Parameter C_DCACHE_FORCE_TAG_LUTRAM bound to: 0 - type: integer 
+	Parameter C_DCACHE_DATA_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_DC_THREAD_ID_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_DC_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_DC_ADDR_WIDTH bound to: 34 - type: integer 
+	Parameter C_M_AXI_DC_EXCLUSIVE_ACCESS bound to: 0 - type: integer 
+	Parameter C_M_AXI_DC_USER_VALUE bound to: 31 - type: integer 
+	Parameter C_M_AXI_DC_AWUSER_WIDTH bound to: 5 - type: integer 
+	Parameter C_M_AXI_DC_ARUSER_WIDTH bound to: 5 - type: integer 
+	Parameter C_M_AXI_DC_WUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_DC_RUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_DC_BUSER_WIDTH bound to: 1 - type: integer 
+INFO: [Synth 8-3491] module 'riscv' declared at 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ipshared/404b/hdl/microblaze_riscv_v1_0_vh_rfs.vhd:135219' bound to instance 'U0' of component 'riscv' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/synth/mbv_system_microblaze_riscv_0_0.vhd:974]
+INFO: [Synth 8-256] done synthesizing module 'mbv_system_microblaze_riscv_0_0' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/synth/mbv_system_microblaze_riscv_0_0.vhd:140]
+INFO: [Synth 8-7129] Port Clk in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port Reset in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port Config_Reset in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port Dbg_Inhibit_Ext in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port Dbg_State in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[fflags] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[frm] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[fcsr] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[cycle] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[instret] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[cycleh] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[instreth] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[hpmcounter] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[hpmcounterh] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[stream] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mstatus] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mstatush] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[misa] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mie] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mtvec] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mscratch] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mepc] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mcause] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mtval] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mip] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mvendorid] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[marchid] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mimpid] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mhartid] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mstream] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mwfi] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[medeleg] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mideleg] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[menvcfg] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mseccfg] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mcounteren] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mcountinhibit] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mcycle] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[minstret] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mcycleh] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[minstreth] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mhpmevent] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mhpmcounter] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mhpmcounterh] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mnivec] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mnevec] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mnscratch] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mnepc] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mncause] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[mnstatus] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[dcsr] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[dpc] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[sstatus] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[stvec] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[sie] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[sip] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[sscratch] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[sepc] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[scause] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[stval] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[senvcfg] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[stimecmp] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[stimecmph] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[satp] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[scounteren] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[tselect] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[tdata1] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[tdata2] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[tdata3] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[tinfo] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[tcontrol] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[pmp_cfg] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[pmp_cfgh] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Sel_CSR[pmp_addr] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_CSR_Number[6] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_CSR_Number[5] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_CSR_Number[4] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_CSR_Number[3] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_CSR_Number[2] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_CSR_Number[1] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_CSR_Number[0] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_Write_CSR in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[31] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[30] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[29] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[28] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[27] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[26] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[25] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[24] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[23] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[22] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[21] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[20] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[19] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[18] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[17] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[16] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[15] in module pmp_checker is either unconnected or has no load
+INFO: [Synth 8-7129] Port EX_ALU_Result[14] in module pmp_checker is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:52 ; elapsed = 00:00:58 . Memory (MB): peak = 2244.219 ; gain = 1444.379
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:53 ; elapsed = 00:00:59 . Memory (MB): peak = 2244.219 ; gain = 1444.379
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:53 ; elapsed = 00:00:59 . Memory (MB): peak = 2244.219 ; gain = 1444.379
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:12 ; elapsed = 00:00:11 . Memory (MB): peak = 2333.691 ; gain = 8.094
+INFO: [Netlist 29-17] Analyzing 1169 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0_ooc_debug.xdc] for cell 'U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0_ooc_debug.xdc] for cell 'U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0_ooc.xdc] for cell 'U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0_ooc.xdc] for cell 'U0'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc] for cell 'U0'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc] for cell 'U0'
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/mbv_system_microblaze_riscv_0_0_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/mbv_system_microblaze_riscv_0_0_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Parsing XDC File [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_microblaze_riscv_0_0_synth_1/dont_touch.xdc]
+Finished Parsing XDC File [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_microblaze_riscv_0_0_synth_1/dont_touch.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.043 . Memory (MB): peak = 2626.598 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 845 instances were transformed.
+  FDR => FDRE: 37 instances
+  FDS => FDSE: 1 instance 
+  LUT6_2 => LUT6_2 (LUT5, LUT6): 84 instances
+  MUXCY_L => MUXCY: 707 instances
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 16 instances
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.761 . Memory (MB): peak = 2626.598 ; gain = 0.000
+INFO: [Designutils 20-5008] Incremental synthesis strategy off
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:02:19 ; elapsed = 00:02:26 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a35ticsg324-1L
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:02:19 ; elapsed = 00:02:26 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:02:19 ; elapsed = 00:02:26 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'Using_Atomic_instr.of_amo_state_reg' in module 'microblaze_riscv_v1_0_7_Decode_gti'
+INFO: [Synth 8-802] inferred FSM for state register 'Several_ProgBuf.state_reg' in module 'riscv_debug'
+INFO: [Synth 8-802] inferred FSM for state register 'Using_TLBS.ptState_reg' in module 'microblaze_riscv_v1_0_7_MMU'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  amo_lr |                              000 |                              000
+              amo_cmp_op |                              101 |                              010
+             amo_cmp_op1 |                              100 |                              011
+             amo_cmp_op2 |                              011 |                              100
+                  amo_op |                              110 |                              001
+                  amo_sc |                              001 |                              101
+                  iSTATE |                              010 |                              110
+*
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'Using_Atomic_instr.of_amo_state_reg' using encoding 'sequential' in module 'microblaze_riscv_v1_0_7_Decode_gti'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                             0001 |                               00
+                execwait |                             0010 |                               01
+                    done |                             0100 |                               11
+                execnext |                             1000 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'Several_ProgBuf.state_reg' using encoding 'one-hot' in module 'riscv_debug'
+INFO: [Synth 8-7082] The signal ram_mem_reg is implemented as Block RAM but is better mapped onto distributed LUT RAM for the following reason(s): The depth (4 address bits) is shallow. Please use attribute (* ram_style = "distributed" *) to instruct Vivado to infer distributed LUT RAM.
+INFO: [Synth 8-3971] The signal "MMU_UTLB_RAM:/RAM_reg" was recognized as a true dual port RAM template.
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                   start |                            01100 |                            00000
+               initstart |                            01001 |                            00001
+                    init |                            01000 |                            00010
+              clearstart |                            00100 |                            00011
+                   clear |                            00101 |                            00100
+                    idle |                            00111 |                            00101
+                readwait |                            10000 |                            00110
+                 readpte |                            01110 |                            00111
+                readdone |                            01111 |                            01000
+              validcheck |                            10001 |                            01001
+                 ptraddr |                            01101 |                            01010
+                  leaflo |                            01011 |                            01011
+              leaflowait |                            00011 |                            01100
+                  leafea |                            00010 |                            01101
+              leafeawait |                            00000 |                            01110
+                  leafhi |                            00001 |                            01111
+              leafhiwait |                            01010 |                            10000
+                raiseexc |                            00110 |                            10001
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'Using_TLBS.ptState_reg' using encoding 'sequential' in module 'microblaze_riscv_v1_0_7_MMU'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:02:41 ; elapsed = 00:02:50 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   64 Bit       Adders := 23    
+	   2 Input   48 Bit       Adders := 1     
+	   3 Input   33 Bit       Adders := 1     
+	   2 Input   31 Bit       Adders := 1     
+	   2 Input   15 Bit       Adders := 1     
+	   2 Input   14 Bit       Adders := 2     
+	   2 Input    8 Bit       Adders := 1     
+	   2 Input    7 Bit       Adders := 4     
+	   2 Input    6 Bit       Adders := 14    
+	   3 Input    6 Bit       Adders := 4     
+	   2 Input    5 Bit       Adders := 12    
+	   2 Input    4 Bit       Adders := 21    
+	   3 Input    4 Bit       Adders := 3     
+	   2 Input    3 Bit       Adders := 8     
+	   3 Input    3 Bit       Adders := 2     
+	   2 Input    2 Bit       Adders := 2     
+	   2 Input    1 Bit       Adders := 1     
++---XORs : 
+	   2 Input     32 Bit         XORs := 3     
+	   2 Input     31 Bit         XORs := 1     
+	   2 Input      1 Bit         XORs := 1129  
+	   3 Input      1 Bit         XORs := 1     
++---Registers : 
+	             4096 Bit    Registers := 1     
+	               64 Bit    Registers := 40    
+	               54 Bit    Registers := 1     
+	               48 Bit    Registers := 3     
+	               42 Bit    Registers := 1     
+	               36 Bit    Registers := 2     
+	               34 Bit    Registers := 13    
+	               33 Bit    Registers := 1     
+	               32 Bit    Registers := 79    
+	               31 Bit    Registers := 4     
+	               29 Bit    Registers := 6     
+	               28 Bit    Registers := 2     
+	               27 Bit    Registers := 4     
+	               26 Bit    Registers := 2     
+	               25 Bit    Registers := 30    
+	               23 Bit    Registers := 1     
+	               22 Bit    Registers := 5     
+	               20 Bit    Registers := 3     
+	               19 Bit    Registers := 1     
+	               17 Bit    Registers := 8     
+	               16 Bit    Registers := 41    
+	               15 Bit    Registers := 1     
+	               14 Bit    Registers := 3     
+	               13 Bit    Registers := 2     
+	               12 Bit    Registers := 4     
+	               10 Bit    Registers := 1     
+	                8 Bit    Registers := 8     
+	                7 Bit    Registers := 5     
+	                6 Bit    Registers := 6     
+	                5 Bit    Registers := 14    
+	                4 Bit    Registers := 46    
+	                3 Bit    Registers := 16    
+	                2 Bit    Registers := 64    
+	                1 Bit    Registers := 990   
++---RAMs : 
+	              18K Bit	(512 X 36 bit)          RAMs := 1     
+	              512 Bit	(16 X 32 bit)          RAMs := 1     
++---Muxes : 
+	   2 Input   64 Bit        Muxes := 68    
+	   2 Input   54 Bit        Muxes := 7     
+	   3 Input   48 Bit        Muxes := 1     
+	   2 Input   48 Bit        Muxes := 3     
+	   2 Input   34 Bit        Muxes := 5     
+	  18 Input   34 Bit        Muxes := 1     
+	   2 Input   33 Bit        Muxes := 9     
+	   2 Input   32 Bit        Muxes := 233   
+	  18 Input   32 Bit        Muxes := 2     
+	   4 Input   32 Bit        Muxes := 6     
+	   3 Input   32 Bit        Muxes := 2     
+	   2 Input   31 Bit        Muxes := 3     
+	   2 Input   30 Bit        Muxes := 4     
+	   2 Input   29 Bit        Muxes := 1     
+	   2 Input   28 Bit        Muxes := 1     
+	   2 Input   27 Bit        Muxes := 4     
+	   2 Input   26 Bit        Muxes := 2     
+	   2 Input   25 Bit        Muxes := 1     
+	   2 Input   24 Bit        Muxes := 1     
+	   2 Input   22 Bit        Muxes := 5     
+	   6 Input   20 Bit        Muxes := 1     
+	   3 Input   20 Bit        Muxes := 1     
+	   2 Input   18 Bit        Muxes := 2     
+	   2 Input   16 Bit        Muxes := 84    
+	   4 Input   16 Bit        Muxes := 1     
+	   2 Input   15 Bit        Muxes := 2     
+	   2 Input   14 Bit        Muxes := 3     
+	   7 Input   13 Bit        Muxes := 2     
+	   2 Input   12 Bit        Muxes := 6     
+	   6 Input   12 Bit        Muxes := 2     
+	   2 Input   10 Bit        Muxes := 10    
+	   2 Input    9 Bit        Muxes := 1     
+	   4 Input    9 Bit        Muxes := 1     
+	   2 Input    8 Bit        Muxes := 25    
+	   4 Input    8 Bit        Muxes := 6     
+	   5 Input    8 Bit        Muxes := 1     
+	   3 Input    8 Bit        Muxes := 1     
+	   2 Input    7 Bit        Muxes := 3     
+	   4 Input    6 Bit        Muxes := 2     
+	   2 Input    6 Bit        Muxes := 26    
+	   2 Input    5 Bit        Muxes := 48    
+	   4 Input    5 Bit        Muxes := 2     
+	   3 Input    5 Bit        Muxes := 2     
+	   5 Input    5 Bit        Muxes := 1     
+	   6 Input    5 Bit        Muxes := 1     
+	  18 Input    5 Bit        Muxes := 1     
+	   2 Input    4 Bit        Muxes := 62    
+	   5 Input    4 Bit        Muxes := 4     
+	   4 Input    4 Bit        Muxes := 2     
+	   7 Input    4 Bit        Muxes := 1     
+	   3 Input    4 Bit        Muxes := 1     
+	   2 Input    3 Bit        Muxes := 52    
+	   4 Input    3 Bit        Muxes := 3     
+	   5 Input    3 Bit        Muxes := 2     
+	   3 Input    3 Bit        Muxes := 3     
+	   6 Input    3 Bit        Muxes := 1     
+	  16 Input    3 Bit        Muxes := 2     
+	   7 Input    3 Bit        Muxes := 1     
+	   2 Input    2 Bit        Muxes := 139   
+	   4 Input    2 Bit        Muxes := 7     
+	   3 Input    2 Bit        Muxes := 6     
+	  18 Input    2 Bit        Muxes := 1     
+	   5 Input    2 Bit        Muxes := 3     
+	   6 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 1151  
+	   3 Input    1 Bit        Muxes := 27    
+	   5 Input    1 Bit        Muxes := 15    
+	  16 Input    1 Bit        Muxes := 9     
+	   6 Input    1 Bit        Muxes := 1     
+	   7 Input    1 Bit        Muxes := 11    
+	   4 Input    1 Bit        Muxes := 7     
+	  18 Input    1 Bit        Muxes := 20    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 90 (col length:60)
+BRAMs: 100 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3886] merging instance 'event_ready_reg[5][7]' (FDR) to 'event_ready_reg[5][11]'
+INFO: [Synth 8-3886] merging instance 'event_ready_reg[5][9]' (FDR) to 'event_ready_reg[5][11]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\event_ready_reg[5][11] )
+INFO: [Synth 8-5546] ROM "trRamLimitLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamRPLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamData_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTeControl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTeImpl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTeInstFeatures_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTsControl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTsCounterLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTsCounterHigh_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamControl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamImpl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamWPLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamLimitLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamRPLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamData_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTeControl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTeImpl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTeInstFeatures_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTsControl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTsCounterLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTsCounterHigh_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamControl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamImpl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamWPLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5544] ROM "prescale_value" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "trTeInstSyncMaxValue" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
+INFO: [Synth 8-5546] ROM "trRamLimitLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamRPLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamData_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTeControl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTeImpl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTeInstFeatures_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTsControl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTsCounterLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trTsCounterHigh_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamControl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamImpl_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "trRamWPLow_re" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5544] ROM "prescale_value" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "trTeInstSyncMaxValue" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWID[0] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWLEN[7] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWLEN[6] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWLEN[5] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWLEN[4] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWLEN[3] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWLEN[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWLEN[1] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWLEN[0] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWSIZE[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWSIZE[1] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWSIZE[0] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWBURST[1] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWBURST[0] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWLOCK driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWCACHE[3] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWCACHE[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWCACHE[1] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWCACHE[0] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWPROT[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWPROT[1] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWQOS[3] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWQOS[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWQOS[1] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_AWQOS[0] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_WLAST driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_BREADY driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARID[0] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARLEN[7] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARLEN[6] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARLEN[5] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARLEN[4] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARLEN[3] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARLEN[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARLEN[1] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARLEN[0] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARSIZE[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARSIZE[1] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARSIZE[0] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARBURST[1] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARBURST[0] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARLOCK driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARCACHE[3] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARCACHE[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARCACHE[1] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARCACHE[0] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARPROT[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARPROT[1] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARQOS[3] driven by constant 1
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARQOS[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARQOS[1] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_ARQOS[0] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB0 has port M_AXI_DP_RREADY driven by constant 1
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-7082] The signal ram_mem_reg is implemented as Block RAM but is better mapped onto distributed LUT RAM for the following reason(s): The depth (4 address bits) is shallow. Please use attribute (* ram_style = "distributed" *) to instruct Vivado to infer distributed LUT RAM.
+INFO: [Synth 8-3971] The signal "MMU_I/\Using_TLBS.UTLB_I /MMU_UTLB_RAM_I/RAM_reg" was recognized as a true dual port RAM template.
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/External_Trace.External_Trace_Buffer/write_addr_d1_reg[3]' (FDSE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/External_Trace.External_Trace_Buffer/write_nextgray_reg[3]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/trTeInstSyncMaxValue_reg[0]' (FDR) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/trTeInstSyncMaxValue_reg[3]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/trTeInstSyncMaxValue_reg[1]' (FDR) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/trTeInstSyncMaxValue_reg[3]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/trTeInstSyncMaxValue_reg[2]' (FDR) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/trTeInstSyncMaxValue_reg[3]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/External_Trace.External_Trace_Buffer/read_addr_d1_reg[3]' (FDSE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/External_Trace.External_Trace_Buffer/read_nextgray_reg[3]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\nextSyncField_reg[0] )
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[6]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[0]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[7]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[0]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/evcodeField_reg[0]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/evcodeField_reg[1]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/evcodeField_reg[1]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/evcodeField_reg[3]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\evcodeField_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\cdfField_reg[1] )
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/validEcodeBits_reg[1]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/validEcodeBits_reg[2]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/validEcodeBits_reg[2]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/validEcodeBits_reg[3]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\validEcodeBits_reg[3] )
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/etypeField_reg[0]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[0]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/etypeField_reg[1]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[0]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/etypeField_reg[2]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[0]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/etypeField_reg[3]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[0]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[0]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[1]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[1]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[2]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[2]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[3]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[3]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[4]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[4]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/ecodeField_reg[5]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\ecodeField_reg[5] )
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/processField_reg[0]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/processField_reg[4]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\processField_reg[4] )
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_TLBS.DTLB_I/TLBHI_reg[1][20]' (FDE) to 'MMU_I/Using_TLBS.DTLB_I/TLBHI_reg[1][21]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (MMU_I/\Using_TLBS.DTLB_I /\TLBHI_reg[1][21] )
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_TLBS.DTLB_I/TLBHI_reg[0][20]' (FDE) to 'MMU_I/Using_TLBS.DTLB_I/TLBHI_reg[0][21]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (MMU_I/\Using_TLBS.DTLB_I /\TLBHI_reg[0][21] )
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_TLBS.DTLB_I/TLBHI_reg[2][20]' (FDE) to 'MMU_I/Using_TLBS.DTLB_I/TLBHI_reg[2][21]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (MMU_I/\Using_TLBS.DTLB_I /\TLBHI_reg[2][21] )
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_TLBS.DTLB_I/TLBHI_reg[3][20]' (FDE) to 'MMU_I/Using_TLBS.DTLB_I/TLBHI_reg[3][21]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (MMU_I/\Using_TLBS.DTLB_I /\TLBHI_reg[3][21] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /trTeInstStallOrOverflow_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_DBUS.DAXI_Interface_I1/second_request_reg )
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_TLBS.ptAddr_reg[33]' (FDRE) to 'MMU_I/Using_TLBS.ptAddr_reg[32]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (MMU_I/\Using_TLBS.ptAddr_reg[32] )
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[9]' (FD) to 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[8]'
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[8]' (FD) to 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[7]'
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[7]' (FD) to 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[6]' (FD) to 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[5]'
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[5]' (FD) to 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[4]'
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[4]' (FD) to 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[3]'
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[3]' (FD) to 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[2]'
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[2]' (FD) to 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[1]'
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[1]' (FD) to 'MMU_I/Using_Virtual_Memory.USizeMask_Q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_TLBS.ITLB_I/TLBHI_reg[1][20]' (FDE) to 'MMU_I/Using_TLBS.ITLB_I/TLBHI_reg[1][21]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (MMU_I/\Using_TLBS.ITLB_I /\TLBHI_reg[1][21] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (MMU_I/\Using_TLBS.UTLB_I /\AccessKind_reg[2] )
+INFO: [Synth 8-3886] merging instance 'MMU_I/Using_TLBS.ITLB_I/TLBHI_reg[0][20]' (FDE) to 'MMU_I/Using_TLBS.ITLB_I/TLBHI_reg[0][21]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (MMU_I/\Using_TLBS.ITLB_I /\TLBHI_reg[0][21] )
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/RRESP_reg[0]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/RRESP_reg[1]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\RRESP_reg[1] )
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/BRESP_reg[0]' (FDRE) to 'Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/BRESP_reg[1]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\BRESP_reg[1] )
+INFO: [Synth 8-5544] ROM "Using_Zbb.pop_nibble[15]" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
+INFO: [Synth 8-5542] Attribute ram_style/rom_style = distributed specified for ROM  "p_0_out". This will be implemented in logic
+INFO: [Synth 8-5542] Attribute ram_style/rom_style = distributed specified for ROM  "p_0_out". This will be implemented in logic
+INFO: [Synth 8-5542] Attribute ram_style/rom_style = distributed specified for ROM  "p_0_out". This will be implemented in logic
+INFO: [Synth 8-5542] Attribute ram_style/rom_style = distributed specified for ROM  "p_0_out". This will be implemented in logic
+INFO: [Synth 8-5542] Attribute ram_style/rom_style = distributed specified for ROM  "p_0_out". This will be implemented in logic
+INFO: [Synth 8-5542] Attribute ram_style/rom_style = distributed specified for ROM  "p_0_out". This will be implemented in logic
+INFO: [Synth 8-5542] Attribute ram_style/rom_style = distributed specified for ROM  "p_0_out". This will be implemented in logic
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port pmp_instr_search_active driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port ex_load_access_fault_pmp driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_In[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_In[3] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_In[4] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_In[5] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_In[6] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_In[7] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_Ack_Out[2] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_Ack_Out[3] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_Ack_Out[4] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_Ack_Out[5] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_Ack_Out[6] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_Trig_Ack_Out[7] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_AWREADY driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_WREADY driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_BRESP[1] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_BRESP[0] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_BVALID driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_ARREADY driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[31] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[30] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[29] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[28] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[27] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[26] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[25] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[24] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[23] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[22] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[21] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[20] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[19] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[18] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[17] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[16] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[15] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[14] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[13] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[12] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[11] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[10] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[9] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[8] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[7] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[6] driven by constant 0
+WARNING: [Synth 8-3917] design riscv_GTi__GCB1 has port Dbg_RDATA[5] driven by constant 0
+INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.ex_event_class_0_reg[17]' (FDRE) to 'Decode_I/Use_perf_counters.ex_event_class_0_reg[18]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.mem_event_class_0_reg[17]' (FDRE) to 'Decode_I/Use_perf_counters.mem_event_class_0_reg[18]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[17]' (FDRE) to 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[18]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.ex_event_class_0_reg[18]' (FDRE) to 'Decode_I/Use_perf_counters.ex_event_class_0_reg[19]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.mem_event_class_0_reg[18]' (FDRE) to 'Decode_I/Use_perf_counters.mem_event_class_0_reg[19]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[18]' (FDRE) to 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[19]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.ex_event_class_0_reg[19]' (FDRE) to 'Decode_I/Use_perf_counters.ex_event_class_0_reg[20]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.mem_event_class_0_reg[19]' (FDRE) to 'Decode_I/Use_perf_counters.mem_event_class_0_reg[20]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[19]' (FDRE) to 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[20]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.ex_event_class_0_reg[20]' (FDRE) to 'Decode_I/Use_perf_counters.ex_event_class_0_reg[21]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.mem_event_class_0_reg[20]' (FDRE) to 'Decode_I/Use_perf_counters.mem_event_class_0_reg[21]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[20]' (FDRE) to 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[21]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.ex_event_class_0_reg[21]' (FDRE) to 'Decode_I/Use_perf_counters.ex_event_class_0_reg[22]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.mem_event_class_0_reg[21]' (FDRE) to 'Decode_I/Use_perf_counters.mem_event_class_0_reg[22]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[21]' (FDRE) to 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[22]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.ex_event_class_0_reg[22]' (FDRE) to 'Decode_I/Use_perf_counters.ex_event_class_0_reg[23]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.mem_event_class_0_reg[22]' (FDRE) to 'Decode_I/Use_perf_counters.mem_event_class_0_reg[23]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[22]' (FDRE) to 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[23]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.ex_event_class_0_reg[23]' (FDRE) to 'Decode_I/Use_perf_counters.ex_event_class_0_reg[24]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.mem_event_class_0_reg[23]' (FDRE) to 'Decode_I/Use_perf_counters.mem_event_class_0_reg[24]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[23]' (FDRE) to 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[24]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Use_perf_counters.ex_event_class_0_reg[24] )
+INFO: [Synth 8-3886] merging instance 'Decode_I/Use_perf_counters.mem_event_class_0_reg[24]' (FDRE) to 'Decode_I/Using_MMU_or_PMP.No_Short_Pipe.mem_store_access_fault_reg'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/ex_bt_hit_hold_reg)
+INFO: [Synth 8-3886] merging instance 'Decode_I/mem_jump_hit_reg' (FDRE) to 'Decode_I/Using_MMU_or_PMP.No_Short_Pipe.mem_store_access_fault_reg'
+INFO: [Synth 8-3886] merging instance 'Decode_I/No_Trace_DFFs.Trace_WB_Jump_Hit_reg' (FDRE) to 'Decode_I/Use_perf_counters.WB_Event_Class_0_reg[24]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/ex_which_branch_reg[12]' (FDRE) to 'Decode_I/EX_Div_Unsigned_reg'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Compression_I/Using_Compression.EX_Mask_Hit_On_Low_reg' (FDRE) to 'Decode_I/Compression_I/Using_Compression.of_bt_was_highhit_reg'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Compression_I/Using_Compression.of_bt_was_highhit_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\PC_Module_I/if_pc_reg[31] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\No_Short_Pipe_3.mem_fpu_write_reg )
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Use_Supervisor_Mode.stvec_reg[0]' (FDR) to 'Data_Flow_I/csr_I/Use_Supervisor_Mode.medeleg_reg[11]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/mtvec_reg[0]' (FDR) to 'Data_Flow_I/csr_I/Use_Supervisor_Mode.medeleg_reg[11]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Use_Supervisor_Mode.sepc_reg[0]' (FDR) to 'Data_Flow_I/csr_I/Use_Supervisor_Mode.medeleg_reg[11]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/mepc_reg[0]' (FDR) to 'Data_Flow_I/csr_I/Use_Supervisor_Mode.medeleg_reg[11]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Use_Supervisor_Mode.stvec_reg[1]' (FDR) to 'Data_Flow_I/csr_I/Use_Supervisor_Mode.medeleg_reg[11]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/mtvec_reg[1]' (FDR) to 'Data_Flow_I/csr_I/Use_Supervisor_Mode.medeleg_reg[11]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Compression_I/Using_Compression.of_bt_jump_hit_high_q_reg )
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.dmstatus_reg_reg[19]' (FDCE) to 'Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.dmstatus_reg_reg[18]'
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.dmstatus_reg_reg[16]' (FDCE) to 'Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.dmstatus_reg_reg[17]'
+INFO: [Synth 8-3886] merging instance 'Decode_I/ex_is_break_reg' (FDRE) to 'Decode_I/EX_CSR_Number_reg[0]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Compression_I/Using_Compression.of_bt_jump_hit_delayed_reg )
+INFO: [Synth 8-3886] merging instance 'Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.dmstatus_reg_reg[8]' (FDCE) to 'Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.dmstatus_reg_reg[9]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Has_MEM_4.wb_is_fpu_instr_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\No_Short_Pipe_2.MEM_DataBus_Long_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\No_Short_Pipe_2.MEM_DataBus_Exclusive_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Using_FPGA_2.ex_is_ea_instr_Inst/Using_FPGA.Native )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Data_Flow_I/csr_I/\Use_Supervisor_Mode.satp_reg[ASID][7] )
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[0]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[11]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[11]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[10]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[10]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[9]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[9]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[8]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[8]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[7]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[7]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[6]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[6]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[5]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[5]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[4]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[4]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[3]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[3]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[2]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[2]' (FDRE) to 'Data_Flow_I/Operand_Select_I/ex_imm_not_4_reg[1]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/ex_sleep_i_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/ex_is_mnret_instr_reg)
+INFO: [Synth 8-3886] merging instance 'Decode_I/mem_critical_state_en_reg' (FDRE) to 'Decode_I/Using_MMU_or_PMP.No_Short_Pipe.mem_store_access_fault_reg'
+INFO: [Synth 8-3886] merging instance 'Decode_I/Compression_I/Using_Compression.was_forced_reg' (FD) to 'Decode_I/ex_start_fpu_i_reg'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[17]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[18]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[19]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[20]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[21]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[22]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[23]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[24]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[25]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Synth 8-3886] merging instance 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[26]' (FDRE) to 'Data_Flow_I/csr_I/Has_MEM.WB_PC_reg[31]'
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Data_Flow_I/csr_I/\Has_MEM.WB_PC_reg[31] )
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.dmstatus_reg_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Data_Flow_I/csr_I/\Use_Supervisor_Mode.medeleg_reg[14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Data_Flow_I/csr_I/\Use_Supervisor_Mode.medeleg_reg[11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Data_Flow_I/csr_I/\Use_Supervisor_Mode.medeleg_reg[10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\No_Short_Pipe_5.Using_FPGA.Gen_Bits[4].MEM_EX_Result_Inst/Using_FPGA.Native )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/ex_Sel_CSR_FPU_Res_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/ex_start_fpu_i_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Using_MMU_or_PMP.if_instr_access_fault1_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\OF_Sel_CSR_reg[fflags] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Using_MMU_or_PMP.No_Short_Pipe.mem_store_access_fault_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\ex_Sel_CSR_i_reg[fflags] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Debug_Perf/dcsr_reg_reg[19] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.dbg_sleep_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/active_wakeup_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\No_Short_Pipe_2.mem_databus_access_ea_i_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Has_MEM_4.wb_fpu_write_i_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\No_Short_Pipe_3.mem_Write_DCache_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\has_MEM_5.wb_critical_state_i_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\PreFetch_Buffer_I/Using_MMU_or_PMP_or_PMA_Exceptions.EXCEPTION_BUFFER_I1/cur_data_i_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.dbg_wakeup_i_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\Use_Debug_Logic.Master_Core.Debug_Perf/Serial_Dbg_Intf.sync_dbg_wakeup/Single_Synchronize.use_sync_reset.sync_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\PreFetch_Buffer_I/Using_MMU_or_PMP_or_PMA_Exceptions.of_exceptions_q_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (Decode_I/\Using_MMU_or_PMP.ex_instr_access_fault1_reg )
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[0].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[1].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[2].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[3].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[4].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[5].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[6].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[7].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[8].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[9].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[10].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[11].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[12].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[13].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (PC_Module_I/Instruction_Prefetch_Mux[14].Gen_Instr_DFF/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (Using_FPGA_2.ex_is_ea_instr_Inst/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+WARNING: [Synth 8-3332] Sequential element (No_Short_Pipe_5.Using_FPGA.Gen_Bits[4].MEM_EX_Result_Inst/Using_FPGA.Native) is unused and will be removed from module microblaze_riscv_v1_0_7_Decode_gti.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:03:32 ; elapsed = 00:03:45 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+ROM: Preliminary Mapping Report
++-------------------------------------------+----------------------------+---------------+----------------+
+|Module Name                                | RTL Object                 | Depth x Width | Implemented As | 
++-------------------------------------------+----------------------------+---------------+----------------+
+|microblaze_riscv_v1_0_7_Barrel_Shifter_gti | Barrel32.two_comp_table[0] | 32x5          | LUT            | 
+|bitman                                     | Using_Zbb.pop_lsb_cnt_rom  | 64x4          | LUT            | 
+|bitman                                     | Using_Zbb.pop_lsb_cnt_rom  | 64x4          | LUT            | 
+|bitman                                     | Using_Zbb.pop_lsb_cnt_rom  | 64x4          | LUT            | 
+|bitman                                     | Using_Zbb.pop_lsb_cnt_rom  | 64x4          | LUT            | 
+|bitman                                     | Using_Zbb.pop_lsb_cnt_rom  | 64x4          | LUT            | 
+|bitman                                     | Using_Zbb.pop_lsb_cnt_rom  | 64x4          | LUT            | 
+|bitman                                     | Using_Zbb.pop_lsb_cnt_rom  | 64x4          | LUT            | 
+|microblaze_riscv_v1_0_7_MMU_UTLB           | AddrSel                    | 32x3          | LUT            | 
++-------------------------------------------+----------------------------+---------------+----------------+
+
+
+Block RAM: Preliminary Mapping Report (see note below)
++------------------------------------------------------------------------------------------------+------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name                                                                                     | RTL Object             | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++------------------------------------------------------------------------------------------------+------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\External_Trace.External_Trace_Buffer  | ram_mem_reg            | 16 x 32(NO_CHANGE)     | W |   | 16 x 32(WRITE_FIRST)   |   | R | Port A and B     | 1      | 0      | 
+|MMU_I/\Using_TLBS.UTLB_I                                                                        | MMU_UTLB_RAM_I/RAM_reg | 512 x 36(WRITE_FIRST)  | W | R | 512 x 36(WRITE_FIRST)  | W | R | Port A and B     | 0      | 1      | 
++------------------------------------------------------------------------------------------------+------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+
+Distributed RAM: Preliminary Mapping Report (see note below)
++--------------------------+-----------------------------------------------+----------------+----------------------+---------------+
+|Module Name               | RTL Object                                    | Inference      | Size (Depth x Width) | Primitives    | 
++--------------------------+-----------------------------------------------+----------------+----------------------+---------------+
+|MMU_I/\Using_TLBS.UTLB_I  | Extended_Physical_Address.MMU_UTLB_RAM_EA_reg | User Attribute | 64 x 2               | RAM64X1S x 2  | 
++--------------------------+-----------------------------------------------+----------------+----------------------+---------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:03:44 ; elapsed = 00:03:58 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:04:07 ; elapsed = 00:04:20 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Final Mapping Report
++------------------------------------------------------------------------------------------------+------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name                                                                                     | RTL Object             | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++------------------------------------------------------------------------------------------------+------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|\Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf /\External_Trace.External_Trace_Buffer  | ram_mem_reg            | 16 x 32(NO_CHANGE)     | W |   | 16 x 32(WRITE_FIRST)   |   | R | Port A and B     | 1      | 0      | 
+|MMU_I/\Using_TLBS.UTLB_I                                                                        | MMU_UTLB_RAM_I/RAM_reg | 512 x 36(WRITE_FIRST)  | W | R | 512 x 36(WRITE_FIRST)  | W | R | Port A and B     | 0      | 1      | 
++------------------------------------------------------------------------------------------------+------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+
+Distributed RAM: Final Mapping Report
++--------------------------+-----------------------------------------------+----------------+----------------------+---------------+
+|Module Name               | RTL Object                                    | Inference      | Size (Depth x Width) | Primitives    | 
++--------------------------+-----------------------------------------------+----------------+----------------------+---------------+
+|MMU_I/\Using_TLBS.UTLB_I  | Extended_Physical_Address.MMU_UTLB_RAM_EA_reg | User Attribute | 64 x 2               | RAM64X1S x 2  | 
++--------------------------+-----------------------------------------------+----------------+----------------------+---------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-7052] The timing for the instance U0/Base.Corei_6/riscv_core_I/Base.Core/Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/External_Trace.External_Trace_Buffer/ram_mem_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance U0/Base.Corei_6/riscv_core_I/Base.Core/MMU_I/Using_TLBS.UTLB_I/MMU_UTLB_RAM_I/RAM_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance U0/Base.Corei_6/riscv_core_I/Base.Core/MMU_I/Using_TLBS.UTLB_I/MMU_UTLB_RAM_I/RAM_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:04:16 ; elapsed = 00:04:40 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+INFO: [Synth 8-7052] The timing for the instance U0/riscv_core_I/Base.Core/Use_Debug_Logic.Master_Core.Use_Trace.Debug_Trace_Perf/External_Trace.External_Trace_Buffer/ram_mem_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance U0/riscv_core_I/Base.Core/MMU_I/Using_TLBS.UTLB_I/MMU_UTLB_RAM_I/RAM_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance U0/riscv_core_I/Base.Core/MMU_I/Using_TLBS.UTLB_I/MMU_UTLB_RAM_I/RAM_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:04:23 ; elapsed = 00:04:48 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:04:24 ; elapsed = 00:04:48 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:04:28 ; elapsed = 00:04:52 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:04:28 ; elapsed = 00:04:52 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:04:28 ; elapsed = 00:04:53 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:04:29 ; elapsed = 00:04:53 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Static Shift Register Report:
++------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+|Module Name | RTL Name                                                                                                                                                                  | Length | Width | Reset Signal | Pull out first Reg | Pull out last Reg | SRL16E | SRLC32E | 
++------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+|riscv       | riscv_core_I/Base.Core/Use_Debug_Logic.Master_Core.Use_Counters.HW_Perf_Mon_Perf/all_statistics_counters[17].Debug_Stat_Counter_i/Gen_Access_Counter.c2_Count_Stop_reg[0] | 3      | 128   | NO           | NO                 | YES               | 128    | 0       | 
++------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+
+
+Dynamic Shift Register Report:
++------------+--------------------+--------+------------+--------+---------+--------+--------+--------+
+|Module Name | RTL Name           | Length | Data Width | SRL16E | SRLC32E | Mux F7 | Mux F8 | Mux F9 | 
++------------+--------------------+--------+------------+--------+---------+--------+--------+--------+
+|dsrl        | PC_Buffer_reg[3]   | 32     | 32         | 32     | 0       | 0      | 0      | 0      | 
+|dsrl__1     | data_buffer_reg[3] | 1      | 1          | 1      | 0       | 0      | 0      | 0      | 
++------------+--------------------+--------+------------+--------+---------+--------+--------+--------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+DSP Final Report (the ' indicates corresponding REG is set)
++--------------------------------+--------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name                     | DSP Mapping        | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++--------------------------------+--------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|MB_DSP48E1                      | (A*B)'             | 17     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 1    | 
+|MB_DSP48E1__parameterized1_1743 | PCIN>>17+(A*B)'    | 30     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 1    | 0    | 
+|MB_DSP48E1__parameterized1      | PCIN+(A*B)'        | 17     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 1    | 0    | 
+|MB_DSP48E1__parameterized3      | (PCIN>>17+(A*B)')' | 30     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 1    | 1    | 
++--------------------------------+--------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+---------+------+
+|      |Cell     |Count |
++------+---------+------+
+|1     |CARRY4   |   502|
+|2     |DSP48E1  |     4|
+|5     |LUT1     |   111|
+|6     |LUT2     |   794|
+|7     |LUT3     |  1844|
+|8     |LUT4     |  2023|
+|9     |LUT5     |  1860|
+|10    |LUT6     |  4360|
+|12    |MUXCY_L  |   683|
+|13    |MUXF7    |   355|
+|14    |MUXF8    |    56|
+|15    |RAM32M   |    16|
+|16    |RAM64X1S |     2|
+|17    |RAMB18E1 |     1|
+|18    |RAMB36E1 |     1|
+|19    |SRL16E   |   366|
+|20    |XORCY    |   212|
+|21    |FDCE     |    11|
+|22    |FDPE     |     1|
+|23    |FDR      |    22|
+|24    |FDRE     |  7233|
+|25    |FDS      |     1|
+|26    |FDSE     |   274|
++------+---------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:04:29 ; elapsed = 00:04:53 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 326 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:02:22 ; elapsed = 00:03:42 . Memory (MB): peak = 2626.598 ; gain = 1444.379
+Synthesis Optimization Complete : Time (s): cpu = 00:04:29 ; elapsed = 00:04:54 . Memory (MB): peak = 2626.598 ; gain = 1826.758
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.600 . Memory (MB): peak = 2626.598 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 1939 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.021 . Memory (MB): peak = 2626.598 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 308 instances were transformed.
+  (MUXCY,XORCY) => CARRY4: 183 instances
+  FDR => FDRE: 22 instances
+  FDS => FDSE: 1 instance 
+  LUT6_2 => LUT6_2 (LUT5, LUT6): 84 instances
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 16 instances
+  RAM64X1S => RAM64X1S (RAMS64E): 2 instances
+
+Synth Design complete | Checksum: 347f2f78
+INFO: [Common 17-83] Releasing license: Synthesis
+348 Infos, 117 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:04:45 ; elapsed = 00:05:14 . Memory (MB): peak = 2626.598 ; gain = 2014.152
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.063 . Memory (MB): peak = 2626.598 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_microblaze_riscv_0_0_synth_1/mbv_system_microblaze_riscv_0_0.dcp' has been generated.
+INFO: [Coretcl 2-1648] Added synthesis output to IP cache for IP mbv_system_microblaze_riscv_0_0, cache-ID = 209623e21a965bf8
+INFO: [Coretcl 2-1174] Renamed 2019 cell refs.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.059 . Memory (MB): peak = 2626.598 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/mbv_system_microblaze_riscv_0_0_synth_1/mbv_system_microblaze_riscv_0_0.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file mbv_system_microblaze_riscv_0_0_utilization_synth.rpt -pb mbv_system_microblaze_riscv_0_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sat Jan 10 23:02:13 2026...

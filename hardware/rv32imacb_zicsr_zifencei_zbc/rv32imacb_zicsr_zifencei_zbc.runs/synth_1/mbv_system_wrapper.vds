@@ -1,0 +1,439 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Sat Jan 10 23:03:35 2026
+# Process ID         : 12912
+# Current directory  : C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1
+# Command line       : vivado.exe -log mbv_system_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source mbv_system_wrapper.tcl
+# Log file           : C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/mbv_system_wrapper.vds
+# Journal file       : C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1\vivado.jou
+# Running On         : STUDIOPC
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : AMD Ryzen Threadripper 2950X 16-Core Processor 
+# CPU Frequency      : 4000 MHz
+# CPU Physical cores : 16
+# CPU Logical cores  : 32
+# Host memory        : 34228 MB
+# Swap memory        : 2147 MB
+# Total Virtual      : 36375 MB
+# Available Virtual  : 19707 MB
+#-----------------------------------------------------------
+source mbv_system_wrapper.tcl -notrace
+create_project: Time (s): cpu = 00:00:12 ; elapsed = 00:00:09 . Memory (MB): peak = 530.020 ; gain = 220.078
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/AMDDesignTools/2025.2/Vivado/data/ip'.
+add_files: Time (s): cpu = 00:00:12 ; elapsed = 00:00:14 . Memory (MB): peak = 658.793 ; gain = 77.934
+Command: read_checkpoint -auto_incremental -incremental C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.srcs/utils_1/imports/synth_1/mbv_system_wrapper.dcp
+INFO: [Vivado 12-5825] Read reference checkpoint from C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.srcs/utils_1/imports/synth_1/mbv_system_wrapper.dcp for incremental synthesis
+INFO: [Vivado 12-7989] Please ensure there are no constraint changes
+Command: synth_design -top mbv_system_wrapper -part xc7a35ticsg324-1L
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35ti'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35ti'
+INFO: [Device 21-403] Loading part xc7a35ticsg324-1L
+INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 10424
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 1413.523 ; gain = 540.828
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'mbv_system_wrapper' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:55]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'eth_mdio_mdc_mdio_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:317]
+INFO: [Synth 8-6157] synthesizing module 'IOBUF' [C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566]
+INFO: [Synth 8-6155] done synthesizing module 'IOBUF' (0#1) [C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'i2c_scl_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:324]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'i2c_sda_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:331]
+INFO: [Synth 8-3491] module 'mbv_system' declared at 'c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:531' bound to instance 'mbv_system_i' of component 'mbv_system' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:338]
+INFO: [Synth 8-638] synthesizing module 'mbv_system' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:605]
+INFO: [Synth 8-3491] module 'mbv_system_axi_ethernetlite_0_0' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_ethernetlite_0_0_stub.vhdl:6' bound to instance 'mbv_axi_ethernetlite' of component 'mbv_system_axi_ethernetlite_0_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:1997]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_ethernetlite_0_0' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_ethernetlite_0_0_stub.vhdl:52]
+INFO: [Synth 8-3491] module 'mbv_system_axi_gpio_0_3' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_3_stub.vhdl:6' bound to instance 'mbv_axi_gpio_dip_switches' of component 'mbv_system_axi_gpio_0_3' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2034]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_gpio_0_3' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_3_stub.vhdl:39]
+INFO: [Synth 8-3491] module 'mbv_system_axi_gpio_0_6' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_6_stub.vhdl:6' bound to instance 'mbv_axi_gpio_iic_pullups' of component 'mbv_system_axi_gpio_0_6' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2058]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_gpio_0_6' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_6_stub.vhdl:38]
+INFO: [Synth 8-3491] module 'mbv_system_axi_gpio_0_4' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_4_stub.vhdl:6' bound to instance 'mbv_axi_gpio_led_4_bits' of component 'mbv_system_axi_gpio_0_4' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2081]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_gpio_0_4' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_4_stub.vhdl:38]
+INFO: [Synth 8-3491] module 'mbv_system_axi_gpio_0_5' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_5_stub.vhdl:6' bound to instance 'mbv_axi_gpio_led_rgb' of component 'mbv_system_axi_gpio_0_5' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2104]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_gpio_0_5' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_5_stub.vhdl:38]
+INFO: [Synth 8-3491] module 'mbv_system_axi_gpio_0_2' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_2_stub.vhdl:6' bound to instance 'mbv_axi_gpio_push_buttons' of component 'mbv_system_axi_gpio_0_2' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2127]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_gpio_0_2' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_2_stub.vhdl:39]
+INFO: [Synth 8-3491] module 'mbv_system_axi_gpio_0_0' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_0_stub.vhdl:6' bound to instance 'mbv_axi_gpio_shield_pins_0_19' of component 'mbv_system_axi_gpio_0_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2151]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_gpio_0_0' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_0_stub.vhdl:41]
+INFO: [Synth 8-3491] module 'mbv_system_axi_gpio_0_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_1_stub.vhdl:6' bound to instance 'mbv_axi_gpio_shield_pins_26_41' of component 'mbv_system_axi_gpio_0_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2177]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_gpio_0_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_gpio_0_1_stub.vhdl:41]
+INFO: [Synth 8-3491] module 'mbv_system_axi_iic_0_0' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_iic_0_0_stub.vhdl:6' bound to instance 'mbv_axi_iic' of component 'mbv_system_axi_iic_0_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2203]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_iic_0_0' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_iic_0_0_stub.vhdl:45]
+INFO: [Synth 8-3491] module 'mbv_system_mbv_riscv_axi_intc_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_mbv_riscv_axi_intc_1_stub.vhdl:6' bound to instance 'mbv_axi_interrupt_controller' of component 'mbv_system_mbv_riscv_axi_intc_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2233]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_mbv_riscv_axi_intc_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_mbv_riscv_axi_intc_1_stub.vhdl:43]
+INFO: [Synth 8-3491] module 'mbv_system_axi_quad_spi_0_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_quad_spi_0_1_stub.vhdl:6' bound to instance 'mbv_axi_quad_spi' of component 'mbv_system_axi_quad_spi_0_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2262]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_quad_spi_0_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_quad_spi_0_1_stub.vhdl:65]
+INFO: [Synth 8-3491] module 'mbv_system_axi_quad_spi_0_0' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_quad_spi_0_0_stub.vhdl:6' bound to instance 'mbv_axi_quad_spi_flash' of component 'mbv_system_axi_quad_spi_0_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2312]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_quad_spi_0_0' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_quad_spi_0_0_stub.vhdl:71]
+INFO: [Synth 8-3491] module 'mbv_system_mbv_riscv_axi_periph_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_mbv_riscv_axi_periph_1_stub.vhdl:6' bound to instance 'mbv_axi_smartconnect' of component 'mbv_system_mbv_riscv_axi_periph_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2368]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_mbv_riscv_axi_periph_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_mbv_riscv_axi_periph_1_stub.vhdl:333]
+INFO: [Synth 8-3491] module 'mbv_system_axi_timebase_wdt_0_0' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_timebase_wdt_0_0_stub.vhdl:6' bound to instance 'mbv_axi_timebase_watchdog_timer' of component 'mbv_system_axi_timebase_wdt_0_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2686]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_timebase_wdt_0_0' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_timebase_wdt_0_0_stub.vhdl:41]
+INFO: [Synth 8-3491] module 'mbv_system_axi_uartlite_0_0' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_uartlite_0_0_stub.vhdl:6' bound to instance 'mbv_axi_uartlite' of component 'mbv_system_axi_uartlite_0_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2712]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_axi_uartlite_0_0' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_axi_uartlite_0_0_stub.vhdl:40]
+INFO: [Synth 8-3491] module 'mbv_system_clk_wiz_1_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_clk_wiz_1_1_stub.vhdl:6' bound to instance 'mbv_clocking_wizard' of component 'mbv_system_clk_wiz_1_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2737]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_clk_wiz_1_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_clk_wiz_1_1_stub.vhdl:18]
+INFO: [Synth 8-3491] module 'mbv_system_fit_timer_0_0' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_fit_timer_0_0_stub.vhdl:6' bound to instance 'mbv_fixed_interval_timer_1_millisecond' of component 'mbv_system_fit_timer_0_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2744]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_fit_timer_0_0' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_fit_timer_0_0_stub.vhdl:21]
+INFO: [Synth 8-638] synthesizing module 'mbv_local_memory_imp_1NP638B' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:41]
+INFO: [Synth 8-3491] module 'mbv_system_lmb_bram_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_lmb_bram_1_stub.vhdl:6' bound to instance 'mbv_block_memory_generator' of component 'mbv_system_lmb_bram_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:213]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_lmb_bram_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_lmb_bram_1_stub.vhdl:34]
+INFO: [Synth 8-3491] module 'mbv_system_dlmb_bram_if_cntlr_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_dlmb_bram_if_cntlr_1_stub.vhdl:6' bound to instance 'mbv_data_lmb_bram_controller' of component 'mbv_system_dlmb_bram_if_cntlr_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:362]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_dlmb_bram_if_cntlr_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_dlmb_bram_if_cntlr_1_stub.vhdl:38]
+INFO: [Synth 8-3491] module 'mbv_system_dlmb_v10_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_dlmb_v10_1_stub.vhdl:6' bound to instance 'mbv_data_local_memory_bus' of component 'mbv_system_dlmb_v10_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:416]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_dlmb_v10_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_dlmb_v10_1_stub.vhdl:43]
+INFO: [Synth 8-3491] module 'mbv_system_ilmb_bram_if_cntlr_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_ilmb_bram_if_cntlr_1_stub.vhdl:6' bound to instance 'mbv_instruction_lmb_bram_controller' of component 'mbv_system_ilmb_bram_if_cntlr_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:444]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_ilmb_bram_if_cntlr_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_ilmb_bram_if_cntlr_1_stub.vhdl:38]
+INFO: [Synth 8-3491] module 'mbv_system_ilmb_v10_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_ilmb_v10_1_stub.vhdl:6' bound to instance 'mbv_instruction_local_memory_bus' of component 'mbv_system_ilmb_v10_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:498]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_ilmb_v10_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_ilmb_v10_1_stub.vhdl:43]
+INFO: [Synth 8-256] done synthesizing module 'mbv_local_memory_imp_1NP638B' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:41]
+INFO: [Synth 8-3491] module 'mbv_system_mdm_1_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_mdm_1_1_stub.vhdl:6' bound to instance 'mbv_microblaze_debug_module_v' of component 'mbv_system_mdm_1_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2776]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_mdm_1_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_mdm_1_1_stub.vhdl:55]
+INFO: [Synth 8-3491] module 'mbv_system_microblaze_riscv_0_0' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_microblaze_riscv_0_0_stub.vhdl:6' bound to instance 'mbv_microblaze_v' of component 'mbv_system_microblaze_riscv_0_0' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2816]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_microblaze_riscv_0_0' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_microblaze_riscv_0_0_stub.vhdl:94]
+INFO: [Synth 8-3491] module 'mbv_system_rst_clk_wiz_1_100M_1' declared at 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_rst_clk_wiz_1_100M_1_stub.vhdl:6' bound to instance 'mbv_processor_system_reset' of component 'mbv_system_rst_clk_wiz_1_100M_1' [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:2926]
+INFO: [Synth 8-638] synthesizing module 'mbv_system_rst_clk_wiz_1_100M_1' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/.Xil/Vivado-12912-STUDIOPC/realtime/mbv_system_rst_clk_wiz_1_100M_1_stub.vhdl:28]
+INFO: [Synth 8-256] done synthesizing module 'mbv_system' (0#1) [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/synth/mbv_system.vhd:605]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'qspi_flash_io0_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:508]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'qspi_flash_io1_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:515]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'qspi_flash_io2_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:522]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'qspi_flash_io3_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:529]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'qspi_flash_sck_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:536]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'qspi_flash_ss_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:543]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_0' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:550]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_1' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:557]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_10' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:564]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_11' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:571]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_12' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:578]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_13' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:585]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_14' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:592]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_15' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:599]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_16' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:606]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_17' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:613]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_18' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:620]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_19' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:627]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_2' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:634]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_3' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:641]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_4' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:648]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_5' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:655]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_6' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:662]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_7' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:669]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_8' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:676]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp0_dp19_tri_iobuf_9' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:683]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_0' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:690]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_1' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:697]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_10' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:704]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_11' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:711]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_12' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:718]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_13' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:725]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_14' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:732]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_15' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:739]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_2' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:746]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_3' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:753]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_4' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:760]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_5' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:767]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_6' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:774]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_7' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:781]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_8' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:788]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'shield_dp26_dp41_tri_iobuf_9' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:795]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'spi_io0_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:802]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'spi_io1_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:809]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'spi_sck_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:816]
+INFO: [Synth 8-3491] module 'IOBUF' declared at 'C:/AMDDesignTools/2025.2/Vivado/scripts/rt/data/unisim_comp.v:87566' bound to instance 'spi_ss_iobuf' of component 'IOBUF' [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:823]
+INFO: [Synth 8-256] done synthesizing module 'mbv_system_wrapper' (0#1) [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/hdl/mbv_system_wrapper.vhd:55]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1553.340 ; gain = 680.645
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1553.340 ; gain = 680.645
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1553.340 ; gain = 680.645
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.043 . Memory (MB): peak = 1553.340 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 49 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_microblaze_v'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0/mbv_system_microblaze_riscv_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_microblaze_v'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_dlmb_v10_1/mbv_system_dlmb_v10_1/mbv_system_dlmb_v10_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_data_local_memory_bus'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_dlmb_v10_1/mbv_system_dlmb_v10_1/mbv_system_dlmb_v10_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_data_local_memory_bus'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_ilmb_v10_1/mbv_system_ilmb_v10_1/mbv_system_dlmb_v10_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_instruction_local_memory_bus'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_ilmb_v10_1/mbv_system_ilmb_v10_1/mbv_system_dlmb_v10_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_instruction_local_memory_bus'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_dlmb_bram_if_cntlr_1/mbv_system_dlmb_bram_if_cntlr_1/mbv_system_dlmb_bram_if_cntlr_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_data_lmb_bram_controller'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_dlmb_bram_if_cntlr_1/mbv_system_dlmb_bram_if_cntlr_1/mbv_system_dlmb_bram_if_cntlr_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_data_lmb_bram_controller'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_ilmb_bram_if_cntlr_1/mbv_system_ilmb_bram_if_cntlr_1/mbv_system_ilmb_bram_if_cntlr_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_instruction_lmb_bram_controller'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_ilmb_bram_if_cntlr_1/mbv_system_ilmb_bram_if_cntlr_1/mbv_system_ilmb_bram_if_cntlr_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_instruction_lmb_bram_controller'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_lmb_bram_1/mbv_system_lmb_bram_1/mbv_system_lmb_bram_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_block_memory_generator'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_lmb_bram_1/mbv_system_lmb_bram_1/mbv_system_lmb_bram_1_in_context.xdc] for cell 'mbv_system_i/mbv_local_memory/mbv_block_memory_generator'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/mbv_system_mbv_riscv_axi_periph_1/mbv_system_mbv_riscv_axi_periph_1_in_context.xdc] for cell 'mbv_system_i/mbv_axi_smartconnect'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_periph_1/mbv_system_mbv_riscv_axi_periph_1/mbv_system_mbv_riscv_axi_periph_1_in_context.xdc] for cell 'mbv_system_i/mbv_axi_smartconnect'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_intc_1/mbv_system_mbv_riscv_axi_intc_1/mbv_system_mbv_riscv_axi_intc_1_in_context.xdc] for cell 'mbv_system_i/mbv_axi_interrupt_controller'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mbv_riscv_axi_intc_1/mbv_system_mbv_riscv_axi_intc_1/mbv_system_mbv_riscv_axi_intc_1_in_context.xdc] for cell 'mbv_system_i/mbv_axi_interrupt_controller'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1/mbv_system_mdm_1_1_in_context.xdc] for cell 'mbv_system_i/mbv_microblaze_debug_module_v'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_mdm_1_1/mbv_system_mdm_1_1/mbv_system_mdm_1_1_in_context.xdc] for cell 'mbv_system_i/mbv_microblaze_debug_module_v'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1_in_context.xdc] for cell 'mbv_system_i/mbv_clocking_wizard'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1/mbv_system_clk_wiz_1_1_in_context.xdc] for cell 'mbv_system_i/mbv_clocking_wizard'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_rst_clk_wiz_1_100M_1/mbv_system_rst_clk_wiz_1_100M_1/mbv_system_rst_clk_wiz_1_100M_1_in_context.xdc] for cell 'mbv_system_i/mbv_processor_system_reset'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_rst_clk_wiz_1_100M_1/mbv_system_rst_clk_wiz_1_100M_1/mbv_system_rst_clk_wiz_1_100M_1_in_context.xdc] for cell 'mbv_system_i/mbv_processor_system_reset'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_fit_timer_0_0/mbv_system_fit_timer_0_0/mbv_system_fit_timer_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_fixed_interval_timer_1_millisecond'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_fit_timer_0_0/mbv_system_fit_timer_0_0/mbv_system_fit_timer_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_fixed_interval_timer_1_millisecond'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_timebase_wdt_0_0/mbv_system_axi_timebase_wdt_0_0/mbv_system_axi_timebase_wdt_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_timebase_watchdog_timer'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_timebase_wdt_0_0/mbv_system_axi_timebase_wdt_0_0/mbv_system_axi_timebase_wdt_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_timebase_watchdog_timer'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_uartlite_0_0/mbv_system_axi_uartlite_0_0/mbv_system_axi_uartlite_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_uartlite'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_uartlite_0_0/mbv_system_axi_uartlite_0_0/mbv_system_axi_uartlite_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_uartlite'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi_flash'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0/mbv_system_axi_quad_spi_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi_flash'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_0/mbv_system_axi_gpio_0_0/mbv_system_axi_gpio_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_0_19'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_0/mbv_system_axi_gpio_0_0/mbv_system_axi_gpio_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_0_19'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_1/mbv_system_axi_gpio_0_1/mbv_system_axi_gpio_0_1_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_26_41'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_1/mbv_system_axi_gpio_0_1/mbv_system_axi_gpio_0_1_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_shield_pins_26_41'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_2/mbv_system_axi_gpio_0_2/mbv_system_axi_gpio_0_2_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_push_buttons'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_2/mbv_system_axi_gpio_0_2/mbv_system_axi_gpio_0_2_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_push_buttons'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_3/mbv_system_axi_gpio_0_3/mbv_system_axi_gpio_0_3_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_dip_switches'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_3/mbv_system_axi_gpio_0_3/mbv_system_axi_gpio_0_3_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_dip_switches'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_4/mbv_system_axi_gpio_0_4/mbv_system_axi_gpio_0_4_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_led_4_bits'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_4/mbv_system_axi_gpio_0_4/mbv_system_axi_gpio_0_4_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_led_4_bits'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_5/mbv_system_axi_gpio_0_5/mbv_system_axi_gpio_0_5_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_led_rgb'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_5/mbv_system_axi_gpio_0_5/mbv_system_axi_gpio_0_5_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_led_rgb'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_ethernetlite'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0/mbv_system_axi_ethernetlite_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_ethernetlite'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1_in_context.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1/mbv_system_axi_quad_spi_0_1_in_context.xdc] for cell 'mbv_system_i/mbv_axi_quad_spi'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_iic_0_0/mbv_system_axi_iic_0_0/mbv_system_axi_iic_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_iic'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_iic_0_0/mbv_system_axi_iic_0_0/mbv_system_axi_iic_0_0_in_context.xdc] for cell 'mbv_system_i/mbv_axi_iic'
+Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_6/mbv_system_axi_gpio_0_6/mbv_system_axi_gpio_0_6_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_iic_pullups'
+Finished Parsing XDC File [c:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.gen/sources_1/bd/mbv_system/ip/mbv_system_axi_gpio_0_6/mbv_system_axi_gpio_0_6/mbv_system_axi_gpio_0_6_in_context.xdc] for cell 'mbv_system_i/mbv_axi_gpio_iic_pullups'
+Parsing XDC File [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/dont_touch.xdc]
+Finished Parsing XDC File [C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/dont_touch.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1604.031 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 49 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 49 instances
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.028 . Memory (MB): peak = 1604.031 ; gain = 0.000
+WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'mbv_system_i/mbv_axi_quad_spi' at clock pin 'ext_spi_clk' is different from the actual clock period '13.333', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'mbv_system_i/mbv_axi_quad_spi_flash' at clock pin 'ext_spi_clk' is different from the actual clock period '13.333', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'mbv_system_i/mbv_local_memory/mbv_block_memory_generator' at clock pin 'clka' is different from the actual clock period '13.333', this can lead to different synthesis results.
+INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 1605.117 ; gain = 732.422
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a35ticsg324-1L
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 1605.117 ; gain = 732.422
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 1605.117 ; gain = 732.422
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:23 ; elapsed = 00:00:25 . Memory (MB): peak = 1605.117 ; gain = 732.422
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 90 (col length:60)
+BRAMs: 100 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:25 ; elapsed = 00:00:27 . Memory (MB): peak = 1605.117 ; gain = 732.422
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:32 ; elapsed = 00:00:35 . Memory (MB): peak = 1717.992 ; gain = 845.297
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:32 ; elapsed = 00:00:35 . Memory (MB): peak = 1719.254 ; gain = 846.559
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:32 ; elapsed = 00:00:35 . Memory (MB): peak = 1731.059 ; gain = 858.363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 1978.578 ; gain = 1105.883
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 1978.578 ; gain = 1105.883
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 1978.578 ; gain = 1105.883
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 1978.578 ; gain = 1105.883
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 1978.578 ; gain = 1105.883
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 1978.578 ; gain = 1105.883
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+----------------------------------+----------+
+|      |BlackBox name                     |Instances |
++------+----------------------------------+----------+
+|1     |mbv_system_axi_ethernetlite_0_0   |         1|
+|2     |mbv_system_axi_gpio_0_3           |         1|
+|3     |mbv_system_axi_gpio_0_6           |         1|
+|4     |mbv_system_axi_gpio_0_4           |         1|
+|5     |mbv_system_axi_gpio_0_5           |         1|
+|6     |mbv_system_axi_gpio_0_2           |         1|
+|7     |mbv_system_axi_gpio_0_0           |         1|
+|8     |mbv_system_axi_gpio_0_1           |         1|
+|9     |mbv_system_axi_iic_0_0            |         1|
+|10    |mbv_system_mbv_riscv_axi_intc_1   |         1|
+|11    |mbv_system_axi_quad_spi_0_1       |         1|
+|12    |mbv_system_axi_quad_spi_0_0       |         1|
+|13    |mbv_system_mbv_riscv_axi_periph_1 |         1|
+|14    |mbv_system_axi_timebase_wdt_0_0   |         1|
+|15    |mbv_system_axi_uartlite_0_0       |         1|
+|16    |mbv_system_clk_wiz_1_1            |         1|
+|17    |mbv_system_fit_timer_0_0          |         1|
+|18    |mbv_system_mdm_1_1                |         1|
+|19    |mbv_system_microblaze_riscv_0_0   |         1|
+|20    |mbv_system_rst_clk_wiz_1_100M_1   |         1|
+|21    |mbv_system_lmb_bram_1             |         1|
+|22    |mbv_system_dlmb_bram_if_cntlr_1   |         1|
+|23    |mbv_system_dlmb_v10_1             |         1|
+|24    |mbv_system_ilmb_bram_if_cntlr_1   |         1|
+|25    |mbv_system_ilmb_v10_1             |         1|
++------+----------------------------------+----------+
+
+Report Cell Usage: 
++------+---------------------------------------+------+
+|      |Cell                                   |Count |
++------+---------------------------------------+------+
+|1     |mbv_system_axi_ethernetlite_0_0_bbox   |     1|
+|2     |mbv_system_axi_gpio_0_0_bbox           |     1|
+|3     |mbv_system_axi_gpio_0_1_bbox           |     1|
+|4     |mbv_system_axi_gpio_0_2_bbox           |     1|
+|5     |mbv_system_axi_gpio_0_3_bbox           |     1|
+|6     |mbv_system_axi_gpio_0_4_bbox           |     1|
+|7     |mbv_system_axi_gpio_0_5_bbox           |     1|
+|8     |mbv_system_axi_gpio_0_6_bbox           |     1|
+|9     |mbv_system_axi_iic_0_0_bbox            |     1|
+|10    |mbv_system_axi_quad_spi_0_0_bbox       |     1|
+|11    |mbv_system_axi_quad_spi_0_1_bbox       |     1|
+|12    |mbv_system_axi_timebase_wdt_0_0_bbox   |     1|
+|13    |mbv_system_axi_uartlite_0_0_bbox       |     1|
+|14    |mbv_system_clk_wiz_1_1_bbox            |     1|
+|15    |mbv_system_dlmb_bram_if_cntlr_1_bbox   |     1|
+|16    |mbv_system_dlmb_v10_1_bbox             |     1|
+|17    |mbv_system_fit_timer_0_0_bbox          |     1|
+|18    |mbv_system_ilmb_bram_if_cntlr_1_bbox   |     1|
+|19    |mbv_system_ilmb_v10_1_bbox             |     1|
+|20    |mbv_system_lmb_bram_1_bbox             |     1|
+|21    |mbv_system_mbv_riscv_axi_intc_1_bbox   |     1|
+|22    |mbv_system_mbv_riscv_axi_periph_1_bbox |     1|
+|23    |mbv_system_mdm_1_1_bbox                |     1|
+|24    |mbv_system_microblaze_riscv_0_0_bbox   |     1|
+|25    |mbv_system_rst_clk_wiz_1_100M_1_bbox   |     1|
+|26    |LUT1                                   |     1|
+|27    |IBUF                                   |    18|
+|28    |IOBUF                                  |    49|
+|29    |OBUF                                   |    26|
++------+---------------------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 1978.578 ; gain = 1105.883
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:24 ; elapsed = 00:00:37 . Memory (MB): peak = 1978.578 ; gain = 1054.105
+Synthesis Optimization Complete : Time (s): cpu = 00:00:38 ; elapsed = 00:00:40 . Memory (MB): peak = 1978.578 ; gain = 1105.883
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.042 . Memory (MB): peak = 1978.578 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 49 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1991.426 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 49 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 49 instances
+
+Synth Design complete | Checksum: 440bb0a8
+INFO: [Common 17-83] Releasing license: Synthesis
+133 Infos, 3 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:43 ; elapsed = 00:00:51 . Memory (MB): peak = 1991.426 ; gain = 1306.738
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 1991.426 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/rustos/hardware/rv32imacb_zicsr_zifencei_zbc/rv32imacb_zicsr_zifencei_zbc.runs/synth_1/mbv_system_wrapper.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file mbv_system_wrapper_utilization_synth.rpt -pb mbv_system_wrapper_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sat Jan 10 23:05:00 2026...

@@ -1,0 +1,81 @@
+<: set axi_p [get_property PARAM_VALUE.C_S_AXI_PROTOCOL] :>
+<: if {$axi_p == "AXI4"} { :> 
+<: set deliver true :>
+<: } else { :>
+<: set deliver false :>
+<: } :>
+<: if {!$deliver} {ttcl_return;} :>
+<: setFileName [ttcl_string_concat "data"] :>
+<: setFileExtension ".coe" :>
+<: set en_loop [get_property PARAM_VALUE.C_INCLUDE_INTERNAL_LOOPBACK] :>
+memory_initialization_radix = 16;
+memory_initialization_vector =
+<: if {$en_loop == 0} { :>
+FFFFFFFF,
+0000FFFF,
+ECAFE500,
+02010014,
+06050403,
+0A090807,
+00000014,
+00000009,
+000007F4,
+80000000,
+00000018,
+00000000,
+00000000,
+80002405,
+00000000,
+00000000,
+000007FC,
+80000000,
+0000001C,
+00000000,
+000007FC,
+80000000,
+00006100,
+00000000,
+40000FA0,
+00100000,
+00000008,
+000017FC,
+80000000,
+00000100,
+00000000,
+00100000,
+00000001,
+<: } else { :>
+FFFFFFFF,
+0000FFFF,
+ECAFE500,
+02010014,
+06050403,
+0A090807,
+00000014,
+00000019,
+000007F4,
+80000000,
+00000018,
+00000000,
+00000000,
+80002405,
+00000000,
+00000000,
+000007FC,
+80000000,
+0000001C,
+00000000,
+000007FC,
+80000000,
+00006100,
+00000000,
+40000FA0,
+000017FC,
+80000000,
+00400200,
+00000000,
+00100000,
+00000008,
+00000001,
+<: } :>
+A51F12A9;
