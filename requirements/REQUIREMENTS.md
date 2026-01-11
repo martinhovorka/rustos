@@ -9,7 +9,7 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.4.0                                      |
+| Version                | 2.5.0                                      |
 | Status                 | Draft                                      |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
@@ -28,6 +28,7 @@
 | 2.2.0   | 2026-01-11 | Dev Team    | Added implementation completeness requirements: panic handling, logging, linker script details, test framework, release management, configuration, CI/CD (87 new requirements) |
 | 2.3.0   | 2026-01-11 | Dev Team    | QA review improvements: formal error codes, debug protocol, MSRV, power management stubs, API stability, benchmark baselines, interrupt priorities, license compliance, PAC numbering fixes (58 new requirements) |
 | 2.4.0   | 2026-01-11 | Dev Team    | QA re-review: WDT timing (WDT-007 to WDT-009), UART buffers (UART-013 to UART-015), interrupt storm protection (INT-013 to INT-015), ETH graceful degradation (ETH-007 to ETH-009), memory map diagram (Appendix G) |
+| 2.5.0   | 2026-01-11 | Dev Team    | Gap analysis remediation: startup assembly spec (INIT-017 to INIT-020), context frame layout (CTX-011 to CTX-013), CSR delegation (CSR-013 to CSR-016), AXI timing (PERF-025 to PERF-029), WDT integration (WDT-010 to WDT-012), runtime diagnostics (DIAG-001 to DIAG-006), task termination (TASK-013 to TASK-016), I2C/UART error recovery, tick-less/priority inheritance futures, fault injection tests (TEST-011 to TEST-015), API documentation (DOC-040 to DOC-043), formal verification (VER-009 to VER-011) |
 
 ### Approval Record
 
@@ -550,6 +551,10 @@ The following table defines the software-assigned interrupt priorities for the k
 | INIT-014       | Reset vector shall be located at address 0x00000000 (BRAM base)                                                                                           | Must     | T            |
 | INIT-015       | All 32 general-purpose registers (x0-x31) shall be initialized to known values on startup                                                                 | Must     | T            |
 | INIT-016       | Trap vector (mtvec) shall be configured for direct mode (MODE=0) unless vectored mode is explicitly required                                              | Must     | T            |
+| INIT-017       | Startup assembly shall initialize registers in order: (1) sp to `_stack_start`, (2) gp via `.option push`/`.option norelax` pattern per RISC-V psABI, (3) tp to 0, (4) clear a0-a7 | Must     | I            |
+| INIT-018       | Reset vector at address 0x0 shall be a `j _start` instruction (direct jump, no delay slot)                                                                | Must     | T            |
+| INIT-019       | For `qspi_flash` boot, XIP mode is disabled (PER-016); complete image copy from flash LMA to BRAM VMA is required                                          | Should   | T            |
+| INIT-020       | Flash boot shall optionally verify image integrity via CRC-32 checksum stored in flash image header                                                        | Could    | T            |
 
 **Rationale**: Proper initialization sequence ensures deterministic system behavior and prevents undefined states at runtime.
 
@@ -572,6 +577,8 @@ The following table defines the software-assigned interrupt priorities for the k
 | SCHED-013      | Idle task shall execute WFI (Wait For Interrupt) instruction to reduce power   | Should   | A            |
 | SCHED-014      | Idle task shall maintain a counter of idle iterations for CPU load calculation | Could    | T            |
 | SCHED-015      | Scheduler shall track total context switch count for statistics                | Could    | T            |
+| SCHED-016      | Future: Tick-less idle mode for extended sleep periods when no tasks are ready within configurable horizon (v2.0 roadmap)           | Info     | I            |
+| SCHED-017      | Ready queue implementation shall use priority bitmap for O(1) highest-priority lookup (per ARM CMSIS-RTOS2 recommendation)          | Should   | A            |
 
 **Rationale**: A deterministic O(1) scheduler ensures predictable real-time behavior regardless of the number of tasks.
 
@@ -591,6 +598,10 @@ The following table defines the software-assigned interrupt priorities for the k
 | TASK-010       | Task suspend/resume API                                                | Should   | T            |
 | TASK-011       | Task runtime statistics (CPU usage, execution count)                   | Could    | T            |
 | TASK-012       | Task shall not be able to modify another task's TCB directly           | Must     | A            |
+| TASK-013       | Task termination shall release all held mutexes automatically (to prevent deadlock)                                                | Should   | T            |
+| TASK-014       | Task termination shall signal any tasks waiting on task-join semaphore (if implemented)                                            | Could    | T            |
+| TASK-015       | Terminated task TCB shall be preserved in Terminated state for post-mortem debugging                                               | Should   | I            |
+| TASK-016       | Task restart shall require explicit TCB re-initialization (no implicit restart)                                                    | Must     | T            |
 
 **Rationale**: Static task creation eliminates runtime allocation failures and ensures deterministic memory usage.
 
@@ -610,6 +621,9 @@ The following table defines the software-assigned interrupt priorities for the k
 | CTX-008        | Initial stack frame setup for first context switch                                                                                                                                                                           | Must     | T            |
 | CTX-009        | Context switch shall be atomic (no partial context visible to other execution contexts)                                                                                                                                      | Must     | A            |
 | CTX-010        | Context frame size: minimum 140 bytes (32 GPRs × 4 bytes + CSRs mepc, mstatus, mcause)                                                                                                                                       | Must     | A            |
+| CTX-011        | Context frame layout shall follow the byte offsets defined in section 6.4.2                                                                                                                                                  | Must     | I            |
+| CTX-012        | CSR save order in context frame: mepc first, then mstatus, then mcause (matching restore order)                                                                                                                              | Must     | I            |
+| CTX-013        | Context frame shall be padded to 144 bytes (0x90) to maintain 16-byte alignment per RISC-V ABI                                                                                                                                | Must     | A            |
 
 <!-- markdownlint-enable MD060 -->
 
@@ -636,6 +650,52 @@ The following table defines the RISC-V calling convention for context save/resto
 
 **Note**: No floating-point registers are present (soft-float ABI ilp32).
 
+### 6.4.2 Context Frame Layout
+
+The following table defines the exact byte offsets for the context frame structure:
+
+| Offset (hex) | Offset (dec) | Content     | Size (bytes) | Description                                    |
+|--------------|--------------|-------------|--------------|------------------------------------------------|
+| 0x00         | 0            | x1 (ra)     | 4            | Return address                                 |
+| 0x04         | 4            | x3 (gp)     | 4            | Global pointer (preserved across context)      |
+| 0x08         | 8            | x4 (tp)     | 4            | Thread pointer (per-task TCB pointer)          |
+| 0x0C         | 12           | x5 (t0)     | 4            | Temporary register                             |
+| 0x10         | 16           | x6 (t1)     | 4            | Temporary register                             |
+| 0x14         | 20           | x7 (t2)     | 4            | Temporary register                             |
+| 0x18         | 24           | x8 (s0/fp)  | 4            | Saved register / Frame pointer                 |
+| 0x1C         | 28           | x9 (s1)     | 4            | Saved register                                 |
+| 0x20         | 32           | x10 (a0)    | 4            | Argument / Return value                        |
+| 0x24         | 36           | x11 (a1)    | 4            | Argument / Return value                        |
+| 0x28         | 40           | x12 (a2)    | 4            | Argument register                              |
+| 0x2C         | 44           | x13 (a3)    | 4            | Argument register                              |
+| 0x30         | 48           | x14 (a4)    | 4            | Argument register                              |
+| 0x34         | 52           | x15 (a5)    | 4            | Argument register                              |
+| 0x38         | 56           | x16 (a6)    | 4            | Argument register                              |
+| 0x3C         | 60           | x17 (a7)    | 4            | Argument register                              |
+| 0x40         | 64           | x18 (s2)    | 4            | Saved register                                 |
+| 0x44         | 68           | x19 (s3)    | 4            | Saved register                                 |
+| 0x48         | 72           | x20 (s4)    | 4            | Saved register                                 |
+| 0x4C         | 76           | x21 (s5)    | 4            | Saved register                                 |
+| 0x50         | 80           | x22 (s6)    | 4            | Saved register                                 |
+| 0x54         | 84           | x23 (s7)    | 4            | Saved register                                 |
+| 0x58         | 88           | x24 (s8)    | 4            | Saved register                                 |
+| 0x5C         | 92           | x25 (s9)    | 4            | Saved register                                 |
+| 0x60         | 96           | x26 (s10)   | 4            | Saved register                                 |
+| 0x64         | 100          | x27 (s11)   | 4            | Saved register                                 |
+| 0x68         | 104          | x28 (t3)    | 4            | Temporary register                             |
+| 0x6C         | 108          | x29 (t4)    | 4            | Temporary register                             |
+| 0x70         | 112          | x30 (t5)    | 4            | Temporary register                             |
+| 0x74         | 116          | x31 (t6)    | 4            | Temporary register                             |
+| 0x78         | 120          | mepc        | 4            | Machine exception program counter              |
+| 0x7C         | 124          | mstatus     | 4            | Machine status register                        |
+| 0x80         | 128          | mcause      | 4            | Machine cause register                         |
+| 0x84         | 132          | mtval       | 4            | Machine trap value (optional, for debugging)   |
+| 0x88         | 136          | reserved    | 4            | Reserved for future use                        |
+| 0x8C         | 140          | padding     | 4            | Padding for 16-byte alignment                  |
+| **Total**    | **144**      |             | **144**      | **0x90 bytes per context frame**               |
+
+**Note**: x0 (zero) and x2 (sp) are not saved in the frame. x0 is hardwired to zero; x2 is represented by the frame pointer itself (stored in TCB).
+
 ### 6.5 Critical Sections
 
 | Requirement ID | Description                                                      | Priority | Verification |
@@ -661,6 +721,8 @@ The following table defines the RISC-V calling convention for context save/resto
 | TIME-006       | Timer callback mechanism                                | Should   | T            |
 | TIME-007       | Tick jitter shall be ≤ 1% under normal load             | Should   | T            |
 | TIME-008       | Monotonic time guarantee (time never goes backward)     | Must     | A            |
+| TIME-009       | Future: Timer tick may be suppressed when no timed events pending (tick-less idle)                                                  | Info     | I            |
+| TIME-010       | Future: `get_next_wake_time()` API shall return ticks until next scheduled event (enables tick-less)                               | Info     | I            |
 
 **Rationale**: Accurate timekeeping is fundamental to real-time scheduling and application timing requirements.
 
@@ -804,6 +866,9 @@ The kernel shall define the following error codes:
 | MTX-008        | Recursive mutex support (optional)                             | Could    | T            |
 | MTX-009        | Mutex lock acquisition time shall be bounded (O(n) worst case) | Must     | A            |
 | MTX-010        | Mutex shall track owner task ID for debugging                  | Should   | T            |
+| MTX-011        | Future: Priority inheritance protocol for mutex to prevent priority inversion (v2.0 roadmap per Mars Pathfinder lesson-learned)    | Info     | I            |
+| MTX-012        | Design guidance: Tasks shall avoid holding mutex when calling lower-priority task APIs or blocking operations                       | Should   | I            |
+| MTX-013        | Mutex wait queue shall be ordered by task priority (highest priority waiter served first)                                          | Should   | T            |
 
 **Rationale**: RAII-style guards prevent resource leaks and ensure proper unlock even in error paths.
 
@@ -967,6 +1032,8 @@ The RISC-V A extension provides the following atomic operations that shall be us
 | UART-013       | Software TX buffer depth shall be ≥ 64 bytes             | Should   | I            |
 | UART-014       | Software RX buffer depth shall be ≥ 64 bytes             | Should   | I            |
 | UART-015       | Buffer overflow shall be detectable via status flag      | Should   | T            |
+| UART-016       | UART framing error shall trigger FIFO reset and log event (per PG142 error handling)                                              | Should   | T            |
+| UART-017       | UART overrun error shall increment error counter and continue operation                                                            | Should   | T            |
 
 **Rationale**: UART is essential for debug output and provides the primary human interface during development. Buffer sizing ensures reliable communication without data loss.
 
@@ -1000,8 +1067,22 @@ The RISC-V A extension provides the following atomic operations that shall be us
 | WDT-007        | Watchdog kick period shall be ≤ 50% of timeout period     | Should   | T            |
 | WDT-008        | Window watchdog first window shall be configurable (0-50% of period) | Could | T            |
 | WDT-009        | Watchdog timeout default shall be ≥ 1 second              | Should   | I            |
+| WDT-010        | Kernel shall integrate WDT kick into idle task by default (configurable via feature flag)                                          | Should   | T            |
+| WDT-011        | WDT kick shall be skipped if all tasks are blocked longer than half the WDT timeout (prevents false reset during deep sleep)       | Could    | T            |
+| WDT-012        | WDT timeout configuration shall be validated against system tick period at initialization                                          | Should   | A            |
 
 **Rationale**: Watchdog provides system recovery capability for hung or crashed applications. Timing requirements ensure reliable operation without spurious resets.
+
+### 9.3.1 Runtime Diagnostics
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|-------|
+| DIAG-001       | Runtime shall provide `task_get_state(task_id)` API to query task state (Ready/Running/Blocked/Suspended)      | Should   | T            |
+| DIAG-002       | Runtime shall provide `mutex_get_owner(mutex_id)` API to query current mutex owner task                        | Should   | T            |
+| DIAG-003       | Runtime shall provide `queue_get_count(queue_id)` API to query current message count in queue                  | Should   | T            |
+| DIAG-004       | Runtime shall provide `irq_get_count(irq_num)` API to query interrupt occurrence count since boot              | Could    | T            |
+| DIAG-005       | Runtime shall provide `task_get_stack_usage(task_id)` API to query stack high-water mark                       | Should   | T            |
+| DIAG-006       | All DIAG APIs shall be callable from both task and ISR context (non-blocking)                                  | Should   | A            |
 
 ### 9.4 GPIO Driver
 
@@ -1048,6 +1129,9 @@ The RISC-V A extension provides the following atomic operations that shall be us
 | I2C-006        | I2C pull-up control via GPIO        | Should   | T            |
 | I2C-007        | 10-bit addressing support           | Could    | T            |
 | I2C-008        | I2C bus error recovery              | Should   | T            |
+| I2C-009        | I2C bus stuck condition (SDA held low) shall be recoverable via clock stretching per I2C specification section 3.1.16              | Should   | T            |
+| I2C-010        | I2C recovery procedure shall generate up to 9 SCL clock pulses to release stuck slave (per NXP AN10216)                            | Should   | T            |
+| I2C-011        | I2C timeout shall be configurable (default: 100 ms per transaction)                                                                | Should   | T            |
 
 **Rationale**: I2C enables communication with sensors, EEPROMs, and other peripherals.
 
@@ -1178,6 +1262,10 @@ The following exception codes shall be handled by the trap handler:
 | CSR-010        | minstret/minstreth: Instructions retired counter (64-bit)                                    | Should   | T            |
 | CSR-011        | mvendorid (0xF11), marchid (0xF12), mimpid (0xF13), mhartid (0xF14): Identification CSRs     | Info     | T            |
 | CSR-012        | misa (0x301): Machine ISA register (reports supported extensions)                            | Info     | T            |
+| CSR-013        | medeleg shall be set to 0x0 (no exception delegation to S-mode, M-mode only operation)       | Must     | T            |
+| CSR-014        | mideleg shall be set to 0x0 (no interrupt delegation to S-mode, M-mode only operation)       | Must     | T            |
+| CSR-015        | PMP (Physical Memory Protection) shall not be used (xlnx,use-pmpregions = 0 in hardware)     | Info     | I            |
+| CSR-016        | Supervisor mode traps are not implemented; all traps handled in M-mode                       | Must     | A            |
 
 ### 10.4 CSR Address Mapping
 
@@ -1451,6 +1539,18 @@ The following Cargo features shall be supported:
 | PERF-007       | System tick jitter                                             | ≤ 1%          | Should   | T            |
 | PERF-008       | Boot time to first user task                                   | ≤ 10 ms       | Should   | T            |
 
+### 14.1.1 Bus Timing Characteristics
+
+| Requirement ID | Description                                                                | Target        | Priority | Verification |
+|----------------|----------------------------------------------------------------------------|---------------|----------|-------|
+| PERF-025       | AXI peripheral read latency (single 32-bit word)                           | ≤ 100 ns (8 cycles @ 75MHz) | Should | T |
+| PERF-026       | AXI peripheral write latency (single 32-bit word)                          | ≤ 100 ns (8 cycles @ 75MHz) | Should | T |
+| PERF-027       | BRAM (LMB) read access shall be single-cycle                               | ≤ 13 ns @ 75MHz | Must | T |
+| PERF-028       | BRAM (LMB) write access shall be single-cycle                              | ≤ 13 ns @ 75MHz | Must | T |
+| PERF-029       | AXI SmartConnect arbitration overhead                                      | ≤ 2 cycles | Should | A |
+
+**Rationale**: Bus timing affects interrupt latency and context switch performance. LMB provides deterministic single-cycle access to BRAM while AXI peripheral access adds 2-8 cycles depending on interconnect load.
+
 ### 14.2 Memory Performance
 
 | Requirement ID | Description                                                    | Target        | Priority | Verification |
@@ -1688,6 +1788,9 @@ The following items shall be verified before each release:
 | VER-006        | Stress testing for reliability validation                          | Should   | T            |
 | VER-007        | Code review for all production code                                | Should   | I            |
 | VER-008        | Static analysis with clippy and miri (where applicable)            | Should   | A            |
+| VER-009        | Miri shall validate unsafe code blocks for undefined behavior on host                                          | Should   | T            |
+| VER-010        | Critical section implementation shall be verified for interrupt safety using code review checklist             | Should   | I            |
+| VER-011        | Future: Scheduler algorithm shall be validated using formal methods (Kani/CBMC) for v2.0                       | Info     | I            |
 
 ### 19.1.1 Host-Based Test Framework
 
@@ -1703,6 +1806,16 @@ The following items shall be verified before each release:
 | TEST-008       | Edge cases (boundary values, overflow, underflow) shall be explicitly tested                                   | Should   | T            |
 | TEST-009       | Concurrent access patterns shall be tested using std::thread on host                                           | Should   | T            |
 | TEST-010       | Test assertions shall use descriptive messages for failure diagnosis                                           | Should   | I            |
+
+### 19.1.1.1 Fault Injection Testing
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|-------|
+| TEST-011       | Fault injection tests shall validate stack overflow detection triggers panic with correct diagnostic           | Should   | T            |
+| TEST-012       | Fault injection tests shall validate interrupt storm protection disables misbehaving IRQ                       | Could    | T            |
+| TEST-013       | Fault injection tests shall validate exception handlers produce correct mcause/mtval diagnostics               | Should   | T            |
+| TEST-014       | Fault injection tests shall validate mutex deadlock detection (if enabled) produces correct warning            | Could    | T            |
+| TEST-015       | Fault injection test framework shall support deterministic fault triggering via test hooks                     | Should   | A            |
 
 ### 19.1.2 Hardware Integration Testing
 
@@ -1793,6 +1906,15 @@ The following items shall be verified before each release:
 | DOC-020        | Change log (CHANGELOG.md)                                          | Should   | I            |
 | DOC-021        | Known issues and limitations                                       | Should   | I            |
 | DOC-022        | Future roadmap                                                     | Could    | I            |
+
+### 20.3.1 API Documentation
+
+| Requirement ID | Description                                                        | Priority | Verification |
+|----------------|--------------------------------------------------------------------|----------|--------------|
+| DOC-040        | API breaking changes shall include migration guide with before/after examples                                  | Should   | I            |
+| DOC-041        | Each major version (1.0, 2.0) shall have complete API reference documentation                                  | Must     | I            |
+| DOC-042        | API documentation shall include complexity guarantees (O(1), O(n)) for all public functions                    | Should   | I            |
+| DOC-043        | Unsafe function documentation shall include SAFETY section with required invariants                            | Must     | I            |
 
 ### 20.4 Documentation Standards
 
