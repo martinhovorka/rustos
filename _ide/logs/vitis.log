@@ -1,0 +1,56 @@
+14:42:45 INFO  : updated workspace path: C:\rustos
+14:42:46 INFO  : cmd.exe, /C, empyro.bat repo -st   C:\AMDDesignTools\2025.2\Vitis\data\embeddedsw
+14:42:50 INFO  : [INFO]: Initializing repositories
+14:42:50 INFO  : [INFO]: Successfully set the EmbeddedSW path, refer .repo.yaml for more details.
+14:42:50 INFO  : Successfully created repository data at C:\rustos/_ide\.wsdata
+14:42:50 INFO  : cmd.exe, /C, empyro.bat get_template_data -d C:\Users\marti\AppData\Local\Temp\rigel_lopper_marti16868662884815470206 -r C:\rustos\_ide\.wsdata\.repo.yaml
+14:42:51 INFO  : Embedded Template List generated successfully
+14:43:52 INFO  : Using sdt generation script from C:\AMDDesignTools\2025.2\Vitis\vitis-server\scripts\platformutil.tcl
+14:43:52 INFO  : cmd.exe, /C, sdtgen.bat C:\AMDDesignTools\2025.2\Vitis\vitis-server\scripts\platformutil.tcl C:\rustos\hardware\artifacts\hardware_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt
+14:44:14 INFO  : INFO: C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt exists. Files will be overwritten
+14:44:14 INFO  : -xsa C:\rustos\hardware\artifacts\hardware_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa
+14:44:14 INFO  : -dir C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt
+14:44:14 INFO  : -board_dts 
+14:44:14 INFO  : -include_dts 
+14:44:14 INFO  : -repo C:/AMDDesignTools/2025.2/Vitis/data/system-device-tree-xlnx
+14:44:14 INFO  : -zocl disable
+14:44:14 INFO  : INFO: [Hsi 55-2053] elapsed time for repository (C:/AMDDesignTools/2025.2/Vitis/data/embeddedsw) loading 7 seconds
+14:44:14 INFO  : hsi::open_hw_design: Time (s): cpu = 00:00:00 ; elapsed = 00:00:07 . Memory (MB): peak = 126.664 ; gain = 42.188
+14:44:14 INFO  : SDT generated successfully
+14:44:14 INFO  : Lopper command for cpu List generation: lopper.bat --enhanced --werror -f -O C:\rustos\.rigel_lopper -i lop-cpu-oslist.dts C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt\system-top.dts
+14:44:14 INFO  : cmd.exe, /C, lopper.bat --enhanced --werror -f -O C:\rustos\.rigel_lopper -i lop-cpu-oslist.dts C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt\system-top.dts
+14:44:18 INFO  : CPU List generated successfully
+14:44:27 INFO  : Platform bsp creation started.
+14:44:27 INFO  : Lopper command for cpu List generation: lopper.bat --enhanced --werror -f -O C:\rustos\.rigel_lopper -i lop-cpu-oslist.dts C:\rustos\bsp\hw\sdt\system-top.dts
+14:44:27 INFO  : cmd.exe, /C, lopper.bat --enhanced --werror -f -O C:\rustos\.rigel_lopper -i lop-cpu-oslist.dts C:\rustos\bsp\hw\sdt\system-top.dts
+14:44:29 INFO  : CPU List generated successfully
+14:44:29 INFO  : SDT generated successfully.
+14:44:29 INFO  : lopper command to generate BSP :empyro.bat create_bsp -w C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp -p mbv_microblaze_v -o standalone -s C:\rustos\bsp\hw\sdt\system-top.dts -t empty_application -r C:\rustos\_ide\.wsdata\.repo.yaml
+14:44:29 INFO  : cmd.exe, /C, empyro.bat create_bsp -w C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp -p mbv_microblaze_v -o standalone -s C:\rustos\bsp\hw\sdt\system-top.dts -t empty_application -r C:\rustos\_ide\.wsdata\.repo.yaml
+14:44:54 INFO  : [INFO]: Starting domain creation
+14:44:54 INFO  : [INFO]: Generating Domain-specific DTS for mbv_microblaze_v
+14:44:54 INFO  : [INFO]: Generating required metadata from domain specific DT
+14:44:54 INFO  : [INFO]: Successfully created Domain at C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp
+14:44:54 INFO  : Successfully Generated Domain C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp
+14:44:54 INFO  : Domain standalone_mbv_microblaze_v added successfully.
+14:44:54 INFO  : created .gitignore file for the project C:\rustos\bsp
+14:44:54 INFO  : Platform creation finished successfully.
+14:44:54 INFO  : Platform Quick Build initiated.
+14:44:56 INFO  : Generating Export directory
+14:44:56 INFO  : Generated platform metadata for creating application(s) based on platform bsp.
+14:45:16 INFO  : BSP build will be initiated for Domain standalone_mbv_microblaze_v
+14:45:16 INFO  : Generating BSP for the domain C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp
+14:45:16 INFO  : lopper command to reconfigure BSP :empyro.bat reconfig_bsp -d C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp
+14:45:16 INFO  : cmd.exe, /C, empyro.bat reconfig_bsp -d C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp
+14:45:17 INFO  : Domain reconfigured successfully
+14:45:17 INFO  : Generating BSP for the domain C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp
+14:45:17 INFO  : lopper command to build BSP :empyro.bat build_bsp -d C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp
+14:45:17 INFO  : cmd.exe, /C, empyro.bat build_bsp -d C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp
+14:45:23 INFO  : Domain build successfully
+14:45:23 INFO  : Generating Export directory
+14:45:23 INFO  : Platform Build Finished successfully.
+14:45:35 INFO  : connection terminated
+14:45:35 INFO  : connection terminated
+14:45:35 INFO  : scheduling shutdown timer for 2 seconds ...
+14:45:37 INFO  : Terminating Vitis C++ Server
+14:45:37 INFO  : Vitis C++ Server terminated

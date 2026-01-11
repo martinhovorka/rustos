@@ -1,0 +1,11 @@
+create libxil.a
+addlib C:/rustos/bsp/mbv_microblaze_v/standalone_mbv_microblaze_v/bsp/libsrc/build_configs/gen_bsp/libsrc/wdttb/src/libwdttb.a
+addlib C:/rustos/bsp/mbv_microblaze_v/standalone_mbv_microblaze_v/bsp/libsrc/build_configs/gen_bsp/libsrc/uartlite/src/libuartlite.a
+addlib C:/rustos/bsp/mbv_microblaze_v/standalone_mbv_microblaze_v/bsp/libsrc/build_configs/gen_bsp/libsrc/spi/src/libspi.a
+addlib C:/rustos/bsp/mbv_microblaze_v/standalone_mbv_microblaze_v/bsp/libsrc/build_configs/gen_bsp/libsrc/intc/src/libintc.a
+addlib C:/rustos/bsp/mbv_microblaze_v/standalone_mbv_microblaze_v/bsp/libsrc/build_configs/gen_bsp/libsrc/iic/src/libiic.a
+addlib C:/rustos/bsp/mbv_microblaze_v/standalone_mbv_microblaze_v/bsp/libsrc/build_configs/gen_bsp/libsrc/gpio/src/libgpio.a
+addlib C:/rustos/bsp/mbv_microblaze_v/standalone_mbv_microblaze_v/bsp/libsrc/build_configs/gen_bsp/libsrc/emaclite/src/libemaclite.a
+addlib C:/rustos/bsp/mbv_microblaze_v/standalone_mbv_microblaze_v/bsp/libsrc/build_configs/gen_bsp/libsrc/bram/src/libbram.a
+save
+end

@@ -1,0 +1,45 @@
+mbv_axi_ethernetlite:
+- axi_ethernetlite
+- emaclite
+mbv_axi_gpio_dip_switches:
+- axi_gpio
+- gpio
+mbv_axi_gpio_iic_pullups:
+- axi_gpio
+- gpio
+mbv_axi_gpio_led_4_bits:
+- axi_gpio
+- gpio
+mbv_axi_gpio_led_rgb:
+- axi_gpio
+- gpio
+mbv_axi_gpio_push_buttons:
+- axi_gpio
+- gpio
+mbv_axi_gpio_shield_pins_0_19:
+- axi_gpio
+- gpio
+mbv_axi_gpio_shield_pins_26_41:
+- axi_gpio
+- gpio
+mbv_axi_iic:
+- axi_iic
+- iic
+mbv_axi_interrupt_controller:
+- axi_intc
+- intc
+mbv_axi_quad_spi:
+- axi_quad_spi
+- spi
+mbv_axi_quad_spi_flash:
+- axi_quad_spi
+- spi
+mbv_axi_timebase_watchdog_timer:
+- axi_timebase_wdt
+- wdttb
+mbv_axi_uartlite:
+- axi_uartlite
+- uartlite
+mbv_local_memory_mbv_data_lmb_bram_controller:
+- lmb_bram_if_cntlr
+- bram

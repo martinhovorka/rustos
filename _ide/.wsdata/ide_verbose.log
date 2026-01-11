@@ -1,0 +1,352 @@
+2026-01-11 14:42:44 [debug] : --------------------------------------------------------------------------------- 
+2026-01-11 14:42:44 [debug] : C:\rustos 
+2026-01-11 14:42:44 [debug] : --------------------------------------------------------------------------------- 
+2026-01-11 14:42:44 [debug] : [Logger] Previous user logs are stored in the file - C:\Users\marti\.Xilinx\Vitis\2025.2\logs\ide.log 
+2026-01-11 14:42:44 [debug] : [Logger] Previous debug logs are stored in the file - C:\Users\marti\.Xilinx\Vitis\2025.2\.wsdata\ide_verbose.log 
+2026-01-11 14:42:44 [debug] : [Application Examples Provider]  updating the embedded templates on workspace event. 
+2026-01-11 14:42:44 [debug] : [Application Examples Provider] refresh requested. 
+2026-01-11 14:42:44 [debug] : Received event from notification service: ON_DID_UPDATE_WORKSPACE. 
+2026-01-11 14:42:44 [debug] : [Repository Server] Executing method:getEmbeddedExampleTemplateTree with connection:(object). {"0":"request:","1":{"wrappers_":null,"arrayIndexOffset_":-1,"array":[],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}}
+2026-01-11 14:42:44 [debug] : [Logger Client] log levelchanged to  {"0":"Info"}
+2026-01-11 14:42:44 [debug] : [Logger UI]  Update Log Level  called 
+2026-01-11 14:42:44 [debug] : [Application Examples Provider] common calling method requested. 
+2026-01-11 14:42:44 [debug] : [Application Examples Provider] Repositories model update requested. 
+2026-01-11 14:42:44 [debug] : [Application Examples Provider] Repositories model update completed. 
+2026-01-11 14:42:44 [debug] : [ProjectCache] fetching projects for project-cache 
+2026-01-11 14:42:44 [debug] : [Application Examples Provider] Templates model update requested. 
+2026-01-11 14:42:44 [debug] : [Repository Service] Executing method:getEmbeddedExampleTemplateTree from frontend. {"0":"request:"}
+2026-01-11 14:42:44 [debug] : [Logger UI]  Update Log Level success {"0":{"success":true,"error":""}}
+2026-01-11 14:42:45 [debug] : RIGEL SERVER 14:42:45 INFO  : Marking the target connection as default Local 
+2026-01-11 14:42:45 [debug] : RIGEL SERVER 14:42:45 INFO  : Marking the target connection as default Linux Agent 
+2026-01-11 14:42:45 [debug] : RIGEL SERVER 14:42:45 INFO  : Marking the target connection as default XRTServer 
+2026-01-11 14:42:45 [debug] : RIGEL SERVER 14:42:45 INFO  : Marking the target connection as default LinuxEmulation 
+2026-01-11 14:42:45 [debug] : RIGEL SERVER 14:42:45 INFO  : Marking the target connection as default QEMU 
+2026-01-11 14:42:45 [debug] : RIGEL SERVER 14:42:45 INFO  : created .gitignore file for the project C:\rustos 
+2026-01-11 14:42:45 [debug] : RIGEL SERVER 14:42:45 INFO  : updated workspace path: C:\rustos 
+2026-01-11 14:42:46 [debug] : Event posted using notification server in backend. {"0":{"wrappers_":{},"arrayIndexOffset_":-1,"array":["833a96cf-f692-436a-9cd4-184e88cb75b3",null,54,null,null,null,null,"refresh-summaries"],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}}
+2026-01-11 14:42:46 [debug] : Received event from notification service: ON_DID_REFRESH_WORKSPACE_SUMMARIES. 
+2026-01-11 14:42:46 [debug] : RIGEL SERVER 14:42:46 INFO  : cmd.exe, /C, empyro.bat repo -st   C:\AMDDesignTools\2025.2\Vitis\data\embeddedsw 
+2026-01-11 14:42:46 [debug] : Received event from notification service: ON_STOP_ANALYSIS_PROGRESS. 
+2026-01-11 14:42:47 [debug] : [ProjectDecorator] tree decoration updated 
+2026-01-11 14:42:47 [debug] : [ProjectCache] Project location updated to undefined 
+2026-01-11 14:42:47 [debug] : [ProjectDecorator] tree decoration updated 
+2026-01-11 14:42:47 [debug] : MonacoEditorModel.fireDidChangeContent - enter - {
+  "changes": [
+    {
+      "range": {
+        "startLineNumber": 1,
+        "startColumn": 1,
+        "endLineNumber": 1,
+        "endColumn": 1
+      },
+      "rangeLength": 0,
+      "text": "{\r\n    \"clangd.fallbackFlags\": []\r\n}",
+      "rangeOffset": 0,
+      "forceMoveMarkers": false
+    }
+  ],
+  "eol": "\r\n",
+  "isEolChange": false,
+  "versionId": 2,
+  "isUndoing": false,
+  "isRedoing": false,
+  "isFlush": false
+} {"0":"file:///c:/rustos/_ide/settings.json"}
+2026-01-11 14:42:47 [debug] : MonacoEditorModel.markAsDirty - enter {"0":"file:///c:/rustos/_ide/settings.json"}
+2026-01-11 14:42:47 [debug] : MonacoEditorModel.cancelSync {"0":"file:///c:/rustos/_ide/settings.json"}
+2026-01-11 14:42:47 [debug] : MonacoEditorModel.markAsDirty - exit {"0":"file:///c:/rustos/_ide/settings.json"}
+2026-01-11 14:42:47 [debug] : MonacoEditorModel.fireDidChangeContent - exit {"0":"file:///c:/rustos/_ide/settings.json"}
+2026-01-11 14:42:47 [debug] : MonacoEditorModel.cancelSave {"0":"file:///c:/rustos/_ide/settings.json"}
+2026-01-11 14:42:47 [debug] : MonacoEditorModel.cancelSave {"0":"file:///c:/rustos/_ide/settings.json"}
+2026-01-11 14:42:47 [debug] : MonacoEditorModel.cancelSync {"0":"file:///c:/rustos/_ide/settings.json"}
+2026-01-11 14:42:47 [debug] : MonacoEditorModel.cancelSave {"0":"file:///c:/rustos/_ide/settings.json"}
+2026-01-11 14:42:47 [debug] : No label for action menu node: No command "workspace:addFolder" exists. 
+2026-01-11 14:42:47 [debug] : [ProjectCache] fetching projects for project-cache 
+2026-01-11 14:42:47 [debug] : [ProjectDecorator] tree decoration updated 
+2026-01-11 14:42:47 [debug] : [ProjectCache] Project location updated to undefined 
+2026-01-11 14:42:47 [debug] : [ProjectDecorator] tree decoration updated 
+2026-01-11 14:42:50 [debug] : RIGEL SERVER 14:42:50 INFO  : [INFO]: Initializing repositories 
+2026-01-11 14:42:50 [debug] : RIGEL SERVER 14:42:50 INFO  : [INFO]: Successfully set the EmbeddedSW path, refer .repo.yaml for more details.
+14:42:50 INFO  : Successfully created repository data at C:\rustos/_ide\.wsdata 
+2026-01-11 14:42:50 [debug] : RIGEL SERVER 14:42:50 INFO  : cmd.exe, /C, empyro.bat get_template_data -d C:\Users\marti\AppData\Local\Temp\rigel_lopper_marti16868662884815470206 -r C:\rustos\_ide\.wsdata\.repo.yaml 
+2026-01-11 14:42:51 [debug] : RIGEL SERVER 14:42:51 INFO  : Embedded Template List generated successfully 
+2026-01-11 14:42:51 [debug] : [Application Examples Provider] Templates model update completed. 
+2026-01-11 14:42:51 [debug] : [Application Examples Provider] common calling method completed. 
+2026-01-11 14:42:51 [debug] : [Application Examples Provider] refresh completed. 
+2026-01-11 14:43:52 [debug] : [Platform Server] Executing method:[getProcessorOSList] with connection:(object). {"0":"request:","1":{"wrappers_":{"6":[{"wrappers_":null,"arrayIndexOffset_":-1,"array":["VITIS_SDT_REPO",null],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}},{"wrappers_":null,"arrayIndexOffset_":-1,"array":["VITIS_SDT_BOARD_DTS",null],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}},{"wrappers_":null,"arrayIndexOffset_":-1,"array":["VITIS_SDT_INCLUDE_DTS",null],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}},{"wrappers_":null,"arrayIndexOffset_":-1,"array":["-dt_overlay","0"],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}},{"wrappers_":null,"arrayIndexOffset_":-1,"array":["custom_dtsi",null],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}],"8":[]},"arrayIndexOffset_":-1,"array":["C:\\rustos\\hardware\\artifacts\\hardware_platform\\rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa",null,[],[],null,[["VITIS_SDT_REPO",null],["VITIS_SDT_BOARD_DTS",null],["VITIS_SDT_INCLUDE_DTS",null],["-dt_overlay","0"],["custom_dtsi",null]],null,[],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,true],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}}
+2026-01-11 14:43:52 [debug] : RIGEL SERVER 14:43:52 INFO  : Using sdt generation script from C:\AMDDesignTools\2025.2\Vitis\vitis-server\scripts\platformutil.tcl 
+2026-01-11 14:43:52 [debug] : RIGEL SERVER 14:43:52 INFO  : cmd.exe, /C, sdtgen.bat C:\AMDDesignTools\2025.2\Vitis\vitis-server\scripts\platformutil.tcl C:\rustos\hardware\artifacts\hardware_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt 
+2026-01-11 14:44:14 [debug] : RIGEL SERVER 14:44:14 INFO  : INFO: C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt exists. Files will be overwritten 
+2026-01-11 14:44:14 [debug] : RIGEL SERVER 14:44:14 INFO  : -xsa C:\rustos\hardware\artifacts\hardware_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa
+14:44:14 INFO  : -dir C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt
+14:44:14 INFO  : -board_dts 
+14:44:14 INFO  : -include_dts 
+2026-01-11 14:44:14 [debug] : RIGEL SERVER 14:44:14 INFO  : -repo C:/AMDDesignTools/2025.2/Vitis/data/system-device-tree-xlnx 
+2026-01-11 14:44:14 [debug] : RIGEL SERVER 14:44:14 INFO  : -zocl disable 
+2026-01-11 14:44:14 [debug] : RIGEL SERVER 14:44:14 INFO  : INFO: [Hsi 55-2053] elapsed time for repository (C:/AMDDesignTools/2025.2/Vitis/data/embeddedsw) loading 7 seconds 
+2026-01-11 14:44:14 [debug] : RIGEL SERVER 14:44:14 INFO  : hsi::open_hw_design: Time (s): cpu = 00:00:00 ; elapsed = 00:00:07 . Memory (MB): peak = 126.664 ; gain = 42.188 
+2026-01-11 14:44:14 [debug] : RIGEL SERVER 14:44:14 INFO  : SDT generated successfully 
+2026-01-11 14:44:14 [debug] : RIGEL SERVER 14:44:14 INFO  : Lopper command for cpu List generation: lopper.bat --enhanced --werror -f -O C:\rustos\.rigel_lopper -i lop-cpu-oslist.dts C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt\system-top.dts 
+2026-01-11 14:44:14 [debug] : RIGEL SERVER 14:44:14 INFO  : cmd.exe, /C, lopper.bat --enhanced --werror -f -O C:\rustos\.rigel_lopper -i lop-cpu-oslist.dts C:\rustos\.rigel_lopper_temp_platform\rv32imacb_zicsr_zifencei_zbc-hardware_platform\hw\sdt\system-top.dts 
+2026-01-11 14:44:18 [debug] : RIGEL SERVER 14:44:18 INFO  : CPU List generated successfully 
+2026-01-11 14:44:27 [debug] : [Platform Server] Executing method:[createPlatformProject] with connection:(object). {"0":"request:","1":{"wrappers_":{"19":[{"wrappers_":null,"arrayIndexOffset_":-1,"array":["VITIS_SDT_REPO",null],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}},{"wrappers_":null,"arrayIndexOffset_":-1,"array":["VITIS_SDT_BOARD_DTS",null],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}},{"wrappers_":null,"arrayIndexOffset_":-1,"array":["VITIS_SDT_INCLUDE_DTS",null],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}},{"wrappers_":null,"arrayIndexOffset_":-1,"array":["-dt_overlay","0"],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}},{"wrappers_":null,"arrayIndexOffset_":-1,"array":["custom_dtsi",null],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}],"22":[]},"arrayIndexOffset_":-1,"array":["bsp",null,"C:\\rustos\\bsp","C:\\rustos\\hardware\\artifacts\\hardware_platform\\rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa","mbv_microblaze_v","standalone",null,null,null,null,null,null,null,true,null,"",null,null,[["VITIS_SDT_REPO",null],["VITIS_SDT_BOARD_DTS",null],["VITIS_SDT_INCLUDE_DTS",null],["-dt_overlay","0"],["custom_dtsi",null]],null,1,[],"9cf9372f-24cc-4661-9450-c2afcbb9a3c8",null],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}}
+2026-01-11 14:44:27 [debug] : [Platform Server] Create platform bsp requested with internal id '9cf9372f-24cc-4661-9450-c2afcbb9a3c8'. 
+2026-01-11 14:44:27 [debug] : RIGEL SERVER 14:44:27 INFO  : Platform bsp creation started. 
+2026-01-11 14:44:27 [debug] : [Platform Output] Creating bsp platform with id '9cf9372f-24cc-4661-9450-c2afcbb9a3c8' started. 
+2026-01-11 14:44:27 [debug] : RIGEL SERVER 14:44:27 INFO  : Lopper command for cpu List generation: lopper.bat --enhanced --werror -f -O C:\rustos\.rigel_lopper -i lop-cpu-oslist.dts C:\rustos\bsp\hw\sdt\system-top.dts 
+2026-01-11 14:44:27 [debug] : RIGEL SERVER 14:44:27 INFO  : cmd.exe, /C, lopper.bat --enhanced --werror -f -O C:\rustos\.rigel_lopper -i lop-cpu-oslist.dts C:\rustos\bsp\hw\sdt\system-top.dts 
+2026-01-11 14:44:29 [debug] : RIGEL SERVER 14:44:29 INFO  : CPU List generated successfully 
+2026-01-11 14:44:29 [debug] : RIGEL SERVER 14:44:29 INFO  : SDT generated successfully. 
+2026-01-11 14:44:29 [debug] : RIGEL SERVER 14:44:29 INFO  : lopper command to generate BSP :empyro.bat create_bsp -w C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp -p mbv_microblaze_v -o standalone -s C:\rustos\bsp\hw\sdt\system-top.dts -t empty_application -r C:\rustos\_ide\.wsdata\.repo.yaml 
+2026-01-11 14:44:29 [debug] : RIGEL SERVER 14:44:29 INFO  : cmd.exe, /C, empyro.bat create_bsp -w C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp -p mbv_microblaze_v -o standalone -s C:\rustos\bsp\hw\sdt\system-top.dts -t empty_application -r C:\rustos\_ide\.wsdata\.repo.yaml 
+2026-01-11 14:44:54 [debug] : RIGEL SERVER 14:44:54 INFO  : [INFO]: Starting domain creation 
+2026-01-11 14:44:54 [debug] : RIGEL SERVER 14:44:54 INFO  : [INFO]: Generating Domain-specific DTS for mbv_microblaze_v
+14:44:54 INFO  : [INFO]: Generating required metadata from domain specific DT
+14:44:54 INFO  : [INFO]: Successfully created Domain at C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp 
+2026-01-11 14:44:54 [debug] : RIGEL SERVER 14:44:54 INFO  : Successfully Generated Domain C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp 
+2026-01-11 14:44:54 [debug] : RIGEL SERVER 14:44:54 INFO  : Domain standalone_mbv_microblaze_v added successfully. 
+2026-01-11 14:44:54 [debug] : Received event from notification service: ON_UPDATE_PLATFORM_STATUS. 
+2026-01-11 14:44:54 [debug] : RIGEL SERVER 14:44:54 INFO  : created .gitignore file for the project C:\rustos\bsp 
+2026-01-11 14:44:54 [debug] : Received event from notification service: ON_DID_UPDATE_COMPONENT. 
+2026-01-11 14:44:54 [debug] : Received event from notification service: ON_UPDATE_PLATFORM_STATUS. 
+2026-01-11 14:44:54 [debug] : RIGEL SERVER 14:44:54 INFO  : Platform creation finished successfully.
+14:44:54 INFO  : Platform Quick Build initiated. 
+2026-01-11 14:44:54 [debug] : Received event from notification service: ON_DID_CREATE_COMPONENT. 
+2026-01-11 14:44:54 [debug] : Received event from notification service: ON_DID_OPEN_COMPONENT. 
+2026-01-11 14:44:54 [debug] : Received event from notification service: ON_DID_BUILD_START. 
+2026-01-11 14:44:55 [debug] : Received event from notification service: ON_UPDATE_FLOWNAVIGATOR_STATUS. 
+2026-01-11 14:44:56 [debug] : RIGEL SERVER 14:44:56 INFO  : Generating Export directory 
+2026-01-11 14:44:56 [debug] : RIGEL SERVER 14:44:56 INFO  : Generated platform metadata for creating application(s) based on platform bsp. 
+2026-01-11 14:44:56 [debug] : [Platform Server] Creating platform bsp  completed on 'bsp' with internal id '9cf9372f-24cc-4661-9450-c2afcbb9a3c8'. 
+2026-01-11 14:44:56 [debug] : [Platform Server] Creating platform bsp  status event - label: bsp, status_code:0, status_details:. 
+2026-01-11 14:44:56 [debug] : [Platform Server] Creating platform bsp  output steam finished on 'bsp' with internal id '9cf9372f-24cc-4661-9450-c2afcbb9a3c8'. 
+2026-01-11 14:44:56 [info] : [Platform Server] Creating platform bsp  output stream finished - bsp. 
+2026-01-11 14:44:56 [debug] : Received event from notification service: ON_DID_MODIFY_PLATFORM_REPOS. 
+2026-01-11 14:44:56 [debug] : [Platform Output] Creating bsp platform with id '9cf9372f-24cc-4661-9450-c2afcbb9a3c8' completed. 
+2026-01-11 14:44:56 [debug] : [Platform Output] Deleting and canceling the build task with id '9cf9372f-24cc-4661-9450-c2afcbb9a3c8'. 
+2026-01-11 14:44:56 [debug] : Received event from notification service: ON_DID_BUILD_STOP. 
+2026-01-11 14:44:56 [debug] : [ProjectCache] fetching projects for project-cache 
+2026-01-11 14:44:56 [debug] : [Component Provider] updating project C:\rustos\bsp 
+2026-01-11 14:44:56 [debug] : [Component Provider] project updated C:\rustos\bsp 
+2026-01-11 14:44:56 [debug] : PLUGIN_HOST(5544): PluginManagerExtImpl/loadPlugin(C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\plugins\vitis-output-0.0.1\extension\lib\extension.js) 
+2026-01-11 14:44:56 [debug] : Calling activation function on plugin amd.vitis-output 
+2026-01-11 14:44:56 [debug] : [ProjectDecorator] tree decoration updated 
+2026-01-11 14:44:56 [debug] : [ProjectCache] Project location updated to C:\rustos\bsp 
+2026-01-11 14:44:56 [debug] : [ProjectDecorator] tree decoration updated 
+2026-01-11 14:44:56 [debug] : [Platform Provider] updating project C:\rustos\bsp 
+2026-01-11 14:44:56 [debug] : [ProjectDecorator] tree decoration updated 
+2026-01-11 14:44:56 [debug] : [ProjectCache] Project location updated to C:\rustos\bsp 
+2026-01-11 14:44:57 [debug] : [Platform Server] Executing method:[listDomains] with connection:(object). {"0":"request:","1":{"wrappers_":null,"arrayIndexOffset_":-1,"array":["C:\\rustos\\bsp"],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}}
+2026-01-11 14:44:57 [debug] : [Platform Provider] project updated C:\rustos\bsp {"0":{"platformName":"bsp","platformDescription":"","platformLocation":"C:\\rustos\\bsp","xsaPath":"C:/rustos/hardware/artifacts/hardware_platform/rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa","xsapathinplatform":"bsp/hw/rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa","isCustomFsbl":false,"fsblPath":"","pmufwElf":"","supportedFamily":"fpga","flow":3,"emulationXsaPath":"","emulationXsaPathInPlatform":"","stdGenHooksList":[],"reconfigurablePartitionsList":[]}}
+2026-01-11 14:44:57 [debug] : [Platform Server] Executing method:[getPartFromXSA] with connection:(object). {"0":"request:","1":{"wrappers_":null,"arrayIndexOffset_":-1,"array":["C:\\rustos\\bsp"],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}}
+2026-01-11 14:44:57 [debug] : Received event from notification service: ON_UPDATE_FLOWNAVIGATOR_STATUS. 
+2026-01-11 14:45:15 [debug] : [Platform Server] Executing method:[generatePlatform] with connection:(object). {"0":"request:","1":"C:\\rustos\\bsp"}
+2026-01-11 14:45:15 [debug] : [Platform Server] Generate platform requested for bsp with internal id '544d4462-403a-40e4-996b-1ea18d97b833'. 
+2026-01-11 14:45:15 [debug] : Received event from notification service: ON_DID_OPEN_COMPONENT. 
+2026-01-11 14:45:15 [debug] : Received event from notification service: ON_DID_BUILD_START. 
+2026-01-11 14:45:16 [debug] : Received event from notification service: ON_UPDATE_FLOWNAVIGATOR_STATUS. 
+2026-01-11 14:45:16 [debug] : [Platform Output] Generate bsp platform with id '544d4462-403a-40e4-996b-1ea18d97b833' started. 
+2026-01-11 14:45:16 [debug] : RIGEL SERVER 14:45:16 INFO  : BSP build will be initiated for Domain standalone_mbv_microblaze_v 
+2026-01-11 14:45:16 [debug] : RIGEL SERVER 14:45:16 INFO  : Generating BSP for the domain C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp 
+2026-01-11 14:45:16 [debug] : RIGEL SERVER 14:45:16 INFO  : lopper command to reconfigure BSP :empyro.bat reconfig_bsp -d C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp 
+2026-01-11 14:45:16 [debug] : RIGEL SERVER 14:45:16 INFO  : cmd.exe, /C, empyro.bat reconfig_bsp -d C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp 
+2026-01-11 14:45:17 [debug] : RIGEL SERVER 14:45:17 INFO  : Domain reconfigured successfully 
+2026-01-11 14:45:17 [debug] : RIGEL SERVER 14:45:17 INFO  : Generating BSP for the domain C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp 
+2026-01-11 14:45:17 [debug] : RIGEL SERVER 14:45:17 INFO  : lopper command to build BSP :empyro.bat build_bsp -d C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp 
+2026-01-11 14:45:17 [debug] : RIGEL SERVER 14:45:17 INFO  : cmd.exe, /C, empyro.bat build_bsp -d C:\rustos\bsp\mbv_microblaze_v\standalone_mbv_microblaze_v\bsp 
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.cancelSync {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.doSync - enter {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.cancelSync {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.cancelSync {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.doSync - exit - cancelled while looking for a resource {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.doSync - enter {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.doSync - exit - cancelled {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.doSync - enter {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.fireDidChangeContent - enter - {
+  "changes": [
+    {
+      "range": {
+        "startLineNumber": 41,
+        "startColumn": 1,
+        "endLineNumber": 41,
+        "endColumn": 1
+      },
+      "rangeLength": 0,
+      "text": "14:45:16 INFO  : BSP build will be initiated for Domain standalone_mbv_microblaze_v\r\n14:45:16 INFO  : Generating BSP for the domain C:\\rustos\\bsp\\mbv_microblaze_v\\standalone_mbv_microblaze_v\\bsp\r\n14:45:16 INFO  : lopper command to reconfigure BSP :empyro.bat reconfig_bsp -d C:\\rustos\\bsp\\mbv_microblaze_v\\standalone_mbv_microblaze_v\\bsp\r\n14:45:16 INFO  : cmd.exe, /C, empyro.bat reconfig_bsp -d C:\\rustos\\bsp\\mbv_microblaze_v\\standalone_mbv_microblaze_v\\bsp\r\n14:45:17 INFO  : Domain reconfigured successfully\r\n14:45:17 INFO  : Generating BSP for the domain C:\\rustos\\bsp\\mbv_microblaze_v\\standalone_mbv_microblaze_v\\bsp\r\n14:45:17 INFO  : lopper command to build BSP :empyro.bat build_bsp -d C:\\rustos\\bsp\\mbv_microblaze_v\\standalone_mbv_microblaze_v\\bsp\r\n14:45:17 INFO  : cmd.exe, /C, empyro.bat build_bsp -d C:\\rustos\\bsp\\mbv_microblaze_v\\standalone_mbv_microblaze_v\\bsp\r\n",
+      "rangeOffset": 4261,
+      "forceMoveMarkers": true
+    }
+  ],
+  "eol": "\r\n",
+  "isEolChange": false,
+  "versionId": 2,
+  "isUndoing": false,
+  "isRedoing": false,
+  "isFlush": false
+} {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.markAsDirty - enter {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.markAsDirty - exit - ignoring dirty changes enabled {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.fireDidChangeContent - exit {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:19 [debug] : MonacoEditorModel.doSync - exit {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:23 [debug] : RIGEL SERVER 14:45:23 INFO  : Domain build successfully 
+2026-01-11 14:45:23 [debug] : RIGEL SERVER 14:45:23 INFO  : Generating Export directory 
+2026-01-11 14:45:23 [debug] : Received event from notification service: ON_DID_UPDATE_COMPONENT. 
+2026-01-11 14:45:23 [debug] : Received event from notification service: ON_UPDATE_PLATFORM_STATUS. 
+2026-01-11 14:45:23 [debug] : RIGEL SERVER 14:45:23 INFO  : Platform Build Finished successfully. 
+2026-01-11 14:45:23 [debug] : [Platform Server] Generate platform completed on 'bsp' with internal id '544d4462-403a-40e4-996b-1ea18d97b833'. 
+2026-01-11 14:45:23 [debug] : [Platform Server] Generate platform status event - label: bsp, status_code:0, status_details:. 
+2026-01-11 14:45:23 [debug] : [Platform Server] Generate platform output steam finished on 'bsp' with internal id '544d4462-403a-40e4-996b-1ea18d97b833'. 
+2026-01-11 14:45:23 [info] : [Platform Server] Generate platform output stream finished - bsp. 
+2026-01-11 14:45:23 [debug] : Received event from notification service: ON_DID_MODIFY_PLATFORM_REPOS. 
+2026-01-11 14:45:23 [debug] : [Platform Output] Generate bsp platform with id '544d4462-403a-40e4-996b-1ea18d97b833' completed. 
+2026-01-11 14:45:23 [debug] : [Platform Output] Deleting and canceling the build task with id '544d4462-403a-40e4-996b-1ea18d97b833'. 
+2026-01-11 14:45:23 [debug] : Received event from notification service: ON_DID_BUILD_STOP. 
+2026-01-11 14:45:23 [debug] : [Platform Server] Executing method:[getPartFromXSA] with connection:(object). {"0":"request:","1":{"wrappers_":null,"arrayIndexOffset_":-1,"array":["C:\\rustos\\bsp"],"pivot_":1.7976931348623157e+308,"convertedPrimitiveFields_":{}}}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.cancelSync {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.doSync - enter {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.cancelSync {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.cancelSync {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.doSync - exit - cancelled while looking for a resource {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.doSync - enter {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.doSync - exit - cancelled {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.doSync - enter {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.fireDidChangeContent - enter - {
+  "changes": [
+    {
+      "range": {
+        "startLineNumber": 49,
+        "startColumn": 1,
+        "endLineNumber": 49,
+        "endColumn": 1
+      },
+      "rangeLength": 0,
+      "text": "14:45:23 INFO  : Domain build successfully\r\n14:45:23 INFO  : Generating Export directory\r\n14:45:23 INFO  : Platform Build Finished successfully.\r\n",
+      "rangeOffset": 5135,
+      "forceMoveMarkers": true
+    }
+  ],
+  "eol": "\r\n",
+  "isEolChange": false,
+  "versionId": 3,
+  "isUndoing": false,
+  "isRedoing": false,
+  "isFlush": false
+} {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.markAsDirty - enter {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.markAsDirty - exit - ignoring dirty changes enabled {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.fireDidChangeContent - exit {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : MonacoEditorModel.doSync - exit {"0":"file:///c:/rustos/_ide/logs/vitis.log"}
+2026-01-11 14:45:24 [debug] : Received event from notification service: ON_UPDATE_FLOWNAVIGATOR_STATUS. 
+2026-01-11 14:45:35 [debug] : socket closed 
+2026-01-11 14:45:35 [debug] : closing connection for 1 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/localization-server'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/os'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/commands'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/logger'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/messageService'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/rigel-utils'. 
+2026-01-11 14:45:35 [debug] : [Rigel Utils Server] Disposing objects in backend. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/ChannelCloseService'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/remote-filesystem'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/envs'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/startup-workspace'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/rigel-workspace'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/workspace'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/keyboard'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/stopwatch'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/application'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/i18n'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/quickInput'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/project'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/component'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/feature-registry'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/debugger'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/debug'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/shell-terminal'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/quickPick'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/task'. 
+2026-01-11 14:45:35 [debug] : a client has disconnected - removed from list: 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/search'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hostedPlugin'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/plugin-ext'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/plugin-paths'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/vsx-environment'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/request-service'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/cli-preferences'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/server'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/repository'. 
+2026-01-11 14:45:35 [debug] : [Repository Server] Disposing objects in backend. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/program_flash'. 
+2026-01-11 14:45:35 [debug] : [Program Flash Server] Disposing objects in backend. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/build'. 
+2026-01-11 14:45:35 [debug] : [Build Server] Disposing objects in backend. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/notification'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path 'services/rigel-backend-helper'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/aie'. 
+2026-01-11 14:45:35 [debug] : [AIE Server] Disposing objects in backend. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/analysis'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/recent-summaries'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/rigel_explorer'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/linker-script'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/rigel-logger'. 
+2026-01-11 14:45:35 [debug] : [Logger Server] Disposing objects in backend. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/platform'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/vitis-hls'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/device'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/mini-browser-service'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/flow_navigator'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hls/common/data/info'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hls/common/file/service'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hls/report'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hls/dataflow/info'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hls/l1library/service'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hls/directive'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hls_flow'. 
+2026-01-11 14:45:35 [debug] : [Hls Flow Server] Disposing objects in backend. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/search-in-workspace'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/open-ai/language-model-manager'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/mcpservermanager'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/languageModelRegistryDelegatePath'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/languageModelDelegatePath'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/rigel-ai/language-model-manager'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/anthropic/language-model-manager'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/google/language-model-manager'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/huggingface/language-model-manager'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/llamafilemanager'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/ollama/language-model-manager'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/vercel-ai/language-model-manager'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/config-file'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/elf-reader'. 
+2026-01-11 14:45:35 [debug] : [Elf Reader Server] Disposing objects in backend. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/project-utils'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/bootgen'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/cdo-utils'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/report-model'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hls/wave/open'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/scanoss/service'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/hls-config'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/keyStore'. 
+2026-01-11 14:45:35 [debug] : Closing channel on service path '/services/languagePackService'. 
+2026-01-11 14:45:35 [debug] : Uncaught Exception:  {"0":"Error: spawn wmic.exe ENOENT"}
+2026-01-11 14:45:35 [debug] : Error: spawn wmic.exe ENOENT
+    at ChildProcess._handle.onexit (node:internal/child_process:286:19)
+    at onErrorNT (node:internal/child_process:484:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) 
+2026-01-11 14:45:35 [debug] : Uncaught Exception:  {"0":"TypeError: Cannot read properties of undefined (reading 'forEach')"}
+2026-01-11 14:45:35 [debug] : TypeError: Cannot read properties of undefined (reading 'forEach')
+    at Stream.<anonymous> (C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\lib\backend\384.js:2:4071231)
+    at Stream.emit (node:events:519:28)
+    at Stream.s (C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\lib\backend\384.js:2:1543096)
+    at Stream.emit (node:events:531:35)
+    at I (C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\lib\backend\384.js:2:4299347)
+    at i.write (C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\lib\backend\384.js:2:4299702)
+    at Stream.ondata (node:internal/streams/legacy:21:31)
+    at Stream.emit (node:events:519:28)
+    at p (C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\lib\backend\384.js:2:5693470)
+    at u.queue.u.push (C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\lib\backend\384.js:2:5693687)
+    at u (C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\lib\backend\384.js:2:2128932)
+    at Stream.<anonymous> (C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\lib\backend\384.js:2:2129191)
+    at u.end (C:\AMDDesignTools\2025.2\Vitis\ide\electron-app\win64\resources\app\lib\backend\384.js:2:5693884)
+    at Socket.onend (node:internal/streams/readable:946:10)
+    at Object.onceWrapper (node:events:633:28)
+    at Socket.emit (node:events:531:35) 

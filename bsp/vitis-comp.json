@@ -1,0 +1,65 @@
+{
+  "name": "bsp",
+  "type": "PLATFORM",
+  "configuration": {
+    "description": "",
+    "xsa": "C:/rustos/hardware/artifacts/hardware_platform/rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa",
+    "xsaPathInPlatform": "bsp/hw/rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa",
+    "emulationXsa": "",
+    "emulationXsaPathInPlatform": "",
+    "isCustomFSBL": false,
+    "fsblPath": "",
+    "pmufwElf": "",
+    "flow": "EMBEDDED",
+    "processorsMap": {
+      "mbv_microblaze_v": "microblaze_riscv"
+    },
+    "supportedOS": [
+      "standalone",
+      "linux"
+    ],
+    "supportedFamily": "fpga",
+    "stdGenHookList": [
+      {
+        "key": "VITIS_SDT_REPO",
+        "value": ""
+      },
+      {
+        "key": "VITIS_SDT_BOARD_DTS",
+        "value": ""
+      },
+      {
+        "key": "VITIS_SDT_INCLUDE_DTS",
+        "value": ""
+      },
+      {
+        "key": "-dt_overlay",
+        "value": "0"
+      },
+      {
+        "key": "custom_dtsi",
+        "value": ""
+      }
+    ],
+    "componentType": "PLATFORM",
+    "domains": [
+      {
+        "name": "standalone_mbv_microblaze_v",
+        "displayName": "standalone_mbv_microblaze_v",
+        "processor": "mbv_microblaze_v",
+        "cpuType": "microblaze_riscv",
+        "cpuInstance": "mbv_microblaze_v",
+        "os": "standalone",
+        "appTemplate": "empty_application",
+        "isBootDomain": false,
+        "qemuData": "",
+        "qemuArgsFile": "",
+        "pmcQemuArgsFile": "",
+        "isBSPGenReq": false
+      }
+    ],
+    "emptyToolchainConfiguration": []
+  },
+  "useSysrootToolchain": false,
+  "templateFlow": "VITIS"
+}
