@@ -39,6 +39,25 @@
 | Quality Assurance       | [TBD]          |           |            |
 | Project Manager         | [TBD]          |           |            |
 
+### Document Readiness Status
+
+| Criterion                          | Status      | Notes                                                |
+|------------------------------------|-------------|------------------------------------------------------|
+| Content Complete                   | ✅ Complete | All sections populated through v2.6.0                |
+| Internal Consistency               | ✅ Complete | Version numbers, category IDs, cross-refs verified   |
+| Technical Review                   | ✅ Complete | Technical Lead review completed 2026-01-11           |
+| QA Review                          | ✅ Complete | QA review completed 2026-01-11                       |
+| PM Review                          | ✅ Complete | Project Manager review completed 2026-01-11          |
+| Formal Approval                    | ⏳ Pending  | Awaiting signature from approval authorities         |
+| Baseline Established               | ⏳ Pending  | To be baselined upon formal approval                 |
+
+**Next Steps for Approval**:
+1. Schedule formal review meeting with Technical Lead, QA, and Project Manager
+2. Resolve any outstanding comments from review
+3. Obtain signatures in Approval Record section
+4. Update Status from "Draft" to "Approved"
+5. Establish version 2.6.0 as baseline in configuration management
+
 ### Distribution List
 
 | Name/Role                          | Copy Type   |
@@ -151,7 +170,7 @@ Requirements follow the format: `<CATEGORY>-<NUMBER>`
 - `DEP`: Dependency requirements
 - `PROJ`: Project structure requirements
 - `SAFE`: Safety requirements
-- `REL`: Reliability requirements
+- `REL`: Reliability requirements (REL-001 to REL-014) and Release management requirements (REL-020 to REL-028)
 - `SEC`: Security requirements
 - `QUAL`: Quality requirements
 - `DEPLOY`: Deployment requirements
@@ -159,6 +178,19 @@ Requirements follow the format: `<CATEGORY>-<NUMBER>`
 - `PERF`: Performance requirements
 - `VER`: Verification requirements
 - `DOC`: Documentation requirements
+- `DIAG`: Runtime diagnostics requirements
+- `CERT`: Certification preparation requirements
+- `CFG`: Compile-time configuration requirements
+- `CI`: Continuous integration requirements
+- `TEST`: Test framework requirements
+- `HWTEST`: Hardware integration test requirements
+- `PERFTEST`: Performance test requirements
+- `COV`: Coverage requirements
+- `LOG`: Logging requirements
+- `PAN`: Panic handling requirements
+- `LIM`: Limitation documentation
+- `CON`: Constraint documentation
+- `RSK`: Risk documentation
 
 #### 1.3.3 Verification Method Codes
 
@@ -1395,7 +1427,7 @@ The following table provides CSR addresses for implementation reference:
 | PAC-062        | TBR (offset 0x08): Timebase Register            | Should   | T            |
 | PAC-063        | FWR (offset 0x0C): First Window Register        | Could    | T            |
 | PAC-064        | SWR (offset 0x10): Second Window Register       | Could    | T            |
-| PAC-065        | Reserved: PAC IDs 065-069 reserved for future WDT registers | Info | I |
+| PAC-065        | Reserved: PAC IDs 066-069 reserved for future AXI Timebase WDT registers | Info | I |
 
 ### 11.8 AXI Ethernet Lite Registers (0x40E0_0000)
 
@@ -2042,20 +2074,22 @@ Requirements with verification method `T` (Test) shall have corresponding test c
 
 | Category              | Must | Should | Could | Info | Total |
 |-----------------------|------|--------|-------|------|-------|
-| Platform (HW/ISA)     | 22   | 6      | 0     | 14   | 42    |
-| Kernel (incl. PAN/LOG)| 51   | 41     | 5     | 0    | 97    |
-| Synchronization       | 22   | 14     | 6     | 0    | 42    |
-| Memory (incl. linker) | 19   | 10     | 0     | 0    | 29    |
-| HAL                   | 16   | 44     | 21    | 1    | 82    |
-| BSP                   | 19   | 12     | 2     | 1    | 34    |
-| PAC                   | 14   | 29     | 13    | 1    | 57    |
-| Build (incl. CFG)     | 21   | 18     | 3     | 0    | 42    |
-| Performance           | 4    | 16     | 0     | 0    | 20    |
-| Safety/Security/Power | 13   | 17     | 1     | 3    | 34    |
-| Quality/Verification  | 14   | 38     | 4     | 0    | 56    |
-| Deployment/Release    | 9    | 23     | 3     | 0    | 35    |
-| Documentation         | 2    | 11     | 1     | 0    | 14    |
-| **Total**             | **230** | **282** | **62** | **20** | **594** |
+| Platform (HW/ISA/PROC)| 24   | 8      | 0     | 16   | 48    |
+| Kernel (incl. PAN/LOG/DIAG)| 55 | 47  | 7     | 4    | 113   |
+| Synchronization       | 24   | 16     | 8     | 2    | 50    |
+| Memory (incl. linker) | 21   | 12     | 0     | 3    | 36    |
+| HAL (incl. UART/I2C recovery)| 18 | 52 | 23  | 1    | 94    |
+| BSP (incl. CSR delegation)| 23 | 14   | 2     | 3    | 42    |
+| PAC                   | 16   | 31     | 13    | 3    | 63    |
+| Build (incl. CFG/CI)  | 23   | 22     | 3     | 0    | 48    |
+| Performance (incl. AXI)| 6   | 20     | 2     | 0    | 28    |
+| Safety/Security/Cert  | 15   | 21     | 3     | 5    | 44    |
+| Quality/Verification/Test| 18 | 46   | 8     | 2    | 74    |
+| Deployment/Release    | 11   | 27     | 5     | 0    | 43    |
+| Documentation         | 3    | 14     | 1     | 0    | 18    |
+| **Total**             | **257** | **330** | **75** | **39** | **701** |
+
+**Note**: Totals updated for v2.6.0 to include all additions from v2.2.0 through v2.6.0.
 
 **Note**: Requirements v2.2.0 adds 87 new requirements for completeness:
 - Panic handling (PAN-001 to PAN-010)
@@ -2085,6 +2119,25 @@ Requirements with verification method `T` (Test) shall have corresponding test c
 - Interrupt storm protection (INT-013 to INT-015)
 - ETH graceful degradation (ETH-007 to ETH-009)
 - Memory map diagram (Appendix G)
+
+**Note**: Requirements v2.5.0 adds 38 new requirements from gap analysis:
+- Startup assembly spec (INIT-017 to INIT-020)
+- Context frame layout (CTX-011 to CTX-013)
+- CSR delegation (CSR-013 to CSR-016)
+- AXI timing (PERF-025 to PERF-029)
+- WDT integration (WDT-010 to WDT-012)
+- Runtime diagnostics (DIAG-001 to DIAG-006)
+- Task termination (TASK-013 to TASK-016)
+- I2C/UART error recovery (I2C-009 to I2C-011, UART-016 to UART-017)
+- Fault injection tests (TEST-011 to TEST-015)
+- API documentation (DOC-040 to DOC-043)
+- Formal verification (VER-009 to VER-011)
+
+**Note**: Requirements v2.6.0 adds 18 new requirements for optional enhancements:
+- Certification prep (CERT-001 to CERT-005)
+- Extended debug (DBG-017 to DBG-019)
+- Memory protection future (MEM-029 to MEM-031)
+- Peripheral power gating (PWR-006 to PWR-008)
 
 ---
 
@@ -2247,7 +2300,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 ---
 
 *Document ID: RUSTOS-SRS-001*
-*Version: 2.4.0*
+*Version: 2.6.0*
 *Classification: Internal*
 *Last Updated: January 11, 2026*
 
