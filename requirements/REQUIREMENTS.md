@@ -9,8 +9,8 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.6.1                                      |
-| Status                 | Approval Pending (content complete; signatures outstanding) |
+| Version                | 2.6.2                                      |
+| Status                 | Under Review (findings from three-perspective review being addressed) |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
 | Owner                  | System Architecture Team                   |
@@ -31,6 +31,7 @@
 | 2.5.0   | 2026-01-11 | Dev Team    | Gap analysis remediation: startup assembly spec (INIT-017 to INIT-020), context frame layout (CTX-011 to CTX-013), CSR delegation (CSR-013 to CSR-016), AXI timing (PERF-025 to PERF-029), WDT integration (WDT-010 to WDT-012), runtime diagnostics (DIAG-001 to DIAG-006), task termination (TASK-013 to TASK-016), I2C/UART error recovery, tick-less/priority inheritance futures, fault injection tests (TEST-011 to TEST-015), API documentation (DOC-040 to DOC-043), formal verification (VER-009 to VER-011) |
 | 2.6.0   | 2026-01-11 | Dev Team    | Optional enhancements: certification prep (CERT-001 to CERT-005), extended debug (DBG-017 to DBG-019), memory protection future (MEM-029 to MEM-031), peripheral power gating (PWR-006 to PWR-008) |
 | 2.6.1   | 2026-01-11 | Dev Team    | Final review fixes: CTX-010 GPR count correction, Appendix G UART address fix, PAC-02A renamed to PAC-032, risk scale definitions added, REF-023 test traceability reference, readiness status clarification |
+| 2.6.2   | 2026-01-11 | Dev Team    | Three-perspective review integration: Technical Lead (9 findings), QA (9 findings), PM (10 findings), cross-cutting (3 findings). Added requirements: INT-016, HWTEST-009/010, CI-008, VER-012-014, PM-001-004, RSK-020-023, REL-029-031. Clarifications: ISA-009 usage, PROC-002 S-mode, terminology, coverage methodology, traceability implementation. Status updated to reflect review findings requiring resolution. |
 
 ### Approval Record
 
@@ -45,22 +46,24 @@
 | Criterion                          | Status      | Notes                                                |
 |------------------------------------|-------------|------------------------------------------------------|
 | Content Complete                   | ✅ Complete | All sections populated through v2.6.1                |
-| Internal Consistency               | ✅ Complete | Version numbers, category IDs, cross-refs verified   |
-| Technical Review                   | ✅ Complete | Review completed 2026-01-11; findings resolved; sign-off pending |
-| QA Review                          | ✅ Complete | Review completed 2026-01-11; findings resolved; sign-off pending |
-| PM Review                          | ✅ Complete | Review completed 2026-01-11; findings resolved; sign-off pending |
-| Formal Approval                    | ⏳ Pending  | Awaiting signature from approval authorities         |
+| Internal Consistency               | 🔄 In Progress | Minor inconsistencies identified; being addressed  |
+| Technical Review                   | 🔄 In Progress | Three-perspective review completed 2026-01-11; 31 findings require attention |
+| QA Review                          | 🔄 In Progress | Review completed; 9 issues identified for resolution |
+| PM Review                          | 🔄 In Progress | Review completed; 10 issues identified, approval authorities need assignment |
+| Formal Approval                    | ⏳ Pending  | Awaiting resolution of review findings and signatory assignment |
 | Baseline Established               | ⏳ Pending  | To be baselined upon formal approval                 |
 
 **Next Steps for Approval**:
 1. ~~Schedule formal review meeting with Technical Lead, QA, and Project Manager~~ ✅ Complete
-2. ~~Resolve any outstanding comments from review~~ ✅ Complete (v2.6.1)
-3. Assign Technical Lead, QA, and PM signatories in the Approval Record section
-4. Obtain signatures from assigned approvers
-5. Update Status from "Approval Pending" to "Approved"
-6. Establish version 2.6.1 as baseline in configuration management
+2. Address findings from three-perspective review (31 issues identified) ⏳ In Progress
+3. Assign Technical Lead, QA, and PM signatories in the Approval Record section ⏳ Pending
+4. Resolve all critical and high-priority review findings ⏳ Pending
+5. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ Pending
+6. Obtain formal signatures from approval authorities ⏳ Pending
+7. Update Status from "Under Review" to "Approved" ⏳ Pending
+8. Establish approved version as baseline in configuration management ⏳ Pending
 
-**Readiness Assessment**: Content and peer reviews are complete. Remaining gating items are signatory assignment, captured signatures, and baselining after approval.
+**Readiness Assessment**: Comprehensive three-perspective review completed on 2026-01-11. Review identified 31 findings across Technical Lead (9 issues), QA (9 issues), and PM (10 issues) perspectives, plus 3 cross-cutting concerns. Critical findings require resolution before proceeding to approval: (1) Approval authority assignment, (2) Test traceability completion, (3) Formal baseline establishment. Medium-priority findings require resolution or documented acceptance. Minor findings may be addressed post-approval as maintenance updates.
 
 ### Distribution List
 
@@ -175,7 +178,7 @@ Requirements follow the format: `<CATEGORY>-<NUMBER>`
 - `DEP`: Dependency requirements
 - `PROJ`: Project structure requirements
 - `SAFE`: Safety requirements
-- `REL`: Reliability requirements (REL-001 to REL-014) and Release management requirements (REL-020 to REL-028). Note: Gap REL-015 to REL-019 intentionally reserved to separate subcategories.
+- `REL`: Reliability requirements (REL-001 to REL-014) and Release management requirements (REL-020 to REL-028). Note: Gap REL-015 to REL-019 intentionally reserved to clearly separate Reliability (functional safety) from Release management (process) subcategories, preventing confusion during requirement traceability.
 - `SEC`: Security requirements
 - `QUAL`: Quality requirements
 - `DEPLOY`: Deployment requirements
@@ -385,7 +388,7 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
 | HW-001         | Target board: Digilent Arty A7-35 (Xilinx Artix-7 XC7A35TICSG324-1L FPGA)                                      | Must     | I            |
-| HW-002         | Processor: Xilinx MicroBlaze V (RISC-V) soft-core                                                              | Must     | I            |
+| HW-002         | Processor: Xilinx MicroBlaze V soft-core (RISC-V RV32IMACB ISA implementation)                                 | Must     | I            |
 | HW-003         | System clock: 75 MHz (generated by Clocking Wizard from 100 MHz board clock)                                   | Must     | T            |
 | HW-004         | Memory: 128 KB local BRAM mapped at 0x0000_0000–0x0001_FFFF (accessed via separate instruction/data LMB paths) | Must     | T            |
 | HW-005         | FPGA resources available: 5,200 logic slices, 1,800 Kbits BRAM, 90 DSP slices                                  | Info     | I            |
@@ -418,7 +421,7 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 | Requirement ID | Description                                                                                                  | Priority | Verification |
 |----------------|--------------------------------------------------------------------------------------------------------------|----------|--------------|
 | PROC-001       | 32-bit implementation, performance-optimized                                                                 | Must     | I            |
-| PROC-002       | Hardware capability: Supervisor with SV32 virtual memory support                                             | Info     | I            |
+| PROC-002       | Hardware capability: Supervisor mode with SV32 virtual memory support (available but unused; RustOS operates in M-mode per PROC-013) | Info     | I            |
 | PROC-003       | Base counters and timers: Enabled                                                                            | Must     | T            |
 | PROC-004       | Branch target cache: Disabled (optimized for small code footprints)                                          | Info     | I            |
 | PROC-005       | Local Memory Bus (LMB) instruction interface: Enabled                                                        | Must     | T            |
@@ -549,6 +552,7 @@ The following table defines the software-assigned interrupt priorities for the k
 | INT-010        | Software interrupt priorities shall be configurable at compile time                                   | Should   | I            |
 | INT-011        | Priority 0 shall be reserved for system tick timer                                                    | Must     | I            |
 | INT-012        | Interrupt priorities shall be documented in HAL configuration                                         | Should   | I            |
+| INT-016        | Software interrupt priority enforcement shall be validated via test: intentionally trigger lower-priority IRQ during higher-priority ISR, verify lower is deferred | Should   | T            |
 
 ### 5.8 Debug Infrastructure
 
@@ -1801,6 +1805,9 @@ The following Cargo features shall be supported:
 | REL-026        | All Must requirements shall pass verification before release tagging                                           | Must     | I            |
 | REL-027        | API breaking changes shall increment MAJOR version                                                             | Should   | I            |
 | REL-028        | Dependency versions shall be locked in Cargo.lock for release builds                                           | Must     | I            |
+| REL-029        | Requirements baseline shall be established upon formal approval with version control tag `baseline-v<VERSION>` | Must     | I            |
+| REL-030        | Changes to baselined requirements shall follow formal Change Control Process (Appendix E)                      | Must     | I            |
+| REL-031        | Baseline shall include: approved requirements document, traceability matrix, and formal approval signatures    | Must     | I            |
 
 ### 18.4 Release Checklist
 
@@ -1820,7 +1827,16 @@ The following items shall be verified before each release:
 | Performance benchmarks within targets               | Performance |
 | Security dependency audit passed                    | Security    |
 
-### 18.5 CI/CD Pipeline
+### 18.5 Schedule and Milestones
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
+| PM-001         | Project schedule shall define key milestones: (1) Requirements Approval, (2) Design Complete, (3) Implementation Complete, (4) Testing Complete, (5) Release Candidate, (6) v1.0 Release | Should   | I            |
+| PM-002         | Schedule shall include target dates for each milestone (to be populated by Project Manager)                    | Should   | I            |
+| PM-003         | Schedule shall be reviewed and updated monthly during active development                                       | Should   | I            |
+| PM-004         | Schedule risks shall be tracked and mitigation plans documented                                                | Should   | I            |
+
+### 18.6 CI/CD Pipeline
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
@@ -1831,6 +1847,7 @@ The following items shall be verified before each release:
 | CI-005         | Binary size tracking and regression detection                                                                  | Could    | D            |
 | CI-006         | Automated CHANGELOG validation for release branches                                                            | Could    | D            |
 | CI-007         | Build artifacts published for tagged releases                                                                  | Should   | D            |
+| CI-008         | MSRV (Minimum Supported Rust Version per BUILD-022) shall be enforced in CI via explicit rust-toolchain file or CI configuration | Must     | D            |
 
 ---
 
@@ -1889,6 +1906,8 @@ The following items shall be verified before each release:
 | HWTEST-006     | Context switch shall be validated under actual preemption conditions                                           | Must     | T            |
 | HWTEST-007     | Timer accuracy shall be validated against wall-clock reference                                                 | Should   | T            |
 | HWTEST-008     | Memory access patterns shall be validated for correct volatile behavior                                        | Should   | T            |
+| HWTEST-009     | AXI peripheral access timing shall be validated per PERF-025 to PERF-029 using hardware cycle counters        | Should   | T            |
+| HWTEST-010     | LMB BRAM single-cycle access shall be validated by measuring read/write latency using mcycle CSR              | Must     | T            |
 
 ### 19.1.3 Performance Testing
 
@@ -1905,7 +1924,7 @@ The following items shall be verified before each release:
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
-| COV-001        | Line coverage for host-testable code shall be ≥ 80%                                                            | Should   | A            |
+| COV-001        | Line coverage for host-testable code shall be ≥ 80% (measured as executed lines / total executable lines, excluding hardware-specific code) | Should   | A            |
 | COV-002        | Coverage reports shall be generated via `coverage.sh` script                                                   | Should   | D            |
 | COV-003        | Branch coverage shall be tracked for critical decision points                                                  | Could    | A            |
 | COV-004        | Uncovered code paths shall be documented with justification                                                    | Should   | I            |
@@ -2065,6 +2084,15 @@ The following items shall be verified before each release:
 - **Medium Impact Risks**: Should have mitigation strategies documented
 - **Low Impact Risks**: Accepted with monitoring
 
+### 22.4 Risk Management Requirements
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
+| RSK-020        | Each risk shall have an assigned owner responsible for tracking and mitigation                                 | Should   | I            |
+| RSK-021        | Risk status shall be reviewed at each project milestone                                                        | Should   | I            |
+| RSK-022        | New risks identified during development shall be added to risk register with assessment within 1 week          | Should   | I            |
+| RSK-023        | Risk mitigation progress shall be reported to Project Manager monthly                                          | Should   | I            |
+
 ---
 
 ## 23. Traceability Matrix
@@ -2084,6 +2112,12 @@ The following items shall be verified before each release:
 
 Requirements with verification method `T` (Test) shall have corresponding test cases documented and traceable. The high-level mapping is maintained in this SRS (Section 23); detailed mapping to concrete test implementations may additionally be embedded in source code via structured annotations (e.g., `// REQ: <ID>`) and/or test naming conventions.
 
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|------------|
+| VER-012        | Test traceability shall be implemented via one of: (a) test function naming convention `test_<REQ_ID>_<description>`, (b) doc comments with `# Requirements: <REQ-ID>`, or (c) dedicated traceability matrix file | Should   | I            |
+| VER-013        | A traceability report shall be generated listing all Must requirements and their corresponding test implementations | Should   | A            |
+| VER-014        | Requirements with verification method `T` but no corresponding test shall be reported as gap during CI        | Should   | D            |
+
 ### 23.3 Requirements Coverage Summary
 
 | Category              | Must | Should | Could | Info | Total |
@@ -2092,18 +2126,27 @@ Requirements with verification method `T` (Test) shall have corresponding test c
 | Kernel (incl. PAN/LOG/DIAG)| 55 | 47  | 7     | 4    | 113   |
 | Synchronization       | 24   | 16     | 8     | 2    | 50    |
 | Memory (incl. linker) | 21   | 12     | 0     | 3    | 36    |
-| HAL (incl. UART/I2C recovery)| 18 | 52 | 23  | 1    | 94    |
+| HAL (incl. UART/I2C recovery)| 18 | 53 | 23  | 1    | 95    |
 | BSP (incl. CSR delegation)| 23 | 14   | 2     | 3    | 42    |
 | PAC                   | 16   | 31     | 13    | 3    | 63    |
-| Build (incl. CFG/CI)  | 23   | 22     | 3     | 0    | 48    |
+| Build (incl. CFG/CI)  | 24   | 22     | 3     | 0    | 49    |
 | Performance (incl. AXI)| 6   | 20     | 2     | 0    | 28    |
 | Safety/Security/Cert  | 15   | 21     | 3     | 5    | 44    |
-| Quality/Verification/Test| 18 | 46   | 8     | 2    | 74    |
-| Deployment/Release    | 11   | 27     | 5     | 0    | 43    |
+| Quality/Verification/Test| 18 | 51   | 8     | 2    | 79    |
+| Deployment/Release (incl. PM)| 14 | 31 | 5     | 0    | 50    |
 | Documentation         | 3    | 14     | 1     | 0    | 18    |
-| **Total**             | **257** | **330** | **75** | **39** | **701** |
+| **Total**             | **261** | **340** | **75** | **39** | **715** |
 
-**Note**: Totals updated for v2.6.1 to include all additions from v2.2.0 through v2.6.1.
+**Note**: Totals updated for v2.6.2 to include all additions from v2.2.0 through v2.6.2.
+
+**Note**: Requirements v2.6.2 adds 14 new requirements from three-perspective review findings:
+- Interrupt priority validation (INT-016)
+- Hardware test additions (HWTEST-009, HWTEST-010)
+- CI enforcement (CI-008)
+- Test traceability (VER-012 to VER-014)
+- Schedule management (PM-001 to PM-004)
+- Risk management (RSK-020 to RSK-023)
+- Baseline establishment (REL-029 to REL-031)
 
 **Note**: Requirements v2.2.0 adds 87 new requirements for completeness:
 - Panic handling (PAN-001 to PAN-010)
@@ -2315,7 +2358,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 ---
 
 *Document ID: RUSTOS-SRS-001*
-*Version: 2.6.1*
+*Version: 2.6.2*
 *Classification: Internal*
 *Last Updated: January 11, 2026*
 
