@@ -79,7 +79,7 @@ Total static memory footprint is approximately **60 KB**, well within the 128 KB
 
 ```text
 rustos/
-├── bsp/                     # Vitis-generated Board Support Package for Arty A7-35 
+├── bsp/                     # Vitis-generated Board Support Package for Arty A7-35
 ├── hardware/                # Vivado FPGA design and hardware artifacts
 ├── requirements/            # Requirements specification and documentation
 ├── rustos-app/              # Custom application using RustOS

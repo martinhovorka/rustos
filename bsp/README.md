@@ -15,7 +15,6 @@ This is a **Hardware Platform Project** that contains:
   - Processor mapping: `mbv_microblaze_v` → `microblaze_riscv`
   - Supported operating systems: `standalone`, `linux`
   - XSA hardware specification path
-  
 - **hw/** - Hardware specification directory:
   - `rv32imacb_zicsr_zifencei_zbc-hardware_platform.xsa` - Exported hardware platform from Vivado
   - `sdt/` - System Device Tree files for hardware description
