@@ -71,7 +71,7 @@ The system runs entirely from the 128 KB on-chip BRAM.
 - **`.bss`**: Uninitialized static data (zeroed at startup).
 - **Stack**: 4 KB main stack for interrupts and traps.
 - **Task Stacks**: 16 stacks of 2 KB each, statically allocated.
-- **Heap**: 4 KB reserved, but currently unused.
+- **Heap**: none (static allocation only, per requirements MEM-001).
 
 Total static memory footprint is approximately **60 KB**, well within the 128 KB limit.
 
@@ -94,7 +94,7 @@ rustos/
 
 ### Software
 
-- **Rust** 1.88.0 or later (for stable `#[naked]` functions)
+- **Rust** 1.82.0 or later (for stable `#[naked]` functions)
 
 ### QA quick checks
 
@@ -208,7 +208,7 @@ See [requirements/REQUIREMENTS.md](requirements/REQUIREMENTS.md#16-memory-map) f
 ## Documentation
 
 - [Requirements Specification](requirements/REQUIREMENTS.md) — Comprehensive requirements document
-- [Project Review](review/review.md) — Validation findings and open problems
+- [Project Review](review/REVIEW.md) — Validation findings and open problems
 - [Hardware Design](hardware/README.md) — Vivado project details
 - [Board Support Package](bsp/README.md) — Vitis project (generated BSP) configuration
 
@@ -252,4 +252,4 @@ See [requirements/REQUIREMENTS.md](requirements/REQUIREMENTS.md#16-memory-map) f
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.

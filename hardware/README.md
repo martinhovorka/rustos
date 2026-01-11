@@ -499,6 +499,7 @@ Key interfaces:
 
 - **Board Support Package (BSP)**: [../bsp/README.md](../bsp/README.md)
 - **Digilent Arty A7 Reference Manual**: [Digilent Reference](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)
+- Note: Some Digilent documentation may block automated link checks; if a link checker reports an error, open the link in a browser.
 - **MicroBlaze V Processor Documentation**:
   - [MicroBlaze V Processor Reference Guide (UG1629)](https://www.xilinx.com/support/documentation/user_guides/ug1629.html)
   - [MicroBlaze V Processor Embedded Design User Guide (UG1711)](https://www.xilinx.com/support/documentation/user_guides/ug1711.html)
