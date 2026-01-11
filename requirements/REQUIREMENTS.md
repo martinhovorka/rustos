@@ -9,7 +9,7 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.6.6                                      |
+| Version                | 2.6.7                                      |
 | Status                 | Ready for Approval (seven-perspective review findings resolved) |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
@@ -34,8 +34,9 @@
 | 2.6.2   | 2026-01-11 | Dev Team    | Three-perspective review integration: Technical Lead (9 findings), QA (9 findings), PM (10 findings), cross-cutting (3 findings). Added requirements: INT-016, HWTEST-009/010, CI-008, VER-012-014, PM-001-004, RSK-020-023, REL-029-031. Clarifications: ISA-009 usage, PROC-002 S-mode, terminology, coverage methodology, traceability implementation. Status updated to reflect review findings requiring resolution. |
 | 2.6.3   | 2026-01-11 | Dev Team    | Three-perspective review remediation: Clarified ISA-009 Zbc extension rationale, improved PROC-002 S-mode hardware vs usage description, added explicit test traceability guidance (VER-012 clarification), defined coverage exclusion methodology (COV-001 update), added CI test execution enforcement (CI-009), provided approval authority assignment guidance. Status updated to "Ready for Approval". |
 | 2.6.4   | 2026-01-11 | Dev Team    | Final review cycle: Fixed document footer version mismatch (was 2.6.2, corrected to 2.6.4), resolved GPIO PAC ID conflicts (renumbered GPIO registers to PAC-033 through PAC-037), added Hardware Team to distribution list, added FIT Timer hardware test requirement (HWTEST-011), clarified PM schedule population guidance, defined generated code exclusions in COV-001. Document fully ready for formal approval. |
-| 2.6.5   | 2026-01-11 | Dev Team    | Five-perspective review (Technical Lead, QA, PM, Software Team, Hardware Team): Added Software Team to distribution list, added milestone schedule placeholder table (PM-005), clarified test naming convention (VER-015), added risk owner column requirement (RSK-024), clarified BRAM timing assumptions (PERF-030 update), added entry point symbol export requirement (INIT-021), updated dependency version guidance (DEP-011). Total requirements: 725. |
-| 2.6.6   | 2026-01-11 | Dev Team    | Seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V, Hardware Team, HW V&V): Added SW V&V Team and HW V&V Team to distribution list and readiness status, added approval next steps 7-9, added HWTEST-012 for INTC KIND_OF_INTR validation, clarified VER-015 regex pattern, clarified COV-001 unreachable arm exclusions, clarified PERF-027/028 LMB dependency, updated DEP-003 version flexibility, added VER-016 miri scope clarification. Total requirements: 729. |
+| 2.6.5   | 2026-01-11 | Dev Team    | Five-perspective review (Technical Lead, QA, PM, Software Team, Hardware Team): Added Software Team to distribution list; added milestone schedule placeholder (PM-005); clarified VER-015; added RSK-024; clarified PERF-030 assumptions; added INIT-021; clarified DEP-011. |
+| 2.6.6   | 2026-01-11 | Dev Team    | Seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V, Hardware Team, HW V&V): Added SW V&V Team and HW V&V Team to distribution list and readiness status; added HWTEST-012; added VER-016; clarified VER-015/COV-001/PERF-027/028; updated DEP-003 flexibility. |
+| 2.6.7   | 2026-01-11 | Dev Team    | Editorial corrections: removed duplicated approval checklist items; recomputed and corrected requirements coverage totals (Section 23.3); aligned readiness assessment totals. |
 
 ### Approval Record
 
@@ -51,15 +52,15 @@
 
 | Criterion                          | Status      | Notes                                                |
 |------------------------------------|-------------|------------------------------------------------------|
-| Content Complete                   | ✅ Complete | All sections populated through v2.6.6                |
-| Internal Consistency               | ✅ Complete | Review findings resolved in v2.6.6                   |
+| Content Complete                   | ✅ Complete | All sections populated through v2.6.7                |
+| Internal Consistency               | ✅ Complete | Review findings resolved in v2.6.7                   |
 | Technical Review                   | ✅ Complete | Seven-perspective review completed 2026-01-11; all findings resolved |
-| QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.6.6      |
+| QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.6.7      |
 | PM Review                          | ✅ Complete | Review completed; findings resolved, approval guidance added |
-| Software Team Review               | ✅ Complete | Review completed; findings resolved in v2.6.6        |
-| SW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.6        |
-| Hardware Team Review               | ✅ Complete | Review completed; findings resolved in v2.6.6        |
-| HW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.6        |
+| Software Team Review               | ✅ Complete | Review completed; findings resolved in v2.6.7        |
+| SW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.7        |
+| Hardware Team Review               | ✅ Complete | Review completed; findings resolved in v2.6.7        |
+| HW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.7        |
 | Formal Approval                    | ⏳ Pending  | Awaiting approval authority assignment and sign-off  |
 | Baseline Established               | ⏳ Pending  | To be baselined upon formal approval                 |
 
@@ -73,11 +74,8 @@
 7. Obtain formal signatures from approval authorities ⏳ Pending assignment
 8. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
 9. Establish approved version as baseline in configuration management ⏳ Pending approval
-7. Obtain formal signatures from approval authorities ⏳ Pending assignment
-8. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
-9. Establish approved version as baseline in configuration management ⏳ Pending approval
 
-**Readiness Assessment**: Final seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All findings from v2.6.3 through v2.6.6 cycles resolved. Document is technically complete and ready for formal approval. **Blocking action: Assign approval authorities** (Technical Lead, QA, PM) to enable formal sign-off. Once assignments made, review cycle for sign-off is estimated at 2 weeks. All technical, quality, and process requirements satisfied. Total requirements: 729. Baseline establishment will follow formal approval.
+**Readiness Assessment**: Final seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All findings from v2.6.3 through v2.6.7 cycles resolved. Document is technically complete and ready for formal approval. **Blocking action: Assign approval authorities** (Technical Lead, QA, PM) to enable formal sign-off. Once assignments made, review cycle for sign-off is estimated at 2 weeks. All technical, quality, and process requirements satisfied. Total requirements: 790. Baseline establishment will follow formal approval.
 
 ### Distribution List
 
@@ -2160,38 +2158,77 @@ Requirements with verification method `T` (Test) shall have corresponding test c
 
 ### 23.3 Requirements Coverage Summary
 
-| Category              | Must | Should | Could | Info | Total |
-|-----------------------|------|--------|-------|------|-------|
-| Platform (HW/ISA/PROC)| 24   | 8      | 0     | 16   | 48    |
-| Kernel (incl. PAN/LOG/DIAG/INIT-021)| 56 | 47  | 7     | 4    | 114   |
-| Synchronization       | 24   | 16     | 8     | 2    | 50    |
-| Memory (incl. linker) | 21   | 12     | 0     | 3    | 36    |
-| HAL (incl. UART/I2C recovery)| 18 | 53 | 23  | 1    | 95    |
-| BSP (incl. CSR delegation)| 23 | 14   | 2     | 3    | 42    |
-| PAC                   | 16   | 31     | 13    | 3    | 63    |
-| Build (incl. CFG/CI/DEP-011)  | 24   | 23     | 3     | 0    | 50    |
-| Performance (incl. AXI)| 6   | 20     | 2     | 0    | 28    |
-| Safety/Security/Cert  | 15   | 21     | 3     | 5    | 44    |
-| Quality/Verification/Test (incl. VER-016, HWTEST-012)| 21 | 53   | 8     | 2    | 84    |
-| Deployment/Release (incl. PM-005)| 14 | 32 | 5     | 0    | 51    |
-| Risk (incl. RSK-024)  | 0    | 5      | 0     | 0    | 5     |
-| Documentation         | 3    | 14     | 1     | 0    | 18    |
-| **Total**             | **265** | **349** | **75** | **39** | **729** |
+Counts below are based on the number of **unique requirement IDs** that appear in requirement tables with an explicit **Priority** (Must/Should/Could/Info).
 
-**Note**: Totals updated for v2.6.6 to include seven-perspective review additions (VER-016, HWTEST-012).
+| Prefix | Must | Should | Could | Info | Total |
+|--------|------|--------|-------|------|-------|
+| ALLOC | 7 | 1 | 0 | 0 | 8 |
+| API | 9 | 7 | 0 | 0 | 16 |
+| APP | 2 | 9 | 1 | 0 | 12 |
+| ATOM | 3 | 4 | 1 | 0 | 8 |
+| BOOT | 8 | 3 | 0 | 0 | 11 |
+| BUILD | 14 | 8 | 0 | 0 | 22 |
+| CERT | 0 | 3 | 1 | 1 | 5 |
+| CFG | 5 | 5 | 2 | 0 | 12 |
+| CI | 2 | 5 | 2 | 0 | 9 |
+| COV | 0 | 6 | 2 | 0 | 8 |
+| CRIT | 4 | 2 | 0 | 0 | 6 |
+| CSR | 9 | 4 | 0 | 3 | 16 |
+| CTX | 12 | 1 | 0 | 0 | 13 |
+| DBG | 0 | 15 | 3 | 1 | 19 |
+| DEP | 6 | 5 | 0 | 0 | 11 |
+| DEPLOY | 5 | 2 | 1 | 0 | 8 |
+| DEV | 0 | 10 | 0 | 0 | 10 |
+| DIAG | 0 | 5 | 1 | 0 | 6 |
+| DOC | 4 | 16 | 1 | 0 | 21 |
+| ERR | 4 | 5 | 0 | 0 | 9 |
+| ETH | 0 | 0 | 9 | 0 | 9 |
+| EVT | 0 | 4 | 2 | 0 | 6 |
+| EXC | 3 | 1 | 0 | 0 | 4 |
+| GPIO | 0 | 8 | 2 | 0 | 10 |
+| HW | 4 | 0 | 0 | 2 | 6 |
+| HWTEST | 7 | 5 | 0 | 0 | 12 |
+| I2C | 0 | 10 | 1 | 0 | 11 |
+| INIT | 16 | 3 | 2 | 0 | 21 |
+| INT | 6 | 6 | 4 | 0 | 16 |
+| ISA | 12 | 1 | 0 | 0 | 13 |
+| ISR | 5 | 2 | 0 | 0 | 7 |
+| LOG | 1 | 5 | 2 | 0 | 8 |
+| MEM | 22 | 6 | 0 | 3 | 31 |
+| MQ | 8 | 2 | 1 | 0 | 11 |
+| MTX | 7 | 4 | 1 | 1 | 13 |
+| PAC | 17 | 36 | 14 | 1 | 68 |
+| PAN | 4 | 5 | 1 | 0 | 10 |
+| PER | 7 | 15 | 0 | 1 | 23 |
+| PERF | 7 | 20 | 0 | 0 | 27 |
+| PERFTEST | 1 | 4 | 1 | 0 | 6 |
+| PM | 0 | 5 | 0 | 0 | 5 |
+| PROC | 6 | 0 | 0 | 7 | 13 |
+| PROJ | 3 | 5 | 0 | 0 | 8 |
+| PWR | 0 | 3 | 0 | 5 | 8 |
+| QUAL | 4 | 15 | 1 | 0 | 20 |
+| REL | 9 | 15 | 0 | 0 | 24 |
+| RSK | 0 | 5 | 0 | 0 | 5 |
+| SAFE | 6 | 2 | 0 | 0 | 8 |
+| SCHED | 10 | 4 | 2 | 1 | 17 |
+| SEC | 2 | 5 | 1 | 0 | 8 |
+| SEM | 7 | 2 | 1 | 0 | 10 |
+| SPI | 0 | 8 | 1 | 0 | 9 |
+| TASK | 8 | 6 | 2 | 0 | 16 |
+| TEST | 6 | 7 | 2 | 0 | 15 |
+| TIME | 4 | 4 | 0 | 2 | 10 |
+| TMR | 6 | 3 | 0 | 1 | 10 |
+| TRAP | 10 | 5 | 2 | 0 | 17 |
+| UART | 9 | 7 | 1 | 0 | 17 |
+| VER | 2 | 13 | 0 | 1 | 16 |
+| WDT | 0 | 8 | 4 | 0 | 12 |
+| **Total** | **313** | **375** | **72** | **30** | **790** |
 
-**Note**: Requirements v2.6.6 adds 4 new requirements from seven-perspective review findings:
-- Miri validation scope clarification (VER-016)
-- AXI INTC KIND_OF_INTR validation (HWTEST-012)
-- Updated VER-015 with regex pattern details
-- Updated COV-001 with unreachable arm exclusions
+**Note**: Coverage totals recomputed and corrected in v2.6.7.
 
-**Note**: Requirements v2.6.5 adds 5 new requirements from five-perspective review findings:
-- Entry point symbol export (INIT-021)
-- Test naming convention clarification (VER-015)
-- Milestone schedule placeholder (PM-005)
-- Risk owner column requirement (RSK-024)
-- Dependency version guidance (DEP-011)
+**Note**: v2.6.6 adds requirements (e.g., VER-016, HWTEST-012) and clarifies existing ones (e.g., VER-015, COV-001).
+
+**Note**: v2.6.5 adds requirements (e.g., INIT-021, PM-005, RSK-024) and clarifies existing ones (e.g., VER-015, DEP-011).
 
 **Note**: Requirements v2.6.2 adds 14 new requirements from three-perspective review findings:
 - Interrupt priority validation (INT-016)

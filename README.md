@@ -90,7 +90,7 @@ rustos/
 │   ├── artifacts/           # Exported bitstream, constraints, netlists, etc.
 │   ├── ip_cores/            # IP core documentation
 │   └── rv32imacb.../        # Complete Vivado 2025.2 project
-├── requirements/            # Requirements specification (v2.6.0, ~650 requirements)
+├── requirements/            # Requirements specification (v2.6.7, 790 requirements)
 │   └── REQUIREMENTS.md      # Comprehensive SRS document
 ├── review/                  # Validation and review documentation
 │   ├── REVIEW.md            # Data consistency review findings
@@ -132,7 +132,7 @@ The following components are **complete**:
 
 1. **Hardware Design** - Vivado 2025.2 project with MicroBlaze V RISC-V processor
 2. **Board Support Package** - Vitis-generated BSP with drivers and libraries
-3. **Requirements Specification** - Comprehensive SRS document (v2.6.0, ~650 requirements)
+3. **Requirements Specification** - Comprehensive SRS document (v2.6.7, 790 requirements)
 4. **Review Documentation** - Data consistency and gap analysis complete
 
 ### Next Steps (Implementation Phase)
@@ -207,7 +207,7 @@ See [requirements/REQUIREMENTS.md](requirements/REQUIREMENTS.md) for the complet
 
 ## Documentation
 
-- [Requirements Specification](requirements/REQUIREMENTS.md) — Comprehensive requirements document (v2.6.0, ~650 requirements)
+- [Requirements Specification](requirements/REQUIREMENTS.md) — Comprehensive requirements document (v2.6.7, 790 requirements)
 - [Project Review](review/REVIEW.md) — Data consistency validation findings
 - [Missing Information Review](review/MISSING_INFORMATION.md) — Requirements gap analysis (95/100 readiness score)
 - [Hardware Design](hardware/README.md) — Vivado project details and memory map
