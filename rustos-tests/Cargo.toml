@@ -1,0 +1,38 @@
+# REQ: TEST-001 - Test Suite
+# rustos-tests: Host-based test suite for RustOS
+
+[package]
+name = "rustos-tests"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Host-based test suite for RustOS RTOS"
+
+[dependencies]
+# REQ: TEST-003 - Testable kernel components
+rustos-kernel = { path = "../rustos-kernel" }
+
+# REQ: DEP-010 - Static data structures
+heapless = { workspace = true }
+
+# REQ: DEP-007 - Atomic operations for tests
+portable-atomic = { workspace = true }
+
+[dev-dependencies]
+# REQ: TEST-004 - Test assertions
+assert_matches = "1.5"
+
+[features]
+default = []
+
+# REQ: TEST-005 - Library with tests
+[lib]
+name = "rustos_tests"
+path = "src/lib.rs"
+
+# REQ: TEST-006 - Test with standard library on host
+[package.metadata.docs.rs]
+all-features = true

@@ -1,0 +1,36 @@
+# REQ: APP-001 - Example Application
+# rustos-app: Example application demonstrating RustOS features
+
+[package]
+name = "rustos-app"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Example application for RustOS RTOS"
+
+[dependencies]
+# REQ: APP-002 - Kernel, HAL, and Board dependencies
+rustos-kernel = { path = "../rustos-kernel" }
+rustos-hal = { path = "../rustos-hal" }
+rustos-board = { path = "../rustos-board" }
+rustos-pac = { path = "../rustos-pac" }
+
+# REQ: DEP-006 - Runtime support
+riscv-rt = { workspace = true }
+
+# REQ: APP-003 - Panic handler
+panic-halt = "0.2"
+
+[features]
+default = []
+
+# REQ: APP-004 - Binary target
+[[bin]]
+name = "rustos-app"
+path = "src/main.rs"
+
+[package.metadata.docs.rs]
+all-features = true

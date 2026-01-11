@@ -1,0 +1,12 @@
+# REQ: BUILD-001 - Build configuration for rustos-app
+
+[target.riscv32imac-unknown-none-elf]
+# REQ: ISA-011, BUILD-023 - Compiler flags
+rustflags = [
+    "-C", "link-arg=-Tmemory.x",
+    "-C", "link-arg=-nostartfiles",
+]
+
+[build]
+# REQ: ISA-010 - Target triple
+target = "riscv32imac-unknown-none-elf"

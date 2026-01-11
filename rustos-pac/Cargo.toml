@@ -1,0 +1,29 @@
+# REQ: PAC-001 - Peripheral Access Crate
+# rustos-pac: Peripheral Access Crate for MicroBlaze V RISC-V
+
+[package]
+name = "rustos-pac"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Peripheral Access Crate for MicroBlaze V RISC-V processor"
+
+[dependencies]
+# REQ: PAC-002 - Type-safe register access
+critical-section = { workspace = true }
+# REQ: DEP-009 - Bitfield operations for registers
+bitflags = { workspace = true }
+
+[features]
+default = []
+
+# REQ: PAC-003 - No standard library
+[lib]
+name = "rustos_pac"
+path = "src/lib.rs"
+
+[package.metadata.docs.rs]
+all-features = true

@@ -1,0 +1,53 @@
+# REQ: KERN-001 - RTOS Kernel
+# rustos-kernel: Preemptive, priority-based RTOS kernel
+
+[package]
+name = "rustos-kernel"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Preemptive, priority-based RTOS kernel for RISC-V"
+
+
+[dependencies]
+# REQ: KERN-002 - Critical sections
+critical-section = { workspace = true }
+
+# REQ: DEP-007 - Atomic operations
+portable-atomic = { workspace = true, features = ["require-cas"] }
+
+# REQ: DEP-010 - Static data structures
+heapless = { workspace = true }
+
+# REQ: DEP-008 - Conditional compilation
+cfg-if = { workspace = true }
+
+# REQ: DEP-009 - Bitflags for task states
+bitflags = { workspace = true }
+
+[features]
+default = []
+# REQ: KERN-003 - Optional statistics collection
+statistics = []
+stack-check = []
+tickless = []
+priority-inheritance = []
+debug-assertions = []
+diagnostics = []
+perf-counters = []
+# REQ: PWR-002 - WFI (Wait For Interrupt) in idle task
+wfi-idle = []
+# REQ: PAN-005, PAN-007 - Panic handler features
+panic-led = []
+panic-reset = []
+
+# REQ: KERN-004 - No standard library
+[lib]
+name = "rustos_kernel"
+path = "src/lib.rs"
+
+[package.metadata.docs.rs]
+all-features = true

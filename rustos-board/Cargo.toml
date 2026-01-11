@@ -1,0 +1,38 @@
+# REQ: BOARD-001 - Board Support Package
+# rustos-board: Board support for Digilent Arty A7-35
+
+[package]
+name = "rustos-board"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Board Support Package for Digilent Arty A7-35 with MicroBlaze V"
+
+[dependencies]
+# REQ: BOARD-002 - Kernel and HAL dependencies
+rustos-kernel = { path = "../rustos-kernel" }
+rustos-hal = { path = "../rustos-hal", features = ["intc", "timer", "uart", "gpio"] }
+rustos-pac = { path = "../rustos-pac" }
+
+# REQ: DEP-005 - RISC-V support
+riscv = { workspace = true }
+
+# REQ: DEP-006 - Runtime support
+riscv-rt = { workspace = true }
+
+# REQ: BOARD-003 - Critical sections
+critical-section = { workspace = true }
+
+[features]
+default = []
+
+# REQ: BOARD-004 - No standard library, no main
+[lib]
+name = "rustos_board"
+path = "src/lib.rs"
+
+[package.metadata.docs.rs]
+all-features = true

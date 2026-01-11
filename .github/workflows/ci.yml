@@ -1,0 +1,90 @@
+# REQ: CI-001 - CI/CD Configuration for GitHub Actions
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # REQ: CI-002 - Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: 1.82.0
+        target: riscv32imac-unknown-none-elf
+        override: true
+        components: rustfmt, clippy
+    
+    - name: Build
+      run: cargo build --workspace --release
+    
+    - name: Build app
+      run: cd rustos-app && cargo build --release
+
+  # REQ: CI-003 - Test job
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: 1.82.0
+        override: true
+    
+    - name: Run tests
+      run: cargo test --package rustos-tests
+
+  # REQ: CI-004 - Lint job
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: 1.82.0
+        components: rustfmt, clippy
+        override: true
+    
+    - name: Check formatting
+      run: cargo fmt --all -- --check
+    
+    - name: Run clippy
+      run: cargo clippy --workspace -- -D warnings
+
+  # REQ: CI-005, COV-001 - Coverage job
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: 1.82.0
+        override: true
+    
+    - name: Install tarpaulin
+      run: cargo install cargo-tarpaulin
+    
+    - name: Generate coverage
+      run: cargo tarpaulin --out Xml --package rustos-tests
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./cobertura.xml
