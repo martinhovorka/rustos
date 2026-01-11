@@ -1,0 +1,13 @@
+[build]
+# Target for RISC-V 32-bit with IMAC extensions
+target = "riscv32imac-unknown-none-elf"
+
+[target.riscv32imac-unknown-none-elf]
+# Use custom linker script
+rustflags = [
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=--nmagic",
+]
+
+# Runner for loading onto FPGA (example using OpenOCD)
+# runner = "riscv32-unknown-elf-gdb -x openocd.gdb"

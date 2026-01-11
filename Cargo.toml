@@ -1,0 +1,24 @@
+[package]
+name = "rustos"
+version = "0.1.0"
+edition = "2021"
+authors = ["Martin Hovorka"]
+description = "A preemptive, priority-based real-time operating system for RISC-V embedded systems"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+# Embedded dependencies
+riscv = "0.11"
+riscv-rt = "0.12"
+embedded-hal = "1.0"
+critical-section = "1.1"
+portable-atomic = { version = "1.6", default-features = false, features = ["require-cas"] }
+
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+debug = true
