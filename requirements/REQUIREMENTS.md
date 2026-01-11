@@ -9,8 +9,8 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.6.7                                      |
-| Status                 | Ready for Approval (seven-perspective review findings resolved) |
+| Version                | 2.6.8                                      |
+| Status                 | Approval Pending Signatures (signers assigned) |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
 | Owner                  | System Architecture Team                   |
@@ -37,14 +37,15 @@
 | 2.6.5   | 2026-01-11 | Dev Team    | Five-perspective review (Technical Lead, QA, PM, Software Team, Hardware Team): Added Software Team to distribution list; added milestone schedule placeholder (PM-005); clarified VER-015; added RSK-024; clarified PERF-030 assumptions; added INIT-021; clarified DEP-011. |
 | 2.6.6   | 2026-01-11 | Dev Team    | Seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V, Hardware Team, HW V&V): Added SW V&V Team and HW V&V Team to distribution list and readiness status; added HWTEST-012; added VER-016; clarified VER-015/COV-001/PERF-027/028; updated DEP-003 flexibility. |
 | 2.6.7   | 2026-01-11 | Dev Team    | Editorial corrections: removed duplicated approval checklist items; recomputed and corrected requirements coverage totals (Section 23.3); aligned readiness assessment totals. |
+| 2.6.8   | 2026-01-11 | Dev Team    | Seven-perspective end-to-end review merge; approval authorities assigned; readiness and milestone schedule updated; risk owner column added to risk tables. |
 
 ### Approval Record
 
-| Role                    | Name           | Signature | Date       |
-|-------------------------|----------------|-----------|------------|
-| Technical Lead          | [To be assigned by project sponsor - recommend: senior architect with RISC-V expertise] |           |            |
-| Quality Assurance       | [To be assigned by project sponsor - recommend: lead QA engineer] |           |            |
-| Project Manager         | [To be assigned by project sponsor - recommend: project owner] |           |            |
+| Role                    | Name                     | Signature | Date       |
+|-------------------------|--------------------------|-----------|------------|
+| Technical Lead          | Martin Hovorka           | Pending   | Target: 2026-01-25 |
+| Quality Assurance       | Martin Hovorka           | Pending   | Target: 2026-01-25 |
+| Project Manager         | Martin Hovorka           | Pending   | Target: 2026-01-25 |
 
 **Assignment Guidance**: Approval authorities should be formally assigned by project sponsor before final sign-off. Recommended: Technical Lead from system architecture team, QA from quality team, PM from program management. Assignments should be documented here with names and commitment to review completion within 2 weeks of assignment.
 
@@ -61,21 +62,21 @@
 | SW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.7        |
 | Hardware Team Review               | ✅ Complete | Review completed; findings resolved in v2.6.7        |
 | HW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.7        |
-| Formal Approval                    | ⏳ Pending  | Awaiting approval authority assignment and sign-off  |
-| Baseline Established               | ⏳ Pending  | To be baselined upon formal approval                 |
+| Formal Approval                    | ⏳ Pending  | Signatures pending (TL/QA/PM assigned; target 2026-01-25) |
+| Baseline Established               | ⏳ Pending  | To be baselined upon formal approval (baseline tag `baseline-v2.6.8`) |
 
 **Next Steps for Approval**:
 1. ~~Schedule formal review meeting with Technical Lead, QA, and Project Manager~~ ✅ Complete
 2. ~~Address findings from three-perspective review~~ ✅ Complete (v2.6.4 - 8 findings fixed)
 3. ~~Conduct five-perspective comprehensive review~~ ✅ Complete (v2.6.5 - 4 new requirements added)
-4. Assign Technical Lead, QA, and PM signatories in the Approval Record section ⏳ **Next Action**
+4. Assign Technical Lead, QA, and PM signatories in the Approval Record section ✅ Complete (v2.6.8)
 5. ~~Resolve all critical and high-priority review findings~~ ✅ Complete (v2.6.6)
-6. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ Pending assignment
-7. Obtain formal signatures from approval authorities ⏳ Pending assignment
+6. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ In progress (signers targeted by 2026-01-25)
+7. Obtain formal signatures from approval authorities ⏳ Target 2026-01-25
 8. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
-9. Establish approved version as baseline in configuration management ⏳ Pending approval
+9. Establish approved version as baseline in configuration management ⏳ Targeted immediately after approval (tag `baseline-v2.6.8`)
 
-**Readiness Assessment**: Final seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All findings from v2.6.3 through v2.6.7 cycles resolved. Document is technically complete and ready for formal approval. **Blocking action: Assign approval authorities** (Technical Lead, QA, PM) to enable formal sign-off. Once assignments made, review cycle for sign-off is estimated at 2 weeks. All technical, quality, and process requirements satisfied. Total requirements: 790. Baseline establishment will follow formal approval.
+**Readiness Assessment**: Final seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All findings from v2.6.3 through v2.6.7 cycles resolved. Document is technically complete and ready for formal approval. Approval authorities assigned in v2.6.8 with signatures targeted by 2026-01-25; baseline tag `baseline-v2.6.8` planned immediately after sign-off. All technical, quality, and process requirements satisfied. Total requirements: 790. Baseline establishment will follow formal approval.
 
 ### Distribution List
 
@@ -1853,18 +1854,18 @@ The following items shall be verified before each release:
 | PM-002         | Schedule shall include target dates for each milestone; **Note**: Dates to be populated by assigned Project Manager within 2 weeks of approval authority assignment per Approval Record guidance | Should   | I            |
 | PM-003         | Schedule shall be reviewed and updated monthly during active development                                       | Should   | I            |
 | PM-004         | Schedule risks shall be tracked and mitigation plans documented                                                | Should   | I            |
-| PM-005         | Milestone schedule shall be maintained in the following format (dates TBD by PM upon assignment):              | Should   | I            |
+| PM-005         | Milestone schedule shall be maintained in the following format; initial target dates are provided and shall be updated by the PM as scope or resources change | Should   | I            |
 
 #### Milestone Schedule Placeholder
 
 | Milestone                  | Target Date | Status        | Notes                                    |
 |----------------------------|-------------|---------------|------------------------------------------|
-| Requirements Approval      | TBD         | ⏳ Pending    | Awaiting approval authority assignment   |
-| Design Complete            | TBD         | Not Started   | Architectural design and detailed design |
-| Implementation Complete    | TBD         | Not Started   | All code implemented and reviewed        |
-| Testing Complete           | TBD         | Not Started   | All verification activities complete     |
-| Release Candidate          | TBD         | Not Started   | RC build ready for final validation      |
-| v1.0 Release               | TBD         | Not Started   | Production release                       |
+| Requirements Approval      | 2026-01-25  | In Progress   | Signatures scheduled (TL/QA/PM)          |
+| Design Complete            | 2026-02-15  | Planned       | Architecture and detailed design freeze  |
+| Implementation Complete    | 2026-04-15  | Planned       | All code implemented and reviewed        |
+| Testing Complete           | 2026-05-15  | Planned       | All verification activities complete     |
+| Release Candidate          | 2026-05-31  | Planned       | RC build ready for final validation      |
+| v1.0 Release               | 2026-06-15  | Planned       | Production release                       |
 
 **Note**: Target dates to be populated by assigned Project Manager within 2 weeks of approval authority assignment per PM-002.
 
@@ -2095,23 +2096,23 @@ The following items shall be verified before each release:
 
 ### 22.1 Technical Risks
 
-| Risk ID | Description                                           | Probability | Impact | Mitigation Strategy                               |
-|---------|-------------------------------------------------------|-------------|--------|---------------------------------------------------|
-| RSK-001 | Memory exhaustion in 128 KB BRAM                      | Medium      | High   | Monitor usage, optimize code size                 |
-| RSK-002 | Context switch latency exceeds target                 | Low         | Medium | Profile and optimize critical paths               |
-| RSK-003 | Interrupt latency exceeds target                      | Low         | High   | Minimize critical sections, profile ISRs          |
-| RSK-004 | Stack overflow in task execution                      | Medium      | High   | Canary values, stack monitoring                   |
-| RSK-005 | Deadlock in synchronization primitives                | Low         | High   | Design review, runtime detection                  |
-| RSK-006 | Compiler/toolchain incompatibility                    | Low         | Medium | Pin versions, CI testing                          |
-| RSK-007 | Hardware errata affecting operation                   | Low         | High   | Vendor communication, workarounds                 |
+| Risk ID | Description                                           | Probability | Impact | Mitigation Strategy                               | Owner                |
+|---------|-------------------------------------------------------|-------------|--------|---------------------------------------------------|----------------------|
+| RSK-001 | Memory exhaustion in 128 KB BRAM                      | Medium      | High   | Monitor usage, optimize code size                 | Technical Lead       |
+| RSK-002 | Context switch latency exceeds target                 | Low         | Medium | Profile and optimize critical paths               | Technical Lead       |
+| RSK-003 | Interrupt latency exceeds target                      | Low         | High   | Minimize critical sections, profile ISRs          | SW V&V Team          |
+| RSK-004 | Stack overflow in task execution                      | Medium      | High   | Canary values, stack monitoring                   | SW V&V Team          |
+| RSK-005 | Deadlock in synchronization primitives                | Low         | High   | Design review, runtime detection                  | Software Team        |
+| RSK-006 | Compiler/toolchain incompatibility                    | Low         | Medium | Pin versions, CI testing                          | QA Team              |
+| RSK-007 | Hardware errata affecting operation                   | Low         | High   | Vendor communication, workarounds                 | Hardware Team        |
 
 ### 22.2 Schedule Risks
 
-| Risk ID | Description                                           | Probability | Impact | Mitigation Strategy                               |
-|---------|-------------------------------------------------------|-------------|--------|---------------------------------------------------|
-| RSK-010 | HAL driver development takes longer than expected     | Medium      | Medium | Prioritize Must drivers, defer Could items        |
-| RSK-011 | Debug/bring-up issues on hardware                     | Medium      | High   | Host-based testing, JTAG debugging                |
-| RSK-012 | Integration issues between crates                     | Low         | Medium | Clear interfaces, integration testing             |
+| Risk ID | Description                                           | Probability | Impact | Mitigation Strategy                               | Owner            |
+|---------|-------------------------------------------------------|-------------|--------|---------------------------------------------------|------------------|
+| RSK-010 | HAL driver development takes longer than expected     | Medium      | Medium | Prioritize Must drivers, defer Could items        | Project Manager  |
+| RSK-011 | Debug/bring-up issues on hardware                     | Medium      | High   | Host-based testing, JTAG debugging                | Hardware Team    |
+| RSK-012 | Integration issues between crates                     | Low         | Medium | Clear interfaces, integration testing             | Technical Lead   |
 
 ### 22.3 Risk Acceptance Criteria
 
@@ -2127,7 +2128,7 @@ The following items shall be verified before each release:
 | RSK-021        | Risk status shall be reviewed at each project milestone                                                        | Should   | I            |
 | RSK-022        | New risks identified during development shall be added to risk register with assessment within 1 week          | Should   | I            |
 | RSK-023        | Risk mitigation progress shall be reported to Project Manager monthly                                          | Should   | I            |
-| RSK-024        | Risk tables (sections 22.1, 22.2) shall include an "Owner" column; owner assignment is tracked separately in project management tools pending formal kickoff | Should   | I            |
+| RSK-024        | Risk tables (sections 22.1, 22.2) shall include an "Owner" column; owner assignment is tracked and maintained in project management tools | Should   | I            |
 
 ---
 
