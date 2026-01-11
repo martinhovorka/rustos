@@ -9,7 +9,7 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.5.0                                      |
+| Version                | 2.6.0                                      |
 | Status                 | Draft                                      |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
@@ -29,6 +29,7 @@
 | 2.3.0   | 2026-01-11 | Dev Team    | QA review improvements: formal error codes, debug protocol, MSRV, power management stubs, API stability, benchmark baselines, interrupt priorities, license compliance, PAC numbering fixes (58 new requirements) |
 | 2.4.0   | 2026-01-11 | Dev Team    | QA re-review: WDT timing (WDT-007 to WDT-009), UART buffers (UART-013 to UART-015), interrupt storm protection (INT-013 to INT-015), ETH graceful degradation (ETH-007 to ETH-009), memory map diagram (Appendix G) |
 | 2.5.0   | 2026-01-11 | Dev Team    | Gap analysis remediation: startup assembly spec (INIT-017 to INIT-020), context frame layout (CTX-011 to CTX-013), CSR delegation (CSR-013 to CSR-016), AXI timing (PERF-025 to PERF-029), WDT integration (WDT-010 to WDT-012), runtime diagnostics (DIAG-001 to DIAG-006), task termination (TASK-013 to TASK-016), I2C/UART error recovery, tick-less/priority inheritance futures, fault injection tests (TEST-011 to TEST-015), API documentation (DOC-040 to DOC-043), formal verification (VER-009 to VER-011) |
+| 2.6.0   | 2026-01-11 | Dev Team    | Optional enhancements: certification prep (CERT-001 to CERT-005), extended debug (DBG-017 to DBG-019), memory protection future (MEM-029 to MEM-031), peripheral power gating (PWR-006 to PWR-008) |
 
 ### Approval Record
 
@@ -847,6 +848,9 @@ The kernel shall define the following error codes:
 | DBG-014        | Debug output lines shall be terminated with `\r\n` (CRLF)                                                                              | Should   | I            |
 | DBG-015        | Panic output shall start with `!!! PANIC !!!` marker for easy identification                                                           | Should   | I            |
 | DBG-016        | Exception output shall start with `!!! EXCEPTION !!!` marker                                                                           | Should   | I            |
+| DBG-017        | Future: GDB stub support for source-level debugging over JTAG/UART                                                                     | Could    | D            |
+| DBG-018        | Future: Semihosting support for host-based I/O during development (ARM-style semihosting via EBREAK)                                   | Could    | D            |
+| DBG-019        | Runtime profiling shall be available via 13 hardware performance event counters (DBG-007)                                              | Could    | T            |
 
 ---
 
@@ -980,6 +984,9 @@ The RISC-V A extension provides the following atomic operations that shall be us
 | MEM-026        | Stack canary value symbol (`_stack_canary`) shall be defined for overflow detection                                             | Should   | I            |
 | MEM-027        | Linker script shall support PROVIDE_HIDDEN for optional symbols                                                                 | Should   | I            |
 | MEM-028        | Per-task stack regions shall be defined as named symbols (`_task_stack_0`, `_task_stack_1`, etc.)                               | Should   | I            |
+| MEM-029        | Future: PMP (Physical Memory Protection) support when hardware enables it (xlnx,use-pmpregions > 0)                             | Info     | I            |
+| MEM-030        | Future: Stack isolation between tasks via PMP regions (requires PMP hardware support)                                           | Info     | I            |
+| MEM-031        | Future: Code/data separation enforcement via PMP (execute-only code, read-write data)                                           | Info     | I            |
 
 ### 8.3 Memory Budget
 
@@ -1641,6 +1648,18 @@ The following Cargo features shall be supported:
 | SEC-011        | No sensitive data in debug output by default                       | Should   | I            |
 | SEC-012        | Boot integrity verification (optional)                             | Could    | T            |
 
+### 16.3 Certification Preparation (Future)
+
+**Note**: These requirements support future safety certification (IEC 61508, ISO 26262, DO-178C) but certification is not a v1.0 target.
+
+| Requirement ID | Description                                                                                                    | Priority | Verification |
+|----------------|----------------------------------------------------------------------------------------------------------------|----------|-------|
+| CERT-001       | Code shall be traceable to requirements via structured comments (`// REQ: <ID>`)                               | Should   | I            |
+| CERT-002       | Unsafe code shall be minimized and each `unsafe` block shall have documented safety justification              | Should   | A            |
+| CERT-003       | Test evidence (logs, coverage reports) shall be preserved for potential certification audits                   | Could    | I            |
+| CERT-004       | Code complexity metrics shall be tracked per function (cyclomatic complexity ≤ 15)                             | Should   | A            |
+| CERT-005       | Future: MISRA-C:2012 equivalent guidelines adaptation for Rust (when available)                                | Info     | I            |
+
 ---
 
 ## 16A. Power Management Requirements (Future)
@@ -1654,6 +1673,9 @@ The following Cargo features shall be supported:
 | PWR-003        | Future: Clock gating for unused peripherals (not implemented in v1.0)                                          | Info     | I            |
 | PWR-004        | Future: Low-power sleep mode with peripheral state preservation (not implemented in v1.0)                      | Info     | I            |
 | PWR-005        | Future: Wake source configuration for sleep modes (not implemented in v1.0)                                    | Info     | I            |
+| PWR-006        | Future: AXI peripheral clock gating control via SmartConnect (requires hardware support)                       | Info     | I            |
+| PWR-007        | Future: Peripheral suspend/resume API for power state transitions                                              | Info     | I            |
+| PWR-008        | Design guidance: Unused peripherals should not be initialized to minimize power consumption                    | Should   | I            |
 
 **Rationale**: MicroBlaze V supports WFI for basic power savings. Advanced power management may be added in future versions if hardware support permits.
 

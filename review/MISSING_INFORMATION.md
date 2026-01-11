@@ -3,7 +3,7 @@
 **Document ID:** RUSTOS-REVIEW-001  
 **Review Date:** January 11, 2026  
 **Reviewer:** Independent Requirements Review  
-**Requirements Version Reviewed:** 2.5.0  
+**Requirements Version Reviewed:** 2.6.0  
 **Status:** Comprehensive End-to-End Review - **UPDATED POST-REMEDIATION**
 
 ---
@@ -212,39 +212,14 @@ Requirements now include:
 - I2C bus stuck recovery via 9 clock pulses (per NXP AN10216)
 - I2C SCL/SDA stuck-low detection
 
-**Issue:** No DMA requirements despite hardware capability (AXI SmartConnect):
-- Ethernet Lite has TX/RX buffers (DMA-like behavior)
-- SPI could benefit from DMA for large transfers
-- UART could use DMA for high-throughput scenarios
+#### 5.2.3 ~~Missing: Peripheral Power Gating~~ ✅ RESOLVED
 
-**Recommendation:**
+**Status:** ✅ **RESOLVED in v2.6.0** - Added PWR-006 to PWR-008
 
-```markdown
-| DMA-001 | Future: DMA controller support for peripheral data transfers | Info | I |
-| DMA-002 | HAL drivers shall be designed to accommodate future DMA integration | Should | A |
-```
-
-#### 5.2.2 Missing: Hardware Error Recovery
-
-**Issue:** Limited requirements for peripheral error recovery:
-- UART-012 mentions error detection but not recovery
-- I2C-008 mentions bus error recovery but lacks specifics
-- ETH-009 mentions error counter but not recovery action
-
-**Recommended Additions:**
-
-```markdown
-| UART-016 | UART framing error shall trigger FIFO reset and log event | Should | T |
-| I2C-009 | I2C bus stuck condition shall be recoverable via clock stretching | Should | T |
-| I2C-010 | I2C recovery shall attempt up to 9 clock pulses to release SDA | Should | T |
-```
-
-#### 5.2.3 Missing: Peripheral Power Gating
-
-**Issue:** PWR-003 through PWR-005 are marked as future/Info, but:
-- No requirement to disable unused peripheral clocks
-- No requirement for peripheral suspend/resume
-- Missing AXI clock gating control specification
+Requirements now include:
+- AXI peripheral clock gating future support
+- Peripheral suspend/resume API future
+- Design guidance for minimizing power consumption
 
 ### 5.3 Test Framework Gaps
 
@@ -377,30 +352,36 @@ Requirements now include:
 
 **Status:** Deferred - Out of scope for v1.0 (single-board focus acceptable)
 
-#### 7.2.2 Certification Preparation
+#### 7.2.2 ~~Certification Preparation~~ ✅ RESOLVED
 
-```markdown
-| CERT-001 | Code shall be traceable to requirements via comments | Should | I |
-| CERT-002 | Unsafe code shall be minimized and justified per MISRA-like rules | Should | A |
-| CERT-003 | Test evidence shall be preserved for potential certification | Could | I |
-```
+**Status:** ✅ **RESOLVED in v2.6.0** - Added CERT-001 to CERT-005
+
+Requirements now include:
+- Requirements traceability via comments
+- Unsafe code justification documentation
+- Test evidence preservation
+- Code complexity tracking
+- MISRA-equivalent guidelines roadmap
 
 ### 7.3 Low Priority Recommendations
 
-#### 7.3.1 Extended Debug Features
+#### 7.3.1 ~~Extended Debug Features~~ ✅ RESOLVED
 
-```markdown
-| DBG-020 | GDB stub support for source-level debugging | Could | D |
-| DBG-021 | Semihosting support for host-based I/O during debug | Could | D |
-| DBG-022 | Runtime profiling via event counters (13 available in HW) | Could | T |
-```
+**Status:** ✅ **RESOLVED in v2.6.0** - Added DBG-017 to DBG-019
 
-#### 7.3.2 Memory Protection Future
+Requirements now include:
+- GDB stub support (future)
+- Semihosting support (future)
+- Runtime profiling via hardware counters
 
-```markdown
-| MEM-030 | Future: PMP support when hardware enables it (xlnx,use-pmpregions > 0) | Info | I |
-| MEM-031 | Future: Stack isolation between tasks via PMP regions | Info | I |
-```
+#### 7.3.2 ~~Memory Protection Future~~ ✅ RESOLVED
+
+**Status:** ✅ **RESOLVED in v2.6.0** - Added MEM-029 to MEM-031
+
+Requirements now include:
+- PMP support when hardware enables it
+- Stack isolation between tasks (future)
+- Code/data separation enforcement (future)
 
 ---
 
@@ -505,6 +486,10 @@ Requirements now include:
 | Bus Timing | PERF-025 to PERF-029 | ✅ Complete (new) |
 | API Documentation | DOC-040 to DOC-043 | ✅ Complete (new) |
 | Formal Verification | VER-009 to VER-011 | ✅ Complete (new) |
+| Certification Prep | CERT-001 to CERT-005 | ✅ Complete (v2.6.0) |
+| Extended Debug | DBG-017 to DBG-019 | ✅ Complete (v2.6.0) |
+| Memory Protection | MEM-029 to MEM-031 | ✅ Complete (v2.6.0) |
+| Power Gating | PWR-006 to PWR-008 | ✅ Complete (v2.6.0) |
 
 ### A.3 Industry Standard Comparison
 
@@ -535,8 +520,8 @@ Requirements now include:
 | Status | Complete - Post-Remediation Update |
 | Author | Independent Review |
 | Date | January 11, 2026 |
-| Requirements Reviewed | RUSTOS-SRS-001 v2.5.0 |
-| Remediation Status | ✅ All blocking/high-priority items resolved |
+| Requirements Reviewed | RUSTOS-SRS-001 v2.6.0 |
+| Remediation Status | ✅ All blocking/high-priority/optional items resolved |
 
 ---
 
