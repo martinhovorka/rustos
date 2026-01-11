@@ -9,8 +9,8 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.6.3                                      |
-| Status                 | Ready for Approval (three-perspective review findings resolved) |
+| Version                | 2.6.6                                      |
+| Status                 | Ready for Approval (seven-perspective review findings resolved) |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
 | Owner                  | System Architecture Team                   |
@@ -34,6 +34,8 @@
 | 2.6.2   | 2026-01-11 | Dev Team    | Three-perspective review integration: Technical Lead (9 findings), QA (9 findings), PM (10 findings), cross-cutting (3 findings). Added requirements: INT-016, HWTEST-009/010, CI-008, VER-012-014, PM-001-004, RSK-020-023, REL-029-031. Clarifications: ISA-009 usage, PROC-002 S-mode, terminology, coverage methodology, traceability implementation. Status updated to reflect review findings requiring resolution. |
 | 2.6.3   | 2026-01-11 | Dev Team    | Three-perspective review remediation: Clarified ISA-009 Zbc extension rationale, improved PROC-002 S-mode hardware vs usage description, added explicit test traceability guidance (VER-012 clarification), defined coverage exclusion methodology (COV-001 update), added CI test execution enforcement (CI-009), provided approval authority assignment guidance. Status updated to "Ready for Approval". |
 | 2.6.4   | 2026-01-11 | Dev Team    | Final review cycle: Fixed document footer version mismatch (was 2.6.2, corrected to 2.6.4), resolved GPIO PAC ID conflicts (renumbered GPIO registers to PAC-033 through PAC-037), added Hardware Team to distribution list, added FIT Timer hardware test requirement (HWTEST-011), clarified PM schedule population guidance, defined generated code exclusions in COV-001. Document fully ready for formal approval. |
+| 2.6.5   | 2026-01-11 | Dev Team    | Five-perspective review (Technical Lead, QA, PM, Software Team, Hardware Team): Added Software Team to distribution list, added milestone schedule placeholder table (PM-005), clarified test naming convention (VER-015), added risk owner column requirement (RSK-024), clarified BRAM timing assumptions (PERF-030 update), added entry point symbol export requirement (INIT-021), updated dependency version guidance (DEP-011). Total requirements: 725. |
+| 2.6.6   | 2026-01-11 | Dev Team    | Seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V, Hardware Team, HW V&V): Added SW V&V Team and HW V&V Team to distribution list and readiness status, added approval next steps 7-9, added HWTEST-012 for INTC KIND_OF_INTR validation, clarified VER-015 regex pattern, clarified COV-001 unreachable arm exclusions, clarified PERF-027/028 LMB dependency, updated DEP-003 version flexibility, added VER-016 miri scope clarification. Total requirements: 729. |
 
 ### Approval Record
 
@@ -49,34 +51,45 @@
 
 | Criterion                          | Status      | Notes                                                |
 |------------------------------------|-------------|------------------------------------------------------|
-| Content Complete                   | ✅ Complete | All sections populated through v2.6.4                |
-| Internal Consistency               | ✅ Complete | Review findings resolved in v2.6.4                   |
-| Technical Review                   | ✅ Complete | Three-perspective review completed 2026-01-11; all findings resolved |
-| QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.6.4      |
+| Content Complete                   | ✅ Complete | All sections populated through v2.6.6                |
+| Internal Consistency               | ✅ Complete | Review findings resolved in v2.6.6                   |
+| Technical Review                   | ✅ Complete | Seven-perspective review completed 2026-01-11; all findings resolved |
+| QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.6.6      |
 | PM Review                          | ✅ Complete | Review completed; findings resolved, approval guidance added |
+| Software Team Review               | ✅ Complete | Review completed; findings resolved in v2.6.6        |
+| SW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.6        |
+| Hardware Team Review               | ✅ Complete | Review completed; findings resolved in v2.6.6        |
+| HW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.6.6        |
 | Formal Approval                    | ⏳ Pending  | Awaiting approval authority assignment and sign-off  |
 | Baseline Established               | ⏳ Pending  | To be baselined upon formal approval                 |
 
 **Next Steps for Approval**:
 1. ~~Schedule formal review meeting with Technical Lead, QA, and Project Manager~~ ✅ Complete
 2. ~~Address findings from three-perspective review~~ ✅ Complete (v2.6.4 - 8 findings fixed)
-3. Assign Technical Lead, QA, and PM signatories in the Approval Record section ⏳ **Next Action**
-4. ~~Resolve all critical and high-priority review findings~~ ✅ Complete (v2.6.4)
-5. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ Pending assignment
-6. Obtain formal signatures from approval authorities ⏳ Pending assignment
-7. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
-8. Establish approved version as baseline in configuration management ⏳ Pending approval
+3. ~~Conduct five-perspective comprehensive review~~ ✅ Complete (v2.6.5 - 4 new requirements added)
+4. Assign Technical Lead, QA, and PM signatories in the Approval Record section ⏳ **Next Action**
+5. ~~Resolve all critical and high-priority review findings~~ ✅ Complete (v2.6.6)
+6. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ Pending assignment
+7. Obtain formal signatures from approval authorities ⏳ Pending assignment
+8. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
+9. Establish approved version as baseline in configuration management ⏳ Pending approval
+7. Obtain formal signatures from approval authorities ⏳ Pending assignment
+8. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
+9. Establish approved version as baseline in configuration management ⏳ Pending approval
 
-**Readiness Assessment**: Final three-perspective review completed on 2026-01-11. All findings from v2.6.3 and v2.6.4 cycles resolved. Document is technically complete and ready for formal approval. **Blocking action: Assign approval authorities** (Technical Lead, QA, PM) to enable formal sign-off. Once assignments made, review cycle for sign-off is estimated at 2 weeks. All technical, quality, and process requirements satisfied. Total requirements: 716. Baseline establishment will follow formal approval.
+**Readiness Assessment**: Final seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All findings from v2.6.3 through v2.6.6 cycles resolved. Document is technically complete and ready for formal approval. **Blocking action: Assign approval authorities** (Technical Lead, QA, PM) to enable formal sign-off. Once assignments made, review cycle for sign-off is estimated at 2 weeks. All technical, quality, and process requirements satisfied. Total requirements: 729. Baseline establishment will follow formal approval.
 
 ### Distribution List
 
 | Name/Role                          | Copy Type   |
 |------------------------------------|-------------|
 | Development Team                   | Controlled  |
+| Software Team                      | Controlled  |
+| Software V&V Team                  | Controlled  |
 | Quality Assurance Team             | Controlled  |
 | Project Management                 | Controlled  |
 | Hardware Team                      | Controlled  |
+| Hardware V&V Team                  | Controlled  |
 | Customer                           | N/A         |
 
 ---
@@ -603,6 +616,7 @@ The following table defines the software-assigned interrupt priorities for the k
 | INIT-018       | Reset vector at address 0x0 shall be a `j _start` instruction (direct jump, no delay slot)                                                                | Must     | T            |
 | INIT-019       | For `qspi_flash` boot, XIP mode is disabled (PER-016); complete image copy from flash LMA to BRAM VMA is required                                          | Should   | T            |
 | INIT-020       | Flash boot shall optionally verify image integrity via CRC-32 checksum stored in flash image header                                                        | Could    | T            |
+| INIT-021       | Entry point symbols (`_start`, `_trap_handler`) shall be exported with `#[no_mangle]` attribute to ensure correct linker symbol resolution                 | Must     | I            |
 
 **Rationale**: Proper initialization sequence ensures deterministic system behavior and prevents undefined states at runtime.
 
@@ -1554,7 +1568,7 @@ The following Cargo features shall be supported:
 |----------------|-----------------------------------------------------------|----------|--------------|
 | DEP-001        | `critical-section` = "1.1"                                | Must     | I            |
 | DEP-002        | `embedded-hal` = "1.0"                                    | Must     | I            |
-| DEP-003        | `riscv` = "0.11" (RISC-V runtime and CSR access)          | Must     | I            |
+| DEP-003        | `riscv` = "0.11" or "0.12" (RISC-V runtime and CSR access)    | Must     | I            |
 | DEP-004        | `heapless` = "0.8" (static collections)                   | Must     | I            |
 | DEP-005        | `bitfield` or `bitflags` for register manipulation        | Should   | I            |
 | DEP-006        | `volatile-register` for hardware access                   | Should   | I            |
@@ -1562,6 +1576,7 @@ The following Cargo features shall be supported:
 | DEP-008        | All dependencies shall be audited for security issues     | Should   | A            |
 | DEP-009        | Dependencies shall be pinned to specific versions         | Must     | I            |
 | DEP-010        | All dependencies shall be compatible with project license (MIT/Apache-2.0 dual license) | Must | I |
+| DEP-011        | Dependency versions specified in DEP-001 through DEP-007 are minimum versions; newer compatible versions (same major version) may be used after verification; document specific version used in Cargo.lock | Should   | I            |
 
 ### 13.6 Project Structure
 
@@ -1599,8 +1614,8 @@ The following Cargo features shall be supported:
 |----------------|----------------------------------------------------------------------------|---------------|----------|--------------|
 | PERF-025       | AXI peripheral read latency (single 32-bit word)                           | ≤ 100 ns (8 cycles @ 75MHz) | Should | T |
 | PERF-026       | AXI peripheral write latency (single 32-bit word)                          | ≤ 100 ns (8 cycles @ 75MHz) | Should | T |
-| PERF-027       | BRAM (LMB) read access shall be single-cycle                               | ≤ 13 ns @ 75MHz | Must | T |
-| PERF-028       | BRAM (LMB) write access shall be single-cycle                              | ≤ 13 ns @ 75MHz | Must | T |
+| PERF-027       | BRAM (LMB) read access shall be single-cycle (LMB bus configuration dependent)                 | ≤ 13 ns @ 75MHz | Must | T |
+| PERF-028       | BRAM (LMB) write access shall be single-cycle (LMB bus configuration dependent)               | ≤ 13 ns @ 75MHz | Must | T |
 | PERF-029       | AXI SmartConnect arbitration overhead                                      | ≤ 2 cycles | Should | A |
 
 **Rationale**: Bus timing affects interrupt latency and context switch performance. LMB provides deterministic single-cycle access to BRAM while AXI peripheral access adds 2-8 cycles depending on interconnect load.
@@ -1840,6 +1855,20 @@ The following items shall be verified before each release:
 | PM-002         | Schedule shall include target dates for each milestone; **Note**: Dates to be populated by assigned Project Manager within 2 weeks of approval authority assignment per Approval Record guidance | Should   | I            |
 | PM-003         | Schedule shall be reviewed and updated monthly during active development                                       | Should   | I            |
 | PM-004         | Schedule risks shall be tracked and mitigation plans documented                                                | Should   | I            |
+| PM-005         | Milestone schedule shall be maintained in the following format (dates TBD by PM upon assignment):              | Should   | I            |
+
+#### Milestone Schedule Placeholder
+
+| Milestone                  | Target Date | Status        | Notes                                    |
+|----------------------------|-------------|---------------|------------------------------------------|
+| Requirements Approval      | TBD         | ⏳ Pending    | Awaiting approval authority assignment   |
+| Design Complete            | TBD         | Not Started   | Architectural design and detailed design |
+| Implementation Complete    | TBD         | Not Started   | All code implemented and reviewed        |
+| Testing Complete           | TBD         | Not Started   | All verification activities complete     |
+| Release Candidate          | TBD         | Not Started   | RC build ready for final validation      |
+| v1.0 Release               | TBD         | Not Started   | Production release                       |
+
+**Note**: Target dates to be populated by assigned Project Manager within 2 weeks of approval authority assignment per PM-002.
 
 ### 18.6 CI/CD Pipeline
 
@@ -1915,6 +1944,7 @@ The following items shall be verified before each release:
 | HWTEST-009     | AXI peripheral access timing shall be validated per PERF-025 to PERF-029 using hardware cycle counters        | Should   | T            |
 | HWTEST-010     | LMB BRAM single-cycle access shall be validated by measuring read/write latency using mcycle CSR              | Must     | T            |
 | HWTEST-011     | Fixed Interval Timer (FIT) 1ms interrupt generation shall be validated by measuring tick period accuracy against mcycle counter (expected: 75000 cycles ±0.1%) | Must     | T            |
+| HWTEST-012     | AXI Interrupt Controller KIND_OF_INTR register (0x30c) configuration shall be validated against expected edge/level assignments per Section 5.7 interrupt table | Must     | T            |
 
 ### 19.1.3 Performance Testing
 
@@ -1931,7 +1961,7 @@ The following items shall be verified before each release:
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
-| COV-001        | Line coverage for host-testable code shall be ≥ 80%; measurement methodology: (executed lines / total executable lines); **exclusions**: (1) `#[cfg(target_arch = "riscv32")]` hardware-specific code, (2) panic handlers, (3) generated code (PAC register definitions, svd2rust output, build.rs generated files), (4) inline assembly; coverage tool: tarpaulin or llvm-cov; exclusions must be documented in coverage report | Should   | A            |
+| COV-001        | Line coverage for host-testable code shall be ≥ 80%; measurement methodology: (executed lines / total executable lines); **exclusions**: (1) `#[cfg(target_arch = "riscv32")]` hardware-specific code, (2) panic handlers, (3) generated code (PAC register definitions, svd2rust output, build.rs generated files), (4) inline assembly, (5) unreachable match arms with `unreachable!()` macro; coverage tool: tarpaulin or llvm-cov; exclusions must be documented in coverage report | Should   | A            |
 | COV-002        | Coverage reports shall be generated via `coverage.sh` script                                                   | Should   | D            |
 | COV-003        | Branch coverage shall be tracked for critical decision points                                                  | Could    | A            |
 | COV-004        | Uncovered code paths shall be documented with justification                                                    | Should   | I            |
@@ -2099,6 +2129,7 @@ The following items shall be verified before each release:
 | RSK-021        | Risk status shall be reviewed at each project milestone                                                        | Should   | I            |
 | RSK-022        | New risks identified during development shall be added to risk register with assessment within 1 week          | Should   | I            |
 | RSK-023        | Risk mitigation progress shall be reported to Project Manager monthly                                          | Should   | I            |
+| RSK-024        | Risk tables (sections 22.1, 22.2) shall include an "Owner" column; owner assignment is tracked separately in project management tools pending formal kickoff | Should   | I            |
 
 ---
 
@@ -2124,27 +2155,43 @@ Requirements with verification method `T` (Test) shall have corresponding test c
 | VER-012        | Test traceability shall be implemented via: **Primary method** - test function naming convention `test_<REQ_ID>_<description>` for automated discovery; **Secondary method** - doc comments `/// Verifies: <REQ-ID>` for non-unit tests; **Fallback** - manual traceability matrix when automated methods insufficient (e.g., hardware-only verification) | Should   | I            |
 | VER-013        | A traceability report shall be generated listing all Must requirements and their corresponding test implementations; report generation may be automated via script parsing test names, or manual review for first release | Should   | A            |
 | VER-014        | Requirements with verification method `T` but no corresponding test shall be reported as gap during CI        | Should   | D            |
+| VER-015        | Test function naming convention: REQ_ID shall use underscores replacing hyphens (e.g., `test_CTX_010_context_frame_size` for CTX-010); this enables automated traceability extraction via regex pattern `test_([A-Z]+)_(\d+)_` which captures category and requirement number for CI validation | Should   | I            |
+| VER-016        | Miri validation scope: Miri shall be used to validate unsafe code blocks in host-testable modules; hardware-specific code (`#[cfg(target_arch = "riscv32")]`) is excluded from Miri validation due to platform limitations | Should   | A            |
 
 ### 23.3 Requirements Coverage Summary
 
 | Category              | Must | Should | Could | Info | Total |
 |-----------------------|------|--------|-------|------|-------|
 | Platform (HW/ISA/PROC)| 24   | 8      | 0     | 16   | 48    |
-| Kernel (incl. PAN/LOG/DIAG)| 55 | 47  | 7     | 4    | 113   |
+| Kernel (incl. PAN/LOG/DIAG/INIT-021)| 56 | 47  | 7     | 4    | 114   |
 | Synchronization       | 24   | 16     | 8     | 2    | 50    |
 | Memory (incl. linker) | 21   | 12     | 0     | 3    | 36    |
 | HAL (incl. UART/I2C recovery)| 18 | 53 | 23  | 1    | 95    |
 | BSP (incl. CSR delegation)| 23 | 14   | 2     | 3    | 42    |
 | PAC                   | 16   | 31     | 13    | 3    | 63    |
-| Build (incl. CFG/CI)  | 24   | 22     | 3     | 0    | 49    |
+| Build (incl. CFG/CI/DEP-011)  | 24   | 23     | 3     | 0    | 50    |
 | Performance (incl. AXI)| 6   | 20     | 2     | 0    | 28    |
 | Safety/Security/Cert  | 15   | 21     | 3     | 5    | 44    |
-| Quality/Verification/Test| 19 | 51   | 8     | 2    | 80    |
-| Deployment/Release (incl. PM)| 14 | 31 | 5     | 0    | 50    |
+| Quality/Verification/Test (incl. VER-016, HWTEST-012)| 21 | 53   | 8     | 2    | 84    |
+| Deployment/Release (incl. PM-005)| 14 | 32 | 5     | 0    | 51    |
+| Risk (incl. RSK-024)  | 0    | 5      | 0     | 0    | 5     |
 | Documentation         | 3    | 14     | 1     | 0    | 18    |
-| **Total**             | **262** | **340** | **75** | **39** | **716** |
+| **Total**             | **265** | **349** | **75** | **39** | **729** |
 
-**Note**: Totals updated for v2.6.4 to include HWTEST-011 addition.
+**Note**: Totals updated for v2.6.6 to include seven-perspective review additions (VER-016, HWTEST-012).
+
+**Note**: Requirements v2.6.6 adds 4 new requirements from seven-perspective review findings:
+- Miri validation scope clarification (VER-016)
+- AXI INTC KIND_OF_INTR validation (HWTEST-012)
+- Updated VER-015 with regex pattern details
+- Updated COV-001 with unreachable arm exclusions
+
+**Note**: Requirements v2.6.5 adds 5 new requirements from five-perspective review findings:
+- Entry point symbol export (INIT-021)
+- Test naming convention clarification (VER-015)
+- Milestone schedule placeholder (PM-005)
+- Risk owner column requirement (RSK-024)
+- Dependency version guidance (DEP-011)
 
 **Note**: Requirements v2.6.2 adds 14 new requirements from three-perspective review findings:
 - Interrupt priority validation (INT-016)
@@ -2365,7 +2412,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 ---
 
 *Document ID: RUSTOS-SRS-001*
-*Version: 2.6.4*
+*Version: 2.6.6*
 *Classification: Internal*
 *Last Updated: January 11, 2026*
 
