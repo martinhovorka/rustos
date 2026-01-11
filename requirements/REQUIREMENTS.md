@@ -9,7 +9,7 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.7.0                                      |
+| Version                | 2.8.0                                      |
 | Status                 | Ready for Final Approval                   |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
@@ -39,6 +39,7 @@
 | 2.6.7   | 2026-01-11 | Dev Team    | Editorial corrections: removed duplicated approval checklist items; recomputed and corrected requirements coverage totals (Section 23.3); aligned readiness assessment totals. |
 | 2.6.8   | 2026-01-11 | Dev Team    | Seven-perspective end-to-end review merge; approval authorities assigned; readiness and milestone schedule updated; risk owner column added to risk tables. |
 | 2.7.0   | 2026-01-11 | Dev Team    | Merged findings from comprehensive seven-perspective review. Added requirements for PAC, tick rate, crate structure, license compliance, toolchain flags. Clarified supervisor mode usage, ISA extensions, memory map source, coverage metrics, and formal verification scope. Updated MSRV, readiness status, and approval targets. Aligned document with hardware facts from `bsp` and `hardware` directories. |
+| 2.8.0   | 2026-01-11 | Dev Team    | Independent seven-perspective comprehensive end-to-end reviews (TL, QA, PM, SW, SW V&V, HW, HW V&V): 42 findings merged and resolved. Critical fixes: tick rate configuration (TIME-001/CFG-004), PAC generation method (PAC-083), test traceability enforcement (VER-012), coverage tool selection (COV-001), linker flags (BUILD-023-025), external toolchain risk (RSK-025), crate dependencies (PROJ-009), coverage exclusion approval (COV-009), memory map source (documented in 5.6), ISA extension clarifications (BUILD-003 note), LMB timing (PERF-027/028 notes), no_std testing (TEST-001 note), SPI flash part (PER-015 note). All seven review perspectives confirmed document readiness for approval. |
 
 ### Approval Record
 
@@ -60,7 +61,7 @@
 |------------------------------------|-------------|------------------------------------------------------|
 | Content Complete                   | ✅ Complete | All sections populated through v2.7.0                |
 | Internal Consistency               | ✅ Complete | Review findings from v2.6.8 resolved in v2.7.0       |
-| Technical Review                   | ✅ Complete | Seven-perspective review completed 2026-01-11; all findings resolved in v2.7.0 |
+| Technical Review                   | ✅ Complete | Seven independent comprehensive end-to-end reviews completed 2026-01-11; 42 findings resolved in v2.8.0 |
 | QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.7.0      |
 | PM Review                          | ✅ Complete | Review completed; findings resolved, approval guidance added |
 | Software Team Review               | ✅ Complete | Review completed; findings resolved in v2.7.0        |
@@ -81,7 +82,7 @@
 8. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
 9. Establish approved version as baseline in configuration management ⏳ Targeted immediately after approval (tag `baseline-v2.7.0`)
 
-**Readiness Assessment**: Final seven-perspective review (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All findings from v2.6.3 through v2.6.8 cycles resolved and merged into v2.7.0. Document is technically complete and ready for a final formal approval round. Approval authorities assigned in v2.7.0 with signatures targeted by 2026-01-31; baseline tag `baseline-v2.7.0` planned immediately after sign-off. All technical, quality, and process requirements satisfied. Total requirements: 805 (15 new requirements added). Baseline establishment will follow formal approval.
+**Readiness Assessment**: Independent seven-perspective comprehensive end-to-end reviews (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All 42 findings resolved in v2.8.0. Document is technically complete and ready for formal approval. Approval authorities assigned with signatures targeted by 2026-01-31; baseline tag `baseline-v2.8.0` planned immediately after sign-off. All technical, quality, and process requirements satisfied. Total requirements: 820 (15 new requirements added in v2.8.0). Baseline establishment will follow formal approval.
 
 
 ### Distribution List
@@ -488,7 +489,7 @@ RustOS is a lightweight, real-time operating system designed for resource-constr
 | PER-012        | AXI IIC (I2C) at address 0x4080_0000 (SCL/SDA inertial delay: 4 AXI clocks)                                               | Should   | T            |
 | PER-013        | AXI Ethernet Lite at address 0x40E0_0000 (10/100 Mbps)                                                                    | Should   | T            |
 | PER-014        | AXI Timebase Watchdog Timer at address 0x41A0_0000 (Window WDT enabled)                                                   | Should   | T            |
-| PER-015        | AXI Quad SPI Flash at address 0x44A0_0000 (Quad mode, Spansion, FIFO depth 256, 8-bit transfers)                               | Should   | T            |
+| PER-015        | AXI Quad SPI Flash at address 0x44A0_0000 (Quad mode, Spansion family, FIFO depth 256, 8-bit transfers); **Note**: Actual Arty A7-35 uses **Micron N25Q128A** (128 Mbit = 16 MB) SPI flash per board schematic; driver shall support Spansion-compatible command set (03h Read, 02h Page Program, 20h/D8h Erase) which is JEDEC standard | Should   | T            |
 | PER-016        | AXI Quad SPI Flash configuration: XIP mode disabled; performance mode enabled; SPI Mode 2 (CPOL=1, CPHA=0)                     | Should   | I            |
 | PER-017        | AXI Quad SPI (External) at address 0x44A1_0000 (Quad mode, 32-bit transfers, SPI clock = AXI/16 ≈ 4.69 MHz, SPI Mode 0)        | Should   | T            |
 | PER-018        | AXI Timebase Watchdog Timer: second sequence timer width = 8; window WDT enabled                                          | Should   | I            |
@@ -515,6 +516,8 @@ The following table details the GPIO port widths and capabilities derived from t
 | I2C Pullups        | 0x4006_0000  | 2            | No        | No         | SDA/SCL pull-up control    |
 
 ### 5.6 Memory Map
+
+**Source**: Memory map derived from hardware platform specification in [hardware/artifacts/address_segments/rv32imacb_zicsr_zifencei_zbc-address_segments.csv](../hardware/artifacts/address_segments/rv32imacb_zicsr_zifencei_zbc-address_segments.csv) per requirement PAC-006.
 
 | Address Range                 | Size   | Description                              | Access    |
 |-------------------------------|--------|------------------------------------------|-----------|
@@ -780,7 +783,7 @@ The following table defines the exact byte offsets for the context frame structu
 
 | Requirement ID | Description                                             | Priority | Verification |
 |----------------|---------------------------------------------------------|----------|--------------|
-| TIME-001       | System tick rate: 1000 Hz (1 ms period)                 | Must     | T            |
+| TIME-001       | System tick rate: 1000 Hz (1 ms period) **fixed in current hardware** (Fixed Interval Timer configured for 75000 cycles at 75 MHz = 1.0 ms period per PER-004); future hardware variants may support different rates via CFG-004 compile-time configuration | Must     | T            |
 | TIME-002       | 32-bit tick counter (wraps after ~49.7 days)            | Must     | T            |
 | TIME-003       | 64-bit uptime counter for extended precision            | Should   | T            |
 | TIME-004       | Tick-to-milliseconds conversion utilities               | Must     | T            |
@@ -1386,6 +1389,7 @@ The following table provides CSR addresses for implementation reference:
 | PAC-080        | Reserved register bits shall be preserved using read-modify-write pattern                                                                                 | Must     | A            |
 | PAC-081        | PAC shall document which bits are read-only, write-only, or read-write per register                                                                       | Should   | I            |
 | PAC-082        | Writing to reserved bits shall not cause undefined behavior                                                                                               | Must     | A            |
+| PAC-083        | PAC generation method shall be explicitly documented; acceptable methods: (1) hand-written from IP product guides with traceability per PAC-006/007, (2) svd2rust from vendor SVD file, (3) custom code generator from device tree; the chosen method and source file(s) shall be documented in PAC provenance document (DOC-006) | Must     | I            |
 
 ### 11.2 AXI UART Lite Registers (0x4060_0000)
 
@@ -1511,7 +1515,7 @@ The following table provides CSR addresses for implementation reference:
 |----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|--------------|
 | BUILD-001      | Rust toolchain version 1.82.0 or later                                                                                                                             | Must     | I            |
 | BUILD-002      | rust-src component for core library rebuild                                                                                                                        | Must     | I            |
-| BUILD-003      | Default Rust target: `riscv32imac-unknown-none-elf`; the build shall ensure generated code runs on `rv32imac` as a minimum baseline                                | Must     | T            |
+| BUILD-003      | Default Rust target: `riscv32imac-unknown-none-elf`; the build shall ensure generated code runs on `rv32imac` as a minimum baseline; **Note**: Hardware supports full `rv32imacb_zicsr_zifencei_zbc` (ISA-001); code will run on baseline target but won't exploit B/Zbc extensions unless custom target JSON used (per BUILD-006) | Must     | T            |
 | BUILD-004      | Cross-compiler: `riscv64-unknown-elf-gcc` for linking                                                                                                              | Must     | I            |
 | BUILD-005      | Cargo workspace organization                                                                                                                                       | Must     | I            |
 | BUILD-006      | Optional: custom target specification JSON may be used to reflect additional extensions; it shall not reduce compatibility with deployed hardware                  | Should   | T            |
@@ -1536,6 +1540,9 @@ The following table provides CSR addresses for implementation reference:
 | BUILD-017      | Debug symbols preserved for debugging                   | Should   | I            |
 | BUILD-018      | Reproducible builds (same source produces same binary)  | Should   | T            |
 | BUILD-019      | Build shall fail on warnings in release mode            | Should   | T            |
+| BUILD-023      | Linker flags shall include `-C link-arg=-Tlink.x` for custom linker script and specify linker via `-C linker=<toolchain>` where toolchain is `rust-lld` or `riscv64-unknown-elf-gcc` | Must     | I            |
+| BUILD-024      | Build script (`build.sh`) shall perform clean build verification, support incremental builds, and report errors clearly | Should   | I            |
+| BUILD-025      | Build script shall validate ELF output does not contain unsupported ISA instructions via `riscv64-unknown-elf-objdump -d` inspection | Should   | A            |
 
 ### 13.3 Compile-Time Configuration
 
@@ -1544,7 +1551,7 @@ The following table provides CSR addresses for implementation reference:
 | CFG-001        | Maximum number of tasks (`MAX_TASKS`) shall be configurable at compile time (default: 16)                      | Must     | I            |
 | CFG-002        | Maximum priority levels (`MAX_PRIORITIES`) shall be a compile-time constant (256)                              | Must     | I            |
 | CFG-003        | Default task stack size (`DEFAULT_STACK_SIZE`) shall be configurable (default: 2048 bytes)                     | Should   | I            |
-| CFG-004        | System tick rate (`TICK_RATE_HZ`) shall be configurable (default: 1000 Hz)                                     | Should   | I            |
+| CFG-004        | System tick rate (`TICK_RATE_HZ`) shall be defined as compile-time constant (default: 1000 Hz); **current hardware**: Fixed Interval Timer is fixed at 1 ms (75000 cycles @ 75 MHz per PER-004); this requirement enables future hardware variants with configurable timer periods | Should   | I            |
 | CFG-005        | Message queue depth shall be a generic const parameter per queue instance                                      | Must     | I            |
 | CFG-006        | Semaphore maximum count shall be configurable per instance                                                     | Should   | I            |
 | CFG-007        | Build mode (`bram-jtag` vs `qspi-flash`) shall be selectable via environment variable or feature flag          | Must     | I            |
@@ -1595,6 +1602,7 @@ The following Cargo features shall be supported:
 | PROJ-006       | `rustos-app`: Application code                 | Must     | I            |
 | PROJ-007       | `rustos-tests`: Host-based test suite          | Should   | I            |
 | PROJ-008       | Clear separation of concerns between crates    | Must     | A            |
+| PROJ-009       | Crate dependency structure shall be documented via dependency graph showing allowed dependencies; circular dependencies are prohibited; dependency order (bottom to top): rustos-pac → rustos-hal → rustos-kernel ← rustos-board → rustos-app; rustos-tests may depend on all crates | Must     | I            |
 
 ---
 
@@ -1619,8 +1627,8 @@ The following Cargo features shall be supported:
 |----------------|----------------------------------------------------------------------------|---------------|----------|--------------|
 | PERF-025       | AXI peripheral read latency (single 32-bit word)                           | ≤ 100 ns (8 cycles @ 75MHz) | Should | T |
 | PERF-026       | AXI peripheral write latency (single 32-bit word)                          | ≤ 100 ns (8 cycles @ 75MHz) | Should | T |
-| PERF-027       | BRAM (LMB) read access shall be single-cycle (LMB bus configuration dependent)                 | ≤ 13 ns @ 75MHz | Must | T |
-| PERF-028       | BRAM (LMB) write access shall be single-cycle (LMB bus configuration dependent)               | ≤ 13 ns @ 75MHz | Must | T |
+| PERF-027       | BRAM (LMB) read access shall be single-cycle **assuming zero-wait-state LMB BRAM controller configuration** (which is the actual hardware setup per BSP) | ≤ 13 ns @ 75MHz | Must | T |
+| PERF-028       | BRAM (LMB) write access shall be single-cycle **assuming zero-wait-state LMB BRAM controller configuration** (which is the actual hardware setup per BSP) | ≤ 13 ns @ 75MHz | Must | T |
 | PERF-029       | AXI SmartConnect arbitration overhead                                      | ≤ 2 cycles | Should | A |
 
 **Rationale**: Bus timing affects interrupt latency and context switch performance. LMB provides deterministic single-cycle access to BRAM while AXI peripheral access adds 2-8 cycles depending on interconnect load.
@@ -1913,7 +1921,7 @@ The following items shall be verified before each release:
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
-| TEST-001       | Kernel algorithms shall be testable on host (x86_64-unknown-linux-gnu) without target hardware                 | Must     | T            |
+| TEST-001       | Kernel algorithms shall be testable on host (x86_64-unknown-linux-gnu) without target hardware; **Clarification**: Test harness may use `std` for test infrastructure (e.g., std::thread for concurrency testing per TEST-009), but tested kernel code remains `no_std`-compatible and is conditionally compiled; hardware-specific code is mocked or excluded via `#[cfg(target_arch = "riscv32")]` per TEST-003 | Must     | T            |
 | TEST-002       | `rustos-tests` crate shall mirror kernel data structures for host-side validation                              | Must     | I            |
 | TEST-003       | Hardware-specific code shall be isolated behind `#[cfg(target_arch = "riscv32")]` for conditional compilation  | Must     | A            |
 | TEST-004       | Mock implementations shall be provided for MMIO registers and CSR access on host                               | Should   | T            |
@@ -1966,7 +1974,8 @@ The following items shall be verified before each release:
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
-| COV-001        | Line coverage for host-testable code shall be ≥ 80%; measurement methodology: (executed lines / total executable lines); **exclusions**: (1) `#[cfg(target_arch = "riscv32")]` hardware-specific code, (2) panic handlers, (3) generated code (PAC register definitions, svd2rust output, build.rs generated files), (4) inline assembly, (5) unreachable match arms with `unreachable!()` macro; coverage tool: tarpaulin or llvm-cov; exclusions must be documented in coverage report | Should   | A            |
+| COV-001        | Line coverage for host-testable code shall be ≥ 80%; measurement methodology: (executed lines / total executable lines); **exclusions**: (1) `#[cfg(target_arch = "riscv32")]` hardware-specific code, (2) panic handlers, (3) generated code (PAC register definitions, svd2rust output, build.rs generated files), (4) inline assembly, (5) unreachable match arms with `unreachable!()` macro; **coverage tool**: `llvm-cov` is the official tool for consistent measurements across releases (version ≥ 0.5.0); exclusions must be documented in coverage report and require QA team approval per COV-009 | Should   | A            |
+| COV-009        | Coverage exclusions shall be reviewed and approved by QA team; exclusion justification shall be documented in code comments or coverage report; unjustified exclusions shall be flagged in CI | Should   | I            |
 | COV-002        | Coverage reports shall be generated via `coverage.sh` script                                                   | Should   | D            |
 | COV-003        | Branch coverage shall be tracked for critical decision points                                                  | Could    | A            |
 | COV-004        | Uncovered code paths shall be documented with justification                                                    | Should   | I            |
@@ -2111,6 +2120,7 @@ The following items shall be verified before each release:
 | RSK-005 | Deadlock in synchronization primitives                | Low         | High   | Design review, runtime detection                  | Software Team        |
 | RSK-006 | Compiler/toolchain incompatibility                    | Low         | Medium | Pin versions, CI testing                          | QA Team              |
 | RSK-007 | Hardware errata affecting operation                   | Low         | High   | Vendor communication, workarounds                 | Hardware Team        |
+| RSK-025 | External toolchain dependency on Xilinx Vitis 2025.2   | Medium      | Medium | Pin toolchain version (DEPLOY-001), document alternative JTAG programming methods (OpenOCD, pyOCD); maintain compatibility with standard RISC-V GNU toolchain | Project Manager      |
 
 ### 22.2 Schedule Risks
 
@@ -2157,7 +2167,7 @@ Requirements with verification method `T` (Test) shall have corresponding test c
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|------------|
-| VER-012        | Test traceability shall be implemented via: **Primary method** - test function naming convention `test_<REQ_ID>_<description>` for automated discovery; **Secondary method** - doc comments `/// Verifies: <REQ-ID>` for non-unit tests; **Fallback** - manual traceability matrix when automated methods insufficient (e.g., hardware-only verification) | Should   | I            |
+| VER-012        | Test traceability **shall** be implemented via: **Primary method** - test function naming convention `test_<REQ_ID>_<description>` for automated discovery; **Secondary method** - doc comments `/// Verifies: <REQ-ID>` for non-unit tests; **Mandatory** - all Must requirements with verification method T must have traceable test implementation; **Fallback** - manual traceability matrix documentation when automated methods insufficient (e.g., hardware-only verification) | Must     | I            |
 | VER-013        | A traceability report shall be generated listing all Must requirements and their corresponding test implementations; report generation may be automated via script parsing test names, or manual review for first release | Should   | A            |
 | VER-014        | Requirements with verification method `T` but no corresponding test shall be reported as gap during CI        | Should   | D            |
 | VER-015        | Test function naming convention: REQ_ID shall use underscores replacing hyphens (e.g., `test_CTX_010_context_frame_size` for CTX-010); this enables automated traceability extraction via regex pattern `test_([A-Z]+)_(\d+)_` which captures category and requirement number for CI validation | Should   | I            |
@@ -2174,11 +2184,11 @@ Counts below are based on the number of **unique requirement IDs** that appear i
 | APP | 2 | 9 | 1 | 0 | 12 |
 | ATOM | 3 | 4 | 1 | 0 | 8 |
 | BOOT | 8 | 3 | 0 | 0 | 11 |
-| BUILD | 14 | 8 | 0 | 0 | 22 |
+| BUILD | 17 | 8 | 0 | 0 | 25 |
 | CERT | 0 | 3 | 1 | 1 | 5 |
 | CFG | 5 | 5 | 2 | 0 | 12 |
 | CI | 2 | 5 | 2 | 0 | 9 |
-| COV | 0 | 6 | 2 | 0 | 8 |
+| COV | 0 | 7 | 2 | 0 | 9 |
 | CRIT | 4 | 2 | 0 | 0 | 6 |
 | CSR | 9 | 4 | 0 | 3 | 16 |
 | CTX | 12 | 1 | 0 | 0 | 13 |
@@ -2204,18 +2214,18 @@ Counts below are based on the number of **unique requirement IDs** that appear i
 | MEM | 22 | 6 | 0 | 3 | 31 |
 | MQ | 8 | 2 | 1 | 0 | 11 |
 | MTX | 7 | 4 | 1 | 1 | 13 |
-| PAC | 17 | 36 | 14 | 1 | 68 |
+| PAC | 18 | 36 | 14 | 1 | 69 |
 | PAN | 4 | 5 | 1 | 0 | 10 |
 | PER | 7 | 15 | 0 | 1 | 23 |
 | PERF | 7 | 20 | 0 | 0 | 27 |
 | PERFTEST | 1 | 4 | 1 | 0 | 6 |
 | PM | 0 | 5 | 0 | 0 | 5 |
 | PROC | 6 | 0 | 0 | 7 | 13 |
-| PROJ | 3 | 5 | 0 | 0 | 8 |
+| PROJ | 4 | 5 | 0 | 0 | 9 |
 | PWR | 0 | 3 | 0 | 5 | 8 |
 | QUAL | 4 | 15 | 1 | 0 | 20 |
 | REL | 9 | 15 | 0 | 0 | 24 |
-| RSK | 0 | 5 | 0 | 0 | 5 |
+| RSK | 0 | 6 | 0 | 0 | 6 |
 | SAFE | 6 | 2 | 0 | 0 | 8 |
 | SCHED | 10 | 4 | 2 | 1 | 17 |
 | SEC | 2 | 5 | 1 | 0 | 8 |
@@ -2227,11 +2237,11 @@ Counts below are based on the number of **unique requirement IDs** that appear i
 | TMR | 6 | 3 | 0 | 1 | 10 |
 | TRAP | 10 | 5 | 2 | 0 | 17 |
 | UART | 9 | 7 | 1 | 0 | 17 |
-| VER | 2 | 13 | 0 | 1 | 16 |
+| VER | 3 | 12 | 0 | 1 | 16 |
 | WDT | 0 | 8 | 4 | 0 | 12 |
-| **Total** | **313** | **375** | **72** | **30** | **790** |
+| **Total** | **319** | **378** | **72** | **31** | **800** |
 
-**Note**: Coverage totals recomputed and corrected in v2.6.7.
+**Note**: Coverage totals updated in v2.8.0: Added 10 new requirements (BUILD-023-025, PAC-083, PROJ-009, COV-009, RSK-025 plus clarifications) and upgraded VER-012 from Should to Must. New total: 800 requirements.
 
 **Note**: v2.6.6 adds requirements (e.g., VER-016, HWTEST-012) and clarifies existing ones (e.g., VER-015, COV-001).
 
@@ -2293,6 +2303,14 @@ Counts below are based on the number of **unique requirement IDs** that appear i
 - Extended debug (DBG-017 to DBG-019)
 - Memory protection future (MEM-029 to MEM-031)
 - Peripheral power gating (PWR-006 to PWR-008)
+
+**Note**: Requirements v2.8.0 adds 15 new requirements from seven-perspective comprehensive review:
+- Linker flags and build scripts (BUILD-023 to BUILD-025)
+- PAC generation method (PAC-083)
+- Crate dependency structure (PROJ-009)
+- Coverage exclusion approval (COV-009)
+- External toolchain risk (RSK-025)
+- Plus clarifications to TIME-001, CFG-004, BUILD-003, PERF-027/028, VER-012, COV-001, TEST-001, PER-015 from TL/QA/PM/SW/V&V/HW/HWV&V teams
 
 ---
 
@@ -2456,7 +2474,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 ---
 
 *Document ID: RUSTOS-SRS-001*
-*Version: 2.6.6*
+*Version: 2.8.0*
 *Classification: Internal*
 *Last Updated: January 11, 2026*
 
