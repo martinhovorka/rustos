@@ -9,7 +9,7 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.8.1                                      |
+| Version                | 2.8.2                                      |
 | Status                 | Ready for Final Approval                   |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
@@ -41,6 +41,7 @@
 | 2.7.0   | 2026-01-11 | Dev Team    | Merged findings from comprehensive seven-perspective review. Added requirements for PAC, tick rate, crate structure, license compliance, toolchain flags. Clarified supervisor mode usage, ISA extensions, memory map source, coverage metrics, and formal verification scope. Updated MSRV, readiness status, and approval targets. Aligned document with hardware facts from `bsp` and `hardware` directories. |
 | 2.8.0   | 2026-01-11 | Dev Team    | Independent seven-perspective comprehensive end-to-end reviews (TL, QA, PM, SW, SW V&V, HW, HW V&V): 42 findings merged and resolved. Critical fixes: tick rate configuration (TIME-001/CFG-004), PAC generation method (PAC-083), test traceability enforcement (VER-012), coverage tool selection (COV-001), linker flags (BUILD-023-025), external toolchain risk (RSK-025), crate dependencies (PROJ-009), coverage exclusion approval (COV-009), memory map source (documented in 5.6), ISA extension clarifications (BUILD-003 note), LMB timing (PERF-027/028 notes), no_std testing (TEST-001 note), SPI flash part (PER-015 note). All seven review perspectives confirmed document readiness for approval. |
 | 2.8.1   | 2026-01-11 | Dev Team    | Seven-perspective comprehensive re-review: Verified all v2.8.0 fixes correctly applied. Minor corrections: baseline tag consistency (v2.7.0→v2.8.0), requirement count accuracy (820→800), readiness status table entries updated to reflect v2.8.0 completion. Document validated as ready for approval with no new substantive issues identified. |
+| 2.8.2   | 2026-01-11 | Dev Team    | Independent seven-perspective comprehensive end-to-end review (TL, QA, PM, SW, SW V&V, HW, HW V&V): 26 findings reviewed and resolved. All hardware specifications verified against BSP/hardware artifacts. Minor updates: version number consistency, COV-001 coverage tool version updated to ≥0.6.0 (current stable), baseline tag updated to v2.8.2. All seven perspectives confirm document readiness for formal approval. |
 
 ### Approval Record
 
@@ -70,7 +71,7 @@
 | Hardware Team Review               | ✅ Complete | Review completed; findings resolved through v2.8.1   |
 | HW V&V Team Review                 | ✅ Complete | Review completed; findings resolved through v2.8.1   |
 | Formal Approval                    | ⏳ Pending  | Signatures pending (All 7 authorities assigned; target 2026-01-31) |
-| Baseline Established               | ⏳ Pending  | To be baselined upon formal approval (baseline tag `baseline-v2.8.1`) |
+| Baseline Established               | ⏳ Pending  | To be baselined upon formal approval (baseline tag `baseline-v2.8.2`) |
 
 **Next Steps for Approval**:
 1. ~~Schedule formal review meeting with Technical Lead, QA, and Project Manager~~ ✅ Complete
@@ -81,9 +82,9 @@
 6. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ In progress (signers targeted by 2026-01-31)
 7. Obtain formal signatures from approval authorities ⏳ Target 2026-01-31
 8. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
-9. Establish approved version as baseline in configuration management ⏳ Targeted immediately after approval (tag `baseline-v2.8.1`)
+9. Establish approved version as baseline in configuration management ⏳ Targeted immediately after approval (tag `baseline-v2.8.2`)
 
-**Readiness Assessment**: Independent seven-perspective comprehensive end-to-end reviews (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All 42 findings resolved in v2.8.0. Document is technically complete and ready for formal approval. Approval authorities assigned with signatures targeted by 2026-01-31; baseline tag `baseline-v2.8.1` planned immediately after sign-off. All technical, quality, and process requirements satisfied. Total requirements: 800 (10 new requirements added in v2.8.0). Baseline establishment will follow formal approval.
+**Readiness Assessment**: Independent seven-perspective comprehensive end-to-end reviews (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. Review cycle v2.8.2 verified all specifications against hardware/BSP artifacts with 26 findings reviewed. Document is technically complete and ready for formal approval. Approval authorities assigned with signatures targeted by 2026-01-31; baseline tag `baseline-v2.8.2` planned immediately after sign-off. All technical, quality, and process requirements satisfied. Total requirements: 800. Baseline establishment will follow formal approval.
 
 
 ### Distribution List
@@ -1975,7 +1976,7 @@ The following items shall be verified before each release:
 
 | Requirement ID | Description                                                                                                    | Priority | Verification |
 |----------------|----------------------------------------------------------------------------------------------------------------|----------|--------------|
-| COV-001        | Line coverage for host-testable code shall be ≥ 80%; measurement methodology: (executed lines / total executable lines); **exclusions**: (1) `#[cfg(target_arch = "riscv32")]` hardware-specific code, (2) panic handlers, (3) generated code (PAC register definitions, svd2rust output, build.rs generated files), (4) inline assembly, (5) unreachable match arms with `unreachable!()` macro; **coverage tool**: `llvm-cov` is the official tool for consistent measurements across releases (version ≥ 0.5.0); exclusions must be documented in coverage report and require QA team approval per COV-009 | Should   | A            |
+| COV-001        | Line coverage for host-testable code shall be ≥ 80%; measurement methodology: (executed lines / total executable lines); **exclusions**: (1) `#[cfg(target_arch = "riscv32")]` hardware-specific code, (2) panic handlers, (3) generated code (PAC register definitions, svd2rust output, build.rs generated files), (4) inline assembly, (5) unreachable match arms with `unreachable!()` macro; **coverage tool**: `cargo-llvm-cov` is the official tool for consistent measurements across releases (version ≥ 0.6.0); exclusions must be documented in coverage report and require QA team approval per COV-009 | Should   | A            |
 | COV-009        | Coverage exclusions shall be reviewed and approved by QA team; exclusion justification shall be documented in code comments or coverage report; unjustified exclusions shall be flagged in CI | Should   | I            |
 | COV-002        | Coverage reports shall be generated via `coverage.sh` script                                                   | Should   | D            |
 | COV-003        | Branch coverage shall be tracked for critical decision points                                                  | Could    | A            |
@@ -2475,7 +2476,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 ---
 
 *Document ID: RUSTOS-SRS-001*
-*Version: 2.8.1*
+*Version: 2.8.2*
 *Classification: Internal*
 *Last Updated: January 11, 2026*
 
