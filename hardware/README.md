@@ -498,11 +498,11 @@ Key interfaces:
 ## Related Resources
 
 - **Board Support Package (BSP)**: [../bsp/README.md](../bsp/README.md)
-- **Digilent Arty A7 Reference Manual**: [Digilent Reference](https://digilent.com/reference/programmable-logic/arty-a7/reference-manual)
+- **Digilent Arty A7 Reference Manual**: [Digilent Reference](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)
 - **MicroBlaze V Processor Documentation**:
-  - MicroBlaze V Processor Reference Guide (UG1629)
-  - MicroBlaze V Processor Embedded Design User Guide (UG1711)
-- **Vivado Boards Repository**: [../vivado-boards-master/](../vivado-boards-master/)
+  - [MicroBlaze V Processor Reference Guide (UG1629)](https://www.xilinx.com/support/documentation/user_guides/ug1629.html)
+  - [MicroBlaze V Processor Embedded Design User Guide (UG1711)](https://www.xilinx.com/support/documentation/user_guides/ug1711.html)
+- **Vivado Boards Repository**: [./vivado-boards/](./vivado-boards/)
 
 ## Modification Guidelines
 
@@ -539,7 +539,7 @@ Key interfaces:
 ## Version Information
 
 - **Vivado Version**: 2025.2
-- **Board Files Version**: Latest from [./vivado-boards-master/](./vivado-boards-master/)
+- **Board Files Version**: Latest from [./vivado-boards/](./vivado-boards/)
 - **Target Device**: XC7A35TICSG324-1L
 - **Design Language**: VHDL/Verilog mixed
 
