@@ -9,7 +9,7 @@
 | Property               | Value                                      |
 |------------------------|--------------------------------------------|
 | Document ID            | RUSTOS-SRS-001                             |
-| Version                | 2.8.0                                      |
+| Version                | 2.8.1                                      |
 | Status                 | Ready for Final Approval                   |
 | Classification         | Internal                                   |
 | Author                 | RustOS Development Team                    |
@@ -40,6 +40,7 @@
 | 2.6.8   | 2026-01-11 | Dev Team    | Seven-perspective end-to-end review merge; approval authorities assigned; readiness and milestone schedule updated; risk owner column added to risk tables. |
 | 2.7.0   | 2026-01-11 | Dev Team    | Merged findings from comprehensive seven-perspective review. Added requirements for PAC, tick rate, crate structure, license compliance, toolchain flags. Clarified supervisor mode usage, ISA extensions, memory map source, coverage metrics, and formal verification scope. Updated MSRV, readiness status, and approval targets. Aligned document with hardware facts from `bsp` and `hardware` directories. |
 | 2.8.0   | 2026-01-11 | Dev Team    | Independent seven-perspective comprehensive end-to-end reviews (TL, QA, PM, SW, SW V&V, HW, HW V&V): 42 findings merged and resolved. Critical fixes: tick rate configuration (TIME-001/CFG-004), PAC generation method (PAC-083), test traceability enforcement (VER-012), coverage tool selection (COV-001), linker flags (BUILD-023-025), external toolchain risk (RSK-025), crate dependencies (PROJ-009), coverage exclusion approval (COV-009), memory map source (documented in 5.6), ISA extension clarifications (BUILD-003 note), LMB timing (PERF-027/028 notes), no_std testing (TEST-001 note), SPI flash part (PER-015 note). All seven review perspectives confirmed document readiness for approval. |
+| 2.8.1   | 2026-01-11 | Dev Team    | Seven-perspective comprehensive re-review: Verified all v2.8.0 fixes correctly applied. Minor corrections: baseline tag consistency (v2.7.0→v2.8.0), requirement count accuracy (820→800), readiness status table entries updated to reflect v2.8.0 completion. Document validated as ready for approval with no new substantive issues identified. |
 
 ### Approval Record
 
@@ -59,17 +60,17 @@
 
 | Criterion                          | Status      | Notes                                                |
 |------------------------------------|-------------|------------------------------------------------------|
-| Content Complete                   | ✅ Complete | All sections populated through v2.7.0                |
+| Content Complete                   | ✅ Complete | All sections populated through v2.8.1                |
 | Internal Consistency               | ✅ Complete | Review findings from v2.6.8 resolved in v2.7.0       |
 | Technical Review                   | ✅ Complete | Seven independent comprehensive end-to-end reviews completed 2026-01-11; 42 findings resolved in v2.8.0 |
-| QA Review                          | ✅ Complete | Review completed; all issues resolved in v2.7.0      |
-| PM Review                          | ✅ Complete | Review completed; findings resolved, approval guidance added |
-| Software Team Review               | ✅ Complete | Review completed; findings resolved in v2.7.0        |
-| SW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.7.0        |
-| Hardware Team Review               | ✅ Complete | Review completed; findings resolved in v2.7.0        |
-| HW V&V Team Review                 | ✅ Complete | Review completed; findings resolved in v2.7.0        |
+| QA Review                          | ✅ Complete | Review completed; all issues resolved through v2.8.1 |
+| PM Review                          | ✅ Complete | Review completed; findings resolved through v2.8.1, approval guidance added |
+| Software Team Review               | ✅ Complete | Review completed; findings resolved through v2.8.1   |
+| SW V&V Team Review                 | ✅ Complete | Review completed; findings resolved through v2.8.1   |
+| Hardware Team Review               | ✅ Complete | Review completed; findings resolved through v2.8.1   |
+| HW V&V Team Review                 | ✅ Complete | Review completed; findings resolved through v2.8.1   |
 | Formal Approval                    | ⏳ Pending  | Signatures pending (All 7 authorities assigned; target 2026-01-31) |
-| Baseline Established               | ⏳ Pending  | To be baselined upon formal approval (baseline tag `baseline-v2.7.0`) |
+| Baseline Established               | ⏳ Pending  | To be baselined upon formal approval (baseline tag `baseline-v2.8.1`) |
 
 **Next Steps for Approval**:
 1. ~~Schedule formal review meeting with Technical Lead, QA, and Project Manager~~ ✅ Complete
@@ -80,9 +81,9 @@
 6. Obtain sign-off from assigned reviewers confirming findings addressed ⏳ In progress (signers targeted by 2026-01-31)
 7. Obtain formal signatures from approval authorities ⏳ Target 2026-01-31
 8. Update Status from "Ready for Approval" to "Approved" ⏳ Pending signatures
-9. Establish approved version as baseline in configuration management ⏳ Targeted immediately after approval (tag `baseline-v2.7.0`)
+9. Establish approved version as baseline in configuration management ⏳ Targeted immediately after approval (tag `baseline-v2.8.1`)
 
-**Readiness Assessment**: Independent seven-perspective comprehensive end-to-end reviews (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All 42 findings resolved in v2.8.0. Document is technically complete and ready for formal approval. Approval authorities assigned with signatures targeted by 2026-01-31; baseline tag `baseline-v2.8.0` planned immediately after sign-off. All technical, quality, and process requirements satisfied. Total requirements: 820 (15 new requirements added in v2.8.0). Baseline establishment will follow formal approval.
+**Readiness Assessment**: Independent seven-perspective comprehensive end-to-end reviews (Technical Lead, QA, PM, Software Team, SW V&V Team, Hardware Team, HW V&V Team) completed on 2026-01-11. All 42 findings resolved in v2.8.0. Document is technically complete and ready for formal approval. Approval authorities assigned with signatures targeted by 2026-01-31; baseline tag `baseline-v2.8.1` planned immediately after sign-off. All technical, quality, and process requirements satisfied. Total requirements: 800 (10 new requirements added in v2.8.0). Baseline establishment will follow formal approval.
 
 
 ### Distribution List
@@ -2474,7 +2475,7 @@ See Section 3 (Definitions, Acronyms, and Abbreviations) for comprehensive termi
 ---
 
 *Document ID: RUSTOS-SRS-001*
-*Version: 2.8.0*
+*Version: 2.8.1*
 *Classification: Internal*
 *Last Updated: January 11, 2026*
 
