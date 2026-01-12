@@ -10,6 +10,7 @@ use crate::utils::{boundary, perf};
 
 /// Mock task for testing
 #[derive(Debug, Clone)]
+#[allow(dead_code)]  // Fields used for debugging and future test expansion
 struct MockTask {
     id: u32,
     priority: u8,
@@ -18,6 +19,7 @@ struct MockTask {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]  // Variants needed for complete state machine representation
 enum TaskState {
     Ready,
     Running,
@@ -273,8 +275,11 @@ fn test_scheduler_performance() {
 #[test]
 fn test_time_slice_expiry() {
     // REQ: SCHED-005 - Time slice management
-    let mut task = MockTask::new(1, 10);
-    task.time_slice = 10;
+    let task = MockTask::new(1, 10);
+    
+    // Verify task has expected default time slice
+    assert_eq_test!(task.time_slice, 10, "Default time slice should be 10");
+    assert_eq_test!(task.priority, 10, "Priority should be 10");
 
     MOCK_TIMER.reset();
     MOCK_TIMER.start();

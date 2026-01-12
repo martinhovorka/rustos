@@ -12,6 +12,6 @@ rustflags = [
   "-C", "link-arg=--gc-sections",
   # REQ: BUILD-024 - Force frame pointers for better debugging
   "-C", "force-frame-pointers=yes",
-  # REQ: BUILD-025 - Optimize for code size
-  "-C", "inline-threshold=25",
+  # REQ: BUILD-025 - Optimize for code size (use LLVM inline threshold)
+  "-C", "llvm-args=--inline-threshold=25",
 ]

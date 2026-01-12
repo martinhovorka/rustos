@@ -6,8 +6,6 @@
 
 use crate::assert_test;
 use crate::utils::{boundary, concurrent};
-use core::option::Option::{self, Some, None};
-use core::result::Result::{self, Ok, Err};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::vec::Vec;

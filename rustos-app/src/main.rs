@@ -5,6 +5,7 @@
 #![no_std]
 #![no_main]
 
+use core::ptr::addr_of_mut;
 use rustos_board as _;
 use rustos_kernel::{Task, TaskId, TaskPriority};
 use rustos_hal::println;
@@ -22,6 +23,8 @@ static mut IDLE: Option<Task> = None;
 /// REQ: APP-002 - Main entry point
 #[no_mangle]
 fn main() -> ! {
+    // SAFETY: This is single-threaded initialization before scheduler starts.
+    // No other code can access these statics until tasks are running.
     unsafe {
         // REQ: BOARD-002 - Board already initialized by startup code
         
@@ -31,12 +34,13 @@ fn main() -> ! {
         println!("CPU: MicroBlaze V RISC-V @ 75 MHz");
         
         // REQ: TASK-003 - Create tasks
+        // Use addr_of_mut! to safely get mutable pointers to static arrays
         TASK1 = Some(Task::new(
             TaskId(0),
             "task1",
             TaskPriority(10),
             task1_entry,
-            &mut TASK1_STACK
+            &mut *addr_of_mut!(TASK1_STACK)
         ));
         
         TASK2 = Some(Task::new(
@@ -44,7 +48,7 @@ fn main() -> ! {
             "task2",
             TaskPriority(20),
             task2_entry,
-            &mut TASK2_STACK
+            &mut *addr_of_mut!(TASK2_STACK)
         ));
         
         IDLE = Some(Task::new(
@@ -52,14 +56,14 @@ fn main() -> ! {
             "idle",
             TaskPriority::LOWEST,
             idle_task,
-            &mut IDLE_STACK
+            &mut *addr_of_mut!(IDLE_STACK)
         ));
         
         // REQ: SCHED-005 - Add tasks to scheduler
         let scheduler = rustos_kernel::scheduler::get();
-        scheduler.add_task(TASK1.as_mut().unwrap()).unwrap();
-        scheduler.add_task(TASK2.as_mut().unwrap()).unwrap();
-        scheduler.add_task(IDLE.as_mut().unwrap()).unwrap();
+        scheduler.add_task((*addr_of_mut!(TASK1)).as_mut().unwrap()).unwrap();
+        scheduler.add_task((*addr_of_mut!(TASK2)).as_mut().unwrap()).unwrap();
+        scheduler.add_task((*addr_of_mut!(IDLE)).as_mut().unwrap()).unwrap();
         
         println!("Tasks created. Starting scheduler...\n");
         

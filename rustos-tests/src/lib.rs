@@ -45,3 +45,15 @@ pub mod sync_tests;
 pub mod task_tests;
 #[cfg(test)]
 pub mod time_tests;
+
+// REQ: TEST-008 - Additional kernel module tests
+#[cfg(test)]
+pub mod error_tests;
+#[cfg(test)]
+pub mod critical_tests;
+#[cfg(test)]
+pub mod power_tests;
+#[cfg(test)]
+pub mod diagnostics_tests;
+#[cfg(test)]
+pub mod context_tests;

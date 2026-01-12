@@ -12,6 +12,7 @@ use std::sync::atomic::{AtomicU32, Ordering};
 
 /// Mock task control block for testing
 #[derive(Debug, Clone)]
+#[allow(dead_code)]  // Fields used for debugging and future test expansion
 struct MockTask {
     id: u32,
     priority: u8,
