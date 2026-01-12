@@ -4,13 +4,14 @@
 
 #![cfg(test)]
 
+extern crate std;
+
 use crate::assert_test;
 use crate::utils::{boundary, concurrent};
+use core::option::Option::{self, None, Some};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::vec::Vec;
-
-extern crate std;
 
 /// Mock Mutex implementation for testing
 struct MockMutex {

@@ -4,9 +4,12 @@
 
 #![cfg(test)]
 
+extern crate std;
+
 use crate::{assert_test, assert_eq_test};
 use crate::mock::{MOCK_CSR, MOCK_TIMER};
 use crate::utils::{boundary, perf};
+use core::option::Option::{self, None, Some};
 
 /// Mock task for testing
 #[derive(Debug, Clone)]

@@ -4,10 +4,11 @@
 
 #![cfg(test)]
 
-use crate::assert_test;
-use std::sync::atomic::{AtomicU32, Ordering};
-
 extern crate std;
+
+use crate::assert_test;
+use core::default::Default;
+use std::sync::atomic::{AtomicU32, Ordering};
 
 // ============================================================================
 // Mock Context Structure

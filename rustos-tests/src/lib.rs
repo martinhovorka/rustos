@@ -57,3 +57,13 @@ pub mod power_tests;
 pub mod diagnostics_tests;
 #[cfg(test)]
 pub mod context_tests;
+
+// REQ: TEST-008 - HAL and synchronization primitive tests
+#[cfg(test)]
+pub mod hal_tests;
+#[cfg(test)]
+pub mod sync_primitive_tests;
+#[cfg(test)]
+pub mod memory_tests;
+#[cfg(test)]
+pub mod interrupt_tests;
