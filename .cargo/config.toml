@@ -1,7 +1,17 @@
+# REQ: BUILD-003 - Default RISC-V target
 [build]
 target = "riscv32imac-unknown-none-elf"
 
+# REQ: BUILD-023, BUILD-024, BUILD-025 - Linker and codegen flags
 [target.riscv32imac-unknown-none-elf]
 rustflags = [
+  # REQ: BUILD-014 - Custom linker script
   "-C", "link-arg=-Trustos-kernel/linker.ld",
+  # REQ: BUILD-023 - Linker optimizations
+  # Note: -nostartfiles not supported by rust-lld, handled by linker script
+  "-C", "link-arg=--gc-sections",
+  # REQ: BUILD-024 - Force frame pointers for better debugging
+  "-C", "force-frame-pointers=yes",
+  # REQ: BUILD-025 - Optimize for code size
+  "-C", "inline-threshold=25",
 ]

@@ -1,6 +1,33 @@
 //! REQ: PWR-001, PWR-002 - Power Management
 //! 
 //! Power saving features for RustOS kernel.
+//!
+//! # Overview
+//!
+//! The power module provides power-saving features for embedded systems:
+//! - WFI (Wait For Interrupt) instruction support
+//! - Idle task power optimization
+//!
+//! # WFI Support
+//!
+//! When the `wfi-idle` feature is enabled, the idle task uses the RISC-V `wfi`
+//! instruction to put the CPU into a low-power state until an interrupt occurs.
+//! This significantly reduces power consumption during idle periods.
+//!
+//! Without the feature, the idle task uses a spin loop with hint::spin_loop().
+//!
+//! # Example
+//!
+//! ```no_run
+//! use rustos_kernel::power::wait_for_interrupt;
+//!
+//! extern "C" fn idle_task() -> ! {
+//!     loop {
+//!         // Enter low-power mode (WFI or spin loop)
+//!         wait_for_interrupt();
+//!     }
+//! }
+//! ```
 
 /// REQ: PWR-001 - Wait For Interrupt instruction
 /// REQ: PWR-002 - Configurable via wfi-idle feature flag

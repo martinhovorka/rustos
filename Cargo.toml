@@ -52,12 +52,12 @@ lto = false
 codegen-units = 16
 
 [profile.release]
-opt-level = "z"     # REQ: PERF-001 - Size optimization
+opt-level = "z"     # REQ: BUILD-008 - Size optimization
 debug = false
-lto = true          # REQ: BUILD-004 - Link-time optimization
-codegen-units = 1   # REQ: PERF-002 - Single codegen unit
-panic = "abort"     # REQ: PAN-001 - Panic behavior
-strip = true        # REQ: BUILD-005 - Strip symbols
+lto = true          # REQ: BUILD-009 - Link-time optimization
+codegen-units = 1   # REQ: BUILD-010 - Single codegen unit
+panic = "abort"     # REQ: BUILD-011 - Panic behavior
+strip = true        # Strip symbols for smaller binary
 
 # REQ: PERF-003 - Development profile with optimization
 [profile.dev-opt]

@@ -87,6 +87,7 @@ fn panic(info: &PanicInfo) -> ! {
 }
 
 /// REQ: PAN-004 - Dump CPU registers for debugging
+#[cfg(debug_assertions)]
 fn dump_registers(uart: &mut (impl core::fmt::Write + ?Sized)) {
     let sp: usize;
     let ra: usize;
@@ -123,6 +124,7 @@ fn dump_registers(uart: &mut (impl core::fmt::Write + ?Sized)) {
 }
 
 /// REQ: PAN-009 - Check for stack overflow
+#[cfg(debug_assertions)]
 fn check_stack_overflow(uart: &mut (impl core::fmt::Write + ?Sized)) {
     // This would check task stack canaries
     // For now, just a placeholder

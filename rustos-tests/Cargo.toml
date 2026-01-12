@@ -12,9 +12,6 @@ repository.workspace = true
 description = "Host-based test suite for RustOS RTOS"
 
 [dependencies]
-# REQ: TEST-003 - Testable kernel components
-rustos-kernel = { path = "../rustos-kernel" }
-
 # REQ: DEP-010 - Static data structures
 heapless = { workspace = true }
 
@@ -22,16 +19,22 @@ heapless = { workspace = true }
 portable-atomic = { workspace = true }
 
 [dev-dependencies]
-# REQ: TEST-004 - Test assertions
-assert_matches = "1.5"
 
 [features]
 default = []
+# Enable for benchmark binary
+bench = []
 
 # REQ: TEST-005 - Library with tests
 [lib]
 name = "rustos_tests"
 path = "src/lib.rs"
+
+# Performance benchmark binary
+[[bin]]
+name = "bench"
+path = "src/bin/bench.rs"
+required-features = ["bench"]
 
 # REQ: TEST-006 - Test with standard library on host
 [package.metadata.docs.rs]

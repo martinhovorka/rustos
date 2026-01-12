@@ -1,6 +1,53 @@
 //! REQ: TASK-001 - Task Management
 //! 
 //! Provides task control block (TCB) and task management functionality.
+//!
+//! # Overview
+//!
+//! Tasks are the fundamental unit of execution in RustOS. Each task has:
+//! - A unique identifier ([`TaskId`])
+//! - A priority level ([`TaskPriority`])
+//! - A state ([`TaskState`])
+//! - A dedicated stack
+//! - Optional runtime statistics (with `statistics` feature)
+//!
+//! # Creating Tasks
+//!
+//! ```no_run
+//! use rustos_kernel::task::{Task, TaskId, TaskPriority};
+//!
+//! static mut TASK1_STACK: [u8; 2048] = [0; 2048];
+//!
+//! extern "C" fn task1_entry() -> ! {
+//!     loop {
+//!         // Task work
+//!     }
+//! }
+//!
+//! unsafe {
+//!     let task = Task::new(
+//!         TaskId(1),
+//!         "task1",
+//!         TaskPriority::NORMAL,
+//!         task1_entry,
+//!         &mut TASK1_STACK
+//!     );
+//! }
+//! ```
+//!
+//! # Priority Levels
+//!
+//! - `TaskPriority::HIGHEST` (0): Highest priority
+//! - `TaskPriority::NORMAL` (128): Default priority
+//! - `TaskPriority::LOWEST` (255): Lowest priority (reserved for idle task)
+//!
+//! # Task States
+//!
+//! - `READY`: Task is ready to run
+//! - `RUNNING`: Task is currently executing
+//! - `BLOCKED`: Task is waiting for a resource
+//! - `SUSPENDED`: Task is explicitly suspended
+//! - `TERMINATED`: Task has finished execution
 
 use bitflags::bitflags;
 

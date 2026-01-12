@@ -43,6 +43,8 @@ wfi-idle = []
 # REQ: PAN-005, PAN-007 - Panic handler features
 panic-led = []
 panic-reset = []
+# REQ: TIME-005, TIME-006 - Software timers with callbacks
+timers = []
 
 # REQ: KERN-004 - No standard library
 [lib]

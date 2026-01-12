@@ -9,10 +9,35 @@
 //! REQ: ERR-012 - Error documentation
 //! REQ: ERR-013 - Result type consistency
 //! REQ: ERR-014 - Error handler registration
+//!
+//! # Timeout Semantics (REQ: ERR-002)
+//! 
+//! All synchronization primitives follow consistent timeout semantics:
+//! - `timeout_ticks = 0`: Non-blocking poll (try once, return immediately)
+//! - `timeout_ticks = n`: Block for up to n system ticks
+//! - `timeout_ticks = None`: Block indefinitely (wait forever)
+//! 
+//! Example:
+//! ```no_run
+//! # use rustos_kernel::sync::Semaphore;
+//! # let sem = Semaphore::new(1);
+//! // Non-blocking poll
+//! if let Ok(_guard) = sem.acquire_timeout(0) {
+//!     // Resource acquired
+//! } else {
+//!     // Would block, handle accordingly
+//! }
+//! ```
 
 #![allow(unused)]
 
 use core::fmt;
+
+/// REQ: ERR-002 - Non-blocking timeout value (poll semantics)
+pub const TIMEOUT_POLL: u32 = 0;
+
+/// REQ: ERR-002 - Default blocking timeout (100ms)
+pub const TIMEOUT_DEFAULT: u32 = 100;
 
 /// REQ: ERR-001 - Formal error codes for all kernel operations
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

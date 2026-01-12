@@ -1,6 +1,32 @@
 //! REQ: SCHED-001 - Preemptive Scheduler
 //! 
-//! Priority-based preemptive scheduler with O(1) task selection.
+//! Priority-based preemptive scheduler with O(1) task selection using a priority bitmap.
+//!
+//! # Algorithm
+//!
+//! The scheduler uses an 8-word bitmap (256 bits) to track which priority levels have
+//! ready tasks. Task selection is O(1) by scanning the bitmap for the first set bit
+//! (lowest priority value = highest priority).
+//!
+//! # Example
+//!
+//! ```no_run
+//! use rustos_kernel::{scheduler, task::{Task, TaskPriority}};
+//!
+//! unsafe {
+//!     // Enable scheduler
+//!     scheduler::get().enable();
+//!     
+//!     // Start scheduler (does not return)
+//!     scheduler::start();
+//! }
+//! ```
+//!
+//! # Preemption
+//!
+//! Tasks are preempted on every system tick (1ms). Higher priority tasks always
+//! run before lower priority tasks. Tasks at the same priority share CPU time
+//! in round-robin fashion.
 
 use crate::task::{Task, TaskId, TaskPriority, TaskState, MAX_TASKS};
 use portable_atomic::{AtomicU8, AtomicBool, AtomicPtr, Ordering};
@@ -21,6 +47,9 @@ pub struct Scheduler {
     enabled: AtomicBool,
     /// REQ: SCHED-017 - Priority bitmap for O(1) lookup (256 priorities / 32 bits = 8 words)
     priority_bitmap: [AtomicU32; 8],
+    /// REQ: SCHED-015 - Context switch counter for statistics
+    #[cfg(feature = "statistics")]
+    context_switch_count: AtomicU32,
 }
 
 use portable_atomic::AtomicU32;
@@ -37,6 +66,8 @@ impl Scheduler {
             current_task: AtomicU8::new(0xFF), // Invalid task ID initially
             enabled: AtomicBool::new(false),
             priority_bitmap: [ATOMIC_ZERO; 8],
+            #[cfg(feature = "statistics")]
+            context_switch_count: AtomicU32::new(0),
         }
     }
 
@@ -253,6 +284,36 @@ pub fn yield_now() {
     unsafe {
         core::arch::asm!("ecall");
     }
+}
+
+/// REQ: SCHED-015 - Get context switch count
+#[cfg(feature = "statistics")]
+pub fn get_context_switch_count() -> u32 {
+    SCHEDULER.context_switch_count.load(Ordering::Acquire)
+}
+
+/// REQ: SCHED-015 - Increment context switch counter
+#[cfg(feature = "statistics")]
+pub(crate) fn increment_context_switches() {
+    SCHEDULER.context_switch_count.fetch_add(1, Ordering::Relaxed);
+}
+
+/// REQ: DIAG-001 - Get task state (for diagnostics)
+/// 
+/// Returns the current state of the specified task.
+/// Non-blocking, safe to call from ISR context.
+#[cfg(feature = "diagnostics")]
+pub fn get_task_state(task_id: TaskId) -> Option<TaskState> {
+    SCHEDULER.get_task(task_id).map(|task| task.state())
+}
+
+/// REQ: DIAG-005 - Get task stack usage (for diagnostics)
+/// 
+/// Returns the high-water mark (maximum observed usage) of the task's stack.
+/// Non-blocking, safe to call from ISR context.
+#[cfg(feature = "diagnostics")]
+pub fn get_task_stack_usage(task_id: TaskId) -> Option<usize> {
+    SCHEDULER.get_task(task_id).map(|task| task.stack_usage())
 }
 
 /// Get reference to global scheduler

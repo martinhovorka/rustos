@@ -68,6 +68,8 @@ pub const PERF_COUNTERS_ENABLED: bool = false;
 
 /// REQ: CFG-001 - Enable tickless idle mode
 #[cfg(feature = "tickless")]
+/// **Future Feature**: When enabled, the scheduler will skip timer ticks when no
+/// tasks are ready to run, reducing power consumption. Not implemented in v1.0.
 pub const TICKLESS_ENABLED: bool = true;
 #[cfg(not(feature = "tickless"))]
 /// Enable tickless idle mode
@@ -75,6 +77,8 @@ pub const TICKLESS_ENABLED: bool = false;
 
 /// REQ: CFG-001 - Enable priority inheritance
 #[cfg(feature = "priority-inheritance")]
+/// **Future Feature**: When enabled, mutexes will use priority inheritance protocol
+/// to prevent priority inversion (Mars Pathfinder lesson-learned). Not implemented in v1.0.
 pub const PRIORITY_INHERITANCE: bool = true;
 #[cfg(not(feature = "priority-inheritance"))]
 /// Enable priority inheritance for mutexes

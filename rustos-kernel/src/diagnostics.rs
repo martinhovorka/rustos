@@ -1,16 +1,132 @@
 //! Runtime Diagnostics
 //!
-//! REQ: DIAG-001 - Task statistics collection
-//! REQ: DIAG-002 - CPU usage tracking
-//! REQ: DIAG-003 - Stack usage monitoring
-//! REQ: DIAG-004 - Interrupt statistics
-//! REQ: DIAG-005 - Memory usage reporting
-//! REQ: DIAG-006 - Diagnostic data export
+//! REQ: DIAG-001 - Task state query API
+//! REQ: DIAG-002 - Mutex owner query API
+//! REQ: DIAG-003 - Queue count query API
+//! REQ: DIAG-004 - Interrupt count query API
+//! REQ: DIAG-005 - Stack usage query API
+//! REQ: DIAG-006 - Non-blocking from ISR context
+//!
+//! # Overview
+//!
+//! The diagnostics module provides runtime query APIs for monitoring system state.
+//! All APIs are non-blocking and safe to call from ISR context.
+//!
+//! Enable with the `diagnostics` feature flag.
+//!
+//! # Available APIs (with `diagnostics` feature)
+//!
+//! - `task_get_state()`: Query current task state
+//! - `irq_get_count()`: Get interrupt occurrence count
+//! - `task_get_stack_usage()`: Get task stack high-water mark
+//! - `mutex_get_owner()`: Get mutex owner task ID
+//! - `queue_get_count()`: Get message queue depth
+//!
+//! # Example
+//!
+//! ```no_run
+//! # #[cfg(feature = "diagnostics")]
+//! # {
+//! use rustos_kernel::diagnostics::{task_get_state, irq_get_count, task_get_stack_usage};
+//! use rustos_kernel::task::TaskId;
+//!
+//! // Query task state
+//! if let Some(state) = task_get_state(TaskId(1)) {
+//!     // Check state
+//! }
+//!
+//! // Get IRQ count for timer interrupt (IRQ 7)
+//! let timer_count = irq_get_count(7);
+//!
+//! // Get stack usage
+//! if let Some(usage) = task_get_stack_usage(TaskId(1)) {
+//!     // Check if stack usage is high
+//! }
+//! # }
+//! ```
 
 #![allow(unused)]
 
 use core::sync::atomic::{AtomicU32, Ordering};
-use crate::task::TaskId;
+use crate::task::{TaskId, TaskState};
+use crate::sync::MutexId;
+
+/// REQ: DIAG-006 - Feature gate for diagnostics
+#[cfg(feature = "diagnostics")]
+pub use enabled::*;
+
+#[cfg(feature = "diagnostics")]
+mod enabled {
+    use super::*;
+    
+    /// REQ: DIAG-001 - Query task state
+    /// 
+    /// Returns the current state of the specified task.
+    /// Non-blocking, safe to call from ISR context.
+    pub fn task_get_state(task_id: TaskId) -> Option<TaskState> {
+        // Access scheduler to get task state
+        crate::scheduler::get_task_state(task_id)
+    }
+
+    /// REQ: DIAG-002 - Query mutex owner
+    /// 
+    /// Returns the task ID that currently owns the specified mutex.
+    /// Non-blocking, safe to call from ISR context.
+    pub fn mutex_get_owner(mutex_id: MutexId) -> Option<TaskId> {
+        // Access mutex implementation to get owner
+        crate::sync::get_mutex_owner(mutex_id)
+    }
+
+    /// REQ: DIAG-003 - Query queue message count
+    /// 
+    /// Returns the current number of messages in the specified queue.
+    /// Non-blocking, safe to call from ISR context.
+    pub fn queue_get_count(queue_id: u8) -> Option<usize> {
+        // Access queue implementation to get count
+        crate::sync::get_queue_count(queue_id)
+    }
+
+    /// REQ: DIAG-004 - Query interrupt occurrence count
+    /// 
+    /// Returns the total number of times the specified interrupt has occurred since boot.
+    /// Non-blocking, safe to call from ISR context.
+    pub fn irq_get_count(irq_num: u8) -> u32 {
+        unsafe { IRQ_COUNTERS[irq_num as usize].load(Ordering::Relaxed) }
+    }
+
+    /// REQ: DIAG-005 - Query task stack usage
+    /// 
+    /// Returns the high-water mark (maximum observed usage) of the specified task's stack.
+    /// Non-blocking, safe to call from ISR context.
+    pub fn task_get_stack_usage(task_id: TaskId) -> Option<usize> {
+        crate::scheduler::get_task_stack_usage(task_id)
+    }
+
+    /// REQ: DIAG-004 - Record interrupt occurrence (called from ISR)
+    /// 
+    /// # Safety
+    /// Must be called only from interrupt context
+    pub unsafe fn record_irq(irq_num: u8) {
+        if (irq_num as usize) < IRQ_COUNTERS.len() {
+            IRQ_COUNTERS[irq_num as usize].fetch_add(1, Ordering::Relaxed);
+        }
+    }
+}
+
+/// REQ: DIAG-004 - Interrupt occurrence counters (32 IRQs supported)
+static IRQ_COUNTERS: [AtomicU32; 32] = [
+    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+];
+
+/// Legacy diagnostics structures (for performance monitoring)
+/// These are separate from the DIAG-001 to DIAG-006 query APIs
 
 /// REQ: DIAG-001 - Per-task statistics
 #[derive(Debug, Clone, Copy)]
