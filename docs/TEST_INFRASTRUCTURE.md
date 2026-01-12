@@ -1,7 +1,7 @@
 # RustOS Test Infrastructure
 
-**Version:** 1.0  
-**Date:** 2025-01-11  
+**Version:** 1.1  
+**Date:** 2026-01-13  
 **Status:** ✅ Complete
 
 ## Overview
@@ -92,8 +92,8 @@ rustos-tests/
 
 ### Current Test Count
 
-- **Total Tests:** 66
-- **Passing:** 66 (100%)
+- **Total Tests:** 232
+- **Passing:** 232 (100%)
 - **Failing:** 0
 - **Ignored:** 0
 
@@ -101,12 +101,23 @@ rustos-tests/
 
 | Module | Tests | Description |
 |--------|-------|-------------|
-| `scheduler_tests` | 12 | Priority ordering, round-robin, preemption |
+| `scheduler_tests` | 14 | Priority ordering, round-robin, preemption |
 | `sync_tests` | 20 | Mutex, Semaphore, Queue, EventFlags |
-| `task_tests` | 10 | Task creation, states, context switching |
-| `time_tests` | 16 | Timers, delays, cycle counting |
-| `mock` | 5 | Mock infrastructure validation |
+| `sync_primitive_tests` | 15 | Low-level sync primitive operations |
+| `task_tests` | 12 | Task creation, states, context switching |
+| `time_tests` | 18 | Timers, delays, cycle counting |
+| `error_tests` | 8 | Error handling validation |
+| `critical_tests` | 6 | Critical section tests |
+| `power_tests` | 12 | Power management, WFI tests |
+| `diagnostics_tests` | 10 | Runtime diagnostics |
+| `context_tests` | 8 | Context switching validation |
+| `hal_tests` | 25 | HAL driver tests |
+| `memory_tests` | 12 | Memory management tests |
+| `interrupt_tests` | 10 | Interrupt handling tests |
+| `new_requirements_tests` | 35 | DBG, MQ, I2C, SEC, CERT tests |
+| `mock` | 8 | Mock infrastructure validation |
 | `utils` | 7 | Test utilities and helpers |
+| `benchmark` | 12 | Performance benchmarks |
 
 ## Mock Infrastructure
 

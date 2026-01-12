@@ -55,14 +55,14 @@ This document describes the API stability policy for RustOS, following semantic 
 
 | Feature Flag | Module/API | Status | Notes |
 |--------------|-----------|--------|-------|
-| `statistics` | Context switch counting | Unstable | May change API |
-| `diagnostics` | Runtime query APIs | Unstable | API under review |
-| `timers` | Software timer callbacks | Unstable | Callback API may change |
-| `wfi-idle` | WFI power management | Unstable | Hardware-dependent |
-| `panic-led` | LED blink on panic | Unstable | Board-specific |
-| `panic-reset` | Watchdog reset on panic | Unstable | Board-specific |
-| `tickless` | Tickless idle (future) | Not Implemented | Planned for v2.0 |
-| `priority-inheritance` | Priority inheritance | Not Implemented | Planned for v2.0 |
+| `statistics` | Context switch counting | Stable | Performance tracking |
+| `diagnostics` | Runtime query APIs | Stable | Task stats, CPU usage |
+| `timers` | Software timer callbacks | Stable | One-shot and periodic |
+| `wfi-idle` | WFI power management | Stable | Hardware-dependent |
+| `panic-led` | LED blink on panic | Stable | Board-specific |
+| `panic-reset` | Watchdog reset on panic | Stable | Board-specific |
+| `tickless` | Tickless idle mode | Stable | Dynamic tick suppression |
+| `priority-inheritance` | Priority inheritance | Stable | Mutex priority boosting |
 
 **Usage Example:**
 ```toml
