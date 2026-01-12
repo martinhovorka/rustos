@@ -10,9 +10,10 @@ This guide covers the synchronization primitives available in RustOS for safe in
 2. [Mutex](#mutex)
 3. [Semaphore](#semaphore)
 4. [Queue](#queue)
-5. [Event Flags](#event-flags)
-6. [Choosing the Right Primitive](#choosing-the-right-primitive)
-7. [Advanced Topics](#advanced-topics)
+5. [Priority Queue](#priority-queue)
+6. [Event Flags](#event-flags)
+7. [Choosing the Right Primitive](#choosing-the-right-primitive)
+8. [Advanced Topics](#advanced-topics)
 
 ---
 
@@ -39,6 +40,7 @@ In a multitasking system, tasks run concurrently and may need to:
 | **Mutex** | Mutual exclusion | Protect shared data |
 | **Semaphore** | Resource counting | Limit concurrent access |
 | **Queue** | Data transfer | Producer-consumer patterns |
+| **PriorityQueue** | Priority data transfer | Urgent event handling |
 | **EventFlags** | Event notification | Signal state changes |
 
 ---
@@ -454,6 +456,99 @@ fn logger_task() -> ! {
 
 ---
 
+## Priority Queue
+
+### What is a Priority Queue?
+
+A **Priority Queue** (REQ: MQ-009) is a queue where messages are ordered by priority level, not insertion order. Higher priority messages are dequeued first, making it ideal for handling urgent events.
+
+### API Reference
+
+```rust
+use rustos_kernel::sync::PriorityQueue;
+
+// Create priority queue with capacity
+static PQ: PriorityQueue<Message, 16> = PriorityQueue::new();
+
+// Send message with priority (0 = highest)
+PQ.push(msg, priority);
+
+// Receive highest priority message
+if let Some((msg, priority)) = PQ.pop() {
+    // Process message
+}
+
+// Check state
+let count = PQ.len();
+let is_empty = PQ.is_empty();
+let is_full = PQ.is_full();
+
+// Peek at highest priority item without removing
+if let Some((msg, priority)) = PQ.peek() {
+    // Inspect without consuming
+}
+```
+
+### Example: Interrupt Priority Handling
+
+```rust
+use rustos_kernel::sync::PriorityQueue;
+
+#[derive(Clone, Copy)]
+struct InterruptEvent {
+    source: u8,
+    data: u32,
+}
+
+// Priority queue for interrupt events (0 = highest priority)
+static IRQ_QUEUE: PriorityQueue<InterruptEvent, 32> = PriorityQueue::new();
+
+// ISR pushes events with appropriate priority
+fn gpio_isr() {
+    let event = InterruptEvent { source: 0, data: read_gpio() };
+    IRQ_QUEUE.push(event, 10); // Low priority
+}
+
+fn uart_isr() {
+    let event = InterruptEvent { source: 1, data: read_uart() };
+    IRQ_QUEUE.push(event, 5);  // Medium priority
+}
+
+fn watchdog_isr() {
+    let event = InterruptEvent { source: 2, data: 0 };
+    IRQ_QUEUE.push(event, 0);  // Highest priority - critical!
+}
+
+// Handler task processes in priority order
+fn event_handler_task() -> ! {
+    loop {
+        if let Some((event, _priority)) = IRQ_QUEUE.pop() {
+            match event.source {
+                0 => handle_gpio(event.data),
+                1 => handle_uart(event.data),
+                2 => handle_watchdog_warning(),
+                _ => {}
+            }
+        }
+        yield_now();
+    }
+}
+```
+
+### Best Practices
+
+✅ **Do:**
+- Use for priority-based event handling
+- Keep priority values consistent (0 = highest)
+- Size queue for worst-case burst
+
+❌ **Don't:**
+- Use when FIFO ordering is required (use Queue)
+- Starve low-priority messages indefinitely
+- Use large priority ranges unnecessarily
+
+---
+
 ## Event Flags
 
 ### What are Event Flags?
@@ -620,7 +715,9 @@ Need to count resources?
     └─► YES → Use Semaphore
     
 Need to transfer data between tasks?
-    └─► YES → Use Queue
+    └─► Is priority ordering needed?
+        └─► YES → Use PriorityQueue
+        └─► NO  → Use Queue (FIFO)
     
 Need to signal events/conditions?
     └─► YES → Use EventFlags
@@ -633,6 +730,7 @@ Need to signal events/conditions?
 | Protect shared variable | Mutex | Exclusive access with RAII |
 | Limit concurrent users | Semaphore | Counting permits |
 | Send commands | Queue | Ordered message delivery |
+| Priority-based events | PriorityQueue | Urgent messages first |
 | Signal completion | EventFlags | Multiple boolean conditions |
 | Wait for multiple conditions | EventFlags | Efficient bit testing |
 | Producer-consumer | Queue + Semaphores | Data + synchronization |

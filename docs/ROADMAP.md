@@ -59,7 +59,7 @@ This document outlines the planned development roadmap for RustOS, including v1.
 
 ---
 
-## v1.1.0 - Enhancement Release (Q1 2025) ✅ COMPLETE
+## v1.1.0 - Enhancement Release (Q1 2026) ✅ COMPLETE
 
 ### Implemented Features
 
@@ -148,7 +148,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
 
 ---
 
-## v2.0.0 - Major Feature Release (Q4 2025)
+## v2.0.0 - Major Feature Release (Q4 2026)
 
 ### Planned Features
 
@@ -227,7 +227,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
 ### Timeline
 
 ```
-Q4 2025
+Q4 2026
 ├─ October
 │  ├─ SMP scheduler core
 │  └─ Multi-core synchronization
@@ -320,7 +320,7 @@ High-priority contributions welcome for:
 
 ### Pre-Release Checklist
 
-- [ ] All tests passing (66+ tests)
+- [ ] All tests passing (232 tests)
 - [ ] Performance targets met
 - [ ] Documentation updated
 - [ ] Changelog complete

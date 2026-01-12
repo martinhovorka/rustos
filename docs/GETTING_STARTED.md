@@ -62,7 +62,7 @@ sudo apt-get install gcc-riscv64-unknown-elf
 ### 3. Clone RustOS
 
 ```bash
-git clone https://github.com/your-repo/rustos.git
+git clone https://github.com/martinhovorka/rustos.git
 cd rustos
 ```
 
@@ -72,8 +72,8 @@ cd rustos
 # Build all packages
 cargo build --all
 
-# Run tests (on host)
-cargo test --lib -p rustos-tests --target x86_64-unknown-linux-gnu
+# Run tests (on host, use --test-threads=1 for shared state tests)
+cargo test -p rustos-tests --target x86_64-unknown-linux-gnu -- --test-threads=1
 ```
 
 ---

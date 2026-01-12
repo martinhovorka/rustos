@@ -101,23 +101,22 @@ rustos-tests/
 
 | Module | Tests | Description |
 |--------|-------|-------------|
-| `scheduler_tests` | 14 | Priority ordering, round-robin, preemption |
-| `sync_tests` | 20 | Mutex, Semaphore, Queue, EventFlags |
-| `sync_primitive_tests` | 15 | Low-level sync primitive operations |
-| `task_tests` | 12 | Task creation, states, context switching |
-| `time_tests` | 18 | Timers, delays, cycle counting |
-| `error_tests` | 8 | Error handling validation |
-| `critical_tests` | 6 | Critical section tests |
-| `power_tests` | 12 | Power management, WFI tests |
-| `diagnostics_tests` | 10 | Runtime diagnostics |
-| `context_tests` | 8 | Context switching validation |
-| `hal_tests` | 25 | HAL driver tests |
-| `memory_tests` | 12 | Memory management tests |
-| `interrupt_tests` | 10 | Interrupt handling tests |
 | `new_requirements_tests` | 35 | DBG, MQ, I2C, SEC, CERT tests |
-| `mock` | 8 | Mock infrastructure validation |
+| `hal_tests` | 21 | HAL driver tests |
+| `time_tests` | 18 | Timers, delays, cycle counting |
+| `sync_tests` | 17 | Mutex, Semaphore, Queue, EventFlags |
+| `sync_primitive_tests` | 17 | Low-level sync primitive operations |
+| `memory_tests` | 17 | Memory management tests |
+| `interrupt_tests` | 16 | Interrupt handling tests |
+| `context_tests` | 15 | Context switching validation |
+| `diagnostics_tests` | 14 | Runtime diagnostics |
+| `error_tests` | 12 | Error handling validation |
+| `scheduler_tests` | 10 | Priority ordering, round-robin, preemption |
+| `power_tests` | 10 | Power management, WFI tests |
+| `task_tests` | 9 | Task creation, states, context switching |
+| `critical_tests` | 9 | Critical section tests |
 | `utils` | 7 | Test utilities and helpers |
-| `benchmark` | 12 | Performance benchmarks |
+| `mock` | 5 | Mock infrastructure validation |
 
 ## Mock Infrastructure
 
@@ -361,5 +360,5 @@ Hardware-dependent tests (HWTEST-*) will be implemented in Phase 2 when target h
 ---
 
 *Document Status: ✅ Complete  
-Last Updated: 2025-01-11  
+Last Updated: 2026-01-13  
 Next Review: Phase 2 planning*

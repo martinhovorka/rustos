@@ -26,7 +26,7 @@ This document describes the API stability policy for RustOS, following semantic 
   - `start()` (entry point)
 
 - **`sync`**: Synchronization primitives
-  - `Mutex`, `Semaphore`, `MessageQueue`, `EventFlags`
+  - `Mutex`, `Semaphore`, `MessageQueue`, `PriorityQueue`, `EventFlags`
   - All public synchronization methods
   - RAII guards
 

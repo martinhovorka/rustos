@@ -17,6 +17,7 @@ RustOS provides a lightweight, deterministic RTOS kernel optimized for embedded 
   - Mutexes for mutual exclusion
   - Counting semaphores
   - Message queues (FIFO)
+  - Priority queues (priority-ordered)
   - Event flags
 - **Software Timers**: One-shot and periodic timers with callbacks
 - **Power Management**: WFI idle support for power savings
