@@ -320,3 +320,48 @@ pub fn get_task_stack_usage(task_id: TaskId) -> Option<usize> {
 pub fn get() -> &'static Scheduler {
     &SCHEDULER
 }
+
+/// REQ: SCHED-014 - Enter tickless idle mode
+/// 
+/// Suppresses system ticks when no tasks are ready to run and no timers
+/// are about to expire. This saves power by allowing the CPU to remain
+/// in a low-power state longer.
+/// 
+/// # Safety
+/// - Must be called from idle task only
+/// - Interrupts should be enabled to wake from WFI
+#[cfg(feature = "tickless")]
+pub unsafe fn enter_tickless_idle() {
+    use crate::time::get_next_wake_ticks;
+    
+    // Check if we can suppress ticks
+    if let Some(ticks_until_wake) = get_next_wake_ticks() {
+        if ticks_until_wake > 1 {
+            // We can sleep for multiple ticks
+            // In a full implementation, this would:
+            // 1. Disable system tick interrupt
+            // 2. Configure wake timer for next event
+            // 3. Enter WFI (Wait For Interrupt)
+            // 4. On wake, re-enable system tick
+            // 5. Adjust tick count for time slept
+            
+            // For now, just use WFI without tick suppression
+            core::arch::asm!("wfi");
+        }
+    } else {
+        // No scheduled events - can sleep indefinitely
+        core::arch::asm!("wfi");
+    }
+}
+
+/// REQ: SCHED-014 - Enter power-saving idle (WFI instruction)
+/// 
+/// Simplified version that doesn't suppress ticks, just uses WFI.
+/// Safe for all configurations.
+/// 
+/// # Safety
+/// Must be called from idle task with interrupts enabled
+pub unsafe fn enter_idle() {
+    // Wait For Interrupt - low power mode until next interrupt
+    core::arch::asm!("wfi");
+}

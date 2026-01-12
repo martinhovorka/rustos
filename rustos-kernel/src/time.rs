@@ -149,6 +149,35 @@ pub fn is_after(time1: u32, time2: u32) -> bool {
 
 /// REQ: TIME-008 - Get elapsed ticks since a reference time (handles wrap-around)
 #[inline]
+pub fn elapsed_since(start_time: u32) -> u32 {
+    get_ticks().wrapping_sub(start_time)
+}
+
+/// REQ: TIME-009, TIME-010, SCHED-014 - Get ticks until next scheduled wake event
+/// 
+/// Returns the number of ticks until the next timer or scheduled event.
+/// Used for tickless idle mode to suppress unnecessary ticks.
+/// 
+/// Returns:
+/// - Some(ticks): Wake in `ticks` system ticks
+/// - None: No scheduled events, can sleep indefinitely
+/// 
+/// Note: This is a simplified implementation that returns None (indefinite sleep).
+/// A full implementation would track all active software timers in a registry
+/// and return the minimum time until any timer expires.
+#[cfg(feature = "tickless")]
+pub fn get_next_wake_ticks() -> Option<u32> {
+    // Simplified: Always return None (indefinite)
+    // Future enhancement: Maintain a sorted timer list and return
+    // the time until the first timer expires
+    None
+}
+
+/// REQ: TIME-008 - Get elapsed ticks since a reference time
+/// 
+/// Calculates the number of ticks that have elapsed since the given
+/// reference time, handling wrap-around correctly.
+#[inline]
 pub fn elapsed_ticks(reference: u32) -> u32 {
     get_ticks().wrapping_sub(reference)
 }

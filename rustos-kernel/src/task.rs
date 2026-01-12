@@ -241,6 +241,17 @@ impl Task {
         self.state = state;
     }
 
+    /// REQ: SCHED-015, MTX-008 - Set task priority (for priority inheritance)
+    /// 
+    /// Changes the task's priority. Used by priority inheritance protocol
+    /// to temporarily boost or restore a task's priority.
+    #[inline]
+    #[allow(dead_code)]
+    #[cfg(feature = "priority-inheritance")]
+    pub(crate) fn set_priority(&mut self, priority: TaskPriority) {
+        self.priority = priority;
+    }
+
     /// Get stack pointer
     #[inline]
     pub(crate) fn sp(&self) -> *mut usize {
