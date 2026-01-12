@@ -391,14 +391,19 @@ fn test_timer_auto_reload() {
     MockTimer::start();
     
     // Count down: 3->2->1->expired+reload to 3
-    MockTimer::tick(); // 2
-    MockTimer::tick(); // 1 -> expired, reload to 3
+    MockTimer::tick(); // 3->2
+    assert_test!(MockTimer::get_count() == 2, "Count should be 2 after first tick");
     
+    MockTimer::tick(); // 2->1
+    assert_test!(MockTimer::get_count() == 1, "Count should be 1 after second tick");
+    assert_test!(!MockTimer::is_expired(), "Should not be expired yet");
+    
+    MockTimer::tick(); // 1->expired+reload to 3
     assert_test!(MockTimer::is_expired(), "Should be expired");
     assert_test!(MockTimer::get_count() == 3, "Should have reloaded to 3");
     
     MockTimer::clear_expired();
-    MockTimer::tick(); // 2
+    MockTimer::tick(); // 3->2
     
     assert_test!(MockTimer::get_count() == 2, "Should have counted down to 2");
 }
