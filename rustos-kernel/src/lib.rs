@@ -92,12 +92,16 @@ pub mod log;        // REQ: LOG-001 - Logging infrastructure
 pub mod config;     // REQ: CFG-001 - Configuration system
 pub mod diagnostics; // REQ: DIAG-001 - Runtime diagnostics
 pub mod stability;  // REQ: API-013 - API stability markers
+pub mod debug;      // REQ: DBG-017, DBG-018, DBG-019 - Debug infrastructure
+pub mod security;   // REQ: SEC-010 - Secure boot validation
 
 pub use task::{Task, TaskId, TaskPriority, TaskState};
 pub use scheduler::Scheduler;
 pub use sync::{Mutex, Semaphore, MessageQueue, EventFlags};
 pub use error::{KernelError, Result};
 pub use config::KernelConfig;
+pub use debug::{GdbStub, Semihosting, Profiler};
+pub use security::{SecureBoot, ImageHeader};
 
 /// REQ: KERN-003 - Kernel initialization
 /// 

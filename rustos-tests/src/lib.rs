@@ -74,3 +74,8 @@ pub mod sync_primitive_tests;
 pub mod memory_tests;
 #[cfg(test)]
 pub mod interrupt_tests;
+
+// REQ: TEST-006 - Tests for newly implemented requirements
+// DBG-017, DBG-018, DBG-019, MQ-009, I2C-012, SEC-010, CERT-001-005
+#[cfg(test)]
+pub mod new_requirements_tests;

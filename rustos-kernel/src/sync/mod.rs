@@ -66,11 +66,13 @@ pub mod mutex;
 pub mod semaphore;
 pub mod message_queue;
 pub mod event_flags;
+pub mod priority_queue;  // REQ: MQ-009 - Priority-based message queue
 
 pub use mutex::Mutex;
 pub use semaphore::Semaphore;
 pub use message_queue::MessageQueue;
 pub use event_flags::EventFlags;
+pub use priority_queue::PriorityQueue;
 
 #[cfg(feature = "diagnostics")]
 use crate::task::TaskId;
