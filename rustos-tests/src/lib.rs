@@ -23,6 +23,13 @@
 //!
 //! Hardware-specific code is isolated behind `#[cfg(target_arch = "riscv32")]` for
 //! conditional compilation.
+//!
+//! ## Running Tests
+//!
+//! Some tests use shared static state for mock hardware. For reliable results, run with:
+//! ```text
+//! cargo test -p rustos-tests --target x86_64-unknown-linux-gnu -- --test-threads=1
+//! ```
 
 // Allow std only during tests, as per TEST-001 clarification
 #![cfg_attr(not(any(test, feature = "bench")), no_std)]
