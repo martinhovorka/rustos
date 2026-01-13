@@ -1026,7 +1026,7 @@ Recommended structure for peripheral access crate (PAC):
 
 ```rust
 // src/lib.rs
-#![no_std]
+# ![no_std]
 
 pub mod uart {
     use volatile_register::{RO, RW, WO};
@@ -1132,7 +1132,7 @@ pub mod intc {
 
 ```rust
 // Context structure for task switching
-#[repr(C)]
+# [repr(C)]
 pub struct TaskContext {
     pub ra: u32,       // x1 - Return address
     pub sp: u32,       // x2 - Stack pointer
@@ -1170,24 +1170,24 @@ pub struct TaskContext {
 }
 
 // Inline assembly for CSR access
-#[inline(always)]
+# [inline(always)]
 pub unsafe fn read_mstatus() -> u32 {
     let value: u32;
     core::arch::asm!("csrr {}, mstatus", out(reg) value);
     value
 }
 
-#[inline(always)]
+# [inline(always)]
 pub unsafe fn write_mtvec(addr: u32) {
     core::arch::asm!("csrw mtvec, {}", in(reg) addr);
 }
 
-#[inline(always)]
+# [inline(always)]
 pub unsafe fn enable_interrupts() {
     core::arch::asm!("csrsi mstatus, 0x8"); // Set MIE bit
 }
 
-#[inline(always)]
+# [inline(always)]
 pub unsafe fn disable_interrupts() -> u32 {
     let prev: u32;
     core::arch::asm!("csrrci {}, mstatus, 0x8", out(reg) prev);
@@ -1195,7 +1195,7 @@ pub unsafe fn disable_interrupts() -> u32 {
 }
 
 // High-resolution timing using cycle counter
-#[inline(always)]
+# [inline(always)]
 pub fn read_cycle() -> u64 {
     let lo: u32;
     let hi: u32;
@@ -1671,15 +1671,15 @@ The AXI Quad SPI controller supports external SPI flash memory access. This sect
 
 ```c
 // SPI Master mode, manual slave select, CPOL=0, CPHA=0
-#define SPI_CR_INIT  (XSP_CR_ENABLE_MASK | XSP_CR_MASTER_MODE_MASK | \
+# define SPI_CR_INIT  (XSP_CR_ENABLE_MASK | XSP_CR_MASTER_MODE_MASK | \
                       XSP_CR_MANUAL_SS_MASK | XSP_CR_TRANS_INHIBIT_MASK)
 
 // SPI Status Register Masks
-#define SPI_SR_RX_EMPTY   0x01  // RX FIFO empty
-#define SPI_SR_RX_FULL    0x02  // RX FIFO full
-#define SPI_SR_TX_EMPTY   0x04  // TX FIFO empty
-#define SPI_SR_TX_FULL    0x08  // TX FIFO full
-#define SPI_SR_MODF       0x10  // Mode fault error
+# define SPI_SR_RX_EMPTY   0x01  // RX FIFO empty
+# define SPI_SR_RX_FULL    0x02  // RX FIFO full
+# define SPI_SR_TX_EMPTY   0x04  // TX FIFO empty
+# define SPI_SR_TX_FULL    0x08  // TX FIFO full
+# define SPI_SR_MODF       0x10  // Mode fault error
 ```
 
 #### SPI Flash Programming Sequence (Rust Example)
@@ -2109,7 +2109,7 @@ impl I2cMaster {
     }
 }
 
-#[derive(Debug)]
+# [derive(Debug)]
 pub enum I2cError {
     BusBusy,
     Timeout,
@@ -2374,7 +2374,7 @@ impl SystemTimer {
 }
 
 /// Polling macro with timeout
-#[macro_export]
+# [macro_export]
 macro_rules! poll_timeout {
     ($condition:expr, $timeout_us:expr) => {{
         let start = SystemTimer::get_cycles();
@@ -2478,15 +2478,15 @@ All peripherals use standard MMIO (Memory-Mapped I/O):
 
 ```c
 // Example: Reading from GPIO
-#define GPIO_BUTTONS_BASE  0x40020000
-#define GPIO_DATA_OFFSET   0x00
+# define GPIO_BUTTONS_BASE  0x40020000
+# define GPIO_DATA_OFFSET   0x00
 
 volatile uint32_t *gpio_data = (volatile uint32_t *)(GPIO_BUTTONS_BASE + GPIO_DATA_OFFSET);
 uint32_t button_state = *gpio_data;
 
 // Example: Writing to UART
-#define UART_BASE         0x40600000
-#define UART_TX_FIFO      0x04
+# define UART_BASE         0x40600000
+# define UART_TX_FIFO      0x04
 
 volatile uint32_t *uart_tx = (volatile uint32_t *)(UART_BASE + UART_TX_FIFO);
 *uart_tx = 'A';  // Send character
@@ -2722,3 +2722,4 @@ Hardware design and this documentation are part of the RustOS project.
 **Document Version:** 4.0
 **Last Updated:** 2025-01-11
 **Generated From:** Comprehensive BSP analysis with extended peripheral documentation including SPI Flash, Ethernet MDIO/PHY, I2C protocol details, Window WDT, timers, and debug interface reference
+

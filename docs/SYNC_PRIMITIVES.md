@@ -248,7 +248,7 @@ static BUFFER: Queue<Data, BUFFER_SIZE> = Queue::new();
 fn producer() -> ! {
     loop {
         let data = generate_data();
-        
+
         SPACE_AVAILABLE.wait();   // Wait for space
         BUFFER.send(data).ok();   // Add to buffer
         ITEMS_AVAILABLE.signal(); // Signal item available
@@ -260,7 +260,7 @@ fn consumer() -> ! {
         ITEMS_AVAILABLE.wait();   // Wait for item
         let data = BUFFER.receive().unwrap();
         SPACE_AVAILABLE.signal(); // Signal space freed
-        
+
         process_data(data);
     }
 }
@@ -277,10 +277,10 @@ static SYNC: Semaphore = Semaphore::new(0);
 fn initializer_task() -> ! {
     // Do initialization
     initialize_system();
-    
+
     // Signal that initialization is complete
     SYNC.signal();
-    
+
     loop {
         // Continue with normal operation
         do_work();
@@ -290,7 +290,7 @@ fn initializer_task() -> ! {
 fn worker_task() -> ! {
     // Wait for initialization to complete
     SYNC.wait();
-    
+
     // Now safe to proceed
     loop {
         do_work();
@@ -349,7 +349,7 @@ let count = QUEUE.len();
 ```rust
 use rustos_kernel::sync::Queue;
 
-#[derive(Clone, Copy)]
+# [derive(Clone, Copy)]
 enum Command {
     Start,
     Stop,
@@ -392,7 +392,7 @@ fn motor_task() -> ! {
 ```rust
 use rustos_kernel::sync::Queue;
 
-#[derive(Clone, Copy)]
+# [derive(Clone, Copy)]
 struct SensorReading {
     timestamp: u32,
     temperature: i16,
@@ -418,12 +418,12 @@ fn sensor_task() -> ! {
 fn filter_task() -> ! {
     let mut buffer = [SensorReading::default(); 5];
     let mut idx = 0;
-    
+
     loop {
         if let Some(reading) = RAW_READINGS.receive() {
             buffer[idx] = reading;
             idx = (idx + 1) % 5;
-            
+
             // Apply moving average filter
             let filtered = average(&buffer);
             FILTERED_READINGS.send(filtered).ok();
@@ -494,7 +494,7 @@ if let Some((msg, priority)) = PQ.peek() {
 ```rust
 use rustos_kernel::sync::PriorityQueue;
 
-#[derive(Clone, Copy)]
+# [derive(Clone, Copy)]
 struct InterruptEvent {
     source: u8,
     data: u32,
@@ -617,22 +617,22 @@ fn network_task() -> ! {
 fn main_task() -> ! {
     // Wait for all subsystems to be ready
     let all_ready = SENSOR_READY | NETWORK_UP | STORAGE_OK;
-    
+
     loop {
         let status = STATUS.wait_any(all_ready | ERROR_FLAG);
-        
+
         if status & ERROR_FLAG != 0 {
             handle_error();
             STATUS.clear(ERROR_FLAG);
         }
-        
+
         if (status & all_ready) == all_ready {
             // All systems ready
             start_application();
             break;
         }
     }
-    
+
     loop { /* Normal operation */ }
 }
 ```
@@ -665,22 +665,22 @@ fn timer_isr() {
 fn event_handler_task() -> ! {
     loop {
         let events = EVENTS.wait_any(UART_RX | TIMER_TICK | BUTTON_PRESS | DMA_COMPLETE);
-        
+
         if events & UART_RX != 0 {
             process_uart_data();
             EVENTS.clear(UART_RX);
         }
-        
+
         if events & TIMER_TICK != 0 {
             process_timer();
             EVENTS.clear(TIMER_TICK);
         }
-        
+
         if events & BUTTON_PRESS != 0 {
             process_button();
             EVENTS.clear(BUTTON_PRESS);
         }
-        
+
         if events & DMA_COMPLETE != 0 {
             process_dma();
             EVENTS.clear(DMA_COMPLETE);
@@ -710,15 +710,15 @@ fn event_handler_task() -> ! {
 ```
 Need to protect shared data?
     └─► YES → Use Mutex
-    
+
 Need to count resources?
     └─► YES → Use Semaphore
-    
+
 Need to transfer data between tasks?
     └─► Is priority ordering needed?
         └─► YES → Use PriorityQueue
         └─► NO  → Use Queue (FIFO)
-    
+
 Need to signal events/conditions?
     └─► YES → Use EventFlags
 ```
@@ -794,16 +794,16 @@ fn task_b() {
 ```rust
 fn wait_with_timeout<T>(queue: &Queue<T, N>, timeout_ms: u32) -> Option<T> {
     let start = get_ticks();
-    
+
     loop {
         if let Some(item) = queue.receive() {
             return Some(item);
         }
-        
+
         if elapsed_since(start) >= timeout_ms {
             return None;  // Timeout
         }
-        
+
         yield_now();
     }
 }
@@ -819,13 +819,13 @@ fn isr_handler() {
     if let Some(guard) = MUTEX.try_lock() {
         // Quick operation
     }
-    
+
     // ✅ Safe: Non-blocking
     QUEUE.send(data).ok();
-    
+
     // ✅ Safe: Non-blocking
     EVENTS.set(FLAG);
-    
+
     // ❌ Unsafe: May block!
     // let guard = MUTEX.lock();
     // SEMAPHORE.wait();
@@ -846,7 +846,7 @@ fn isr_handler() {
    ```rust
    // Instead of one big lock
    static SENSORS: Mutex<AllSensors> = ...;
-   
+
    // Use separate locks
    static TEMP_SENSOR: Mutex<TempSensor> = ...;
    static HUMIDITY_SENSOR: Mutex<HumiditySensor> = ...;
@@ -874,3 +874,4 @@ fn isr_handler() {
 
 For practical examples, see [Example Applications](EXAMPLES.md).
 For task patterns, see [Task Programming Guide](TASK_PROGRAMMING.md).
+

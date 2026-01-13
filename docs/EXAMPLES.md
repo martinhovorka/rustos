@@ -28,8 +28,8 @@ The classic "Hello World" of embedded systems.
 //!
 //! Blinks an LED at 1 Hz using a dedicated task.
 
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{
     task::{Task, TaskBuilder, TaskId, TaskPriority},
@@ -50,29 +50,29 @@ static mut GPIO: Option<Gpio> = None;
 
 const LED_PIN: u8 = 0;
 
-#[no_mangle]
+# [no_mangle]
 pub unsafe extern "C" fn main() -> ! {
     // Initialize hardware
     rustos_board::init();
-    
+
     // Configure GPIO
     GPIO = Some(Gpio::new(GPIO0_BASE));
     GPIO.as_ref().unwrap().set_direction(LED_PIN, true); // Output
-    
+
     // Create tasks
     BLINK_TASK = Some(TaskBuilder::new(TaskId(1), "blinker")
         .priority(TaskPriority(100))
         .build(blink_task, &mut BLINK_STACK));
-        
+
     IDLE_TASK = Some(TaskBuilder::new(TaskId(0), "idle")
         .priority(TaskPriority::LOWEST)
         .build(idle_task, &mut IDLE_STACK));
-    
+
     // Register tasks
     let sched = scheduler::get();
     sched.add_task(BLINK_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(IDLE_TASK.as_mut().unwrap()).unwrap();
-    
+
     // Start scheduler
     scheduler::start()
 }
@@ -81,7 +81,7 @@ pub unsafe extern "C" fn main() -> ! {
 fn blink_task() -> ! {
     let gpio = unsafe { GPIO.as_ref().unwrap() };
     let mut led_state = false;
-    
+
     loop {
         led_state = !led_state;
         gpio.write(LED_PIN, led_state);
@@ -96,7 +96,7 @@ fn idle_task() -> ! {
     }
 }
 
-#[panic_handler]
+# [panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     loop { unsafe { core::arch::asm!("wfi"); } }
 }
@@ -116,8 +116,8 @@ Classic pattern for decoupling data production from consumption.
 //! One task generates data, another processes it.
 //! Demonstrates Queue and Semaphore usage.
 
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{
     task::{Task, TaskBuilder, TaskId, TaskPriority},
@@ -135,7 +135,7 @@ static ITEMS_AVAILABLE: Semaphore = Semaphore::new(0);
 static SPACE_AVAILABLE: Semaphore = Semaphore::new(BUFFER_SIZE as u32);
 
 // Data type
-#[derive(Clone, Copy, Default)]
+# [derive(Clone, Copy, Default)]
 struct SensorData {
     timestamp: u32,
     value: u16,
@@ -150,52 +150,52 @@ static mut PRODUCER_TASK: Option<Task> = None;
 static mut CONSUMER_TASK: Option<Task> = None;
 static mut IDLE_TASK: Option<Task> = None;
 
-#[no_mangle]
+# [no_mangle]
 pub unsafe extern "C" fn main() -> ! {
     rustos_board::init();
-    
+
     // Create tasks
     PRODUCER_TASK = Some(TaskBuilder::new(TaskId(1), "producer")
         .priority(TaskPriority(50))
         .build(producer_task, &mut PRODUCER_STACK));
-        
+
     CONSUMER_TASK = Some(TaskBuilder::new(TaskId(2), "consumer")
         .priority(TaskPriority(60))
         .build(consumer_task, &mut CONSUMER_STACK));
-        
+
     IDLE_TASK = Some(TaskBuilder::new(TaskId(0), "idle")
         .priority(TaskPriority::LOWEST)
         .build(idle_task, &mut IDLE_STACK));
-    
+
     let sched = scheduler::get();
     sched.add_task(PRODUCER_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(CONSUMER_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(IDLE_TASK.as_mut().unwrap()).unwrap();
-    
+
     scheduler::start()
 }
 
 /// Producer: Generate sensor data at 10 Hz
 fn producer_task() -> ! {
     let mut counter: u16 = 0;
-    
+
     loop {
         // Wait for space in buffer
         SPACE_AVAILABLE.wait();
-        
+
         // Generate data
         let data = SensorData {
             timestamp: get_ticks(),
             value: read_sensor(0), // Simulated sensor read
             sensor_id: 0,
         };
-        
+
         // Send to queue
         DATA_QUEUE.send(data).ok();
-        
+
         // Signal data available
         ITEMS_AVAILABLE.signal();
-        
+
         counter = counter.wrapping_add(1);
         delay_ms(100); // 10 Hz sampling
     }
@@ -205,23 +205,23 @@ fn producer_task() -> ! {
 fn consumer_task() -> ! {
     let mut total: u32 = 0;
     let mut count: u32 = 0;
-    
+
     loop {
         // Wait for data
         ITEMS_AVAILABLE.wait();
-        
+
         // Get from queue
         if let Some(data) = DATA_QUEUE.receive() {
             // Free space in buffer
             SPACE_AVAILABLE.signal();
-            
+
             // Process data
             total += data.value as u32;
             count += 1;
-            
+
             // Calculate running average
             let average = total / count;
-            
+
             // Log or display (every 10 samples)
             if count % 10 == 0 {
                 log_average(average);
@@ -244,7 +244,7 @@ fn log_average(_avg: u32) {
     // In real application, write to UART or storage
 }
 
-#[panic_handler]
+# [panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     loop { unsafe { core::arch::asm!("wfi"); } }
 }
@@ -267,8 +267,8 @@ Efficient handling of multiple asynchronous events.
 //! - UART receive
 //! - Sensor alerts
 
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{
     task::{Task, TaskBuilder, TaskId, TaskPriority},
@@ -284,7 +284,7 @@ const EVENT_UART_RX: u32 = 1 << 2;
 const EVENT_SENSOR_ALERT: u32 = 1 << 3;
 const EVENT_ERROR: u32 = 1 << 31;
 
-const ALL_EVENTS: u32 = EVENT_TIMER_TICK | EVENT_BUTTON_PRESS | 
+const ALL_EVENTS: u32 = EVENT_TIMER_TICK | EVENT_BUTTON_PRESS |
                         EVENT_UART_RX | EVENT_SENSOR_ALERT | EVENT_ERROR;
 
 // Global event flags
@@ -298,33 +298,33 @@ static mut EVENT_HANDLER_TASK: Option<Task> = None;
 static mut SENSOR_MONITOR_TASK: Option<Task> = None;
 static mut IDLE_TASK: Option<Task> = None;
 
-#[no_mangle]
+# [no_mangle]
 pub unsafe extern "C" fn main() -> ! {
     rustos_board::init();
-    
+
     // Install ISR handlers (platform-specific)
     install_timer_isr(timer_isr);
     install_button_isr(button_isr);
     install_uart_isr(uart_isr);
-    
+
     // Create tasks
     EVENT_HANDLER_TASK = Some(TaskBuilder::new(TaskId(1), "event_handler")
         .priority(TaskPriority(20))  // High priority for responsiveness
         .build(event_handler_task, &mut EVENT_HANDLER_STACK));
-        
+
     SENSOR_MONITOR_TASK = Some(TaskBuilder::new(TaskId(2), "sensor_monitor")
         .priority(TaskPriority(50))
         .build(sensor_monitor_task, &mut SENSOR_MONITOR_STACK));
-        
+
     IDLE_TASK = Some(TaskBuilder::new(TaskId(0), "idle")
         .priority(TaskPriority::LOWEST)
         .build(idle_task, &mut IDLE_STACK));
-    
+
     let sched = scheduler::get();
     sched.add_task(EVENT_HANDLER_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(SENSOR_MONITOR_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(IDLE_TASK.as_mut().unwrap()).unwrap();
-    
+
     scheduler::start()
 }
 
@@ -333,28 +333,28 @@ fn event_handler_task() -> ! {
     loop {
         // Wait for any event
         let events = EVENTS.wait_any(ALL_EVENTS);
-        
+
         // Handle each event
         if events & EVENT_TIMER_TICK != 0 {
             EVENTS.clear(EVENT_TIMER_TICK);
             handle_timer_tick();
         }
-        
+
         if events & EVENT_BUTTON_PRESS != 0 {
             EVENTS.clear(EVENT_BUTTON_PRESS);
             handle_button_press();
         }
-        
+
         if events & EVENT_UART_RX != 0 {
             EVENTS.clear(EVENT_UART_RX);
             handle_uart_receive();
         }
-        
+
         if events & EVENT_SENSOR_ALERT != 0 {
             EVENTS.clear(EVENT_SENSOR_ALERT);
             handle_sensor_alert();
         }
-        
+
         if events & EVENT_ERROR != 0 {
             EVENTS.clear(EVENT_ERROR);
             handle_error();
@@ -365,15 +365,15 @@ fn event_handler_task() -> ! {
 /// Sensor monitoring task - generates alerts
 fn sensor_monitor_task() -> ! {
     const THRESHOLD: u16 = 1000;
-    
+
     loop {
         let value = read_sensor();
-        
+
         if value > THRESHOLD {
             // Signal alert to event handler
             EVENTS.set(EVENT_SENSOR_ALERT);
         }
-        
+
         delay_ms(50); // 20 Hz monitoring
     }
 }
@@ -420,7 +420,7 @@ fn install_timer_isr(_: fn()) {}
 fn install_button_isr(_: fn()) {}
 fn install_uart_isr(_: fn()) {}
 
-#[panic_handler]
+# [panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     EVENTS.set(EVENT_ERROR);
     loop { unsafe { core::arch::asm!("wfi"); } }
@@ -441,8 +441,8 @@ High-frequency data acquisition with guaranteed timing.
 //! Samples ADC at precise 1 kHz rate, buffers data,
 //! and transfers to storage task when buffer is full.
 
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{
     task::{Task, TaskBuilder, TaskId, TaskPriority},
@@ -458,7 +458,7 @@ const BUFFER_SAMPLES: usize = 256;
 const NUM_BUFFERS: usize = 4;
 
 // Sample data
-#[derive(Clone, Copy, Default)]
+# [derive(Clone, Copy, Default)]
 struct Sample {
     timestamp: u32,
     channel0: u16,
@@ -486,33 +486,33 @@ static mut SAMPLER_TASK: Option<Task> = None;
 static mut STORAGE_TASK: Option<Task> = None;
 static mut IDLE_TASK: Option<Task> = None;
 
-#[no_mangle]
+# [no_mangle]
 pub unsafe extern "C" fn main() -> ! {
     rustos_board::init();
-    
+
     // Initialize buffer pool
     for i in 0..NUM_BUFFERS {
         BUFFER_POOL.send(i).ok();
     }
-    
+
     // Create tasks
     SAMPLER_TASK = Some(TaskBuilder::new(TaskId(1), "sampler")
         .priority(TaskPriority(10))  // Highest priority for timing
         .build(sampler_task, &mut SAMPLER_STACK));
-        
+
     STORAGE_TASK = Some(TaskBuilder::new(TaskId(2), "storage")
         .priority(TaskPriority(100))  // Lower priority
         .build(storage_task, &mut STORAGE_STACK));
-        
+
     IDLE_TASK = Some(TaskBuilder::new(TaskId(0), "idle")
         .priority(TaskPriority::LOWEST)
         .build(idle_task, &mut IDLE_STACK));
-    
+
     let sched = scheduler::get();
     sched.add_task(SAMPLER_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(STORAGE_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(IDLE_TASK.as_mut().unwrap()).unwrap();
-    
+
     scheduler::start()
 }
 
@@ -522,7 +522,7 @@ fn sampler_task() -> ! {
     let mut next_sample_time = get_ticks();
     let mut sample_idx = 0usize;
     let mut current_buffer_idx: Option<usize> = None;
-    
+
     loop {
         // Get buffer if we don't have one
         if current_buffer_idx.is_none() {
@@ -536,7 +536,7 @@ fn sampler_task() -> ! {
             }
             sample_idx = 0;
         }
-        
+
         // Wait for precise sample time
         let now = get_ticks();
         if now < next_sample_time {
@@ -545,14 +545,14 @@ fn sampler_task() -> ! {
                 delay_ticks(wait);
             }
         }
-        
+
         // Take sample
         let sample = Sample {
             timestamp: get_ticks(),
             channel0: read_adc(0),
             channel1: read_adc(1),
         };
-        
+
         // Store in buffer
         if let Some(buf_idx) = current_buffer_idx {
             unsafe {
@@ -560,7 +560,7 @@ fn sampler_task() -> ! {
             }
             sample_idx += 1;
             SAMPLES_ACQUIRED.fetch_add(1, Ordering::Relaxed);
-            
+
             // Buffer full?
             if sample_idx >= BUFFER_SAMPLES {
                 // Send to storage
@@ -568,7 +568,7 @@ fn sampler_task() -> ! {
                 current_buffer_idx = None;
             }
         }
-        
+
         // Calculate next sample time (avoids drift)
         next_sample_time = next_sample_time.wrapping_add(period_ticks);
     }
@@ -582,9 +582,9 @@ fn storage_task() -> ! {
             // Write to storage (may take time)
             let buffer = unsafe { &BUFFERS[buf_idx] };
             write_to_storage(buffer);
-            
+
             SAMPLES_SAVED.fetch_add(BUFFER_SAMPLES as u32, Ordering::Relaxed);
-            
+
             // Return buffer to pool
             BUFFER_POOL.send(buf_idx).ok();
         } else {
@@ -607,7 +607,7 @@ fn idle_task() -> ! {
     loop { unsafe { core::arch::asm!("wfi"); } }
 }
 
-#[panic_handler]
+# [panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     loop { unsafe { core::arch::asm!("wfi"); } }
 }
@@ -626,8 +626,8 @@ Implementing a motor controller with explicit state management.
 //!
 //! Controls a motor through states: Idle, Starting, Running, Stopping, Fault
 
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{
     task::{Task, TaskBuilder, TaskId, TaskPriority},
@@ -637,7 +637,7 @@ use rustos_kernel::{
 };
 
 // Commands
-#[derive(Clone, Copy)]
+# [derive(Clone, Copy)]
 enum Command {
     Start,
     Stop,
@@ -647,7 +647,7 @@ enum Command {
 }
 
 // Motor states
-#[derive(Clone, Copy, PartialEq)]
+# [derive(Clone, Copy, PartialEq)]
 enum MotorState {
     Idle,
     Starting,
@@ -673,27 +673,27 @@ static mut CONTROLLER_TASK: Option<Task> = None;
 static mut UI_TASK: Option<Task> = None;
 static mut IDLE_TASK: Option<Task> = None;
 
-#[no_mangle]
+# [no_mangle]
 pub unsafe extern "C" fn main() -> ! {
     rustos_board::init();
-    
+
     CONTROLLER_TASK = Some(TaskBuilder::new(TaskId(1), "motor_ctrl")
         .priority(TaskPriority(30))
         .build(motor_controller_task, &mut CONTROLLER_STACK));
-        
+
     UI_TASK = Some(TaskBuilder::new(TaskId(2), "ui")
         .priority(TaskPriority(100))
         .build(ui_task, &mut UI_STACK));
-        
+
     IDLE_TASK = Some(TaskBuilder::new(TaskId(0), "idle")
         .priority(TaskPriority::LOWEST)
         .build(idle_task, &mut IDLE_STACK));
-    
+
     let sched = scheduler::get();
     sched.add_task(CONTROLLER_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(UI_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(IDLE_TASK.as_mut().unwrap()).unwrap();
-    
+
     scheduler::start()
 }
 
@@ -701,12 +701,12 @@ pub unsafe extern "C" fn main() -> ! {
 fn motor_controller_task() -> ! {
     let mut state = MotorState::Idle;
     let mut state_entry_time = get_ticks();
-    
+
     loop {
         // Process events and commands
         let events = EVENTS.get();
         let command = COMMANDS.receive();
-        
+
         // State machine
         let next_state = match state {
             MotorState::Idle => {
@@ -725,23 +725,23 @@ fn motor_controller_task() -> ! {
                 handle_fault_state(command, events, code)
             }
         };
-        
+
         // State transition?
         if next_state != state {
             // Exit current state
             exit_state(&state);
-            
+
             // Enter new state
             state = next_state;
             state_entry_time = get_ticks();
             enter_state(&state);
         }
-        
+
         // Clear processed events
         if events != 0 {
             EVENTS.clear(events);
         }
-        
+
         delay_ms(10); // 100 Hz control loop
     }
 }
@@ -758,17 +758,17 @@ fn handle_starting_state(cmd: Option<Command>, events: u32, entry_time: u32) -> 
     if matches!(cmd, Some(Command::EmergencyStop)) {
         return MotorState::Fault { code: 1 };
     }
-    
+
     // Check for motor ready signal
     if events & EVT_MOTOR_READY != 0 {
         return MotorState::Running { speed: 0 };
     }
-    
+
     // Timeout check
     if get_ticks().wrapping_sub(entry_time) > 5000 {
         return MotorState::Fault { code: 2 }; // Startup timeout
     }
-    
+
     MotorState::Starting
 }
 
@@ -777,7 +777,7 @@ fn handle_running_state(cmd: Option<Command>, events: u32, speed: u16) -> MotorS
     if events & EVT_FAULT != 0 {
         return MotorState::Fault { code: 3 };
     }
-    
+
     match cmd {
         Some(Command::Stop) => MotorState::Stopping,
         Some(Command::EmergencyStop) => MotorState::Fault { code: 1 },
@@ -793,16 +793,16 @@ fn handle_stopping_state(cmd: Option<Command>, events: u32, entry_time: u32) -> 
     if matches!(cmd, Some(Command::EmergencyStop)) {
         return MotorState::Fault { code: 1 };
     }
-    
+
     if events & EVT_MOTOR_STOPPED != 0 {
         return MotorState::Idle;
     }
-    
+
     // Stop timeout
     if get_ticks().wrapping_sub(entry_time) > 3000 {
         return MotorState::Fault { code: 4 };
     }
-    
+
     MotorState::Stopping
 }
 
@@ -858,7 +858,7 @@ fn ui_task() -> ! {
         if button_pressed(2) {
             COMMANDS.send(Command::EmergencyStop).ok();
         }
-        
+
         delay_ms(50);
     }
 }
@@ -876,7 +876,7 @@ fn clear_fault_led() {}
 fn button_pressed(_n: u8) -> bool { false }
 fn idle_task() -> ! { loop { unsafe { core::arch::asm!("wfi"); } } }
 
-#[panic_handler]
+# [panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     loop { unsafe { core::arch::asm!("wfi"); } }
 }
@@ -896,8 +896,8 @@ System supervisor that monitors all tasks and handles failures.
 //! Monitors task health via heartbeats, kicks hardware watchdog,
 //! and handles task failures.
 
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{
     task::{Task, TaskBuilder, TaskId, TaskPriority},
@@ -947,42 +947,42 @@ static mut IDLE_TASK: Option<Task> = None;
 // Hardware watchdog
 static mut WDT: Option<Wdt> = None;
 
-#[no_mangle]
+# [no_mangle]
 pub unsafe extern "C" fn main() -> ! {
     rustos_board::init();
-    
+
     // Initialize watchdog
     WDT = Some(Wdt::new(WDT_BASE));
     WDT.as_ref().unwrap().start(WDT_TIMEOUT_MS);
-    
+
     // Create tasks
     SUPERVISOR_TASK = Some(TaskBuilder::new(TaskId(1), "supervisor")
         .priority(TaskPriority(5))  // Highest priority
         .build(supervisor_task, &mut SUPERVISOR_STACK));
-        
+
     TASK1 = Some(TaskBuilder::new(TaskId(2), "task1")
         .priority(TaskPriority(50))
         .build(|| worker_task(0), &mut TASK1_STACK));
-        
+
     TASK2 = Some(TaskBuilder::new(TaskId(3), "task2")
         .priority(TaskPriority(50))
         .build(|| worker_task(1), &mut TASK2_STACK));
-        
+
     TASK3 = Some(TaskBuilder::new(TaskId(4), "task3")
         .priority(TaskPriority(50))
         .build(|| worker_task(2), &mut TASK3_STACK));
-        
+
     IDLE_TASK = Some(TaskBuilder::new(TaskId(0), "idle")
         .priority(TaskPriority::LOWEST)
         .build(idle_task, &mut IDLE_STACK));
-    
+
     let sched = scheduler::get();
     sched.add_task(SUPERVISOR_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(TASK1.as_mut().unwrap()).unwrap();
     sched.add_task(TASK2.as_mut().unwrap()).unwrap();
     sched.add_task(TASK3.as_mut().unwrap()).unwrap();
     sched.add_task(IDLE_TASK.as_mut().unwrap()).unwrap();
-    
+
     scheduler::start()
 }
 
@@ -991,24 +991,24 @@ fn supervisor_task() -> ! {
     loop {
         let now = get_ticks();
         let mut all_healthy = true;
-        
+
         // Check each task's heartbeat
         for i in 0..NUM_TASKS {
             let last_heartbeat = HEARTBEATS[i].load(Ordering::Acquire);
             let elapsed = now.wrapping_sub(last_heartbeat);
-            
+
             if elapsed > HEARTBEAT_TIMEOUT_MS {
                 // Task missed heartbeat!
                 TASK_HEALTHY[i].store(0, Ordering::Release);
                 all_healthy = false;
-                
+
                 // Attempt recovery
                 handle_task_failure(i);
             } else {
                 TASK_HEALTHY[i].store(1, Ordering::Release);
             }
         }
-        
+
         // Only kick watchdog if all tasks healthy
         if all_healthy {
             unsafe {
@@ -1017,7 +1017,7 @@ fn supervisor_task() -> ! {
                 }
             }
         }
-        
+
         delay_ms(500); // Check every 500ms
     }
 }
@@ -1027,10 +1027,10 @@ fn worker_task(id: usize) -> ! {
     loop {
         // Do task-specific work
         do_work(id);
-        
+
         // Update heartbeat
         HEARTBEATS[id].store(get_ticks(), Ordering::Release);
-        
+
         delay_ms(100);
     }
 }
@@ -1038,13 +1038,13 @@ fn worker_task(id: usize) -> ! {
 fn handle_task_failure(task_id: usize) {
     // Log the failure
     log_error(task_id);
-    
+
     // Attempt to restart task (platform-specific)
     // In a real system, might:
     // - Reset task state
     // - Clear queues
     // - Reinitialize peripherals
-    
+
     // For now, just log
     // If multiple failures occur, watchdog will reset system
 }
@@ -1061,7 +1061,7 @@ fn idle_task() -> ! {
     loop { unsafe { core::arch::asm!("wfi"); } }
 }
 
-#[panic_handler]
+# [panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     // Don't kick watchdog - let system reset
     loop { unsafe { core::arch::asm!("wfi"); } }
@@ -1081,8 +1081,8 @@ Simple command-line interface over UART.
 //!
 //! Interactive shell over UART for debugging and control.
 
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{
     task::{Task, TaskBuilder, TaskId, TaskPriority},
@@ -1105,28 +1105,28 @@ static mut IDLE_STACK: [usize; 128] = [0; 128];
 static mut SHELL_TASK: Option<Task> = None;
 static mut IDLE_TASK: Option<Task> = None;
 
-#[no_mangle]
+# [no_mangle]
 pub unsafe extern "C" fn main() -> ! {
     rustos_board::init();
-    
+
     // Initialize UART
     {
         let mut uart_guard = UART.lock();
         *uart_guard = Some(Uart::new(UART0_BASE));
     }
-    
+
     SHELL_TASK = Some(TaskBuilder::new(TaskId(1), "shell")
         .priority(TaskPriority(100))
         .build(shell_task, &mut SHELL_STACK));
-        
+
     IDLE_TASK = Some(TaskBuilder::new(TaskId(0), "idle")
         .priority(TaskPriority::LOWEST)
         .build(idle_task, &mut IDLE_STACK));
-    
+
     let sched = scheduler::get();
     sched.add_task(SHELL_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(IDLE_TASK.as_mut().unwrap()).unwrap();
-    
+
     scheduler::start()
 }
 
@@ -1134,10 +1134,10 @@ pub unsafe extern "C" fn main() -> ! {
 fn shell_task() -> ! {
     let mut cmd_buffer = [0u8; CMD_BUFFER_SIZE];
     let mut cmd_len = 0usize;
-    
+
     print_banner();
     print_prompt();
-    
+
     loop {
         // Check for input
         if let Some(ch) = read_char() {
@@ -1168,7 +1168,7 @@ fn shell_task() -> ! {
                 }
             }
         }
-        
+
         delay_ms(10);
     }
 }
@@ -1177,11 +1177,11 @@ fn execute_command(cmd: &[u8]) {
     // Parse command
     let cmd_str = core::str::from_utf8(cmd).unwrap_or("");
     let parts: heapless::Vec<&str, 4> = cmd_str.split_whitespace().collect();
-    
+
     if parts.is_empty() {
         return;
     }
-    
+
     match parts[0] {
         "help" | "?" => cmd_help(),
         "status" => cmd_status(),
@@ -1220,7 +1220,7 @@ fn cmd_status() {
     print_str("  Uptime: ");
     print_u32(rustos_kernel::time::get_uptime_ms() / 1000);
     print_str(" seconds\r\n");
-    
+
     #[cfg(feature = "statistics")]
     {
         print_str("  Context switches: ");
@@ -1317,7 +1317,7 @@ fn print_u32(val: u32) {
 
 fn idle_task() -> ! { loop { unsafe { core::arch::asm!("wfi"); } } }
 
-#[panic_handler]
+# [panic_handler]
 fn panic(info: &core::panic::PanicInfo) -> ! {
     print_str("\r\n!!! PANIC !!!\r\n");
     if let Some(msg) = info.message() {
@@ -1340,8 +1340,8 @@ Log sensor data to SPI flash for later retrieval.
 //!
 //! Periodically logs sensor readings to SPI flash memory.
 
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{
     task::{Task, TaskBuilder, TaskId, TaskPriority},
@@ -1365,8 +1365,8 @@ const LOG_ENTRY_SIZE: usize = 8;
 const ENTRIES_PER_PAGE: usize = FLASH_PAGE_SIZE / LOG_ENTRY_SIZE;
 
 // Log entry structure
-#[derive(Clone, Copy)]
-#[repr(C, packed)]
+# [derive(Clone, Copy)]
+# [repr(C, packed)]
 struct LogEntry {
     timestamp: u32,
     sensor_value: u16,
@@ -1389,10 +1389,10 @@ static mut LOGGER_TASK: Option<Task> = None;
 static mut READER_TASK: Option<Task> = None;
 static mut IDLE_TASK: Option<Task> = None;
 
-#[no_mangle]
+# [no_mangle]
 pub unsafe extern "C" fn main() -> ! {
     rustos_board::init();
-    
+
     // Initialize SPI
     {
         let mut spi_guard = SPI.lock();
@@ -1401,24 +1401,24 @@ pub unsafe extern "C" fn main() -> ! {
             spi.configure(1_000_000, 0, 0); // 1 MHz, mode 0
         }
     }
-    
+
     LOGGER_TASK = Some(TaskBuilder::new(TaskId(1), "logger")
         .priority(TaskPriority(50))
         .build(logger_task, &mut LOGGER_STACK));
-        
+
     READER_TASK = Some(TaskBuilder::new(TaskId(2), "reader")
         .priority(TaskPriority(100))
         .build(reader_task, &mut READER_STACK));
-        
+
     IDLE_TASK = Some(TaskBuilder::new(TaskId(0), "idle")
         .priority(TaskPriority::LOWEST)
         .build(idle_task, &mut IDLE_STACK));
-    
+
     let sched = scheduler::get();
     sched.add_task(LOGGER_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(READER_TASK.as_mut().unwrap()).unwrap();
     sched.add_task(IDLE_TASK.as_mut().unwrap()).unwrap();
-    
+
     scheduler::start()
 }
 
@@ -1426,7 +1426,7 @@ pub unsafe extern "C" fn main() -> ! {
 fn logger_task() -> ! {
     let mut page_buffer = [0u8; FLASH_PAGE_SIZE];
     let mut buffer_idx = 0usize;
-    
+
     loop {
         // Read sensor
         let entry = LogEntry {
@@ -1435,7 +1435,7 @@ fn logger_task() -> ! {
             status: 0,
             checksum: 0, // Calculate checksum
         };
-        
+
         // Copy to page buffer
         let entry_bytes = unsafe {
             core::slice::from_raw_parts(
@@ -1446,21 +1446,21 @@ fn logger_task() -> ! {
         page_buffer[buffer_idx..buffer_idx + LOG_ENTRY_SIZE]
             .copy_from_slice(entry_bytes);
         buffer_idx += LOG_ENTRY_SIZE;
-        
+
         // Page full?
         if buffer_idx >= FLASH_PAGE_SIZE {
             // Write page to flash
             write_flash_page(unsafe { WRITE_ADDRESS }, &page_buffer);
-            
+
             // Update position
             unsafe {
                 WRITE_ADDRESS += FLASH_PAGE_SIZE as u32;
                 ENTRY_COUNT += ENTRIES_PER_PAGE as u32;
             }
-            
+
             buffer_idx = 0;
         }
-        
+
         delay_ms(1000); // Log every second
     }
 }
@@ -1483,7 +1483,7 @@ fn write_flash_page(address: u32, data: &[u8]) {
         spi.select();
         spi.transfer(&[FLASH_WRITE_ENABLE]).ok();
         spi.deselect();
-        
+
         // Page program command
         spi.select();
         let cmd = [
@@ -1495,7 +1495,7 @@ fn write_flash_page(address: u32, data: &[u8]) {
         spi.transfer(&cmd).ok();
         spi.transfer(data).ok();
         spi.deselect();
-        
+
         // Wait for write complete
         wait_flash_ready(spi);
     }
@@ -1524,7 +1524,7 @@ fn wait_flash_ready(spi: &Spi) {
         status[0] = FLASH_READ_STATUS;
         spi.transfer(&mut status).ok();
         spi.deselect();
-        
+
         if status[1] & 0x01 == 0 {
             break; // Not busy
         }
@@ -1535,11 +1535,11 @@ fn wait_flash_ready(spi: &Spi) {
 fn dump_log() {
     let entry_count = unsafe { ENTRY_COUNT };
     let mut buffer = [0u8; LOG_ENTRY_SIZE];
-    
+
     for i in 0..entry_count {
         let address = i * LOG_ENTRY_SIZE as u32;
         read_flash(address, &mut buffer);
-        
+
         // Print entry (via UART)
         // parse_and_print_entry(&buffer);
     }
@@ -1557,7 +1557,7 @@ fn read_request_pending() -> bool {
 
 fn idle_task() -> ! { loop { unsafe { core::arch::asm!("wfi"); } } }
 
-#[panic_handler]
+# [panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
     loop { unsafe { core::arch::asm!("wfi"); } }
 }
@@ -1582,3 +1582,4 @@ For more details, see:
 - [Getting Started Guide](GETTING_STARTED.md)
 - [Task Programming Guide](TASK_PROGRAMMING.md)
 - [Sync Primitives Guide](SYNC_PRIMITIVES.md)
+

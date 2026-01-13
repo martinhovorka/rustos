@@ -587,32 +587,32 @@ The system has 11 interrupt sources routed through the AXI Interrupt Controller 
 
 ```c
 /* Memory Regions */
-#define MEM_BRAM_BASE           0x00000000
-#define MEM_BRAM_SIZE           (128 * 1024)    /* 128 KB */
-#define MEM_BRAM_END            0x0001FFFF
+# define MEM_BRAM_BASE           0x00000000
+# define MEM_BRAM_SIZE           (128 * 1024)    /* 128 KB */
+# define MEM_BRAM_END            0x0001FFFF
 
 /* GPIO Peripherals */
-#define GPIO_SHIELD_0_19_BASE   0x40000000
-#define GPIO_SHIELD_26_41_BASE  0x40010000
-#define GPIO_BUTTONS_BASE       0x40020000
-#define GPIO_SWITCHES_BASE      0x40030000
-#define GPIO_LED_BASE           0x40040000
-#define GPIO_RGB_BASE           0x40050000
-#define GPIO_I2C_PULLUP_BASE    0x40060000
+# define GPIO_SHIELD_0_19_BASE   0x40000000
+# define GPIO_SHIELD_26_41_BASE  0x40010000
+# define GPIO_BUTTONS_BASE       0x40020000
+# define GPIO_SWITCHES_BASE      0x40030000
+# define GPIO_LED_BASE           0x40040000
+# define GPIO_RGB_BASE           0x40050000
+# define GPIO_I2C_PULLUP_BASE    0x40060000
 
 /* Communication Peripherals */
-#define UART_BASE               0x40600000
-#define I2C_BASE                0x40800000
-#define ETHERNET_BASE           0x40E00000
+# define UART_BASE               0x40600000
+# define I2C_BASE                0x40800000
+# define ETHERNET_BASE           0x40E00000
 
 /* System Peripherals */
-#define INTC_BASE               0x41200000
-#define WATCHDOG_BASE           0x41A00000
-#define SPI_FLASH_BASE          0x44A00000
-#define SPI_EXT_BASE            0x44A10000
+# define INTC_BASE               0x41200000
+# define WATCHDOG_BASE           0x41A00000
+# define SPI_FLASH_BASE          0x44A00000
+# define SPI_EXT_BASE            0x44A10000
 
 /* Peripheral Size */
-#define PERIPHERAL_SIZE         0x00010000      /* 64 KB per peripheral */
+# define PERIPHERAL_SIZE         0x00010000      /* 64 KB per peripheral */
 ```
 
 ### Peripheral Register Offsets
@@ -1104,14 +1104,14 @@ reset (C2) -> mbv_processor_system_reset
 
 ```c
 /* Minimal bare-metal example */
-#include "xparameters.h"     /* Hardware addresses from BSP */
-#include "xil_io.h"          /* Xil_In32(), Xil_Out32() */
-#include "xintc.h"           /* Interrupt controller */
+# include "xparameters.h"     /* Hardware addresses from BSP */
+# include "xil_io.h"          /* Xil_In32(), Xil_Out32() */
+# include "xintc.h"           /* Interrupt controller */
 
 /* Peripheral base addresses (from xparameters.h) */
-#define LED_BASE    XPAR_AXI_GPIO_LED_4_BITS_BASEADDR
-#define UART_BASE   XPAR_AXI_UARTLITE_BASEADDR
-#define INTC_BASE   XPAR_AXI_INTC_BASEADDR
+# define LED_BASE    XPAR_AXI_GPIO_LED_4_BITS_BASEADDR
+# define UART_BASE   XPAR_AXI_UARTLITE_BASEADDR
+# define INTC_BASE   XPAR_AXI_INTC_BASEADDR
 
 /* Simple LED blink */
 void blink_led(void) {
@@ -1144,22 +1144,22 @@ int main(void) {
 
 ```c
 /* Safe register access macros */
-#define REG_READ(addr)          Xil_In32((addr))
-#define REG_WRITE(addr, val)    Xil_Out32((addr), (val))
-#define REG_SET_BITS(addr, mask)   REG_WRITE((addr), REG_READ(addr) | (mask))
-#define REG_CLR_BITS(addr, mask)   REG_WRITE((addr), REG_READ(addr) & ~(mask))
+# define REG_READ(addr)          Xil_In32((addr))
+# define REG_WRITE(addr, val)    Xil_Out32((addr), (val))
+# define REG_SET_BITS(addr, mask)   REG_WRITE((addr), REG_READ(addr) | (mask))
+# define REG_CLR_BITS(addr, mask)   REG_WRITE((addr), REG_READ(addr) & ~(mask))
 
 /* GPIO helper macros */
-#define GPIO_SET_OUTPUT(base, pin)  REG_CLR_BITS((base) + 0x04, (1 << (pin)))
-#define GPIO_SET_INPUT(base, pin)   REG_SET_BITS((base) + 0x04, (1 << (pin)))
-#define GPIO_WRITE(base, pin, val)  \
+# define GPIO_SET_OUTPUT(base, pin)  REG_CLR_BITS((base) + 0x04, (1 << (pin)))
+# define GPIO_SET_INPUT(base, pin)   REG_SET_BITS((base) + 0x04, (1 << (pin)))
+# define GPIO_WRITE(base, pin, val)  \
     do { \
         uint32_t data = REG_READ((base)); \
         if (val) data |= (1 << (pin)); \
         else data &= ~(1 << (pin)); \
         REG_WRITE((base), data); \
     } while(0)
-#define GPIO_READ(base, pin)        ((REG_READ(base) >> (pin)) & 1)
+# define GPIO_READ(base, pin)        ((REG_READ(base) >> (pin)) & 1)
 ```
 
 ---
@@ -1236,7 +1236,7 @@ This section provides Rust-specific type definitions, constants, and patterns fo
 //! Hardware constants for rv32imacb_zicsr_zifencei_zbc platform
 //! Auto-generated from hardware design - DO NOT EDIT
 
-#![allow(dead_code)]
+# ![allow(dead_code)]
 
 // ============================================================================
 // MEMORY MAP
@@ -1712,7 +1712,7 @@ use core::ptr::{read_volatile, write_volatile};
 ///
 /// # Safety
 /// The caller must ensure that `addr` is a valid memory-mapped register address.
-#[inline(always)]
+# [inline(always)]
 pub unsafe fn read_reg(addr: usize) -> u32 {
     read_volatile(addr as *const u32)
 }
@@ -1721,7 +1721,7 @@ pub unsafe fn read_reg(addr: usize) -> u32 {
 ///
 /// # Safety
 /// The caller must ensure that `addr` is a valid memory-mapped register address.
-#[inline(always)]
+# [inline(always)]
 pub unsafe fn write_reg(addr: usize, value: u32) {
     write_volatile(addr as *mut u32, value);
 }
@@ -1730,7 +1730,7 @@ pub unsafe fn write_reg(addr: usize, value: u32) {
 ///
 /// # Safety
 /// The caller must ensure that `addr` is a valid memory-mapped register address.
-#[inline(always)]
+# [inline(always)]
 pub unsafe fn set_bits(addr: usize, mask: u32) {
     let value = read_reg(addr);
     write_reg(addr, value | mask);
@@ -1740,14 +1740,14 @@ pub unsafe fn set_bits(addr: usize, mask: u32) {
 ///
 /// # Safety
 /// The caller must ensure that `addr` is a valid memory-mapped register address.
-#[inline(always)]
+# [inline(always)]
 pub unsafe fn clear_bits(addr: usize, mask: u32) {
     let value = read_reg(addr);
     write_reg(addr, value & !mask);
 }
 
 /// Memory barrier to ensure all previous memory accesses complete
-#[inline(always)]
+# [inline(always)]
 pub fn memory_barrier() {
     // RISC-V fence instruction
     unsafe {
@@ -1756,7 +1756,7 @@ pub fn memory_barrier() {
 }
 
 /// Instruction fence to ensure instruction stream is synchronized
-#[inline(always)]
+# [inline(always)]
 pub fn instruction_fence() {
     // RISC-V fence.i instruction (Zifencei extension)
     unsafe {
@@ -1939,3 +1939,4 @@ mbv_axi_interrupt_controller: interrupt-controller@41200000 {
 4. **Add tests** - Hardware-in-the-loop tests for validation
 
 This document provides comprehensive hardware reference for developing a Rust-based RTOS on the rv32imacb_zicsr_zifencei_zbc platform.
+

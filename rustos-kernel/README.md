@@ -26,8 +26,8 @@ RustOS provides a lightweight, deterministic RTOS kernel optimized for embedded 
 ## Quick Start
 
 ```rust
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{init, scheduler};
 use rustos_kernel::task::{Task, TaskId, TaskPriority};
@@ -40,12 +40,12 @@ extern "C" fn task1_entry() -> ! {
     }
 }
 
-#[no_mangle]
+# [no_mangle]
 extern "C" fn main() -> ! {
     unsafe {
         // Initialize kernel
         init();
-        
+
         // Create task
         let task1 = Task::new(
             TaskId(1),
@@ -54,10 +54,10 @@ extern "C" fn main() -> ! {
             task1_entry,
             &mut TASK1_STACK
         );
-        
+
         // Add to scheduler
         scheduler::get().add_task(&mut task1).unwrap();
-        
+
         // Start scheduler (does not return)
         scheduler::start();
     }
@@ -105,3 +105,4 @@ Licensed under either of Apache License, Version 2.0 or MIT license at your opti
 ## Requirements Traceability
 
 This kernel implements 800+ requirements from the RustOS specification v2.8.3. See individual modules and functions for requirement tags (e.g., REQ: SCHED-001).
+

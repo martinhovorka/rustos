@@ -118,8 +118,8 @@ Create your application in `rustos-app/src/main.rs`:
 ```rust
 //! My First RustOS Application
 
-#![no_std]
-#![no_main]
+# ![no_std]
+# ![no_main]
 
 use rustos_kernel::{
     task::{Task, TaskBuilder, TaskId, TaskPriority},
@@ -139,30 +139,30 @@ static mut TASK2: Option<Task> = None;
 static mut IDLE: Option<Task> = None;
 
 /// Application entry point
-#[no_mangle]
+# [no_mangle]
 pub unsafe extern "C" fn main() -> ! {
     // Initialize hardware
     rustos_board::init();
-    
+
     // Create tasks
     TASK1 = Some(TaskBuilder::new(TaskId(1), "blinker")
         .priority(TaskPriority(10))
         .build(blinker_task, &mut TASK1_STACK));
-        
+
     TASK2 = Some(TaskBuilder::new(TaskId(2), "counter")
         .priority(TaskPriority(20))
         .build(counter_task, &mut TASK2_STACK));
-        
+
     IDLE = Some(TaskBuilder::new(TaskId(0), "idle")
         .priority(TaskPriority::LOWEST)
         .build(idle_task, &mut IDLE_STACK));
-    
+
     // Add tasks to scheduler
     let sched = scheduler::get();
     sched.add_task(TASK1.as_mut().unwrap()).unwrap();
     sched.add_task(TASK2.as_mut().unwrap()).unwrap();
     sched.add_task(IDLE.as_mut().unwrap()).unwrap();
-    
+
     // Start scheduler (never returns)
     scheduler::start()
 }
@@ -174,7 +174,7 @@ fn blinker_task() -> ! {
         // Toggle LED
         led_on = !led_on;
         rustos_hal::gpio::set_output(0, led_on);
-        
+
         // Wait 500ms
         delay_ms(500);
     }
@@ -184,15 +184,15 @@ fn blinker_task() -> ! {
 fn counter_task() -> ! {
     let uart = Uart::new(rustos_pac::UART0_BASE);
     let mut count = 0u32;
-    
+
     loop {
         // Print count
         uart.write_str("Count: ");
         uart.write_u32(count);
         uart.write_str("\r\n");
-        
+
         count = count.wrapping_add(1);
-        
+
         // Wait 1 second
         delay_ms(1000);
     }
@@ -207,7 +207,7 @@ fn idle_task() -> ! {
 }
 
 /// Panic handler
-#[panic_handler]
+# [panic_handler]
 fn panic(info: &core::panic::PanicInfo) -> ! {
     // Optional: Print panic message via UART
     loop {
@@ -323,11 +323,11 @@ Use diagnostic functions:
 use rustos_kernel::scheduler;
 
 // Get context switch count
-#[cfg(feature = "statistics")]
+# [cfg(feature = "statistics")]
 let switches = scheduler::get_context_switch_count();
 
 // Get task state
-#[cfg(feature = "diagnostics")]
+# [cfg(feature = "diagnostics")]
 let state = scheduler::get_task_state(TaskId(1));
 ```
 
@@ -402,3 +402,4 @@ fn debug_print(msg: &str) {
 - Source Code: All code is documented with `cargo doc`
 
 Happy hacking with RustOS! 🦀
+

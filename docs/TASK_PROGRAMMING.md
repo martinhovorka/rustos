@@ -44,10 +44,10 @@ RustOS uses **preemptive priority-based scheduling**:
 
 ```
 Priority 0 (Highest)  ────────────►  First to run
-Priority 1            ────────────►  
-Priority 2            ────────────►  
-    ...                              
-Priority 254          ────────────►  
+Priority 1            ────────────►
+Priority 2            ────────────►
+    ...
+Priority 254          ────────────►
 Priority 255 (Lowest) ────────────►  Idle task (runs when nothing else ready)
 ```
 
@@ -340,7 +340,7 @@ enum State {
 
 fn state_machine_task() -> ! {
     let mut state = State::Idle;
-    
+
     loop {
         state = match state {
             State::Idle => {
@@ -382,7 +382,7 @@ fn state_machine_task() -> ! {
 fn watchdog_task() -> ! {
     let wdt = Wdt::new(rustos_pac::WDT_BASE);
     wdt.enable(5000); // 5 second timeout
-    
+
     loop {
         // Check all tasks are healthy
         if all_tasks_healthy() {
@@ -412,14 +412,14 @@ fn application_task(id: usize) -> ! {
 fn periodic_task() -> ! {
     let period_ms = 100;
     let mut next_wake = get_ticks();
-    
+
     loop {
         // Do periodic work
         sample_sensor();
-        
+
         // Calculate next wake time (avoids drift)
         next_wake = next_wake.wrapping_add(period_ms);
-        
+
         // Sleep until next period
         let now = get_ticks();
         let delay = next_wake.wrapping_sub(now);
@@ -501,16 +501,16 @@ static EVENTS: EventFlags = EventFlags::new();
 fn safe_receive() -> Option<Message> {
     let start = get_ticks();
     let timeout_ms = 1000;
-    
+
     loop {
         if let Some(msg) = QUEUE.try_receive() {
             return Some(msg);
         }
-        
+
         if elapsed_since(start) > timeout_ms {
             return None; // Timeout
         }
-        
+
         yield_now();
     }
 }
@@ -658,3 +658,4 @@ fn good_increment() {
 
 For more examples, see [Example Applications](EXAMPLES.md).
 For synchronization details, see [Sync Primitives Guide](SYNC_PRIMITIVES.md).
+

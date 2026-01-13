@@ -42,7 +42,7 @@ cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench -- --re
 
 **Requirement**: Measure time to switch between two tasks
 
-**Implementation**: 
+**Implementation**:
 - Creates two mock tasks with different priorities
 - Measures mcycle CSR before and after context switch
 - Performs 1000 iterations for statistical accuracy
@@ -212,7 +212,7 @@ pub struct BenchmarkResult {
 
 ### Performance Optimization
 
-1. **Context Switch**: 
+1. **Context Switch**:
    - Minimize register saves/restores
    - Optimize task struct layout for cache
    - Use hardware thread switching if available
@@ -246,7 +246,7 @@ jobs:
         run: |
           cd rustos-tests
           cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench
-      
+
       - name: Check regression
         run: |
           # Compare with baseline from main branch
@@ -369,3 +369,4 @@ MOCK_CSR.mcycle.store(0, Ordering::Relaxed);
 ## License
 
 MIT OR Apache-2.0
+

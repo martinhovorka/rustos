@@ -2,7 +2,7 @@
 
 A preemptive, priority-based real-time operating system (RTOS) written in Rust for RISC-V embedded systems.
 
-> **Project Status:** ✅ Implementation Complete (100%)  
+> **Project Status:** ✅ Implementation Complete (100%)
 > All 800 requirements implemented. 387 tests passing. Production ready.
 
 ## Overview
@@ -226,3 +226,4 @@ The system runs entirely from the 128 KB on-chip BRAM:
 This project is licensed under the MIT License and the Apache License 2.0. See the [LICENSE-MIT](LICENSE-MIT) and [LICENSE-APACHE](LICENSE-APACHE) files for details.
 
 Use of this source code is subject to the terms of both licenses. You may choose either license to govern your use of this code.
+

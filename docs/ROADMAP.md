@@ -157,7 +157,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
   - Per-core run queues
   - Load balancing
   - Core affinity
-  
+
 - [ ] **Multi-core synchronization**
   - Spinlocks
   - Cache coherency handling
@@ -376,3 +376,4 @@ For commercial support, custom development, or certification assistance:
 
 *Last updated: December 2024*
 *Document version: 1.0*
+

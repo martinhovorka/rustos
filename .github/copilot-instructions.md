@@ -93,7 +93,7 @@ let mut buffer: Vec<u8, 64> = Vec::new();  // Fixed capacity
 ### HAL Driver Pattern
 Drivers are feature-gated and use unsafe constructors for singleton access:
 ```rust
-#[cfg(feature = "uart")]
+# [cfg(feature = "uart")]
 pub mod uart;
 
 pub unsafe fn uart() -> &'static uart::Uart {
@@ -157,10 +157,10 @@ unsafe {
 
 Tests in `rustos-tests/` run on x86_64, not RISC-V. Hardware-specific code uses conditional compilation:
 ```rust
-#[cfg(target_arch = "riscv32")]
+# [cfg(target_arch = "riscv32")]
 fn hardware_specific() { ... }
 
-#[cfg(not(target_arch = "riscv32"))]
+# [cfg(not(target_arch = "riscv32"))]
 fn hardware_specific() { /* mock implementation */ }
 ```
 
@@ -173,7 +173,7 @@ Test modules use shared static state via `mock.rs` - always run with `--test-thr
 ```
 0x0000_0000  Local BRAM (128 KB code + data)
 0x4060_0000  AXI UART Lite
-0x4120_0000  AXI Interrupt Controller  
+0x4120_0000  AXI Interrupt Controller
 0x41A0_0000  AXI Watchdog Timer
 ```
 
@@ -207,13 +207,13 @@ use rustos_hal::intc;
 
 unsafe {
     let intc = intc::init();
-    
+
     // Register handler for IRQ 0 (system tick)
     intc.register_handler(0, || {
         rustos_kernel::time::tick();
         rustos_kernel::scheduler::yield_from_isr();
     }).unwrap();
-    
+
     intc.enable_irq(0);
     intc.enable_master();
 }
@@ -323,3 +323,4 @@ This project follows MISRA-like coding standards for certification readiness:
 - [docs/SYNC_PRIMITIVES.md](docs/SYNC_PRIMITIVES.md) - Mutex, Semaphore, Queue, Events usage
 - [docs/CERTIFICATION.md](docs/CERTIFICATION.md) - Safety case, coding standards
 - [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) - Installation, first application
+

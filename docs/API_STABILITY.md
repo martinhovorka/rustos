@@ -84,7 +84,7 @@ rustos-kernel = { version = "0.1", features = ["diagnostics", "statistics"] }
 
 **Example (future):**
 ```rust
-#[deprecated(since = "1.5.0", note = "Use `new_api()` instead. See migration guide.")]
+# [deprecated(since = "1.5.0", note = "Use `new_api()` instead. See migration guide.")]
 pub fn old_api() { }
 ```
 
@@ -101,12 +101,12 @@ pub fn old_api() { }
   - API signature changes
   - Behavior changes
   - Deprecation removals
-  
+
 - **Minor version** (1.0 → 1.1): New features, no breaking changes
   - New APIs added
   - New feature flags
   - Deprecation warnings
-  
+
 - **Patch version** (1.0.0 → 1.0.1): Bug fixes only
   - No API changes
   - No behavior changes (except bug fixes)
@@ -243,7 +243,8 @@ All public APIs **must** include:
 
 ---
 
-**REQ: API-013** - Stability attributes  
-**REQ: API-014** - Deprecation markers  
-**REQ: API-015** - Unstable API gates  
+**REQ: API-013** - Stability attributes
+**REQ: API-014** - Deprecation markers
+**REQ: API-015** - Unstable API gates
 **REQ: API-016** - Safety documentation
+
