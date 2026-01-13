@@ -39,21 +39,68 @@ Requirements are defined in [requirements/REQUIREMENTS.md](requirements/REQUIREM
 
 ## Build & Test Commands
 
+The project uses shell scripts for standardized build, test, and QA workflows:
+
 ```bash
-# Build for RISC-V target (default via .cargo/config.toml)
-cargo build --release --workspace
+# Build for RISC-V target
+./build.sh
 
 # Run host-side tests (MUST use single thread due to shared static state)
+./test.sh
+
+# Generate code coverage report
+./coverage.sh
+
+# Run comprehensive quality assurance (all checks)
+./qa.sh
+
+# Run specific QA section (e.g., section 4 = linting)
+./qa.sh --section 4
+
+# Auto-fix issues where possible
+./qa.sh --fix
+
+# Generate detailed QA report
+./qa.sh --report
+
+# Clean build artifacts
+./clean.sh
+```
+
+**Direct cargo commands** (if needed):
+```bash
+cargo build --release --workspace --target riscv32imac-unknown-none-elf
 cargo test -p rustos-tests --target x86_64-unknown-linux-gnu -- --test-threads=1
-
-# Run benchmarks
-cargo run -p rustos-tests --target x86_64-unknown-linux-gnu --bin bench --features bench
-
-# Format and lint
 cargo fmt --all && cargo clippy --workspace -- -D warnings
 ```
 
 **MSRV:** Rust 1.82.0 (required for stable `#[naked]` functions)
+
+## Scripts & Automation
+
+The `scripts/` directory contains automation tools:
+
+- **markdown_lint_report.py** - Scans and auto-fixes markdown lint issues
+  ```bash
+  python3 scripts/markdown_lint_report.py          # Scan default files
+  python3 scripts/markdown_lint_report.py --all    # Scan all .md files
+  python3 scripts/markdown_lint_report.py --apply  # Apply fixes
+  ```
+
+**QA Script Sections** (`./qa.sh --section N`):
+1. Code Formatting & Style (QUAL-006)
+2. Build Verification (BUILD-003, TEST-001)
+3. Test Execution (QUAL-020/021, COV-001/006/007/008)
+4. Code Linting (QUAL-005)
+5. Unsafe Code & Safety (SAFE-002/007/008, VER-009)
+6. Security Analysis (TEST-012, SEC-002/004)
+7. Documentation (QUAL-001)
+8. Code Complexity & Quality (QUAL-009/010, RUST-006)
+9. Dependencies (CI-006/008, MSRV, yanked crates)
+10. Requirements Traceability (VER-012/014/015)
+11. Binary Size Analysis (CI-005, MEM-001)
+12. Performance Benchmarks
+13. RTOS-Specific Checks (QUAL-002/003/004)
 
 ## Code Patterns
 
@@ -318,9 +365,23 @@ This project follows MISRA-like coding standards for certification readiness:
 
 ## Key Documentation
 
+**Core Documentation:**
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - System internals, context frame layout
 - [docs/TASK_PROGRAMMING.md](docs/TASK_PROGRAMMING.md) - Task creation, priorities, patterns
 - [docs/SYNC_PRIMITIVES.md](docs/SYNC_PRIMITIVES.md) - Mutex, Semaphore, Queue, Events usage
 - [docs/CERTIFICATION.md](docs/CERTIFICATION.md) - Safety case, coding standards
 - [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) - Installation, first application
+
+**Verification & Quality:**
+- [docs/VERIFICATION_REPORT.md](docs/VERIFICATION_REPORT.md) - Comprehensive verification status
+- [docs/TEST_INFRASTRUCTURE.md](docs/TEST_INFRASTRUCTURE.md) - Test suite architecture
+- [docs/HAL_VERIFICATION.md](docs/HAL_VERIFICATION.md) - Hardware abstraction layer testing
+- [docs/PERFORMANCE_BENCHMARKS.md](docs/PERFORMANCE_BENCHMARKS.md) - Benchmark results
+- [docs/TRACEABILITY_MATRIX.md](docs/TRACEABILITY_MATRIX.md) - Requirements to implementation mapping
+
+**Project Status:**
+- [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Feature completion status
+- [TEST_COVERAGE_REPORT.md](TEST_COVERAGE_REPORT.md) - Coverage metrics
+- [QA_README.md](QA_README.md) - Quality assurance process
+- [requirements/REQUIREMENTS.md](requirements/REQUIREMENTS.md) - All project requirements
 
