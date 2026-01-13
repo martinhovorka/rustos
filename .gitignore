@@ -23,3 +23,4 @@ target
 rustos-app.elf
 safety_audit*
 logs/**
+artifacts/**

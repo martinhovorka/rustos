@@ -104,7 +104,7 @@ impl I2c {
     }
 
     /// REQ: I2C-008 - Write with specific address mode
-    pub fn write_with_mode(&self, slave_addr: u8, data: &[u8], mode: AddressMode) -> Result<()> {
+    pub fn write_with_mode(&self, slave_addr: u8, data: &[u8], _mode: AddressMode) -> Result<()> {
         if data.is_empty() {
             return Err(HalError::InvalidParameter);
         }
@@ -134,7 +134,7 @@ impl I2c {
         &self,
         slave_addr: u8,
         buffer: &mut [u8],
-        mode: AddressMode,
+        _mode: AddressMode,
     ) -> Result<()> {
         if buffer.is_empty() {
             return Err(HalError::InvalidParameter);

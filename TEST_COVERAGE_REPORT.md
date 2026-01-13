@@ -11,7 +11,7 @@ Coverage Tool: cargo-llvm-cov
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
 | **Code Coverage** | **99.47%** | ≥80% | ✅ **EXCEEDED** |
-| **Tests Passing** | **387/387** | 100% | ✅ **PASS** |
+| **Tests Passing** | **398/398** | 100% | ✅ **PASS** |
 | **Quality Assurance** | **PASSED** | PASS | ✅ **PASS** |
 
 ## Detailed Coverage Breakdown
@@ -33,7 +33,7 @@ Coverage Tool: cargo-llvm-cov
 | rustos-kernel | Covered via integration tests | 99%+ | ✅ |
 | rustos-board | Covered via integration tests | 95%+ | ✅ |
 | rustos-app | Covered via integration tests | 90%+ | ✅ |
-| rustos-tests | 387 tests | 99.47% | ✅ |
+| rustos-tests | 398 tests | 99.47% | ✅ |
 
 ## Test Categories
 

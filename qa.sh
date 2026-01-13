@@ -36,11 +36,11 @@ PASSED_CHECKS=0
 WARNINGS=0
 ERRORS=0
 
-# Logs directory
-LOGS_DIR="logs/qa"
+# Logs directory - store in artifacts for consistency with build/coverage
+LOGS_DIR="artifacts/qa"
 mkdir -p "$LOGS_DIR"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-REPORT_FILE="$LOGS_DIR/qa_report_${TIMESTAMP}.md"
+REPORT_FILE="$LOGS_DIR/qa_report.md"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -206,7 +206,7 @@ if should_run_section "1"; then
     
     # REQ: QUAL-006 - Consistent code formatting via rustfmt
     print_check "Checking code formatting (REQ: QUAL-006)..."
-    LOG_FILE="$LOGS_DIR/fmt_${TIMESTAMP}.log"
+    LOG_FILE="$LOGS_DIR/fmt.log"
     
     if [[ $FIX_MODE -eq 1 ]]; then
         if cargo fmt --all > "$LOG_FILE" 2>&1; then
@@ -281,7 +281,7 @@ if should_run_section "2"; then
     
     # REQ: BUILD-003 - Build all crates for RISC-V target
     print_check "Building for RISC-V target (REQ: BUILD-003)..."
-    LOG_FILE="$LOGS_DIR/build_riscv_${TIMESTAMP}.log"
+    LOG_FILE="$LOGS_DIR/build_riscv.log"
     
     if cargo build --release --workspace --target riscv32imac-unknown-none-elf > "$LOG_FILE" 2>&1; then
         ERROR_COUNT=$(grep -c "error:" "$LOG_FILE" 2>/dev/null || true)
@@ -303,7 +303,7 @@ if should_run_section "2"; then
     
     # REQ: TEST-001 - Build test suite
     print_check "Building test suite (REQ: TEST-001)..."
-    LOG_FILE="$LOGS_DIR/build_tests_${TIMESTAMP}.log"
+    LOG_FILE="$LOGS_DIR/build_tests.log"
     
     if cargo build -p rustos-tests --target x86_64-unknown-linux-gnu > "$LOG_FILE" 2>&1; then
         print_pass "Test suite build successful"
@@ -320,7 +320,7 @@ if should_run_section "3"; then
     
     # REQ: TEST-001, QUAL-020, QUAL-021 - Unit tests
     print_check "Running test suite (REQ: TEST-001, QUAL-020, QUAL-021)..."
-    LOG_FILE="$LOGS_DIR/test_${TIMESTAMP}.log"
+    LOG_FILE="$LOGS_DIR/test.log"
     
     if cargo test -p rustos-tests --target x86_64-unknown-linux-gnu -- --test-threads=1 > "$LOG_FILE" 2>&1; then
         TEST_PASSED=$(grep "test result:" "$LOG_FILE" | head -1 | grep -oP '\d+(?= passed)' || echo 0)
@@ -331,7 +331,7 @@ if should_run_section "3"; then
         # REQ: COV-001 - Coverage target ≥ 80%
         if command -v cargo-llvm-cov &> /dev/null; then
             print_check "Measuring code coverage (REQ: COV-001: ≥ 80%)..."
-            COV_LOG="$LOGS_DIR/coverage_${TIMESTAMP}.log"
+            COV_LOG="$LOGS_DIR/coverage.log"
             
             cargo llvm-cov clean --workspace > /dev/null 2>&1
             cargo llvm-cov -p rustos-tests --target x86_64-unknown-linux-gnu --summary-only -- --test-threads=1 > "$COV_LOG" 2>&1 || true
@@ -405,7 +405,7 @@ if should_run_section "4"; then
     print_check "Running clippy lints (REQ: QUAL-005)..."
     
     for crate in rustos-pac rustos-hal rustos-kernel rustos-board rustos-app; do
-        LOG_FILE="$LOGS_DIR/clippy_${crate}_${TIMESTAMP}.log"
+        LOG_FILE="$LOGS_DIR/clippy_${crate}.log"
         
         if cargo clippy -p "$crate" --target riscv32imac-unknown-none-elf -- -D warnings > "$LOG_FILE" 2>&1; then
             print_pass "$crate: No warnings"
@@ -426,7 +426,7 @@ if should_run_section "4"; then
     done
     
     # Test crate
-    LOG_FILE="$LOGS_DIR/clippy_rustos-tests_${TIMESTAMP}.log"
+    LOG_FILE="$LOGS_DIR/clippy_rustos-tests.log"
     if cargo clippy -p rustos-tests --target x86_64-unknown-linux-gnu -- -D warnings > "$LOG_FILE" 2>&1; then
         print_pass "rustos-tests: No warnings"
     else
@@ -449,7 +449,7 @@ if should_run_section "4"; then
     
     # Dead code check
     print_check "Checking for dead code..."
-    DEAD_LOG="$LOGS_DIR/dead_code_${TIMESTAMP}.log"
+    DEAD_LOG="$LOGS_DIR/dead_code.log"
     cargo clippy --workspace --target riscv32imac-unknown-none-elf -- -W dead_code -W unused_variables > "$DEAD_LOG" 2>&1 || true
     
     DEAD_WARNS=$(grep -c "warning:.*dead_code\|warning:.*unused" "$DEAD_LOG" || echo "0")
@@ -465,7 +465,7 @@ if should_run_section "4"; then
     
     # Pedantic clippy lints (advisory)
     print_check "Running pedantic lints (advisory)..."
-    PEDANTIC_LOG="$LOGS_DIR/pedantic_${TIMESTAMP}.log"
+    PEDANTIC_LOG="$LOGS_DIR/pedantic.log"
     cargo clippy --workspace --target riscv32imac-unknown-none-elf -- \
         -W clippy::pedantic \
         -A clippy::missing_errors_doc \
@@ -497,16 +497,36 @@ if should_run_section "5"; then
     print_check "Analyzing unsafe code usage (REQ: SAFE-002, SAFE-008)..."
     
     if command -v cargo-geiger &> /dev/null; then
-        GEIGER_LOG="$LOGS_DIR/geiger_${TIMESTAMP}.log"
-        timeout 120 cargo geiger --all-features > "$GEIGER_LOG" 2>&1 || true
+        GEIGER_LOG="$LOGS_DIR/geiger.log"
+        echo "" > "$GEIGER_LOG"
         
-        UNSAFE_FNS=$(grep -oE '[0-9]+ unsafe fn' "$GEIGER_LOG" | head -1 || echo "0 unsafe fn")
-        UNSAFE_EXPRS=$(grep -oE '[0-9]+ unsafe expr' "$GEIGER_LOG" | head -1 || echo "0 unsafe expr")
+        # Run from each package directory (cargo-geiger doesn't work with virtual manifests)
+        # Filter out JSON artifact messages for cleaner output
+        for pkg in rustos-pac rustos-hal rustos-kernel rustos-board rustos-app; do
+            echo "=== Analysis for $pkg ===" >> "$GEIGER_LOG"
+            (cd "$pkg" && RUSTFLAGS="--cap-lints=warn" timeout 120 cargo geiger --all-features --all-targets 2>&1) \
+                | grep -v '^\s*{"\$message_type"' \
+                | grep -v '^$' >> "$GEIGER_LOG" || true
+            echo "" >> "$GEIGER_LOG"
+        done
         
-        print_info "Unsafe code statistics:"
-        echo "    - $UNSAFE_FNS"
-        echo "    - $UNSAFE_EXPRS"
-        print_pass "Unsafe code analysis complete"
+        # Extract metrics from cargo-geiger output format: "Functions  Expressions  Impls..."
+        # The summary line is the last line with format: "N/M       N/M          N/M..."
+        TOTAL_UNSAFE_FNS=$(grep -oE '^[0-9]+/[0-9]+' "$GEIGER_LOG" | tail -5 | awk -F'/' '{sum+=$1} END {print sum}')
+        TOTAL_UNSAFE_EXPRS=$(grep -oE '[0-9]+/[0-9]+\s+[0-9]+/[0-9]+' "$GEIGER_LOG" | tail -5 | awk '{print $2}' | awk -F'/' '{sum+=$1} END {print sum}')
+        TOTAL_UNSAFE_FNS=${TOTAL_UNSAFE_FNS:-0}
+        TOTAL_UNSAFE_EXPRS=${TOTAL_UNSAFE_EXPRS:-0}
+        
+        print_info "Unsafe code statistics (from cargo-geiger):"
+        echo "    - Unsafe functions: $TOTAL_UNSAFE_FNS"
+        echo "    - Unsafe expressions: $TOTAL_UNSAFE_EXPRS"
+        
+        # Check if any analysis failed
+        if grep -q "error: Cargo\|error: could not compile" "$GEIGER_LOG"; then
+            print_warn "Some crate analyses had errors (see $GEIGER_LOG)"
+        else
+            print_pass "Unsafe code analysis complete"
+        fi
     else
         print_info "cargo-geiger not installed - install with: cargo install cargo-geiger"
     fi
@@ -594,7 +614,7 @@ if should_run_section "6"; then
     print_check "Running dependency vulnerability scan (REQ: TEST-012)..."
     
     if command -v cargo-audit &> /dev/null; then
-        AUDIT_LOG="$LOGS_DIR/audit_${TIMESTAMP}.log"
+        AUDIT_LOG="$LOGS_DIR/audit.log"
         cargo audit > "$AUDIT_LOG" 2>&1 || AUDIT_RESULT=$?
         AUDIT_RESULT=${AUDIT_RESULT:-0}
         
@@ -802,7 +822,7 @@ if should_run_section "6"; then
     
     # Security-focused clippy lints
     print_check "Running security-focused clippy lints..."
-    SEC_CLIPPY_LOG="$LOGS_DIR/security_clippy_${TIMESTAMP}.log"
+    SEC_CLIPPY_LOG="$LOGS_DIR/security_clippy.log"
     cargo clippy --workspace --target riscv32imac-unknown-none-elf -- \
         -W clippy::mem_forget \
         -W clippy::cast_ptr_alignment \
@@ -824,7 +844,7 @@ if should_run_section "6"; then
     # REQ: SEC-004 - Dependency audit for known vulnerabilities (outdated check)
     print_check "Checking for outdated dependencies (REQ: SEC-004)..."
     if command -v cargo-outdated &> /dev/null; then
-        OUTDATED_LOG="$LOGS_DIR/outdated_${TIMESTAMP}.log"
+        OUTDATED_LOG="$LOGS_DIR/outdated.log"
         cargo outdated --workspace > "$OUTDATED_LOG" 2>&1 || true
         OUTDATED_COUNT=$(grep -c "--->" "$OUTDATED_LOG" || echo "0")
         OUTDATED_COUNT=$(echo "$OUTDATED_COUNT" | tr -d '[:space:]')
@@ -849,7 +869,7 @@ if should_run_section "7"; then
     
     # REQ: QUAL-001 - Documentation comments
     print_check "Checking documentation (REQ: QUAL-001)..."
-    LOG_FILE="$LOGS_DIR/doc_${TIMESTAMP}.log"
+    LOG_FILE="$LOGS_DIR/doc.log"
     
     if cargo doc --workspace --no-deps --document-private-items > "$LOG_FILE" 2>&1; then
         ERROR_COUNT=$(grep -c "error:" "$LOG_FILE" 2>/dev/null || true)
@@ -949,7 +969,7 @@ if should_run_section "8"; then
     
     # Simplified recursion detection - look for common recursion patterns
     # This is a heuristic approach that catches most direct recursion
-    RECURSIVE_LOG="$LOGS_DIR/recursive_${TIMESTAMP}.log"
+    RECURSIVE_LOG="$LOGS_DIR/recursive.log"
     RECURSIVE_FUNCS=0
     
     # Search for functions that call themselves (simplified check)
@@ -1021,9 +1041,10 @@ if should_run_section "9"; then
     # Unused dependencies
     if command -v cargo-udeps &> /dev/null; then
         print_check "Checking for unused dependencies..."
-        UDEPS_LOG="$LOGS_DIR/udeps_${TIMESTAMP}.log"
+        UDEPS_LOG="$LOGS_DIR/udeps.log"
         
-        timeout 60 cargo +nightly udeps --workspace > "$UDEPS_LOG" 2>&1 || true
+        # Only check rustos-tests (x86_64 target) as embedded targets require build-std
+        timeout 60 cargo +nightly udeps -p rustos-tests --target x86_64-unknown-linux-gnu > "$UDEPS_LOG" 2>&1 || true
         
         UNUSED_COUNT=$(grep -c "unused" "$UDEPS_LOG" || true)
         UNUSED_COUNT=${UNUSED_COUNT:-0}
@@ -1171,7 +1192,7 @@ if should_run_section "12"; then
     print_check "Running performance benchmarks..."
     
     if [[ -f "rustos-tests/src/bin/bench.rs" ]]; then
-        BENCH_LOG="$LOGS_DIR/bench_${TIMESTAMP}.log"
+        BENCH_LOG="$LOGS_DIR/bench.log"
         
         if cargo run -p rustos-tests --target x86_64-unknown-linux-gnu --bin bench --features bench > "$BENCH_LOG" 2>&1; then
             print_pass "Benchmarks completed successfully"

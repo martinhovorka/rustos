@@ -98,6 +98,8 @@ pub enum HalError {
     InvalidParameter,
     /// Hardware error
     HardwareError,
+    /// Device-specific error
+    DeviceError,
     /// Timeout occurred
     Timeout,
     /// I2C-specific error

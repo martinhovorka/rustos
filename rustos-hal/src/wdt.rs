@@ -12,7 +12,10 @@ pub enum WdtMode {
     /// Standard watchdog mode
     Standard,
     /// REQ: WDT-006 - Window watchdog mode
-    Window { window_start: u32 },
+    Window {
+        /// Window start time for feeding
+        window_start: u32,
+    },
 }
 
 /// REQ: WDT-001 - Watchdog Timer

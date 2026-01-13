@@ -6,7 +6,7 @@ RustOS is a preemptive, priority-based RTOS written in Rust for RISC-V RV32IMAC 
 
 **Key constraints:** No heap allocation, `no_std` throughout, all data structures are static or stack-allocated.
 
-**Status:** 800 requirements implemented, 387 tests passing, production ready.
+**Status:** 800 requirements implemented, 398 tests passing, production ready.
 
 ## Crate Architecture (Dependency Order)
 
@@ -213,7 +213,7 @@ fn hardware_specific() { /* mock implementation */ }
 
 Test modules use shared static state via `mock.rs` - always run with `--test-threads=1`.
 
-**Test count:** 387 tests, 99%+ line coverage.
+**Test count:** 398 tests, 99%+ line coverage.
 
 ## Memory Map (Key Addresses)
 

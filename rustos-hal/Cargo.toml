@@ -30,6 +30,9 @@ bitflags = { workspace = true }
 # REQ: DEP-010 - Heapless data structures
 heapless = { workspace = true }
 
+# REQ: DEP-007 - Atomic operations (for ethernet driver)
+portable-atomic = { workspace = true }
+
 [features]
 default = ["uart", "gpio", "timer"]
 uart = []   # REQ: UART-001 - UART driver feature

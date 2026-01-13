@@ -38,12 +38,8 @@ echo
 # Create artifacts directory if it doesn't exist
 mkdir -p "$ARTIFACTS_DIR"
 
-# Copy to workspace root for convenience
-cp -v --remove-destination "$ELF_PATH" "$ELF"
-
 # Copy to artifacts directory for archival
 cp -v --remove-destination "$ELF_PATH" "$ARTIFACT_ELF"
 
 echo "Artifacts:"
-sha256sum $ELF
 sha256sum $ARTIFACT_ELF

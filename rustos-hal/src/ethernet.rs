@@ -34,6 +34,7 @@
 //! ```
 
 use crate::{HalError, Result};
+#[allow(unused_imports)]
 use portable_atomic::{AtomicU32, Ordering};
 use rustos_pac::ethernet::Ethernet as EthernetRegs;
 

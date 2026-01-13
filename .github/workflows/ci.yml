@@ -150,48 +150,8 @@ jobs:
     - name: Run linter (via qa.sh --section 4)
       run: ./qa.sh --section 4
 
-  # REQ: CI-006 - Safety audit job using qa.sh section 5
-  safety:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@master
-      with:
-        toolchain: 1.92.0
-        targets: riscv32imac-unknown-none-elf
-    
-    - name: Cache cargo registry
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          target
-        key: ${{ runner.os }}-cargo-safety-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-safety-
-    
-    - name: Install cargo-geiger
-      run: cargo install cargo-geiger
-    
-    - name: Make scripts executable
-      run: chmod +x qa.sh
-    
-    - name: Run SAFETY audit (via qa.sh --section 5)
-      run: ./qa.sh --section 5 --report
-    
-    - name: Upload safety logs
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: safety-audit-logs
-        path: logs/qa/
-        retention-days: 30
-
-  # REQ: CI-007 - Security audit job using qa.sh section 6
-  security:
+  # REQ: CI-006, CI-007 - Safety & Security audit (qa.sh sections 5 & 6)
+  audit:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -210,27 +170,30 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           target
-        key: ${{ runner.os }}-cargo-security-${{ hashFiles('**/Cargo.lock') }}
+        key: ${{ runner.os }}-cargo-audit-${{ hashFiles('**/Cargo.lock') }}
         restore-keys: |
-          ${{ runner.os }}-cargo-security-
+          ${{ runner.os }}-cargo-audit-
     
-    - name: Install security tools
+    - name: Install audit tools
       run: |
         cargo install cargo-audit
-        cargo install cargo-geiger || true
+        cargo install cargo-geiger
     
     - name: Make scripts executable
       run: chmod +x qa.sh
     
-    - name: Run security audit (via qa.sh --section 6)
-      run: ./qa.sh --section 6 --report
+    - name: Run safety audit (section 5)
+      run: ./qa.sh --section 5
     
-    - name: Upload security report
+    - name: Run security audit (section 6)
+      run: ./qa.sh --section 6
+    
+    - name: Upload audit logs
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: security-audit-report
-        path: logs/qa/
+        name: audit-logs
+        path: artifacts/qa/
         retention-days: 30
 
   # REQ: CI-005, COV-001 - Coverage job using coverage.sh
@@ -391,10 +354,10 @@ jobs:
     - name: Run RTOS-specific checks (via qa.sh --section 13)
       run: ./qa.sh --section 13
 
-  # REQ: CI-009 - Quality gate (runs all qa.sh checks)
+  # REQ: CI-009 - Quality gate (runs all qa.sh checks with verbose output)
   quality-gate:
     runs-on: ubuntu-latest
-    needs: [build, test, format, lint, safety, security, binary-size, rtos-checks]
+    needs: [build, test, format, lint, audit, binary-size, rtos-checks]
     steps:
     - uses: actions/checkout@v4
     
@@ -432,13 +395,13 @@ jobs:
     - name: Clean (via clean.sh)
       run: ./clean.sh
     
-    - name: Run comprehensive QA (via qa.sh)
-      run: ./qa.sh --report
+    - name: Run comprehensive QA with verbose output
+      run: ./qa.sh --verbose --report
     
-    - name: Upload QA report and logs
+    - name: Upload all generated artifacts
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: qa-comprehensive-report
-        path: logs/qa/
+        name: rustos-artifacts
+        path: artifacts/
         retention-days: 30

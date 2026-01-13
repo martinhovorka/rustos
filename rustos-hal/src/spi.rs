@@ -10,8 +10,70 @@
 //! REQ: SPI-008 - SPI status checking
 //! REQ: SPI-009 - SPI transfer timeout
 
+use bitflags::bitflags;
 use core::ptr::{read_volatile, write_volatile};
-use rustos_pac::spi::Spi;
+
+bitflags! {
+    /// REQ: SPI-002 - SPI control register flags
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub struct SpiControl: u32 {
+        /// Loop mode enable
+        const LOOP = 1 << 0;
+        /// SPI system enable
+        const SPE = 1 << 1;
+        /// Master mode select
+        const MASTER_MODE = 1 << 2;
+        /// Clock polarity (CPOL)
+        const CPOL = 1 << 3;
+        /// Clock phase (CPHA)
+        const CPHA = 1 << 4;
+        /// TX FIFO reset
+        const TXFIFO_RST = 1 << 5;
+        /// RX FIFO reset
+        const RXFIFO_RST = 1 << 6;
+        /// Manual slave select enable
+        const MANUAL_SS = 1 << 7;
+        /// Master transaction inhibit
+        const MTI = 1 << 8;
+        /// LSB first
+        const LSB_FIRST = 1 << 9;
+    }
+}
+
+bitflags! {
+    /// REQ: SPI-008 - SPI status register flags
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub struct SpiStatus: u32 {
+        /// RX FIFO empty
+        const RX_EMPTY = 1 << 0;
+        /// RX FIFO full
+        const RX_FULL = 1 << 1;
+        /// TX FIFO empty
+        const TX_EMPTY = 1 << 2;
+        /// TX FIFO full
+        const TX_FULL = 1 << 3;
+        /// Mode fault error
+        const MODE_FAULT = 1 << 4;
+        /// Slave mode select
+        const SLAVE_MODE = 1 << 5;
+        /// Command error
+        const CMD_ERROR = 1 << 6;
+        /// SPI busy
+        const BUSY = 1 << 7;
+        /// TX FIFO overrun
+        const TX_OVERRUN = 1 << 8;
+        /// RX FIFO underrun
+        const RX_UNDERRUN = 1 << 9;
+    }
+}
+
+/// REQ: SPI-002 - SPI register offsets (AXI Quad SPI)
+const CTRL_REG_OFFSET: usize = 0x60;
+const STATUS_REG_OFFSET: usize = 0x64;
+const DATA_TX_OFFSET: usize = 0x68;
+const DATA_RX_OFFSET: usize = 0x6C;
+#[allow(dead_code)]
+const SLAVE_SELECT_OFFSET: usize = 0x70;
 
 /// REQ: SPI-004 - SPI clock polarity
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -82,11 +144,11 @@ pub enum SpiError {
 }
 
 /// REQ: SPI-001, SPI-003 - SPI driver
-pub struct Spi {
+pub struct SpiDriver {
     base_addr: usize,
 }
 
-impl Spi {
+impl SpiDriver {
     /// REQ: SPI-001 - Create a new SPI driver instance
     ///
     /// # Safety
@@ -309,18 +371,18 @@ impl Spi {
 
 /// REQ: SPI-005 - RAII chip select guard
 pub struct SpiTransaction<'a> {
-    spi: &'a mut Spi,
+    spi: &'a mut SpiDriver,
 }
 
 impl<'a> SpiTransaction<'a> {
     /// Create a new transaction with chip select asserted
-    pub fn new(spi: &'a mut Spi, cs: u8) -> Self {
+    pub fn new(spi: &'a mut SpiDriver, cs: u8) -> Self {
         spi.select(cs);
         Self { spi }
     }
 
     /// Get mutable reference to SPI for transfers
-    pub fn spi(&mut self) -> &mut Spi {
+    pub fn spi(&mut self) -> &mut SpiDriver {
         self.spi
     }
 }
@@ -334,7 +396,7 @@ impl<'a> Drop for SpiTransaction<'a> {
 
 // REQ: PER-015 - SPI instance for flash memory
 /// Get SPI instance for flash memory
-pub fn spi_flash() -> Spi {
+pub fn spi_flash() -> SpiDriver {
     // SAFETY: Creating SPI instance with valid flash SPI base address
-    unsafe { Spi::new(rustos_pac::spi::SPI_BASE_ADDR) }
+    unsafe { SpiDriver::new(rustos_pac::SPI_FLASH_BASE) }
 }

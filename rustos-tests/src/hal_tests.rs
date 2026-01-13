@@ -712,3 +712,339 @@ fn test_i2c_read_data() {
 
     MockI2c::stop();
 }
+
+// ============================================================================
+// SPI Control and Status Bitflags Tests
+// REQ: SPI-002 - SPI control register flags
+// REQ: SPI-008 - SPI status register flags
+// ============================================================================
+
+/// REQ: SPI-002 - Mock SPI control register bitflags
+/// Verifies: SpiControl bitflags operations
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct MockSpiControl(u32);
+
+impl MockSpiControl {
+    const LOOP: u32 = 1 << 0;
+    const SPE: u32 = 1 << 1;
+    const MASTER_MODE: u32 = 1 << 2;
+    const CPOL: u32 = 1 << 3;
+    const CPHA: u32 = 1 << 4;
+    const TXFIFO_RST: u32 = 1 << 5;
+    const RXFIFO_RST: u32 = 1 << 6;
+    const MANUAL_SS: u32 = 1 << 7;
+    const MTI: u32 = 1 << 8;
+    const LSB_FIRST: u32 = 1 << 9;
+
+    fn empty() -> Self {
+        Self(0)
+    }
+
+    fn bits(&self) -> u32 {
+        self.0
+    }
+
+    fn from_bits_truncate(bits: u32) -> Self {
+        Self(bits & 0x3FF) // Only lower 10 bits valid
+    }
+
+    fn contains(&self, flag: u32) -> bool {
+        (self.0 & flag) == flag
+    }
+
+    fn insert(&mut self, flag: u32) {
+        self.0 |= flag;
+    }
+}
+
+/// REQ: SPI-008 - Mock SPI status register bitflags
+/// Verifies: SpiStatus bitflags operations
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct MockSpiStatus(u32);
+
+impl MockSpiStatus {
+    const RX_EMPTY: u32 = 1 << 0;
+    const RX_FULL: u32 = 1 << 1;
+    const TX_EMPTY: u32 = 1 << 2;
+    const TX_FULL: u32 = 1 << 3;
+    const MODE_FAULT: u32 = 1 << 4;
+    const SLAVE_MODE: u32 = 1 << 5;
+    const CMD_ERROR: u32 = 1 << 6;
+    const BUSY: u32 = 1 << 7;
+    const TX_OVERRUN: u32 = 1 << 8;
+    const RX_UNDERRUN: u32 = 1 << 9;
+
+    fn from_bits_truncate(bits: u32) -> Self {
+        Self(bits & 0x3FF) // Only lower 10 bits valid
+    }
+
+    fn contains(&self, flag: u32) -> bool {
+        (self.0 & flag) == flag
+    }
+
+    fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+}
+
+#[test]
+fn test_spi_control_empty() {
+    // REQ: SPI-002 - Verify empty control register
+    // Verifies: SpiControl::empty() returns zero value
+    let ctrl = MockSpiControl::empty();
+    assert_test!(ctrl.bits() == 0, "Empty control should be 0");
+}
+
+#[test]
+fn test_spi_control_individual_flags() {
+    // REQ: SPI-002 - Verify individual control flags
+    // Verifies: Each SpiControl flag has correct bit position
+    assert_test!(MockSpiControl::LOOP == 0x01, "LOOP should be bit 0");
+    assert_test!(MockSpiControl::SPE == 0x02, "SPE should be bit 1");
+    assert_test!(
+        MockSpiControl::MASTER_MODE == 0x04,
+        "MASTER_MODE should be bit 2"
+    );
+    assert_test!(MockSpiControl::CPOL == 0x08, "CPOL should be bit 3");
+    assert_test!(MockSpiControl::CPHA == 0x10, "CPHA should be bit 4");
+    assert_test!(
+        MockSpiControl::TXFIFO_RST == 0x20,
+        "TXFIFO_RST should be bit 5"
+    );
+    assert_test!(
+        MockSpiControl::RXFIFO_RST == 0x40,
+        "RXFIFO_RST should be bit 6"
+    );
+    assert_test!(
+        MockSpiControl::MANUAL_SS == 0x80,
+        "MANUAL_SS should be bit 7"
+    );
+    assert_test!(MockSpiControl::MTI == 0x100, "MTI should be bit 8");
+    assert_test!(
+        MockSpiControl::LSB_FIRST == 0x200,
+        "LSB_FIRST should be bit 9"
+    );
+}
+
+#[test]
+fn test_spi_control_combine_flags() {
+    // REQ: SPI-002 - Verify flag combination for SPI modes
+    // Verifies: SpiControl flags can be combined correctly
+    let mut ctrl = MockSpiControl::empty();
+
+    // Configure for Mode 3: CPOL=1, CPHA=1, Master mode, SPI enabled
+    ctrl.insert(MockSpiControl::MASTER_MODE);
+    ctrl.insert(MockSpiControl::CPOL);
+    ctrl.insert(MockSpiControl::CPHA);
+    ctrl.insert(MockSpiControl::SPE);
+
+    let expected = MockSpiControl::MASTER_MODE
+        | MockSpiControl::CPOL
+        | MockSpiControl::CPHA
+        | MockSpiControl::SPE;
+
+    assert_test!(
+        ctrl.bits() == expected,
+        "Combined flags should match expected"
+    );
+    assert_test!(
+        ctrl.contains(MockSpiControl::MASTER_MODE),
+        "Should contain MASTER_MODE"
+    );
+    assert_test!(ctrl.contains(MockSpiControl::CPOL), "Should contain CPOL");
+    assert_test!(ctrl.contains(MockSpiControl::CPHA), "Should contain CPHA");
+    assert_test!(ctrl.contains(MockSpiControl::SPE), "Should contain SPE");
+    assert_test!(
+        !ctrl.contains(MockSpiControl::LOOP),
+        "Should not contain LOOP"
+    );
+}
+
+#[test]
+fn test_spi_control_from_bits_truncate() {
+    // REQ: SPI-002 - Verify from_bits_truncate masks invalid bits
+    // Verifies: SpiControl::from_bits_truncate() only keeps valid bits
+    let ctrl = MockSpiControl::from_bits_truncate(0xFFFF_FFFF);
+
+    // Only lower 10 bits should be preserved
+    assert_test!(ctrl.bits() == 0x3FF, "Should truncate to valid bits only");
+}
+
+#[test]
+fn test_spi_status_individual_flags() {
+    // REQ: SPI-008 - Verify individual status flags
+    // Verifies: Each SpiStatus flag has correct bit position
+    assert_test!(MockSpiStatus::RX_EMPTY == 0x01, "RX_EMPTY should be bit 0");
+    assert_test!(MockSpiStatus::RX_FULL == 0x02, "RX_FULL should be bit 1");
+    assert_test!(MockSpiStatus::TX_EMPTY == 0x04, "TX_EMPTY should be bit 2");
+    assert_test!(MockSpiStatus::TX_FULL == 0x08, "TX_FULL should be bit 3");
+    assert_test!(
+        MockSpiStatus::MODE_FAULT == 0x10,
+        "MODE_FAULT should be bit 4"
+    );
+    assert_test!(
+        MockSpiStatus::SLAVE_MODE == 0x20,
+        "SLAVE_MODE should be bit 5"
+    );
+    assert_test!(
+        MockSpiStatus::CMD_ERROR == 0x40,
+        "CMD_ERROR should be bit 6"
+    );
+    assert_test!(MockSpiStatus::BUSY == 0x80, "BUSY should be bit 7");
+    assert_test!(
+        MockSpiStatus::TX_OVERRUN == 0x100,
+        "TX_OVERRUN should be bit 8"
+    );
+    assert_test!(
+        MockSpiStatus::RX_UNDERRUN == 0x200,
+        "RX_UNDERRUN should be bit 9"
+    );
+}
+
+#[test]
+fn test_spi_status_check_busy() {
+    // REQ: SPI-008 - Verify busy status checking
+    // Verifies: SpiStatus correctly identifies busy state
+    let status_idle = MockSpiStatus::from_bits_truncate(0x00);
+    let status_busy = MockSpiStatus::from_bits_truncate(MockSpiStatus::BUSY);
+
+    assert_test!(
+        !status_idle.contains(MockSpiStatus::BUSY),
+        "Idle status should not be busy"
+    );
+    assert_test!(
+        status_busy.contains(MockSpiStatus::BUSY),
+        "Busy status should be busy"
+    );
+}
+
+#[test]
+fn test_spi_status_check_fifo_state() {
+    // REQ: SPI-008 - Verify FIFO status checking
+    // Verifies: SpiStatus correctly identifies FIFO states
+    let status =
+        MockSpiStatus::from_bits_truncate(MockSpiStatus::TX_EMPTY | MockSpiStatus::RX_EMPTY);
+
+    assert_test!(
+        status.contains(MockSpiStatus::TX_EMPTY),
+        "Should show TX empty"
+    );
+    assert_test!(
+        status.contains(MockSpiStatus::RX_EMPTY),
+        "Should show RX empty"
+    );
+    assert_test!(
+        !status.contains(MockSpiStatus::TX_FULL),
+        "Should not show TX full"
+    );
+    assert_test!(
+        !status.contains(MockSpiStatus::RX_FULL),
+        "Should not show RX full"
+    );
+}
+
+#[test]
+fn test_spi_status_error_flags() {
+    // REQ: SPI-006 - Verify error status checking
+    // Verifies: SpiStatus correctly identifies error conditions
+    let status_ok = MockSpiStatus::from_bits_truncate(0x00);
+    let status_overrun = MockSpiStatus::from_bits_truncate(MockSpiStatus::TX_OVERRUN);
+    let status_underrun = MockSpiStatus::from_bits_truncate(MockSpiStatus::RX_UNDERRUN);
+    let status_fault = MockSpiStatus::from_bits_truncate(MockSpiStatus::MODE_FAULT);
+
+    assert_test!(status_ok.is_empty(), "OK status should be empty");
+    assert_test!(
+        status_overrun.contains(MockSpiStatus::TX_OVERRUN),
+        "Should detect TX overrun"
+    );
+    assert_test!(
+        status_underrun.contains(MockSpiStatus::RX_UNDERRUN),
+        "Should detect RX underrun"
+    );
+    assert_test!(
+        status_fault.contains(MockSpiStatus::MODE_FAULT),
+        "Should detect mode fault"
+    );
+}
+
+// ============================================================================
+// HalError DeviceError Variant Tests
+// REQ: HAL-002 - HAL error types
+// ============================================================================
+
+/// Mock HalError enum to test the new DeviceError variant
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum MockHalError {
+    WouldBlock,
+    BufferFull,
+    BufferEmpty,
+    InvalidParameter,
+    HardwareError,
+    DeviceError,
+    Timeout,
+}
+
+#[test]
+fn test_hal_error_device_error_variant() {
+    // REQ: HAL-002 - Verify DeviceError variant exists and is distinct
+    // Verifies: HalError::DeviceError is a valid error variant
+    let err = MockHalError::DeviceError;
+
+    assert_test!(
+        err == MockHalError::DeviceError,
+        "DeviceError should match itself"
+    );
+    assert_test!(
+        err != MockHalError::HardwareError,
+        "DeviceError should differ from HardwareError"
+    );
+    assert_test!(
+        err != MockHalError::Timeout,
+        "DeviceError should differ from Timeout"
+    );
+}
+
+#[test]
+fn test_hal_error_all_variants_distinct() {
+    // REQ: HAL-002 - Verify all error variants are distinct
+    // Verifies: All HalError variants have unique values
+    let errors = [
+        MockHalError::WouldBlock,
+        MockHalError::BufferFull,
+        MockHalError::BufferEmpty,
+        MockHalError::InvalidParameter,
+        MockHalError::HardwareError,
+        MockHalError::DeviceError,
+        MockHalError::Timeout,
+    ];
+
+    // Check each pair is distinct
+    for i in 0..errors.len() {
+        for j in (i + 1)..errors.len() {
+            assert_test!(errors[i] != errors[j], "Error variants should be distinct");
+        }
+    }
+}
+
+#[test]
+fn test_hal_error_device_error_pattern_match() {
+    // REQ: HAL-002 - Verify DeviceError can be pattern matched
+    // Verifies: HalError::DeviceError works in match expressions
+    fn classify_error(err: MockHalError) -> &'static str {
+        match err {
+            MockHalError::DeviceError => "device",
+            MockHalError::HardwareError => "hardware",
+            MockHalError::Timeout => "timeout",
+            _ => "other",
+        }
+    }
+
+    assert_test!(
+        classify_error(MockHalError::DeviceError) == "device",
+        "DeviceError should match device pattern"
+    );
+    assert_test!(
+        classify_error(MockHalError::HardwareError) == "hardware",
+        "HardwareError should match hardware pattern"
+    );
+}

@@ -14,7 +14,7 @@ This document tracks the implementation status of all 800 requirements from the 
 - **Implemented:** 800 requirements (100%) ✅
 - **In Progress:** 0 requirements (0%)
 - **Remaining:** 0 requirements (0%)
-- **Tests Passing:** 387 (run with `--test-threads=1`)
+- **Tests Passing:** 398 (run with `--test-threads=1`)
 
 ### Priority Breakdown
 
@@ -148,6 +148,8 @@ This document tracks the implementation status of all 800 requirements from the 
 
 ### 28. SPI Driver (SPI-001 to SPI-009) ✅ COMPLETE
 - ✅ SPI-001 to SPI-009: Full implementation with DMA support
+- ✅ SPI-002: SpiControl bitflags for control register configuration
+- ✅ SPI-008: SpiStatus bitflags for status register checking
 - Status: All 9 requirements implemented (100%) - priority: Should
 
 ### 29. I2C Driver (I2C-001 to I2C-012) ✅ COMPLETE

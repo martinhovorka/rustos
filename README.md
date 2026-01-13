@@ -3,7 +3,7 @@
 A preemptive, priority-based real-time operating system (RTOS) written in Rust for RISC-V embedded systems.
 
 > **Project Status:** ✅ Implementation Complete (100%)
-> All 800 requirements implemented. 387 tests passing. Production ready.
+> All 800 requirements implemented. 398 tests passing. Production ready.
 
 ## Overview
 
@@ -15,7 +15,7 @@ RustOS is a lightweight RTOS designed for the MicroBlaze V (RISC-V) soft-core pr
 - **Hardware Abstraction Layer (HAL)** for UART, Timer, GPIO, SPI, I2C, Ethernet, WDT
 - **Debug infrastructure** — GDB stub, semihosting, runtime profiler
 - **Security features** — Secure boot validation with anti-rollback protection
-- **Comprehensive test suite** with 387 tests (99%+ coverage)
+- **Comprehensive test suite** with 398 tests (99%+ coverage)
 
 ## Target Hardware
 
@@ -88,7 +88,7 @@ rustos/
 ├── rustos-kernel/       # RTOS Kernel (scheduler, tasks, sync primitives)
 ├── rustos-board/        # Board Support Package (startup, trap handling)
 ├── rustos-app/          # Example Application
-├── rustos-tests/        # Test Suite (387 tests)
+├── rustos-tests/        # Test Suite (398 tests)
 ├── docs/                # User documentation
 ├── requirements/        # Requirements specification (v2.8.3, 800 requirements)
 ├── bsp/                 # Vitis BSP and hardware platform
@@ -116,7 +116,7 @@ rustos/
 - ✅ **Priority Inheritance** — Feature-gated mutex protocol
 - ✅ **Debug Features** — GDB stub, semihosting, runtime profiler
 - ✅ **Security** — Secure boot validation with anti-rollback
-- ✅ **Test Suite** — 387 tests passing (99%+ line coverage)
+- ✅ **Test Suite** — 398 tests passing (99%+ line coverage)
 
 ### Performance
 
