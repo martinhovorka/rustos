@@ -20,7 +20,6 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
-MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Script configuration
@@ -39,8 +38,10 @@ ERRORS=0
 # Logs directory - store in artifacts for consistency with build/coverage
 LOGS_DIR="artifacts/qa"
 mkdir -p "$LOGS_DIR"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 REPORT_FILE="$LOGS_DIR/qa_report.md"
+
+# Ensure RISC-V target is installed
+rustup target add riscv32imac-unknown-none-elf
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
