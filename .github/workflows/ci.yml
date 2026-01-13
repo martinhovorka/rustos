@@ -1,5 +1,20 @@
 # REQ: CI-001 - CI/CD Configuration for GitHub Actions
-# Integrates build.sh, test.sh, qa_maintenance.sh, qa_safety.sh, coverage.sh
+# Integrates build.sh, test.sh, and comprehensive qa.sh quality checks
+#
+# qa.sh sections:
+#   1  - Code Formatting & Style (QUAL-006)
+#   2  - Build Verification (BUILD-003, TEST-001)
+#   3  - Test Execution (QUAL-020/021, COV-001/006/007/008)
+#   4  - Code Linting (QUAL-005)
+#   5  - Unsafe Code & Safety (SAFE-002/007/008, VER-009)
+#   6  - Security Analysis (TEST-012, SEC-002/004)
+#   7  - Documentation (QUAL-001)
+#   8  - Code Complexity (QUAL-009/010, RUST-006)
+#   9  - Dependencies (CI-006/008)
+#   10 - Requirements Traceability (VER-012/014/015)
+#   11 - Binary Size Analysis (CI-005, MEM-001)
+#   12 - Performance Benchmarks
+#   13 - RTOS-Specific Checks (QUAL-002/003/004)
 
 name: CI
 
@@ -80,9 +95,28 @@ jobs:
     - name: Run tests (via test.sh)
       run: ./test.sh
 
+  # REQ: QUAL-006 - Formatting check using qa.sh section 1
+  format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.82.0
+        components: rustfmt
+    
+    - name: Make scripts executable
+      run: chmod +x qa.sh
+    
+    - name: Check formatting (via qa.sh --section 1)
+      run: ./qa.sh --section 1
+
   # REQ: CI-004 - Lint job using qa.sh section 4
   lint:
     runs-on: ubuntu-latest
+    needs: format
     steps:
     - uses: actions/checkout@v4
     
@@ -260,20 +294,89 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-cargo-docs-
     
-    - name: Build documentation
-      run: cargo doc --workspace --no-deps --document-private-items
+    - name: Make scripts executable
+      run: chmod +x qa.sh
+    
+    - name: Build documentation (via qa.sh --section 7)
+      run: ./qa.sh --section 7
     
     - name: Upload documentation artifact
       uses: actions/upload-artifact@v4
       with:
         name: rustdoc
-        path: target/riscv32imac-unknown-none-elf/doc
+        path: target/doc
         retention-days: 7
+
+  # REQ: CI-005, MEM-001 - Binary size check using qa.sh section 11
+  binary-size:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.82.0
+        targets: riscv32imac-unknown-none-elf
+    
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-binary-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-binary-
+    
+    - name: Make scripts executable
+      run: chmod +x qa.sh build.sh
+    
+    - name: Build release binary
+      run: ./build.sh
+    
+    - name: Check binary size (via qa.sh --section 11)
+      run: ./qa.sh --section 11
+
+  # REQ: QUAL-002/003/004 - RTOS-specific checks using qa.sh section 13
+  rtos-checks:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.82.0
+        targets: riscv32imac-unknown-none-elf
+    
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-rtos-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-rtos-
+    
+    - name: Make scripts executable
+      run: chmod +x qa.sh build.sh
+    
+    - name: Build release binary
+      run: ./build.sh
+    
+    - name: Run RTOS-specific checks (via qa.sh --section 13)
+      run: ./qa.sh --section 13
 
   # REQ: CI-009 - Quality gate (runs all qa.sh checks)
   quality-gate:
     runs-on: ubuntu-latest
-    needs: [build, test, lint, safety, security]
+    needs: [build, test, format, lint, safety, security, binary-size, rtos-checks]
     steps:
     - uses: actions/checkout@v4
     
