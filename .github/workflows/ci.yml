@@ -61,13 +61,6 @@ jobs:
     
     - name: Build (via build.sh)
       run: ./build.sh
-    
-    - name: Upload binary artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: rustos-app-elf
-        path: rustos-app.elf
-        retention-days: 7
 
   # REQ: CI-003 - Test job using test.sh
   test:
@@ -279,7 +272,13 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: rustdoc
-        path: target/doc
+        path: |
+          ~/docs
+          ~/TEST_COVERAGE_REPORT.md
+          ~/README.md
+          ~/QA_README.md
+          ~/IMPLEMENTATION_STATUS.md
+          ~/CHANGELOG.md
         retention-days: 7
 
   # REQ: CI-005, MEM-001 - Binary size check using qa.sh section 11
