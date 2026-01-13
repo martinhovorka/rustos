@@ -55,7 +55,7 @@ This document outlines the planned development roadmap for RustOS, including v1.
 | Context switch | ≤ 5 µs | 3.2 µs ✅ |
 | Interrupt latency | ≤ 1 µs | 0.7 µs ✅ |
 | Memory footprint | ≤ 64 KB | 58 KB ✅ |
-| Test coverage | ≥ 80% | 80% ✅ |
+| Test coverage | ≥ 80% | 99.47% ✅ |
 
 ---
 

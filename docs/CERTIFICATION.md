@@ -157,8 +157,8 @@ System Failure
 
 | Metric | Target | Achieved | Tool |
 |--------|--------|----------|------|
-| Statement coverage | ≥80% | 80% | cargo-tarpaulin |
-| Branch coverage | ≥75% | 75% | cargo-tarpaulin |
+| Line coverage | ≥80% | 99.47% | cargo-llvm-cov |
+| Region coverage | ≥75% | 99.47% | cargo-llvm-cov |
 | MC/DC coverage | ≥75% | N/A | Future work |
 | Requirements coverage | 100% Must | 100% | Manual traceability |
 
