@@ -58,6 +58,9 @@
 #![deny(missing_docs)]
 #![deny(warnings)]
 
+/// REQ: UART-010 - Re-export critical_section for UART print macros
+pub use critical_section;
+
 #[cfg(feature = "uart")]
 pub mod uart;
 

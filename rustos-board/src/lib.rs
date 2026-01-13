@@ -8,6 +8,20 @@
 pub mod startup;
 pub mod trap;
 
+/// REQ: PAN-003 - Provide panic UART output sink
+///
+/// # Safety
+/// Must only be called when the console UART has been initialized.
+// SAFETY: Function signature - used by kernel panic handler hook.
+unsafe fn panic_uart_getter() -> &'static mut dyn core::fmt::Write {
+    match unsafe { rustos_hal::uart::console_mut() } {
+        Some(uart) => uart,
+        None => loop {
+            core::hint::spin_loop();
+        },
+    }
+}
+
 /// REQ: BOARD-002 - Board initialization
 ///
 /// # Safety
@@ -21,6 +35,9 @@ pub unsafe fn init() {
 
     // REQ: HAL-001 - Initialize HAL drivers
     rustos_hal::uart::init_console();
+
+    // REQ: PAN-003 - Register panic output to console UART
+    rustos_kernel::panic::set_panic_uart_getter(panic_uart_getter);
 
     // REQ: INT-002 - Initialize interrupt controller
     let intc = rustos_hal::intc::init();

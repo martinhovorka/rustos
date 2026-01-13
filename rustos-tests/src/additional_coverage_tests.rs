@@ -14,7 +14,7 @@
 
 extern crate std;
 
-use core::fmt::{self, Write};
+use core::fmt;
 use std::cell::RefCell;
 use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, AtomicU8, Ordering};
 use std::vec::Vec;

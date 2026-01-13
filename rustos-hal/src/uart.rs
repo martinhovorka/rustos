@@ -192,16 +192,28 @@ pub fn console() -> Option<&'static Uart> {
     unsafe { (*core::ptr::addr_of!(CONSOLE)).as_ref() }
 }
 
+/// REQ: UART-009 - Get mutable console UART reference
+///
+/// # Safety
+/// Must only be used for the global console singleton. Callers must ensure this is not used
+/// concurrently from multiple contexts unless they also provide external serialization.
+/// In panic context (interrupts disabled), this is safe to use for diagnostic output.
+// SAFETY: Function signature - caller must enforce singleton & exclusivity contract.
+pub unsafe fn console_mut() -> Option<&'static mut Uart> {
+    // SAFETY: Accessing a `static mut` singleton. Caller ensures no concurrent mutable borrows.
+    unsafe { (*core::ptr::addr_of_mut!(CONSOLE)).as_mut() }
+}
+
 /// REQ: UART-010 - Print to console
 #[macro_export]
 macro_rules! print {
     ($($arg:tt)*) => {
-        if let Some(uart) = $crate::uart::console() {
-            use core::fmt::Write;
-            // SAFETY: Casting const reference to mutable for Write trait.
-            // Console UART is a singleton, and Write operations use internal mutability.
-            let _ = write!(unsafe { &mut *(uart as *const _ as *mut $crate::uart::Uart) }, $($arg)*);
-        }
+        $crate::critical_section::with(|_| {
+            if let Some(uart) = unsafe { $crate::uart::console_mut() } {
+                use core::fmt::Write;
+                let _ = write!(uart, $($arg)*);
+            }
+        });
     };
 }
 

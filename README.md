@@ -223,4 +223,6 @@ The system runs entirely from the 128 KB on-chip BRAM:
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License and the Apache License 2.0. See the [LICENSE-MIT](LICENSE-MIT) and [LICENSE-APACHE](LICENSE-APACHE) files for details.
+
+Use of this source code is subject to the terms of both licenses. You may choose either license to govern your use of this code.

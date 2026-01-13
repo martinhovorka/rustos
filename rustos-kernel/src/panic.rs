@@ -4,12 +4,58 @@
 
 #![allow(unused_imports)]
 
-use core::fmt::Write;
 use core::panic::PanicInfo;
-use core::sync::atomic::{AtomicBool, Ordering};
+use portable_atomic::{AtomicBool, AtomicUsize, Ordering};
 
 /// Track if we're already in panic to prevent recursive panics
 static PANICKING: AtomicBool = AtomicBool::new(false);
+
+/// REQ: PAN-003 - Panic output writer getter type
+pub type PanicUartGetter = unsafe fn() -> &'static mut dyn core::fmt::Write;
+
+/// REQ: PAN-005 - Panic LED hook type
+pub type PanicLedHook = unsafe fn();
+
+/// REQ: PAN-007 - Panic reset hook type
+pub type PanicResetHook = unsafe fn();
+
+/// REQ: PAN-003 - Registered panic UART getter
+static PANIC_UART_GETTER: AtomicUsize = AtomicUsize::new(0);
+
+/// REQ: PAN-005 - Registered panic LED hook
+static PANIC_LED_HOOK: AtomicUsize = AtomicUsize::new(0);
+
+/// REQ: PAN-007 - Registered panic reset hook
+static PANIC_RESET_HOOK: AtomicUsize = AtomicUsize::new(0);
+
+/// REQ: PAN-003 - Register UART getter for panic output
+///
+/// # Safety
+/// The provided function must always return a valid `&'static mut` writer while the system is
+/// in panic handling (interrupts disabled). It must not allocate or block.
+// SAFETY: Function signature - requires caller to guarantee lifetime/validity of returned writer.
+pub unsafe fn set_panic_uart_getter(getter: PanicUartGetter) {
+    PANIC_UART_GETTER.store(getter as usize, Ordering::Release);
+}
+
+/// REQ: PAN-005 - Register LED blink hook for panic indication
+///
+/// # Safety
+/// The hook must be safe to call with interrupts disabled, must not allocate, and must be
+/// idempotent (may be called multiple times).
+// SAFETY: Function signature - caller provides platform-specific hook.
+pub unsafe fn set_panic_led_hook(hook: PanicLedHook) {
+    PANIC_LED_HOOK.store(hook as usize, Ordering::Release);
+}
+
+/// REQ: PAN-007 - Register watchdog reset hook for panic reset
+///
+/// # Safety
+/// The hook must be safe to call with interrupts disabled and should trigger a system reset.
+// SAFETY: Function signature - caller provides platform-specific hook.
+pub unsafe fn set_panic_reset_hook(hook: PanicResetHook) {
+    PANIC_RESET_HOOK.store(hook as usize, Ordering::Release);
+}
 
 /// REQ: PAN-001, PAN-002, PAN-003, PAN-004, PAN-006 - Panic handler
 #[panic_handler]
@@ -139,23 +185,47 @@ fn dump_registers(uart: &mut (impl core::fmt::Write + ?Sized)) {
 /// REQ: PAN-009 - Check for stack overflow
 #[cfg(debug_assertions)]
 fn check_stack_overflow(uart: &mut (impl core::fmt::Write + ?Sized)) {
-    // This would check task stack canaries
-    // For now, just a placeholder
-    let _ = writeln!(uart, "\nStack Check: (not implemented yet)");
+    use core::fmt::Write;
+
+    // REQ: PAN-009 - Distinguish stack overflow panics via canary check
+    if let Some(current_id) = crate::scheduler::get().current_task() {
+        if let Some(task) = crate::scheduler::get().get_task(current_id) {
+            if !task.check_stack_overflow() {
+                let _ = writeln!(uart, "\nStack Check: STACK OVERFLOW DETECTED");
+                return;
+            }
+        }
+    }
+
+    let _ = writeln!(uart, "\nStack Check: OK (or unknown task)");
 }
 
 /// REQ: PAN-005 - Blink LEDs in panic pattern
 #[cfg(feature = "panic-led")]
 fn blink_panic_pattern() {
-    // Fast blink pattern: 3 short, pause, repeat
-    // Would need GPIO access - placeholder for now
+    let ptr = PANIC_LED_HOOK.load(Ordering::Acquire);
+    if ptr == 0 {
+        return;
+    }
+
+    // SAFETY: The hook pointer is set only via set_panic_led_hook(), which guarantees it is a
+    // valid function pointer for the program lifetime.
+    let hook: PanicLedHook = unsafe { core::mem::transmute(ptr) };
+    unsafe { hook() };
 }
 
 /// REQ: PAN-007 - Trigger watchdog reset
 #[cfg(feature = "panic-reset")]
 fn trigger_watchdog_reset() {
-    // Enable and wait for watchdog to trigger reset
-    // Placeholder - would need WDT peripheral access
+    let ptr = PANIC_RESET_HOOK.load(Ordering::Acquire);
+    if ptr == 0 {
+        return;
+    }
+
+    // SAFETY: The hook pointer is set only via set_panic_reset_hook(), which guarantees it is a
+    // valid function pointer for the program lifetime.
+    let hook: PanicResetHook = unsafe { core::mem::transmute(ptr) };
+    unsafe { hook() };
 }
 
 /// Get UART for panic output
@@ -164,9 +234,15 @@ fn trigger_watchdog_reset() {
 /// Must only be called from panic handler with interrupts disabled
 // SAFETY: Function signature - see # Safety documentation above
 unsafe fn get_uart() -> Option<&'static mut dyn core::fmt::Write> {
-    // This is a simplified version - in real implementation,
-    // would get UART from HAL console
-    None
+    let ptr = PANIC_UART_GETTER.load(Ordering::Acquire);
+    if ptr == 0 {
+        return None;
+    }
+
+    // SAFETY: The getter pointer is set only via set_panic_uart_getter(), which guarantees it is
+    // a valid function pointer for the program lifetime.
+    let getter: PanicUartGetter = unsafe { core::mem::transmute(ptr) };
+    Some(unsafe { getter() })
 }
 
 #[cfg(test)]

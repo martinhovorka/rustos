@@ -77,8 +77,8 @@ pub const TICKLESS_ENABLED: bool = false;
 
 /// REQ: CFG-001 - Enable priority inheritance
 #[cfg(feature = "priority-inheritance")]
-/// **Future Feature**: When enabled, mutexes will use priority inheritance protocol
-/// to prevent priority inversion (Mars Pathfinder lesson-learned). Not implemented in v1.0.
+/// When enabled, mutexes use a priority inheritance protocol to reduce priority inversion.
+/// Note: Current mutex locking is spin-based; full blocking/unblocking is planned.
 pub const PRIORITY_INHERITANCE: bool = true;
 #[cfg(not(feature = "priority-inheritance"))]
 /// Enable priority inheritance for mutexes
