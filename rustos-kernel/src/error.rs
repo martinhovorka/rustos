@@ -240,14 +240,14 @@ impl KernelError {
 
     /// REQ: ERR-010 - Check if error requires immediate action
     pub const fn is_critical(&self) -> bool {
-        match self {
+        matches!(
+            self,
             Self::StackOverflow
-            | Self::MemoryCorruption
-            | Self::ContextSwitchFailed
-            | Self::InterruptStorm
-            | Self::Deadlock => true,
-            _ => false,
-        }
+                | Self::MemoryCorruption
+                | Self::ContextSwitchFailed
+                | Self::InterruptStorm
+                | Self::Deadlock
+        )
     }
 }
 
@@ -271,13 +271,15 @@ static mut ERROR_HANDLER: Option<ErrorHandler> = None;
 ///
 /// # Safety
 /// Must be called only once during initialization, before scheduler starts
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn register_error_handler(handler: ErrorHandler) {
     ERROR_HANDLER = Some(handler);
 }
 
 /// REQ: ERR-004 - Report error to registered handler
 pub fn report_error(error: KernelError, context: &'static str) {
-    // Safety: ERROR_HANDLER is only written during init, read-only after
+    // SAFETY: ERROR_HANDLER is only written during init, read-only after scheduler starts.
+    // Safe for concurrent read access.
     if let Some(handler) = unsafe { ERROR_HANDLER } {
         handler(error, context);
     }

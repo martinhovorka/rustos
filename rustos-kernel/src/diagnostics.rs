@@ -91,6 +91,7 @@ mod enabled {
     /// Returns the total number of times the specified interrupt has occurred since boot.
     /// Non-blocking, safe to call from ISR context.
     pub fn irq_get_count(irq_num: u8) -> u32 {
+        // SAFETY: Reading atomic counter from static array, safe for concurrent access
         unsafe { IRQ_COUNTERS[irq_num as usize].load(Ordering::Relaxed) }
     }
 
@@ -106,6 +107,7 @@ mod enabled {
     /// 
     /// # Safety
     /// Must be called only from interrupt context
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn record_irq(irq_num: u8) {
         if (irq_num as usize) < IRQ_COUNTERS.len() {
             IRQ_COUNTERS[irq_num as usize].fetch_add(1, Ordering::Relaxed);
@@ -127,7 +129,6 @@ static IRQ_COUNTERS: [AtomicU32; 32] = [
 
 /// Legacy diagnostics structures (for performance monitoring)
 /// These are separate from the DIAG-001 to DIAG-006 query APIs
-
 /// REQ: DIAG-001 - Per-task statistics
 #[derive(Debug, Clone, Copy)]
 pub struct TaskStats {
@@ -208,6 +209,12 @@ pub struct Diagnostics {
     context_switch_count: AtomicU32,
     /// Interrupt counter (atomic for ISR access)
     interrupt_count: AtomicU32,
+}
+
+impl Default for Diagnostics {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Diagnostics {
@@ -373,7 +380,10 @@ static mut DIAGNOSTICS: Diagnostics = Diagnostics::new();
 ///
 /// # Safety
 /// Must be called from a single thread or with proper synchronization
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn get_diagnostics() -> &'static mut Diagnostics {
+    // SAFETY: Returning mutable reference to static DIAGNOSTICS.
+    // Caller guarantees thread-safety per function safety contract.
     unsafe { &mut *core::ptr::addr_of_mut!(DIAGNOSTICS) }
 }
 
@@ -381,6 +391,7 @@ pub unsafe fn get_diagnostics() -> &'static mut Diagnostics {
 ///
 /// # Safety
 /// Stack pointer must be valid for the given task
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn calculate_stack_usage(stack_bottom: *const u8, stack_top: *const u8, sp: *const u8) -> usize {
     let stack_size = stack_bottom as usize - stack_top as usize;
     let used = stack_bottom as usize - sp as usize;

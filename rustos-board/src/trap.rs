@@ -7,7 +7,13 @@ use core::arch::asm;
 /// REQ: INIT-006, INIT-016 - Initialize trap handler
 /// 
 /// Sets up mtvec to point to our trap handler in direct mode.
+///
+/// # Safety
+/// Must be called during initialization before enabling interrupts. Only call once.
+// SAFETY: Function signature - privileged operation, see inline SAFETY comments
 pub unsafe fn init_trap_handler() {
+    // SAFETY: Writing to mtvec CSR is privileged operation.
+    // trap_handler address is valid and properly aligned.
     extern "C" {
         fn _trap_handler();
     }
@@ -15,6 +21,8 @@ pub unsafe fn init_trap_handler() {
     let trap_addr = _trap_handler as usize;
     
     // REQ: INIT-016 - Set mtvec to direct mode (MODE=0)
+    // SAFETY: Writing mtvec with valid handler address in machine mode.
+    // Handler is properly aligned (.trap section ensures alignment).
     asm!(
         "csrw mtvec, {addr}",
         addr = in(reg) trap_addr,
@@ -30,8 +38,12 @@ pub unsafe fn init_trap_handler() {
 /// Must preserve all registers and return via mret
 #[link_section = ".trap"]
 #[export_name = "_trap_handler"]
+// SAFETY: Naked function - see # Safety documentation and inline comments
 #[unsafe(naked)]
 pub unsafe extern "C" fn trap_handler() -> ! {
+    // SAFETY: Naked function with naked_asm - no prologue/epilogue.
+    // Manually manages all registers and stack. Returns via mret.
+    // Must preserve ABI and trap handler calling conventions.
     core::arch::naked_asm!(
         // Save context (simplified - full implementation in kernel context.rs)
         "addi sp, sp, -16",
@@ -72,11 +84,14 @@ pub unsafe extern "C" fn trap_handler() -> ! {
 /// # Safety
 /// Called from trap handler
 #[no_mangle]
+// SAFETY: Function signature - called from trap_handler assembly context
 unsafe extern "C" fn handle_exception() {
     let mcause: usize;
     let mepc: usize;
     let mtval: usize;
     
+    // SAFETY: Reading CSRs in exception handler context.
+    // Values are diagnostic only, no side effects.
     asm!(
         "csrr {}, mcause",
         "csrr {}, mepc",
@@ -95,6 +110,7 @@ unsafe extern "C" fn handle_exception() {
 /// # Safety
 /// Called from trap handler
 #[no_mangle]
+// SAFETY: Function signature - called from trap_handler assembly context
 unsafe extern "C" fn handle_interrupt() {
     // REQ: INT-008 - Dispatch to interrupt controller
     if let Some(intc) = rustos_hal::intc::get() {

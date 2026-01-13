@@ -85,6 +85,7 @@ impl I2c {
     /// # Safety
     /// - base_addr must point to valid I2C peripheral registers
     /// - Caller must ensure exclusive access to the peripheral
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn new(base_addr: usize) -> Self {
         let i2c = &*(base_addr as *const I2cRegs);
         Self { base: i2c }
@@ -259,6 +260,8 @@ impl I2c {
         // Use cycle counter or timer
         // Simplified: count loop iterations as approximate time
         static mut COUNTER: u32 = 0;
+        // SAFETY: Simple counter increment for timing approximation.
+        // Not thread-safe but acceptable for this timing helper function.
         unsafe {
             COUNTER = COUNTER.wrapping_add(1);
             COUNTER

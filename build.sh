@@ -14,21 +14,24 @@ echo "Ensuring RISC-V target is installed..."
 rustup target add riscv32imac-unknown-none-elf
 
 # REQ: BUILD-003 - Build all crates
-echo "Building workspace..."
-cargo build --release --workspace
-
 # REQ: BUILD-004 - Build application
-echo "Building application..."
-cd rustos-app
-cargo build --release
+echo "Building workspace..."
+cargo build --release --all --target riscv32imac-unknown-none-elf
+
+readonly ELF_PATH="target/riscv32imac-unknown-none-elf/release/rustos-app"
+readonly ELF="./rustos-app.elf"
 
 echo ""
 echo "Build complete!"
-echo "Output: target/riscv32imac-unknown-none-elf/release/rustos-app"
+echo "Output: $ELF_PATH"
 echo ""
 
 # REQ: BUILD-005 - Display binary size
 echo "Binary size:"
-rust-size target/riscv32imac-unknown-none-elf/release/rustos-app 2>/dev/null || \
-    riscv64-unknown-elf-size target/riscv32imac-unknown-none-elf/release/rustos-app 2>/dev/null || \
+rust-size $ELF_PATH 2>/dev/null || \
+    riscv64-unknown-elf-size $ELF_PATH 2>/dev/null || \
     echo "  (size tool not available)"
+
+echo
+cp -v --remove-destination "$ELF_PATH" "$ELF"
+sha256sum $ELF

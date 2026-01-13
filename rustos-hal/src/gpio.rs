@@ -39,6 +39,7 @@ impl GpioPort {
     /// 
     /// # Safety
     /// Must ensure exclusive access to the peripheral
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn new(base_addr: usize) -> Self {
         Self {
             periph: &*(base_addr as *const gpio::Gpio),

@@ -243,6 +243,7 @@ impl SecureBoot {
             return Err(SecureBootError::MemoryError);
         }
         
+        // SAFETY: Reading image header from validated memory address with bounds check
         let header = unsafe { core::ptr::read_volatile(header_ptr) };
         
         if header.magic != ImageHeader::MAGIC {
@@ -259,6 +260,7 @@ impl SecureBoot {
         let mut crc: u32 = 0xFFFFFFFF;
         
         for i in 0..len {
+            // SAFETY: Reading byte from firmware image address range
             let byte = unsafe { *((addr + i) as *const u8) };
             let index = ((crc ^ byte as u32) & 0xFF) as usize;
             crc = (crc >> 8) ^ CRC32_TABLE[index];

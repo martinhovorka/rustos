@@ -43,6 +43,7 @@ pub fn wait_for_interrupt() {
     #[cfg(feature = "wfi-idle")]
     {
         // REQ: PWR-001 - Use WFI instruction on RISC-V
+        // SAFETY: WFI instruction - safe to execute, waits for interrupt to wake
         unsafe {
             core::arch::asm!("wfi");
         }

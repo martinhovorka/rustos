@@ -85,7 +85,10 @@ pub const SPI_EXTERNAL_BASE: usize = 0x44A1_0000;
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races with other UART accesses
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn uart() -> &'static uart::Uart {
+    // SAFETY: Casting memory-mapped UART base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(UART_BASE as *const uart::Uart)
 }
 
@@ -94,7 +97,10 @@ pub unsafe fn uart() -> &'static uart::Uart {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn gpio_led() -> &'static gpio::Gpio {
+    // SAFETY: Casting memory-mapped GPIO LED base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(GPIO_LED_BASE as *const gpio::Gpio)
 }
 
@@ -103,7 +109,10 @@ pub unsafe fn gpio_led() -> &'static gpio::Gpio {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn gpio_rgb() -> &'static gpio::Gpio {
+    // SAFETY: Casting memory-mapped GPIO RGB base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(GPIO_RGB_BASE as *const gpio::Gpio)
 }
 
@@ -112,7 +121,10 @@ pub unsafe fn gpio_rgb() -> &'static gpio::Gpio {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn gpio_buttons() -> &'static gpio::Gpio {
+    // SAFETY: Casting memory-mapped GPIO buttons base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(GPIO_BUTTONS_BASE as *const gpio::Gpio)
 }
 
@@ -121,7 +133,10 @@ pub unsafe fn gpio_buttons() -> &'static gpio::Gpio {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn gpio_switches() -> &'static gpio::Gpio {
+    // SAFETY: Casting memory-mapped GPIO switches base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(GPIO_SWITCHES_BASE as *const gpio::Gpio)
 }
 
@@ -130,7 +145,10 @@ pub unsafe fn gpio_switches() -> &'static gpio::Gpio {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn gpio_shield_0_19() -> &'static gpio::Gpio {
+    // SAFETY: Casting memory-mapped GPIO shield base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(GPIO_SHIELD_0_19_BASE as *const gpio::Gpio)
 }
 
@@ -139,7 +157,10 @@ pub unsafe fn gpio_shield_0_19() -> &'static gpio::Gpio {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn gpio_shield_26_41() -> &'static gpio::Gpio {
+    // SAFETY: Casting memory-mapped GPIO shield base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(GPIO_SHIELD_26_41_BASE as *const gpio::Gpio)
 }
 
@@ -148,7 +169,10 @@ pub unsafe fn gpio_shield_26_41() -> &'static gpio::Gpio {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn gpio_i2c_pullups() -> &'static gpio::Gpio {
+    // SAFETY: Casting memory-mapped GPIO I2C pullups base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(GPIO_I2C_PULLUPS_BASE as *const gpio::Gpio)
 }
 
@@ -157,7 +181,10 @@ pub unsafe fn gpio_i2c_pullups() -> &'static gpio::Gpio {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn intc() -> &'static intc::Intc {
+    // SAFETY: Casting memory-mapped interrupt controller base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(INTC_BASE as *const intc::Intc)
 }
 
@@ -166,7 +193,10 @@ pub unsafe fn intc() -> &'static intc::Intc {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn i2c() -> &'static i2c::I2c {
+    // SAFETY: Casting memory-mapped I2C base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(I2C_BASE as *const i2c::I2c)
 }
 
@@ -175,7 +205,10 @@ pub unsafe fn i2c() -> &'static i2c::I2c {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn ethernet() -> &'static ethernet::Ethernet {
+    // SAFETY: Casting memory-mapped Ethernet base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(ETHERNET_BASE as *const ethernet::Ethernet)
 }
 
@@ -184,7 +217,10 @@ pub unsafe fn ethernet() -> &'static ethernet::Ethernet {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn wdt() -> &'static wdt::Wdt {
+    // SAFETY: Casting memory-mapped watchdog timer base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(WDT_BASE as *const wdt::Wdt)
 }
 
@@ -193,7 +229,10 @@ pub unsafe fn wdt() -> &'static wdt::Wdt {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn spi_flash() -> &'static spi::Spi {
+    // SAFETY: Casting memory-mapped SPI flash base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(SPI_FLASH_BASE as *const spi::Spi)
 }
 
@@ -202,6 +241,9 @@ pub unsafe fn spi_flash() -> &'static spi::Spi {
 /// # Safety
 /// REQ: PAC-005 - Caller must ensure no data races
 #[inline]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn spi_external() -> &'static spi::Spi {
+    // SAFETY: Casting memory-mapped SPI external base address to peripheral reference.
+    // Caller ensures exclusive access per function safety contract.
     &*(SPI_EXTERNAL_BASE as *const spi::Spi)
 }

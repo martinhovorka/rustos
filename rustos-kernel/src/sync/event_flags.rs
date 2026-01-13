@@ -20,6 +20,12 @@ pub enum WaitCondition {
     Any,
 }
 
+impl Default for EventFlags {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EventFlags {
     /// REQ: EVT-003 - Create new event flags
     pub const fn new() -> Self {

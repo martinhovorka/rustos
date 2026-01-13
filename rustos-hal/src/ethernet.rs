@@ -18,6 +18,7 @@
 //!
 //! // Initialize Ethernet with MAC address
 //! let mac = MacAddress([0x00, 0x0A, 0x35, 0x01, 0x02, 0x03]);
+//! // SAFETY: Valid Ethernet base address, single instance
 //! let mut eth = unsafe { Ethernet::new(ETHERNET_BASE) };
 //! eth.init(mac).unwrap();
 //!
@@ -157,6 +158,7 @@ impl Ethernet {
     /// # Safety
     /// - base_addr must point to valid Ethernet peripheral registers
     /// - Caller must ensure exclusive access to the peripheral
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn new(base_addr: usize) -> Self {
         let eth = &*(base_addr as *const EthernetRegs);
         Self {

@@ -91,6 +91,7 @@ impl Spi {
     ///
     /// # Safety
     /// base_addr must be a valid SPI peripheral base address
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn new(base_addr: usize) -> Self {
         Self { base_addr }
     }
@@ -114,12 +115,14 @@ impl Spi {
         ctrl |= SpiControl::from_bits_truncate((clock_div as u32) << 8);
 
         // Write control register
+        // SAFETY: Writing to memory-mapped SPI control register at validated base_addr.
         unsafe {
             write_volatile((self.base_addr + CTRL_REG_OFFSET) as *mut u32, ctrl.bits());
         }
 
         // REQ: SPI-001 - Enable SPI
         ctrl |= SpiControl::SPE;
+        // SAFETY: Writing to memory-mapped SPI control register to enable SPI.
         unsafe {
             write_volatile((self.base_addr + CTRL_REG_OFFSET) as *mut u32, ctrl.bits());
         }
@@ -129,6 +132,7 @@ impl Spi {
 
     /// REQ: SPI-005 - Assert chip select (active low)
     pub fn select(&mut self, cs: u8) {
+        // SAFETY: Reading/writing memory-mapped SPI control register for chip select.
         unsafe {
             let mut ctrl = read_volatile((self.base_addr + CTRL_REG_OFFSET) as *const u32);
             // Clear CS bits and set selected CS
@@ -139,6 +143,7 @@ impl Spi {
 
     /// REQ: SPI-005 - Deassert chip select
     pub fn deselect(&mut self) {
+        // SAFETY: Reading/writing memory-mapped SPI control register to deassert chip select.
         unsafe {
             let mut ctrl = read_volatile((self.base_addr + CTRL_REG_OFFSET) as *const u32);
             ctrl |= 0xF0000; // Deassert all CS lines
@@ -148,6 +153,7 @@ impl Spi {
 
     /// REQ: SPI-008 - Check if SPI is busy
     pub fn is_busy(&self) -> bool {
+        // SAFETY: Reading from memory-mapped SPI status register.
         unsafe {
             let status = read_volatile((self.base_addr + STATUS_REG_OFFSET) as *const u32);
             SpiStatus::from_bits_truncate(status).contains(SpiStatus::BUSY)
@@ -156,6 +162,7 @@ impl Spi {
 
     /// REQ: SPI-008 - Check if TX FIFO is full
     pub fn is_tx_full(&self) -> bool {
+        // SAFETY: Reading from memory-mapped SPI status register.
         unsafe {
             let status = read_volatile((self.base_addr + STATUS_REG_OFFSET) as *const u32);
             SpiStatus::from_bits_truncate(status).contains(SpiStatus::TX_FULL)
@@ -164,6 +171,7 @@ impl Spi {
 
     /// REQ: SPI-008 - Check if RX FIFO is empty
     pub fn is_rx_empty(&self) -> bool {
+        // SAFETY: Reading from memory-mapped SPI status register.
         unsafe {
             let status = read_volatile((self.base_addr + STATUS_REG_OFFSET) as *const u32);
             SpiStatus::from_bits_truncate(status).contains(SpiStatus::RX_EMPTY)
@@ -181,6 +189,7 @@ impl Spi {
             }
         }
 
+        // SAFETY: Writing to memory-mapped SPI TX data register.
         unsafe {
             write_volatile((self.base_addr + DATA_TX_OFFSET) as *mut u32, data as u32);
         }
@@ -199,6 +208,7 @@ impl Spi {
             }
         }
 
+        // SAFETY: Reading from memory-mapped SPI RX data register.
         unsafe {
             let data = read_volatile((self.base_addr + DATA_RX_OFFSET) as *const u32);
             Ok(data as u8)
@@ -259,6 +269,7 @@ impl Spi {
 
     /// REQ: SPI-006 - Clear error flags
     pub fn clear_errors(&mut self) {
+        // SAFETY: Reading from memory-mapped SPI status register to clear error flags.
         unsafe {
             // Read status to clear error flags
             let _ = read_volatile((self.base_addr + STATUS_REG_OFFSET) as *const u32);
@@ -267,6 +278,7 @@ impl Spi {
 
     /// REQ: SPI-006 - Check for errors
     pub fn get_errors(&self) -> Option<SpiError> {
+        // SAFETY: Reading from memory-mapped SPI status register to check error flags.
         unsafe {
             let status = SpiStatus::from_bits_truncate(
                 read_volatile((self.base_addr + STATUS_REG_OFFSET) as *const u32)
@@ -286,6 +298,7 @@ impl Spi {
 
     /// REQ: SPI-001 - Disable SPI
     pub fn disable(&mut self) {
+        // SAFETY: Reading/writing memory-mapped SPI control register to disable SPI.
         unsafe {
             let mut ctrl = read_volatile((self.base_addr + CTRL_REG_OFFSET) as *const u32);
             ctrl &= !SpiControl::SPE.bits();
@@ -322,6 +335,7 @@ impl<'a> Drop for SpiTransaction<'a> {
 // REQ: PER-015 - SPI instance for flash memory
 /// Get SPI instance for flash memory
 pub fn spi_flash() -> Spi {
+    // SAFETY: Creating SPI instance with valid flash SPI base address
     unsafe { Spi::new(rustos_pac::spi::SPI_BASE_ADDR) }
 }
 

@@ -32,38 +32,46 @@ impl Spi {
     /// REQ: SPI-002 - Software reset
     #[inline]
     pub fn reset(&self) {
+        // SAFETY: Writing to memory-mapped SPI soft reset register.
         unsafe { write_volatile(self.srr.get(), 0x0A) }
     }
 
     /// REQ: SPI-003 - Enable SPI controller
     #[inline]
     pub fn enable(&self) {
+        // SAFETY: Reading from memory-mapped SPI control register.
         let cr = unsafe { read_volatile(self.cr.get()) };
+        // SAFETY: Writing to memory-mapped SPI control register to enable.
         unsafe { write_volatile(self.cr.get(), cr | 0x02) }
     }
 
     /// REQ: SPI-004 - Disable SPI controller
     #[inline]
     pub fn disable(&self) {
+        // SAFETY: Reading from memory-mapped SPI control register.
         let cr = unsafe { read_volatile(self.cr.get()) };
+        // SAFETY: Writing to memory-mapped SPI control register to disable.
         unsafe { write_volatile(self.cr.get(), cr & !0x02) }
     }
 
     /// REQ: SPI-005 - Write data to transmit FIFO
     #[inline]
     pub fn write_data(&self, data: u8) {
+        // SAFETY: Writing to memory-mapped SPI data transmit register.
         unsafe { write_volatile(self.dtr.get(), data as u32) }
     }
 
     /// REQ: SPI-006 - Read data from receive FIFO
     #[inline]
     pub fn read_data(&self) -> u8 {
+        // SAFETY: Reading from memory-mapped SPI data receive register.
         unsafe { read_volatile(self.drr.get()) as u8 }
     }
 
     /// REQ: SPI-007 - Check if TX FIFO is full
     #[inline]
     pub fn is_tx_full(&self) -> bool {
+        // SAFETY: Reading from memory-mapped SPI status register.
         let sr = unsafe { read_volatile(self.sr.get()) };
         (sr & 0x08) != 0
     }
@@ -71,6 +79,7 @@ impl Spi {
     /// REQ: SPI-008 - Check if RX FIFO is empty
     #[inline]
     pub fn is_rx_empty(&self) -> bool {
+        // SAFETY: Reading from memory-mapped SPI status register.
         let sr = unsafe { read_volatile(self.sr.get()) };
         (sr & 0x01) != 0
     }

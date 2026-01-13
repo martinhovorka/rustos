@@ -14,6 +14,7 @@ pub const CONTEXT_FRAME_SIZE: usize = 144;
 /// - sp must point to a valid context frame
 /// - Must be called with interrupts disabled
 /// - Never returns
+// SAFETY: Naked function for context switching - uses only assembly to restore context.
 #[unsafe(naked)]
 pub unsafe extern "C" fn start_first_task(sp: *mut usize) -> ! {
     core::arch::naked_asm!(
@@ -76,6 +77,7 @@ pub unsafe extern "C" fn start_first_task(sp: *mut usize) -> ! {
 /// 
 /// # Safety
 /// Must be called from trap handler with interrupts disabled
+// SAFETY: Naked function for context switching - saves current task context, loads next task context.
 #[unsafe(naked)]
 pub unsafe extern "C" fn switch_context(current_sp_ptr: *mut *mut usize, new_sp: *mut usize) {
     core::arch::naked_asm!(

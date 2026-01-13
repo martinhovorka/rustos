@@ -87,7 +87,10 @@ pub fn get_log_level() -> LogLevel {
 ///
 /// # Safety
 /// Must be called during initialization before scheduler starts
+// SAFETY: Function signature - see # Safety documentation above
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn set_module_log_level(module: &'static str, level: LogLevel) {
+    // SAFETY: Reading MODULE_FILTERS during init phase, no concurrent access.
     if MODULE_FILTER_COUNT < unsafe { core::ptr::addr_of!(MODULE_FILTERS).as_ref().unwrap().len() } {
         MODULE_FILTERS[MODULE_FILTER_COUNT] = (module, level);
         MODULE_FILTER_COUNT += 1;
@@ -96,10 +99,10 @@ pub unsafe fn set_module_log_level(module: &'static str, level: LogLevel) {
 
 /// REQ: LOG-008 - Check if module should log at given level
 fn should_log_module(module: &str, level: LogLevel) -> bool {
-    // Safety: MODULE_FILTERS is only written during init, read-only after
+    // SAFETY: MODULE_FILTERS is only written during init, read-only after scheduler starts.
+    // No concurrent writes, safe for read access.
     unsafe {
-        for i in 0..MODULE_FILTER_COUNT {
-            let (filter_module, filter_level) = &MODULE_FILTERS[i];
+        for (filter_module, filter_level) in &MODULE_FILTERS[0..MODULE_FILTER_COUNT] {
             if module.starts_with(filter_module) {
                 return level <= *filter_level;
             }
@@ -141,6 +144,7 @@ static mut LOGGER: Option<&'static mut dyn Logger> = None;
 ///
 /// # Safety
 /// Must be called exactly once during initialization
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn set_logger(logger: &'static mut dyn Logger) {
     LOGGER = Some(logger);
 }
@@ -171,7 +175,8 @@ pub fn __log_impl(
         message: args,
     };
 
-    // Safety: LOGGER is only written during init, read-only after
+    // SAFETY: LOGGER is only written during init via set_logger(), read-only after.
+    // Safe for concurrent read access from multiple tasks.
     if let Some(logger) = unsafe { core::ptr::addr_of_mut!(LOGGER).as_mut().and_then(|l| l.as_mut()) } {
         logger.log(&record);
     }

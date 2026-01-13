@@ -24,6 +24,7 @@
 //!     }
 //! }
 //!
+//! // SAFETY: Task created with static stack and valid entry point
 //! unsafe {
 //!     let task = Task::new(
 //!         TaskId(1),
@@ -142,6 +143,7 @@ impl Task {
     /// # Safety
     /// - Stack must be valid for the lifetime of the task
     /// - Entry function must never return (fn() -> !)
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn new(
         id: TaskId,
         name: &'static str,
@@ -149,6 +151,8 @@ impl Task {
         entry: extern "C" fn() -> !,
         stack: &'static mut [u8],
     ) -> Self {
+        // SAFETY: Caller guarantees stack is valid and entry never returns.
+        // We initialize stack canary, setup stack frame, and store pointers.
         let stack_size = stack.len();
         let stack_base = stack.as_mut_ptr();
         
@@ -179,7 +183,11 @@ impl Task {
     /// REQ: CTX-008 - Initialize task stack with context frame
     /// 
     /// Sets up the initial stack frame so the task can be context-switched to.
+    // SAFETY: Function signature - manipulates raw stack pointers, see inline SAFETY comments
     unsafe fn init_stack(stack: &mut [u8], entry: extern "C" fn() -> !) -> *mut usize {
+        // SAFETY: We calculate stack_top from valid stack slice.
+        // Pointer arithmetic is within stack bounds. Stack frame layout matches
+        // the context switcher's expectations (36 words = 144 bytes).
         let stack_top = stack.as_mut_ptr().add(stack.len()) as *mut usize;
         
         // REQ: CTX-007 - Align stack pointer to 16 bytes
@@ -267,6 +275,8 @@ impl Task {
 
     /// REQ: TASK-005 - Check stack overflow via canary
     pub fn check_stack_overflow(&self) -> bool {
+        // SAFETY: stack_base points to the bottom of the stack where we placed
+        // the canary value during Task::new(). The pointer is valid for the task lifetime.
         unsafe {
             let canary_ptr = self.stack_base as *const u32;
             *canary_ptr == self.stack_canary
@@ -276,12 +286,17 @@ impl Task {
     /// REQ: TASK-006 - Calculate stack usage
     pub fn stack_usage(&self) -> usize {
         let current_sp = self.sp as usize;
+        // SAFETY: Calculating stack_top from stack_base + stack_size.
+        // Both values are valid pointers/sizes from Task::new().
         let stack_top = unsafe { self.stack_base.add(self.stack_size) } as usize;
         stack_top.saturating_sub(current_sp)
     }
 }
 
 // REQ: SAFE-002 - Task is Send but not Sync (can be moved between threads, not shared)
+// SAFETY: Task contains raw pointers but they're managed safely by the kernel scheduler.
+// Tasks cannot be accessed concurrently - only one scheduler context accesses a task at a time.
+// Stack ownership is unique per task. Moving Task between contexts is safe.
 unsafe impl Send for Task {}
 
 /// REQ: TASK-003 - Task builder for easier task creation
@@ -312,11 +327,14 @@ impl TaskBuilder {
     /// # Safety
     /// - Stack must be valid for the lifetime of the task
     /// - Entry function must never return
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn build(
         self,
         entry: extern "C" fn() -> !,
         stack: &'static mut [u8],
     ) -> Task {
+        // SAFETY: We forward the safety contract to Task::new().
+        // Caller guarantees stack validity and entry function properties.
         Task::new(self.id, self.name, self.priority, entry, stack)
     }
 }

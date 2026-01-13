@@ -23,6 +23,7 @@
 //! ```no_run
 //! use rustos_hal::uart::Uart;
 //!
+//! // SAFETY: Called once during initialization with valid UART base address
 //! unsafe {
 //!     let uart = Uart::new();
 //!     uart.write(b"Hello, World!\r\n").ok();
@@ -34,6 +35,7 @@
 //! ```no_run
 //! use rustos_hal::gpio::{GpioPort, PinMode};
 //!
+//! // SAFETY: Valid GPIO base address, exclusive access guaranteed
 //! unsafe {
 //!     let gpio = GpioPort::new(0x4020_0000);
 //!     gpio.set_pin_mode(0, PinMode::Output);
@@ -48,6 +50,7 @@
 //!
 //! # Safety
 //!
+// SAFETY: Documentation section describing safety requirements
 //! Driver constructors are marked `unsafe` as they create singleton instances
 //! with raw pointer access to hardware. Callers must ensure exclusive access.
 

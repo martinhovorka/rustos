@@ -50,6 +50,7 @@ impl Intc {
     /// Returns which interrupts are currently active (latched)
     #[inline]
     pub fn read_isr(&self) -> u32 {
+        // SAFETY: Reading from memory-mapped INTC interrupt status register.
         unsafe { read_volatile(self.isr.get()) }
     }
 
@@ -59,6 +60,8 @@ impl Intc {
     /// Must be called from interrupt context or with interrupts disabled
     #[inline]
     pub fn clear_isr(&self, bits: u32) {
+        // SAFETY: Writing to memory-mapped INTC ISR register (toggle-on-write).
+        // Caller guarantees this is called from appropriate context per function safety doc.
         unsafe { write_volatile(self.isr.get(), bits) }
     }
 
@@ -66,6 +69,7 @@ impl Intc {
     /// Returns which enabled interrupts are pending
     #[inline]
     pub fn read_ipr(&self) -> u32 {
+        // SAFETY: Reading from memory-mapped INTC interrupt pending register.
         unsafe { read_volatile(self.ipr.get()) }
     }
 
@@ -73,6 +77,7 @@ impl Intc {
     /// Returns which interrupt sources are enabled
     #[inline]
     pub fn read_ier(&self) -> u32 {
+        // SAFETY: Reading from memory-mapped INTC interrupt enable register.
         unsafe { read_volatile(self.ier.get()) }
     }
 
@@ -82,6 +87,8 @@ impl Intc {
     /// Must be called with interrupts disabled
     #[inline]
     pub fn write_ier(&self, mask: u32) {
+        // SAFETY: Writing to memory-mapped INTC interrupt enable register.
+        // Caller guarantees interrupts are disabled per function safety doc.
         unsafe { write_volatile(self.ier.get(), mask) }
     }
 
@@ -91,6 +98,8 @@ impl Intc {
     /// Must be called from interrupt context
     #[inline]
     pub fn acknowledge(&self, bits: u32) {
+        // SAFETY: Writing to memory-mapped INTC interrupt acknowledge register.
+        // Caller guarantees this is called from interrupt context per function safety doc.
         unsafe { write_volatile(self.iar.get(), bits) }
     }
 
@@ -100,6 +109,8 @@ impl Intc {
     /// Must be called with interrupts disabled
     #[inline]
     pub fn set_enable(&self, mask: u32) {
+        // SAFETY: Writing to memory-mapped INTC set interrupt enable register.
+        // Caller guarantees interrupts are disabled per function safety doc.
         unsafe { write_volatile(self.sie.get(), mask) }
     }
 
@@ -109,6 +120,8 @@ impl Intc {
     /// Must be called with interrupts disabled
     #[inline]
     pub fn clear_enable(&self, mask: u32) {
+        // SAFETY: Writing to memory-mapped INTC clear interrupt enable register.
+        // Caller guarantees interrupts are disabled per function safety doc.
         unsafe { write_volatile(self.cie.get(), mask) }
     }
 
@@ -117,6 +130,7 @@ impl Intc {
     /// in fast interrupt mode
     #[inline]
     pub fn read_ivr(&self) -> u32 {
+        // SAFETY: Reading from memory-mapped INTC interrupt vector register.
         unsafe { read_volatile(self.ivr.get()) }
     }
 
@@ -126,6 +140,8 @@ impl Intc {
     /// Must be called with interrupts disabled
     #[inline]
     pub fn enable_master(&self) {
+        // SAFETY: Writing to memory-mapped INTC master enable register.
+        // Caller guarantees interrupts are disabled per function safety doc.
         unsafe { write_volatile(self.mer.get(), 0x3) }
     }
 
@@ -135,12 +151,15 @@ impl Intc {
     /// Must be called with interrupts disabled
     #[inline]
     pub fn disable_master(&self) {
+        // SAFETY: Writing to memory-mapped INTC master enable register.
+        // Caller guarantees interrupts are disabled per function safety doc.
         unsafe { write_volatile(self.mer.get(), 0x0) }
     }
 
     /// REQ: INT-012 - Read master enable register
     #[inline]
     pub fn read_mer(&self) -> u32 {
+        // SAFETY: Reading from memory-mapped INTC master enable register.
         unsafe { read_volatile(self.mer.get()) }
     }
 

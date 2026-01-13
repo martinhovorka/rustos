@@ -5,6 +5,12 @@
 /// REQ: TMR-002 - System timer management
 pub struct SystemTimer;
 
+impl Default for SystemTimer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SystemTimer {
     /// Create system timer driver
     pub const fn new() -> Self {

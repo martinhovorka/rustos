@@ -22,6 +22,7 @@ impl InterruptController {
     /// 
     /// # Safety
     /// Must be called only once during system initialization
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn new() -> Self {
         let periph = &*(INTC_BASE as *const intc::Intc);
         
@@ -69,6 +70,7 @@ impl InterruptController {
     /// 
     /// # Safety
     /// Must be called from interrupt context
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn handle_interrupt(&self) {
         // Read IVR to get interrupt ID
         let irq = self.periph.read_ivr();
@@ -92,12 +94,17 @@ static mut INTC: Option<InterruptController> = None;
 /// 
 /// # Safety
 /// Must be called only once during system initialization
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn init() -> &'static mut InterruptController {
     INTC = Some(InterruptController::new());
+    // SAFETY: Returning mutable reference to static INTC just initialized above.
+    // Called once during init per function safety contract.
     (*core::ptr::addr_of_mut!(INTC)).as_mut().unwrap()
 }
 
 /// Get reference to interrupt controller
 pub fn get() -> Option<&'static InterruptController> {
+    // SAFETY: Reading static INTC initialized by init().
+    // Returns immutable reference, safe for concurrent read access.
     unsafe { (*core::ptr::addr_of!(INTC)).as_ref() }
 }

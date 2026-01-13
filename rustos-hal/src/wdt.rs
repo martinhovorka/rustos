@@ -27,6 +27,7 @@ impl Watchdog {
     /// # Safety
     /// - base_addr must point to valid WDT peripheral registers
     /// - Caller must ensure exclusive access to the peripheral
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn new(base_addr: usize) -> Self {
         let wdt = &*(base_addr as *const WdtRegs);
         Self {

@@ -91,6 +91,7 @@ pub struct GdbStub {
 
 impl GdbStub {
     /// Create a new GDB stub instance
+    #[allow(clippy::declare_interior_mutable_const)]
     pub const fn new() -> Self {
         const ZERO: AtomicU32 = AtomicU32::new(0);
         Self {
@@ -389,6 +390,7 @@ impl Semihosting {
         // If semihosting is not active, loop forever
         loop {
             #[cfg(target_arch = "riscv32")]
+            // SAFETY: WFI instruction - safe to execute, waits for interrupt
             unsafe {
                 core::arch::asm!("wfi");
             }
@@ -404,6 +406,8 @@ impl Semihosting {
     #[cfg(target_arch = "riscv32")]
     fn syscall(op: SemihostingSyscall, arg: usize) -> Result<usize, SemihostingError> {
         let result: usize;
+        // SAFETY: Assembly performs semihosting syscall with EBREAK instruction.
+        // Debugger must be present to handle the trap. Safe for RISC-V target.
         unsafe {
             core::arch::asm!(
                 // Semihosting sequence for RISC-V
@@ -631,6 +635,7 @@ impl Profiler {
     fn read_cycle_counter() -> u64 {
         let low: u32;
         let high: u32;
+        // SAFETY: Reading mcycle/mcycleh CSRs - read-only performance counters
         unsafe {
             core::arch::asm!("csrr {}, mcycle", out(reg) low);
             core::arch::asm!("csrr {}, mcycleh", out(reg) high);
@@ -650,6 +655,7 @@ impl Profiler {
     fn read_instret_counter() -> u64 {
         let low: u32;
         let high: u32;
+        // SAFETY: Reading minstret CSR - read-only performance counter, no side effects
         unsafe {
             core::arch::asm!("csrr {}, minstret", out(reg) low);
             core::arch::asm!("csrr {}, minstreth", out(reg) high);

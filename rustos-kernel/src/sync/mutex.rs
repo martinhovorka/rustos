@@ -46,7 +46,10 @@ pub struct Mutex<T> {
     data: core::cell::UnsafeCell<T>,
 }
 
+// SAFETY: Mutex provides exclusive access via lock/unlock protocol.
+// Interior mutability is protected by atomic lock flag and critical sections.
 unsafe impl<T: Send> Send for Mutex<T> {}
+// SAFETY: Mutex synchronizes access across tasks, making it safe to share references.
 unsafe impl<T: Send> Sync for Mutex<T> {}
 
 impl<T> Mutex<T> {
@@ -110,6 +113,7 @@ impl<T> Mutex<T> {
     /// 
     /// # Safety
     /// Must only be called by the owning task
+    // SAFETY: Function signature - see # Safety documentation above
     unsafe fn unlock(&self) {
         let _cs = CriticalSection::new();
         
@@ -155,6 +159,7 @@ impl<T> Mutex<T> {
         };
         
         // Boost owner's priority if waiter has higher priority (lower number)
+        // SAFETY: Called within critical section. owner_id validated above.
         if let Some(owner_task) = unsafe { crate::scheduler::get().get_task_mut(TaskId(owner_id)) } {
             let owner_priority = owner_task.priority();
             if waiter_priority.0 < owner_priority.0 {
@@ -178,6 +183,7 @@ impl<T> Mutex<T> {
         }
         
         // Restore original priority
+        // SAFETY: Called within critical section (via unlock). owner_id validated above.
         if let Some(owner_task) = unsafe { crate::scheduler::get().get_task_mut(TaskId(owner_id)) } {
             owner_task.set_priority(TaskPriority(original));
         }
@@ -195,18 +201,21 @@ impl<'a, T> core::ops::Deref for MutexGuard<'a, T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
+        // SAFETY: Guard existence proves mutex is locked by current task.
         unsafe { &*self.mutex.data.get() }
     }
 }
 
 impl<'a, T> core::ops::DerefMut for MutexGuard<'a, T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
+        // SAFETY: Guard existence proves mutex is locked by current task with exclusive access.
         unsafe { &mut *self.mutex.data.get() }
     }
 }
 
 impl<'a, T> Drop for MutexGuard<'a, T> {
     fn drop(&mut self) {
+        // SAFETY: Guard was created by locking, so unlock is valid.
         unsafe { self.mutex.unlock() }
     }
 }

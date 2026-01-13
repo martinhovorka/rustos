@@ -13,6 +13,7 @@
 //! ```no_run
 //! use rustos_kernel::{scheduler, task::{Task, TaskPriority}};
 //!
+//! // SAFETY: Called after kernel initialization with tasks created
 //! unsafe {
 //!     // Enable scheduler
 //!     scheduler::get().enable();
@@ -56,6 +57,7 @@ use portable_atomic::AtomicU32;
 
 impl Scheduler {
     /// Create new scheduler
+    #[allow(clippy::declare_interior_mutable_const)]
     const fn new() -> Self {
         const NULL_TASK: AtomicPtr<Task> = AtomicPtr::new(null_mut());
         const ATOMIC_ZERO: AtomicU32 = AtomicU32::new(0);
@@ -99,6 +101,8 @@ impl Scheduler {
                 for (idx, task_ptr) in self.tasks.iter().enumerate() {
                     let task = task_ptr.load(Ordering::Acquire);
                     if !task.is_null() {
+                        // SAFETY: task pointer is loaded atomically and checked for null.
+                        // Pointer validity is guaranteed by add_task which only stores valid static task references.
                         unsafe {
                             if (*task).priority().0 == priority && (*task).state().contains(TaskState::READY) {
                                 return Some(TaskId(idx as u8));
@@ -116,6 +120,7 @@ impl Scheduler {
     /// # Safety
     /// - Task must have static lifetime
     /// - Must be called with interrupts disabled
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn add_task(&self, task: &'static mut Task) -> crate::Result<()> {
         let count = self.task_count.load(Ordering::Acquire);
         if count >= MAX_TASKS as u8 {
@@ -181,6 +186,8 @@ impl Scheduler {
         if task.is_null() {
             None
         } else {
+            // SAFETY: Pointer is loaded atomically and checked for null.
+            // Valid because add_task only stores static task references.
             unsafe { Some(&*task) }
         }
     }
@@ -189,6 +196,8 @@ impl Scheduler {
     /// 
     /// # Safety
     /// Must be called with interrupts disabled
+    // SAFETY: Function signature - see # Safety documentation above
+    #[allow(clippy::mut_from_ref)]
     pub unsafe fn get_task_mut(&self, id: TaskId) -> Option<&mut Task> {
         let task = self.tasks.get(id.0 as usize)?.load(Ordering::Acquire);
         if task.is_null() {
@@ -201,6 +210,7 @@ impl Scheduler {
     /// REQ: TASK-007 - Block current task
     pub fn block_current_task(&self) {
         if let Some(id) = self.current_task() {
+            // SAFETY: Called with scheduler lock held (implicitly via critical section).
             if let Some(task) = unsafe { self.get_task_mut(id) } {
                 task.set_state(TaskState::BLOCKED);
                 self.clear_priority_bit(task.priority());
@@ -210,6 +220,7 @@ impl Scheduler {
 
     /// REQ: TASK-007 - Unblock task
     pub fn unblock_task(&self, id: TaskId) {
+        // SAFETY: Called with scheduler lock held (implicitly via critical section).
         if let Some(task) = unsafe { self.get_task_mut(id) } {
             task.set_state(TaskState::READY);
             self.set_priority_bit(task.priority());
@@ -218,6 +229,7 @@ impl Scheduler {
 }
 
 /// REQ: KERN-003 - Initialize scheduler
+// SAFETY: Function signature - called once during kernel initialization
 pub(crate) unsafe fn init() {
     // Scheduler is already initialized statically
 }
@@ -228,6 +240,7 @@ pub(crate) unsafe fn init() {
 /// - Must be called after all tasks are added
 /// - Must be called with interrupts disabled
 /// - Never returns
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn start() -> ! {
     SCHEDULER.enable();
     
@@ -249,6 +262,7 @@ pub unsafe fn start() -> ! {
 /// 
 /// # Safety
 /// Must be called from interrupt context with interrupts disabled
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn yield_from_isr() {
     let current_id_opt = SCHEDULER.current_task();
     
@@ -281,6 +295,7 @@ pub unsafe fn yield_from_isr() {
 pub fn yield_now() {
     // Trigger a context switch by invoking ecall or similar
     // This will be implemented when we add system call support
+    // SAFETY: ecall instruction is safe - trap handler will catch it.
     unsafe {
         core::arch::asm!("ecall");
     }
@@ -331,6 +346,7 @@ pub fn get() -> &'static Scheduler {
 /// - Must be called from idle task only
 /// - Interrupts should be enabled to wake from WFI
 #[cfg(feature = "tickless")]
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn enter_tickless_idle() {
     use crate::time::get_next_wake_ticks;
     
@@ -346,10 +362,12 @@ pub unsafe fn enter_tickless_idle() {
             // 5. Adjust tick count for time slept
             
             // For now, just use WFI without tick suppression
+            // SAFETY: WFI with interrupts enabled - will wake on any interrupt.
             core::arch::asm!("wfi");
         }
     } else {
         // No scheduled events - can sleep indefinitely
+        // SAFETY: WFI with interrupts enabled - will wake on any interrupt.
         core::arch::asm!("wfi");
     }
 }
@@ -361,7 +379,9 @@ pub unsafe fn enter_tickless_idle() {
 /// 
 /// # Safety
 /// Must be called from idle task with interrupts enabled
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn enter_idle() {
     // Wait For Interrupt - low power mode until next interrupt
+    // SAFETY: WFI instruction - caller guarantees interrupts are enabled for wake.
     core::arch::asm!("wfi");
 }

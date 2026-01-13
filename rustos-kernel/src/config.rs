@@ -161,7 +161,8 @@ static mut KERNEL_CONFIG: KernelConfig = KernelConfig {
 
 /// REQ: CFG-002 - Get current kernel configuration
 pub fn get_config() -> KernelConfig {
-    // Safety: KERNEL_CONFIG is only written during init, read-only after
+    // SAFETY: KERNEL_CONFIG is only written during init via set_config(), read-only after.
+    // Safe for concurrent read access.
     unsafe { KERNEL_CONFIG }
 }
 
@@ -169,6 +170,7 @@ pub fn get_config() -> KernelConfig {
 ///
 /// # Safety
 /// Must be called during initialization before scheduler starts
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn set_config(config: KernelConfig) -> Result<(), &'static str> {
     config.validate()?;
     KERNEL_CONFIG = config;

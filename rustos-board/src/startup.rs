@@ -10,8 +10,12 @@
 /// Must be called only once at system reset
 #[link_section = ".init"]
 #[export_name = "_start"]
+// SAFETY: Reset vector - see # Safety documentation and inline comments
 #[unsafe(naked)]
 pub unsafe extern "C" fn _start() -> ! {
+    // SAFETY: Reset vector - naked function with full register control.
+    // Initializes .bss (zeroing), stack pointer, global pointer per RISC-V ABI.
+    // Called once at reset before any other code. No Rust assumptions violated.
     core::arch::naked_asm!(
         // REQ: INIT-017 - Initialize registers
         // (1) Initialize stack pointer
@@ -65,7 +69,11 @@ pub unsafe extern "C" fn _start() -> ! {
 /// # Safety
 /// Called from _start assembly. Must not return.
 #[no_mangle]
+// SAFETY: Function signature - see # Safety documentation and inline comments
 unsafe extern "C" fn rust_entry() -> ! {
+    // SAFETY: Called from _start after proper initialization of .bss, .data, sp, gp.
+    // All preconditions for safe Rust execution are met.
+    // This is the single entry point to Rust code from assembly.
     // REQ: BOARD-002 - Initialize board
     crate::init();
     

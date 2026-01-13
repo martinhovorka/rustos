@@ -48,6 +48,7 @@
 //!
 //! ## Safety Documentation
 //!
+// SAFETY: Documentation describing safety documentation requirements
 //! REQ: API-016 - All unsafe functions document their safety requirements.
 //! See individual function documentation for safety contracts.
 

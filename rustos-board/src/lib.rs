@@ -12,7 +12,10 @@ pub mod trap;
 /// 
 /// # Safety
 /// Must be called once during system startup
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn init() {
+    // SAFETY: This function must only be called once from _start during system reset.
+    // It initializes hardware and kernel state that must not be re-initialized.
     // REQ: INIT-006 - Setup trap vector
     trap::init_trap_handler();
     
@@ -35,6 +38,8 @@ pub unsafe fn init() {
 
 /// REQ: TIME-001, SCHED-004 - System tick interrupt handler
 fn system_tick_handler() {
+    // SAFETY: Called from interrupt context with interrupts disabled.
+    // tick() and yield_from_isr() are ISR-safe and maintain interrupt state.
     unsafe {
         // REQ: TIME-002 - Increment tick counter
         rustos_kernel::time::tick();

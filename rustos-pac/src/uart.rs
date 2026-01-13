@@ -34,6 +34,8 @@ impl Uart {
     /// Must be called with interrupts disabled if used from multiple contexts
     #[inline]
     pub fn read_rx(&self) -> u8 {
+        // SAFETY: Reading from memory-mapped UART RX FIFO register.
+        // Address is valid for the hardware platform (0x4060_0000 base).
         unsafe { read_volatile(self.rx_fifo.get()) as u8 }
     }
 
@@ -43,12 +45,15 @@ impl Uart {
     /// Must be called with interrupts disabled if used from multiple contexts
     #[inline]
     pub fn write_tx(&self, data: u8) {
+        // SAFETY: Writing to memory-mapped UART TX FIFO register.
+        // Address is valid for the hardware platform (0x4060_0004 base+offset).
         unsafe { write_volatile(self.tx_fifo.get(), data as u32) }
     }
 
     /// REQ: UART-004 - Read status register
     #[inline]
     pub fn read_status(&self) -> UartStatus {
+        // SAFETY: Reading from memory-mapped UART status register.
         let status = unsafe { read_volatile(self.stat_reg.get()) };
         UartStatus::from_bits_truncate(status)
     }
@@ -56,6 +61,7 @@ impl Uart {
     /// REQ: UART-005 - Read control register
     #[inline]
     pub fn read_control(&self) -> UartControl {
+        // SAFETY: Reading from memory-mapped UART control register.
         let control = unsafe { read_volatile(self.ctrl_reg.get()) };
         UartControl::from_bits_truncate(control)
     }
@@ -66,6 +72,7 @@ impl Uart {
     /// Must be called with interrupts disabled if used from multiple contexts
     #[inline]
     pub fn write_control(&self, control: UartControl) {
+        // SAFETY: Writing to memory-mapped UART control register.
         unsafe { write_volatile(self.ctrl_reg.get(), control.bits()) }
     }
 

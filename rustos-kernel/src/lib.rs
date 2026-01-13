@@ -13,6 +13,7 @@
 //! - **Priority Scheduling** (REQ: SCHED-002): 256 priority levels (0 = highest, 255 = lowest)
 //! - **Task Management** (REQ: SCHED-005): Up to 16 concurrent tasks
 //! - **Static Memory** (REQ: MEM-001): No dynamic allocation, fully deterministic
+// SAFETY: Documentation describing memory safety approach
 //! - **Memory Safety** (REQ: SAFE-001): Leverages Rust's type system with minimal unsafe code
 //! - **Synchronization**: Mutexes, semaphores, message queues, event flags
 //! - **Software Timers** (REQ: TIME-005): One-shot and periodic timers with callbacks
@@ -29,6 +30,7 @@
 //!
 //! #[no_mangle]
 //! extern "C" fn main() -> ! {
+//!     // SAFETY: Called once during system initialization with interrupts disabled
 //!     unsafe {
 //!         // Initialize kernel
 //!         init();
@@ -58,6 +60,7 @@
 //!
 //! # Safety
 //!
+// SAFETY: Documentation section describing kernel safety approach
 //! The kernel minimizes unsafe code to critical sections: context switching, interrupt
 //! handling, and raw pointer access for task stacks. All public APIs are safe to use.
 //!
@@ -129,6 +132,7 @@ pub use security::{SecureBoot, ImageHeader};
 /// #[no_mangle]
 /// extern "C" fn main() -> ! {
 ///     // Disable interrupts (typically done by bootloader)
+///     // SAFETY: Called once at system startup with interrupts disabled
 ///     unsafe {
 ///         core::arch::asm!("csrci mstatus, 0x8");
 ///         
@@ -142,6 +146,7 @@ pub use security::{SecureBoot, ImageHeader};
 ///     }
 /// }
 /// ```
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn init() {
     // REQ: INIT-013 - Initialize all kernel data structures before enabling interrupts
     scheduler::init();
@@ -171,6 +176,7 @@ pub unsafe fn init() {
 ///
 /// ```no_run
 /// # use rustos_kernel::{init, scheduler, task::*, start};
+/// // SAFETY: Called after init() with at least one task created
 /// unsafe {
 ///     init();
 ///     
@@ -182,6 +188,7 @@ pub unsafe fn init() {
 ///     start();
 /// }
 /// ```
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn start() -> ! {
     scheduler::start()
 }

@@ -40,19 +40,23 @@ impl I2c {
     /// REQ: I2C-002 - Software reset
     #[inline]
     pub fn reset(&self) {
+        // SAFETY: Writing to memory-mapped I2C soft reset register.
         unsafe { write_volatile(self.softr.get(), 0x0A) }
     }
 
     /// REQ: I2C-003 - Enable I2C controller
     #[inline]
     pub fn enable(&self) {
+        // SAFETY: Reading from memory-mapped I2C control register.
         let cr = unsafe { read_volatile(self.cr.get()) };
+        // SAFETY: Writing to memory-mapped I2C control register to enable.
         unsafe { write_volatile(self.cr.get(), cr | 0x01) }
     }
 
     /// REQ: I2C-004 - Check if bus is busy
     #[inline]
     pub fn is_busy(&self) -> bool {
+        // SAFETY: Reading from memory-mapped I2C status register.
         let sr = unsafe { read_volatile(self.sr.get()) };
         (sr & 0x04) != 0
     }
@@ -60,6 +64,7 @@ impl I2c {
     /// REQ: I2C-005 - Check if TX FIFO is empty
     #[inline]
     pub fn is_tx_empty(&self) -> bool {
+        // SAFETY: Reading from memory-mapped I2C status register.
         let sr = unsafe { read_volatile(self.sr.get()) };
         (sr & 0x80) != 0
     }
@@ -67,34 +72,42 @@ impl I2c {
     /// Read status register
     #[inline]
     pub fn read_status(&self) -> u32 {
+        // SAFETY: Reading from memory-mapped I2C status register.
         unsafe { read_volatile(self.sr.get()) }
     }
     
     /// Write to TX FIFO
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn write_tx_fifo(&self, value: u32) -> core::result::Result<(), ()> {
         // Check if TX FIFO is full
+        // SAFETY: Reading from memory-mapped I2C TX FIFO occupancy register.
         let ocr = unsafe { read_volatile(self.tx_fifo_ocr.get()) };
         if ocr >= 16 {
             return Err(());
         }
+        // SAFETY: Writing to memory-mapped I2C TX FIFO register.
         unsafe { write_volatile(self.tx_fifo.get(), value) };
         Ok(())
     }
     
     /// Read from RX FIFO
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn read_rx_fifo(&self) -> core::result::Result<u32, ()> {
         // Check if RX FIFO is empty
+        // SAFETY: Reading from memory-mapped I2C RX FIFO occupancy register.
         let ocr = unsafe { read_volatile(self.rx_fifo_ocr.get()) };
         if ocr == 0 {
             return Err(());
         }
+        // SAFETY: Reading from memory-mapped I2C RX FIFO register.
         Ok(unsafe { read_volatile(self.rx_fifo.get()) })
     }
     
     /// Software reset
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn soft_reset(&self) -> core::result::Result<(), ()> {
         self.reset();
         Ok(())
@@ -102,6 +115,7 @@ impl I2c {
     
     /// Set clock divisor
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn set_clock_divisor(&self, _divisor: u32) -> core::result::Result<(), ()> {
         // Configuration would be done through control register
         Ok(())

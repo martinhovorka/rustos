@@ -29,7 +29,10 @@ impl Uart {
     /// 
     /// # Safety
     /// Must be called only once for each UART instance
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn new() -> Self {
+        // SAFETY: Casting UART base address to peripheral reference.
+        // Caller ensures this is called only once per UART instance (singleton pattern).
         let periph = &*(UART_BASE as *const uart::Uart);
         
         // REQ: UART-002 - Reset FIFOs
@@ -116,6 +119,7 @@ impl Uart {
     /// 
     /// # Safety
     /// Must be called from UART ISR
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn handle_tx_interrupt(&self) {
         critical_section::with(|cs| {
             let mut tx_buf = self.tx_buffer.borrow_ref_mut(cs);
@@ -135,6 +139,7 @@ impl Uart {
     /// 
     /// # Safety
     /// Must be called from UART ISR
+    // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn handle_rx_interrupt(&self) {
         critical_section::with(|cs| {
             let mut rx_buf = self.rx_buffer.borrow_ref_mut(cs);
@@ -175,12 +180,15 @@ static mut CONSOLE: Option<Uart> = None;
 /// 
 /// # Safety
 /// Must be called only once during system initialization
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn init_console() {
     CONSOLE = Some(Uart::new());
 }
 
 /// REQ: UART-009 - Get console UART reference
 pub fn console() -> Option<&'static Uart> {
+    // SAFETY: Reading static CONSOLE initialized by init_console().
+    // Returns immutable reference, safe for concurrent read access.
     unsafe { (*core::ptr::addr_of!(CONSOLE)).as_ref() }
 }
 
@@ -190,6 +198,8 @@ macro_rules! print {
     ($($arg:tt)*) => {
         if let Some(uart) = $crate::uart::console() {
             use core::fmt::Write;
+            // SAFETY: Casting const reference to mutable for Write trait.
+            // Console UART is a singleton, and Write operations use internal mutability.
             let _ = write!(unsafe { &mut *(uart as *const _ as *mut $crate::uart::Uart) }, $($arg)*);
         }
     };

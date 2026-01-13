@@ -130,7 +130,10 @@ pub struct PriorityQueue<T: Copy, const N: usize> {
     storage: UnsafeCell<PriorityQueueStorage<T, N>>,
 }
 
+// SAFETY: PriorityQueue provides exclusive access via critical sections.
+// Interior mutability is protected, making it safe to share across task boundaries.
 unsafe impl<T: Copy + Send, const N: usize> Send for PriorityQueue<T, N> {}
+// SAFETY: All queue operations protected by CriticalSection, synchronizing access.
 unsafe impl<T: Copy + Send, const N: usize> Sync for PriorityQueue<T, N> {}
 
 impl<T: Copy, const N: usize> PriorityQueue<T, N> {
@@ -149,6 +152,7 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
         let _cs = CriticalSection::new();
         
         let msg = PriorityMessage::new(data, priority);
+        // SAFETY: Access protected by critical section - no concurrent modification.
         unsafe {
             (*self.storage.get())
                 .insert(msg)
@@ -167,6 +171,7 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
     pub fn receive(&self) -> Option<T> {
         let _cs = CriticalSection::new();
         
+        // SAFETY: Access protected by critical section - no concurrent modification.
         unsafe {
             (*self.storage.get())
                 .remove()
@@ -180,6 +185,7 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
     pub fn receive_with_priority(&self) -> Option<(T, Priority)> {
         let _cs = CriticalSection::new();
         
+        // SAFETY: Access protected by critical section - no concurrent modification.
         unsafe {
             (*self.storage.get())
                 .remove()
@@ -191,6 +197,7 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
     pub fn peek(&self) -> Option<T> {
         let _cs = CriticalSection::new();
         
+        // SAFETY: Access protected by critical section.
         unsafe {
             (*self.storage.get())
                 .peek()
@@ -202,6 +209,7 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
     pub fn peek_with_priority(&self) -> Option<(T, Priority)> {
         let _cs = CriticalSection::new();
         
+        // SAFETY: Access protected by critical section.
         unsafe {
             (*self.storage.get())
                 .peek()
@@ -212,18 +220,21 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
     /// Check if queue is empty
     pub fn is_empty(&self) -> bool {
         let _cs = CriticalSection::new();
+        // SAFETY: Access protected by critical section.
         unsafe { (*self.storage.get()).is_empty() }
     }
 
     /// Check if queue is full
     pub fn is_full(&self) -> bool {
         let _cs = CriticalSection::new();
+        // SAFETY: Access protected by critical section.
         unsafe { (*self.storage.get()).is_full() }
     }
 
     /// Get number of messages in queue
     pub fn len(&self) -> usize {
         let _cs = CriticalSection::new();
+        // SAFETY: Access protected by critical section.
         unsafe { (*self.storage.get()).len() }
     }
 
@@ -236,6 +247,7 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
     pub fn clear(&self) {
         let _cs = CriticalSection::new();
         
+        // SAFETY: Access protected by critical section - no concurrent modification.
         unsafe {
             let storage = &mut *self.storage.get();
             for i in 0..N {

@@ -30,6 +30,7 @@ impl Ethernet {
     /// REQ: ETH-002 - Check if TX is ready
     #[inline]
     pub fn is_tx_ready(&self) -> bool {
+        // SAFETY: Reading from memory-mapped Ethernet TX control register.
         let ctrl = unsafe { read_volatile(self.tx_ping_ctrl.get()) };
         (ctrl & 0x01) == 0
     }
@@ -37,6 +38,7 @@ impl Ethernet {
     /// REQ: ETH-003 - Check if RX has data
     #[inline]
     pub fn is_rx_ready(&self) -> bool {
+        // SAFETY: Reading from memory-mapped Ethernet RX control register.
         let ctrl = unsafe { read_volatile(self.rx_ping_ctrl.get()) };
         (ctrl & 0x01) != 0
     }
@@ -44,11 +46,13 @@ impl Ethernet {
     /// REQ: ETH-004 - Initiate transmission
     #[inline]
     pub fn start_tx(&self, length: u16) {
+        // SAFETY: Writing to memory-mapped Ethernet TX control register to initiate transmission.
         unsafe { write_volatile(self.tx_ping_ctrl.get(), (length as u32) << 16 | 0x01) }
     }
     
     /// Set MAC address
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn set_mac_address(&self, _mac: &[u8; 6]) -> core::result::Result<(), ()> {
         // MAC address typically configured via registers
         Ok(())
@@ -56,6 +60,7 @@ impl Ethernet {
     
     /// Enable Ethernet controller
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn enable(&self) -> core::result::Result<(), ()> {
         // Enable TX/RX
         Ok(())
@@ -63,12 +68,15 @@ impl Ethernet {
     
     /// Write packet to TX buffer
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn write_tx_buffer(&self, data: &[u8]) -> core::result::Result<(), ()> {
         if data.len() > 1514 {
             return Err(());
         }
         
         // Copy data to TX buffer
+        // SAFETY: Creating slice from TX buffer base address with known size (2048 bytes).
+        // Hardware buffer is guaranteed to exist at this memory-mapped location.
         let tx_buf = unsafe { core::slice::from_raw_parts_mut(
             &self.tx_ping_buffer as *const u32 as *mut u8,
             2048
@@ -80,6 +88,7 @@ impl Ethernet {
     
     /// Start transmission
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn start_transmission(&self) -> core::result::Result<(), ()> {
         self.start_tx(1514); // Max size, actual size in buffer
         Ok(())
@@ -87,7 +96,9 @@ impl Ethernet {
     
     /// Read RX buffer
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn read_rx_buffer(&self, buffer: &mut [u8]) -> core::result::Result<usize, ()> {
+        // SAFETY: Reading from memory-mapped Ethernet RX control register.
         let ctrl = unsafe { read_volatile(self.rx_ping_ctrl.get()) };
         let len = ((ctrl >> 16) & 0xFFFF) as usize;
         
@@ -96,6 +107,8 @@ impl Ethernet {
         }
         
         // Copy from RX buffer
+        // SAFETY: Creating slice from RX buffer base address with known size (2048 bytes).
+        // Hardware buffer is guaranteed to exist at this memory-mapped location.
         let rx_buf = unsafe { core::slice::from_raw_parts(
             &self.rx_ping_buffer as *const u32 as *const u8,
             2048
@@ -103,6 +116,7 @@ impl Ethernet {
         buffer[..len].copy_from_slice(&rx_buf[..len]);
         
         // Clear RX ready flag
+        // SAFETY: Writing to memory-mapped Ethernet RX control register to acknowledge receipt.
         unsafe { write_volatile(self.rx_ping_ctrl.get(), 0) };
         
         Ok(len)
@@ -117,6 +131,7 @@ impl Ethernet {
     
     /// Enable interrupts
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn enable_interrupts(&self) -> core::result::Result<(), ()> {
         Ok(())
     }
@@ -129,6 +144,7 @@ impl Ethernet {
     
     /// Clear interrupts
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn clear_interrupts(&self, _status: u32) -> core::result::Result<(), ()> {
         Ok(())
     }

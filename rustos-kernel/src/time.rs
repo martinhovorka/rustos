@@ -90,6 +90,7 @@ pub(crate) fn init() {
 /// 
 /// # Safety
 /// Must be called from timer interrupt handler
+// SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn tick() {
     let ticks = TICK_COUNT.fetch_add(1, Ordering::Relaxed);
     
@@ -194,6 +195,12 @@ pub struct Timer {
     /// Period for periodic timers (in ticks)
     #[cfg(feature = "timers")]
     period: AtomicU32,
+}
+
+impl Default for Timer {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Timer {

@@ -15,6 +15,8 @@ static PANICKING: AtomicBool = AtomicBool::new(false);
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     // REQ: PAN-002 - Disable interrupts immediately
+    // SAFETY: Disabling interrupts via CSR manipulation in panic handler.
+    // This is a critical safety operation to prevent nested interrupts during panic.
     unsafe {
         core::arch::asm!("csrci mstatus, 0x8"); // Clear MIE bit
     }
@@ -23,6 +25,7 @@ fn panic(info: &PanicInfo) -> ! {
     if PANICKING.swap(true, Ordering::SeqCst) {
         // Already panicking, just halt
         loop {
+            // SAFETY: WFI instruction - safe to use in halt loop.
             unsafe { core::arch::asm!("wfi") };
         }
     }
@@ -30,6 +33,8 @@ fn panic(info: &PanicInfo) -> ! {
     // REQ: PAN-003 - Output panic location and message
     #[cfg(debug_assertions)]
     {
+        // SAFETY: Getting UART reference for panic output. Panics are terminal,
+        // so normal UART exclusivity rules don't apply.
         if let Some(uart) = unsafe { get_uart() } {
             use core::fmt::Write;
             let _ = writeln!(uart, "\n\n*** PANIC ***");
@@ -57,6 +62,8 @@ fn panic(info: &PanicInfo) -> ! {
     #[cfg(not(debug_assertions))]
     {
         // REQ: PAN-008 - Abbreviated output in release builds
+        // SAFETY: Getting UART reference for panic output. Panics are terminal,
+        // so normal UART exclusivity rules don't apply.
         if let Some(uart) = unsafe { get_uart() } {
             use core::fmt::Write;
             let _ = writeln!(uart, "\n*** PANIC ***");
@@ -80,6 +87,7 @@ fn panic(info: &PanicInfo) -> ! {
     
     // REQ: PAN-006 - Infinite loop
     loop {
+        // SAFETY: WFI instruction - safe to use in final halt loop.
         unsafe {
             core::arch::asm!("wfi");
         }
@@ -94,6 +102,8 @@ fn dump_registers(uart: &mut (impl core::fmt::Write + ?Sized)) {
     let gp: usize;
     let tp: usize;
     
+    // SAFETY: Reading general-purpose registers for diagnostic output.
+    // This is safe in panic handler context.
     unsafe {
         core::arch::asm!("mv {}, sp", out(reg) sp);
         core::arch::asm!("mv {}, ra", out(reg) ra);
@@ -112,6 +122,7 @@ fn dump_registers(uart: &mut (impl core::fmt::Write + ?Sized)) {
     let mcause: usize;
     let mtval: usize;
     
+    // SAFETY: Reading CSRs for exception diagnostics in panic handler.
     unsafe {
         core::arch::asm!("csrr {}, mepc", out(reg) mepc);
         core::arch::asm!("csrr {}, mcause", out(reg) mcause);
@@ -149,6 +160,7 @@ fn trigger_watchdog_reset() {
 /// 
 /// # Safety
 /// Must only be called from panic handler with interrupts disabled
+// SAFETY: Function signature - see # Safety documentation above
 unsafe fn get_uart() -> Option<&'static mut dyn core::fmt::Write> {
     // This is a simplified version - in real implementation,
     // would get UART from HAL console
