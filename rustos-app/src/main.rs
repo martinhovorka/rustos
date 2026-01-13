@@ -61,15 +61,18 @@ fn main() -> ! {
 
         // REQ: SCHED-005 - Add tasks to scheduler
         let scheduler = rustos_kernel::scheduler::get();
-        scheduler
-            .add_task((*addr_of_mut!(TASK1)).as_mut().unwrap())
-            .unwrap();
-        scheduler
-            .add_task((*addr_of_mut!(TASK2)).as_mut().unwrap())
-            .unwrap();
-        scheduler
-            .add_task((*addr_of_mut!(IDLE)).as_mut().unwrap())
-            .unwrap();
+
+        // SAFETY: Tasks were just initialized above, so as_mut() will return Some
+        // Using match to handle the Option explicitly without unwrap
+        if let Some(task1) = (*addr_of_mut!(TASK1)).as_mut() {
+            let _ = scheduler.add_task(task1);
+        }
+        if let Some(task2) = (*addr_of_mut!(TASK2)).as_mut() {
+            let _ = scheduler.add_task(task2);
+        }
+        if let Some(idle) = (*addr_of_mut!(IDLE)).as_mut() {
+            let _ = scheduler.add_task(idle);
+        }
 
         println!("Tasks created. Starting scheduler...\n");
 

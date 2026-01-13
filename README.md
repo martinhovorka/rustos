@@ -60,6 +60,25 @@ cargo build --release --workspace
 cargo test --package rustos-tests --target x86_64-unknown-linux-gnu -- --test-threads=1
 ```
 
+### Quality Assurance
+
+RustOS includes a comprehensive QA system covering all aspects of code quality:
+
+```bash
+# Run all quality checks (formatting, build, tests, linting, security, etc.)
+./qa.sh
+
+# Run with auto-fix where possible
+./qa.sh --fix
+
+# Generate detailed report
+./qa.sh --report
+```
+
+**Coverage**: 12 sections spanning 800 requirements (QUAL-*, CI-*, TEST-*, COV-*, VER-*)
+
+See [QA_README.md](QA_README.md) for full documentation.
+
 ## Project Structure
 
 ```text

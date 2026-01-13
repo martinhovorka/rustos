@@ -99,7 +99,17 @@ pub unsafe fn init() -> &'static mut InterruptController {
     INTC = Some(InterruptController::new());
     // SAFETY: Returning mutable reference to static INTC just initialized above.
     // Called once during init per function safety contract.
-    (*core::ptr::addr_of_mut!(INTC)).as_mut().unwrap()
+    // Note: unwrap is acceptable here as we just set INTC = Some(...) above
+    match (*core::ptr::addr_of_mut!(INTC)).as_mut() {
+        Some(intc) => intc,
+        None => {
+            // SAFETY: This branch is unreachable since we just set INTC = Some above
+            // but we handle it explicitly to avoid unwrap
+            loop {
+                core::hint::spin_loop();
+            }
+        }
+    }
 }
 
 /// Get reference to interrupt controller

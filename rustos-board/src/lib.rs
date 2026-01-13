@@ -26,7 +26,12 @@ pub unsafe fn init() {
     let intc = rustos_hal::intc::init();
 
     // Register system tick handler (IRQ 0)
-    intc.register_handler(0, system_tick_handler).unwrap();
+    // Note: If registration fails, we loop forever as this is a critical init error
+    if intc.register_handler(0, system_tick_handler).is_err() {
+        loop {
+            core::hint::spin_loop();
+        }
+    }
     intc.enable_irq(0);
 
     // Enable master interrupts

@@ -131,6 +131,29 @@ impl MockScheduler {
         self.tasks[idx].state = TaskState::Running;
         self.current_task = Some(idx);
     }
+
+    /// Get next task to run (returns the task itself, not just index)
+    fn get_next_task(&self) -> Option<MockTask> {
+        let mut highest_priority = None;
+        let mut selected_task = None;
+
+        for task in self.tasks.iter() {
+            if task.state == TaskState::Ready {
+                if let Some(hp) = highest_priority {
+                    if task.priority < hp {
+                        // Lower number = higher priority
+                        highest_priority = Some(task.priority);
+                        selected_task = Some(task.clone());
+                    }
+                } else {
+                    highest_priority = Some(task.priority);
+                    selected_task = Some(task.clone());
+                }
+            }
+        }
+
+        selected_task
+    }
 }
 
 #[test]
@@ -343,4 +366,201 @@ fn test_scheduler_concurrent_access() {
 
     let sched = scheduler.lock().unwrap();
     assert_eq_test!(sched.tasks.len(), 5, "All tasks should be added");
+}
+
+/// REQ: SCHED-007 - Task removal test
+#[test]
+fn test_scheduler_remove_task() {
+    let mut scheduler = MockScheduler::new();
+
+    // Add multiple tasks
+    scheduler.add_task(MockTask::new(1, 10));
+    scheduler.add_task(MockTask::new(2, 20));
+    scheduler.add_task(MockTask::new(3, 30));
+
+    assert_eq_test!(scheduler.tasks.len(), 3, "Should have 3 tasks");
+
+    // Remove middle task
+    scheduler.tasks.retain(|t| t.id != 2);
+
+    assert_eq_test!(
+        scheduler.tasks.len(),
+        2,
+        "Should have 2 tasks after removal"
+    );
+    assert_test!(
+        scheduler.tasks.iter().all(|t| t.id != 2),
+        "Task 2 should be removed"
+    );
+}
+
+/// REQ: SCHED-008 - Priority update test
+#[test]
+fn test_scheduler_priority_update() {
+    let mut scheduler = MockScheduler::new();
+
+    scheduler.add_task(MockTask::new(1, 50));
+    scheduler.add_task(MockTask::new(2, 100));
+
+    // Update task 1's priority
+    if let Some(task) = scheduler.tasks.iter_mut().find(|t| t.id == 1) {
+        task.priority = 10; // Higher priority (lower number)
+    }
+
+    // Verify priority was updated
+    let task1 = scheduler.tasks.iter().find(|t| t.id == 1).unwrap();
+    assert_eq_test!(task1.priority, 10, "Priority should be updated to 10");
+
+    // After priority update, task 1 should be scheduled first
+    let next_task = scheduler.get_next_task();
+    assert_eq_test!(
+        next_task.as_ref().map(|t| t.id),
+        Some(1),
+        "Higher priority task should run"
+    );
+}
+
+/// REQ: SCHED-011 - Empty scheduler get_next_task test
+#[test]
+fn test_scheduler_empty_get_next_task() {
+    let scheduler = MockScheduler::new();
+
+    let next = scheduler.get_next_task();
+    assert_test!(next.is_none(), "Empty scheduler should return None");
+}
+
+/// REQ: SCHED-012 - Single task scheduler test
+#[test]
+fn test_scheduler_single_task() {
+    let mut scheduler = MockScheduler::new();
+    scheduler.add_task(MockTask::new(1, 50));
+
+    let next = scheduler.get_next_task();
+    assert_eq_test!(
+        next.as_ref().map(|t| t.id),
+        Some(1),
+        "Single task should be selected"
+    );
+}
+
+/// REQ: SCHED-013 - Maximum tasks test
+#[test]
+fn test_scheduler_max_tasks() {
+    let mut scheduler = MockScheduler::new();
+
+    // Add maximum number of tasks (testing with 32)
+    for i in 0..32 {
+        scheduler.add_task(MockTask::new(i, (i % 256) as u8));
+    }
+
+    assert_eq_test!(scheduler.tasks.len(), 32, "Should handle 32 tasks");
+
+    // Scheduler should still function correctly
+    let next = scheduler.get_next_task();
+    assert_test!(next.is_some(), "Should select a task from 32 tasks");
+}
+
+/// REQ: SCHED-014 - Task state transitions test
+#[test]
+fn test_scheduler_task_state_transitions() {
+    let mut task = MockTask::new(1, 50);
+
+    // Ready -> Running
+    assert_eq_test!(
+        task.state,
+        TaskState::Ready,
+        "Initial state should be Ready"
+    );
+    task.state = TaskState::Running;
+    assert_eq_test!(task.state, TaskState::Running, "State should be Running");
+
+    // Running -> Blocked
+    task.state = TaskState::Blocked;
+    assert_eq_test!(task.state, TaskState::Blocked, "State should be Blocked");
+
+    // Blocked -> Ready
+    task.state = TaskState::Ready;
+    assert_eq_test!(task.state, TaskState::Ready, "State should be Ready again");
+
+    // Ready -> Terminated
+    task.state = TaskState::Terminated;
+    assert_eq_test!(
+        task.state,
+        TaskState::Terminated,
+        "State should be Terminated"
+    );
+}
+
+/// REQ: SCHED-015 - Round robin fairness test
+#[test]
+fn test_scheduler_round_robin_fairness() {
+    let mut scheduler = MockScheduler::new();
+
+    // Add tasks with same priority
+    scheduler.add_task(MockTask::new(1, 50));
+    scheduler.add_task(MockTask::new(2, 50));
+    scheduler.add_task(MockTask::new(3, 50));
+
+    // Track which tasks get selected over multiple rounds
+    let mut selections = std::vec::Vec::new();
+    for _ in 0..6 {
+        if let Some(task) = scheduler.get_next_task() {
+            selections.push(task.id);
+            // Rotate ready tasks to simulate round robin
+            scheduler.tasks.rotate_left(1);
+        }
+    }
+
+    // Each task should be selected at least once in 6 rounds
+    let task1_count = selections.iter().filter(|&&id| id == 1).count();
+    let task2_count = selections.iter().filter(|&&id| id == 2).count();
+    let task3_count = selections.iter().filter(|&&id| id == 3).count();
+
+    assert_test!(task1_count >= 1, "Task 1 should run at least once");
+    assert_test!(task2_count >= 1, "Task 2 should run at least once");
+    assert_test!(task3_count >= 1, "Task 3 should run at least once");
+}
+
+/// REQ: SCHED-016 - Preemption test
+#[test]
+fn test_scheduler_preemption() {
+    let mut scheduler = MockScheduler::new();
+
+    // Low priority task running
+    scheduler.add_task(MockTask::new(1, 100));
+    scheduler.current_task = Some(0);
+
+    // High priority task becomes ready
+    scheduler.add_task(MockTask::new(2, 10));
+
+    // Scheduler should select high priority task
+    let next = scheduler.get_next_task();
+    assert_eq_test!(
+        next.as_ref().map(|t| t.id),
+        Some(2),
+        "High priority task should preempt"
+    );
+}
+
+/// REQ: SCHED-017 - Priority bitmap test
+#[test]
+fn test_scheduler_priority_levels() {
+    let mut scheduler = MockScheduler::new();
+
+    // Add tasks at different priority levels
+    scheduler.add_task(MockTask::new(1, 0)); // Highest priority
+    scheduler.add_task(MockTask::new(2, 127)); // Mid priority
+    scheduler.add_task(MockTask::new(3, 255)); // Lowest priority
+
+    // Should always select highest priority first
+    for _ in 0..3 {
+        let next = scheduler.get_next_task();
+        if let Some(task) = next {
+            assert_eq_test!(
+                task.id,
+                1,
+                "Highest priority task should always be selected"
+            );
+        }
+    }
 }

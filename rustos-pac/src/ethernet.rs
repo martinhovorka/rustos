@@ -109,7 +109,7 @@ impl Ethernet {
         // SAFETY: Creating slice from RX buffer base address with known size (2048 bytes).
         // Hardware buffer is guaranteed to exist at this memory-mapped location.
         let rx_buf = unsafe {
-            core::slice::from_raw_parts(&self.rx_ping_buffer as *const u32 as *const u8, 2048)
+            core::slice::from_raw_parts((&self.rx_ping_buffer as *const u32).cast::<u8>(), 2048)
         };
         buffer[..len].copy_from_slice(&rx_buf[..len]);
 

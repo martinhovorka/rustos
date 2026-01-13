@@ -11,7 +11,7 @@
 //! REQ: SPI-009 - SPI transfer timeout
 
 use core::ptr::{read_volatile, write_volatile};
-use rustos_pac::spi::*;
+use rustos_pac::spi::Spi;
 
 /// REQ: SPI-004 - SPI clock polarity
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

@@ -188,7 +188,9 @@ impl Task {
         // SAFETY: We calculate stack_top from valid stack slice.
         // Pointer arithmetic is within stack bounds. Stack frame layout matches
         // the context switcher's expectations (36 words = 144 bytes).
-        let stack_top = stack.as_mut_ptr().add(stack.len()) as *mut usize;
+        // Using cast_mut() to properly convert u8 pointer to usize pointer with alignment.
+        #[allow(clippy::cast_ptr_alignment)] // Alignment is ensured by the &!0xF mask below
+        let stack_top = stack.as_mut_ptr().add(stack.len()).cast::<usize>();
 
         // REQ: CTX-007 - Align stack pointer to 16 bytes
         let sp = (stack_top as usize & !0xF) as *mut usize;
@@ -277,8 +279,10 @@ impl Task {
     pub fn check_stack_overflow(&self) -> bool {
         // SAFETY: stack_base points to the bottom of the stack where we placed
         // the canary value during Task::new(). The pointer is valid for the task lifetime.
+        // Stack base is properly aligned for u32 access since stack is word-aligned.
+        #[allow(clippy::cast_ptr_alignment)] // Stack base is word-aligned in Task::new()
         unsafe {
-            let canary_ptr = self.stack_base as *const u32;
+            let canary_ptr = self.stack_base.cast::<u32>();
             *canary_ptr == self.stack_canary
         }
     }

@@ -91,8 +91,9 @@ pub fn get_log_level() -> LogLevel {
 // SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn set_module_log_level(module: &'static str, level: LogLevel) {
     // SAFETY: Reading MODULE_FILTERS during init phase, no concurrent access.
-    if MODULE_FILTER_COUNT < unsafe { core::ptr::addr_of!(MODULE_FILTERS).as_ref().unwrap().len() }
-    {
+    // Using direct array length constant to avoid pointer dereference
+    const MAX_MODULE_FILTERS: usize = 16;
+    if MODULE_FILTER_COUNT < MAX_MODULE_FILTERS {
         MODULE_FILTERS[MODULE_FILTER_COUNT] = (module, level);
         MODULE_FILTER_COUNT += 1;
     }
