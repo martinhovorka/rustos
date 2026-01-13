@@ -1,6 +1,6 @@
 # RustOS Getting Started Guide
 
-**REQ: DOC-010 - Getting Started Documentation**
+REQ: DOC-010 - Getting Started Documentation
 
 Welcome to RustOS! This guide will help you set up your development environment, build your first application, and deploy it to the Digilent Arty A7-35 FPGA board.
 
@@ -80,7 +80,7 @@ cargo test -p rustos-tests --target x86_64-unknown-linux-gnu -- --test-threads=1
 
 ## Project Structure
 
-```
+```text
 rustos/
 ├── rustos-kernel/      # RTOS kernel (scheduler, tasks, sync)
 ├── rustos-hal/         # Hardware Abstraction Layer (drivers)
@@ -350,40 +350,42 @@ fn debug_print(msg: &str) {
 ### Build Errors
 
 **Error: "can't find crate for `std`"**
+
 - Ensure `#![no_std]` is at the top of main.rs
 - Check target is `riscv32imac-unknown-none-elf`
 
 **Error: "undefined reference to `_start`"**
+
 - Verify linker script is in place (`linker.ld`)
 - Check `.cargo/config.toml` has correct linker settings
 
 ### Runtime Issues
 
-**System hangs after start**
-- Check interrupt handlers are installed
-- Verify timer is configured correctly
-- Ensure at least one task is ready
+- **System hangs after start**
+  - Check interrupt handlers are installed
+  - Verify timer is configured correctly
+  - Ensure at least one task is ready
 
-**Stack overflow**
-- Increase task stack size
-- Enable stack checking: `features = ["stack-check"]`
+- **Stack overflow**
+  - Increase task stack size
+  - Enable stack checking: `features = ["stack-check"]`
 
-**Tasks not switching**
-- Verify timer interrupt is enabled
-- Check task priorities
-- Ensure `scheduler::start()` was called
+- **Tasks not switching**
+  - Verify timer interrupt is enabled
+  - Check task priorities
+  - Ensure `scheduler::start()` was called
 
 ### Hardware Issues
 
-**UART not working**
-- Check baud rate (115200 default)
-- Verify TX/RX pin connections
-- Ensure UART clock is enabled
+- **UART not working**
+  - Check baud rate (115200 default)
+  - Verify TX/RX pin connections
+  - Ensure UART clock is enabled
 
-**LED not blinking**
-- Check GPIO pin number
-- Verify GPIO direction is output
-- Check LED polarity (active high/low)
+- **LED not blinking**
+  - Check GPIO pin number
+  - Verify GPIO direction is output
+  - Check LED polarity (active high/low)
 
 ---
 
@@ -402,4 +404,3 @@ fn debug_print(msg: &str) {
 - Source Code: All code is documented with `cargo doc`
 
 Happy hacking with RustOS! 🦀
-

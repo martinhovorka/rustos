@@ -1,6 +1,6 @@
 # RustOS Development Roadmap
 
-**REQ: DOC-022 - Future Development Planning**
+REQ: DOC-022 - Future Development Planning
 
 This document outlines the planned development roadmap for RustOS, including v1.1 enhancements and v2.0 major features.
 
@@ -21,6 +21,7 @@ This document outlines the planned development roadmap for RustOS, including v1.
 ### Completed Features
 
 #### Kernel
+
 - ✅ O(1) priority-based preemptive scheduler (256 levels)
 - ✅ Static task allocation (up to 16 tasks)
 - ✅ Context switching (3.2 µs @ 75 MHz)
@@ -29,12 +30,14 @@ This document outlines the planned development roadmap for RustOS, including v1.
 - ✅ Software timers (one-shot and periodic)
 
 #### Synchronization
+
 - ✅ Mutex with RAII guards
 - ✅ Counting semaphores
 - ✅ FIFO message queues
 - ✅ Event flags (32-bit)
 
 #### Hardware Drivers (Arty A7-35)
+
 - ✅ AXI UART Lite (115200 baud)
 - ✅ AXI Timer (1 kHz tick source)
 - ✅ AXI GPIO (input/output with interrupts)
@@ -44,12 +47,14 @@ This document outlines the planned development roadmap for RustOS, including v1.
 - ✅ AXI Timebase WDT (watchdog timer)
 
 #### Documentation
+
 - ✅ Architecture overview
 - ✅ API reference (cargo doc)
 - ✅ Requirements traceability
 - ✅ Verification report
 
 ### Performance Targets (Met)
+
 | Metric | Target | Achieved |
 |--------|--------|----------|
 | Context switch | ≤ 5 µs | 3.2 µs ✅ |
@@ -64,6 +69,7 @@ This document outlines the planned development roadmap for RustOS, including v1.
 ### Implemented Features
 
 #### Power Management
+
 - [x] **Tickless idle mode** (SCHED-014) ✅
   - Dynamic tick suppression when no timers pending
   - WFI instruction integration
@@ -76,6 +82,7 @@ This document outlines the planned development roadmap for RustOS, including v1.
   - Peripheral wake sources
 
 #### Scheduler Enhancements
+
 - [x] **Priority inheritance** (SCHED-015) ✅
   - Prevent priority inversion
   - Automatic priority boosting
@@ -88,6 +95,7 @@ This document outlines the planned development roadmap for RustOS, including v1.
   - Jitter analysis
 
 #### Networking
+
 - [x] **Ethernet driver** (ETH-001 to ETH-009) ✅
   - AXI Ethernet Lite support
   - MAC address configuration
@@ -96,6 +104,7 @@ This document outlines the planned development roadmap for RustOS, including v1.
   - Basic ICMP ping response
 
 #### Debug Infrastructure (Added)
+
 - [x] **GDB stub** (DBG-017) ✅
   - Remote debugging support
   - Breakpoint management
@@ -110,12 +119,14 @@ This document outlines the planned development roadmap for RustOS, including v1.
   - Performance measurement
 
 #### Security (Added)
+
 - [x] **Secure boot** (SEC-010) ✅
   - Image validation
   - CRC and signature verification
   - Anti-rollback protection
 
 #### Developer Experience
+
 - [x] **Enhanced diagnostics** ✅
   - CPU utilization per task
   - Stack high-water marks
@@ -129,6 +140,7 @@ This document outlines the planned development roadmap for RustOS, including v1.
   - GPIO control
 
 ### Documentation ✅
+
 - [x] Getting Started Guide (docs/GETTING_STARTED.md)
 - [x] Task Programming Guide (docs/TASK_PROGRAMMING.md)
 - [x] Sync Primitives Guide (docs/SYNC_PRIMITIVES.md)
@@ -138,6 +150,7 @@ This document outlines the planned development roadmap for RustOS, including v1.
 ### v1.1.0 Status: ✅ COMPLETE (Jan 2026)
 
 All planned v1.1.0 features have been implemented ahead of schedule. The release includes:
+
 - Tickless idle mode
 - Priority inheritance
 - Ethernet driver
@@ -153,6 +166,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
 ### Planned Features
 
 #### Multi-Core Support
+
 - [ ] **SMP scheduler**
   - Per-core run queues
   - Load balancing
@@ -164,6 +178,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
   - Inter-processor interrupts
 
 #### Memory Management
+
 - [ ] **Dynamic memory allocation**
   - TLSF allocator
   - Memory pools
@@ -175,6 +190,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
   - Peripheral access control
 
 #### Advanced Scheduling
+
 - [ ] **Earliest deadline first (EDF)**
   - Dynamic priority assignment
   - Deadline tracking
@@ -186,6 +202,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
   - Replenishment policies
 
 #### File System
+
 - [ ] **FAT16/32 support**
   - SD card driver
   - Basic file operations
@@ -197,6 +214,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
   - Log-structured storage
 
 #### Networking Stack
+
 - [ ] **lwIP integration**
   - TCP/IP stack
   - DHCP client
@@ -208,6 +226,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
   - CoAP support
 
 #### Formal Verification
+
 - [ ] **Kani integration**
   - Scheduler correctness proofs
   - Deadlock freedom verification
@@ -218,7 +237,8 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
   - Static analysis
   - Automated checking
 
-### Documentation
+### New Documentation
+
 - [ ] Multi-core programming guide
 - [ ] Memory management guide
 - [ ] Networking guide
@@ -226,7 +246,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
 
 ### Timeline
 
-```
+```text
 Q4 2026
 ├─ October
 │  ├─ SMP scheduler core
@@ -267,22 +287,26 @@ Q4 2026
 ### Potential Features
 
 #### Security
+
 - Secure boot support
 - TrustZone integration
 - Cryptographic acceleration
 - Secure firmware update
 
 #### Real-Time Enhancements
+
 - Mixed criticality scheduling
 - Temporal isolation
 - Certification-ready (ISO 26262, IEC 62443)
 
 #### Extended Hardware Support
+
 - Additional FPGA platforms
 - Commercial RISC-V processors
 - ARM Cortex-M support
 
 #### Development Tools
+
 - IDE integration (VS Code extension)
 - Real-time tracing (SystemView)
 - Performance profiler
@@ -302,6 +326,7 @@ Q4 2026
 ### Priority Areas
 
 High-priority contributions welcome for:
+
 - Additional driver implementations
 - Performance optimizations
 - Documentation improvements
@@ -346,6 +371,7 @@ High-priority contributions welcome for:
 ### Commercial Support
 
 For commercial support, custom development, or certification assistance:
+
 - Contact: [support@example.com]
 
 ---
@@ -376,4 +402,3 @@ For commercial support, custom development, or certification assistance:
 
 *Last updated: December 2024*
 *Document version: 1.0*
-

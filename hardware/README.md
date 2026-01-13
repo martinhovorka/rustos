@@ -1783,7 +1783,7 @@ Memory Map (128 KB BRAM: 0x00000000 - 0x0001FFFF)
 │ 0x00018000 - 0x0001BFFF  Task Stacks (multiple)     │ 16 KB
 ├─────────────────────────────────────────────────────┤
 │ 0x0001C000 - 0x0001FFFF  Kernel/ISR Stack           │ 16 KB
-│                          (grows downward from top)   │
+│                          (grows downward from top)  │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -1939,4 +1939,3 @@ mbv_axi_interrupt_controller: interrupt-controller@41200000 {
 4. **Add tests** - Hardware-in-the-loop tests for validation
 
 This document provides comprehensive hardware reference for developing a Rust-based RTOS on the rv32imacb_zicsr_zifencei_zbc platform.
-

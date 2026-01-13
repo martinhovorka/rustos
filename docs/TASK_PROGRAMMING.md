@@ -1,6 +1,6 @@
 # RustOS Task Programming Guide
 
-**REQ: DOC-011 - Task Programming Documentation**
+REQ: DOC-011 - Task Programming Documentation
 
 This guide covers task creation, management patterns, best practices, and common pitfalls when programming with RustOS tasks.
 
@@ -23,12 +23,14 @@ This guide covers task creation, management patterns, best practices, and common
 ### What is a Task?
 
 In RustOS, a **task** is an independent execution context with:
+
 - Its own stack
 - A priority level (0-255, lower = higher priority)
 - A state (Ready, Running, Blocked, Suspended, Terminated)
 - A unique identifier (TaskId)
 
 Tasks share:
+
 - Code memory (read-only)
 - Global/static data
 - Peripheral access
@@ -42,7 +44,7 @@ RustOS uses **preemptive priority-based scheduling**:
 3. Lower-priority tasks are preempted when higher-priority tasks become ready
 4. The scheduler runs at every timer tick (1 kHz default)
 
-```
+```text
 Priority 0 (Highest)  ────────────►  First to run
 Priority 1            ────────────►
 Priority 2            ────────────►
@@ -171,7 +173,7 @@ priority until it releases the mutex.
 
 ### State Diagram
 
-```
+```text
                     ┌─────────────┐
                     │   READY     │◄────────┐
                     └──────┬──────┘         │
@@ -658,4 +660,3 @@ fn good_increment() {
 
 For more examples, see [Example Applications](EXAMPLES.md).
 For synchronization details, see [Sync Primitives Guide](SYNC_PRIMITIVES.md).
-

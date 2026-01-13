@@ -1,19 +1,22 @@
 # RustOS Example Applications
 
-**REQ: DOC-013 - Example Applications Documentation**
+REQ: DOC-013 - Example Applications Documentation
 
 This document provides complete, working example applications demonstrating common patterns and use cases for RustOS.
 
 ## Table of Contents
 
-1. [LED Blinker](#example-1-led-blinker)
-2. [Producer-Consumer](#example-2-producer-consumer)
-3. [Event-Driven Architecture](#example-3-event-driven-architecture)
-4. [Real-Time Data Acquisition](#example-4-real-time-data-acquisition)
-5. [State Machine Controller](#example-5-state-machine-controller)
-6. [Watchdog Supervisor](#example-6-watchdog-supervisor)
-7. [Serial Command Interface](#example-7-serial-command-interface)
-8. [SPI Flash Logger](#example-8-spi-flash-logger)
+- [RustOS Example Applications](#rustos-example-applications)
+  - [Table of Contents](#table-of-contents)
+  - [Example 1: LED Blinker](#example-1-led-blinker)
+  - [Example 2: Producer-Consumer](#example-2-producer-consumer)
+  - [Example 3: Event-Driven Architecture](#example-3-event-driven-architecture)
+  - [Example 4: Real-Time Data Acquisition](#example-4-real-time-data-acquisition)
+  - [Example 5: State Machine Controller](#example-5-state-machine-controller)
+  - [Example 6: Watchdog Supervisor](#example-6-watchdog-supervisor)
+  - [Example 7: Serial Command Interface](#example-7-serial-command-interface)
+  - [Example 8: SPI Flash Logger](#example-8-spi-flash-logger)
+  - [Summary](#summary)
 
 ---
 
@@ -1579,7 +1582,7 @@ fn panic(_: &core::panic::PanicInfo) -> ! {
 | SPI Flash Logger | SPI driver, flash storage | ⭐⭐⭐⭐ |
 
 For more details, see:
+
 - [Getting Started Guide](GETTING_STARTED.md)
 - [Task Programming Guide](TASK_PROGRAMMING.md)
 - [Sync Primitives Guide](SYNC_PRIMITIVES.md)
-

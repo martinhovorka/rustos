@@ -43,11 +43,13 @@ cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench -- --re
 **Requirement**: Measure time to switch between two tasks
 
 **Implementation**:
+
 - Creates two mock tasks with different priorities
 - Measures mcycle CSR before and after context switch
 - Performs 1000 iterations for statistical accuracy
 
 **Metrics**:
+
 - Average cycles: ~50 cycles (mock implementation)
 - Min/Max: Captures best and worst case
 - Standard deviation: Measures consistency
@@ -59,11 +61,13 @@ cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench -- --re
 **Requirement**: Measure time from GPIO edge to ISR entry
 
 **Implementation**:
+
 - Simulates GPIO interrupt trigger
 - Measures mcycle from interrupt signal to handler entry
 - Includes interrupt controller processing time
 
 **Metrics**:
+
 - Average cycles: ~25 cycles (mock implementation)
 - Critical for real-time response guarantees
 - Should be < 100 cycles on actual hardware
@@ -75,6 +79,7 @@ cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench -- --re
 **Requirement**: Measure overhead of sync primitives
 
 **Primitives Tested**:
+
 1. **Mutex**: Lock and unlock operations
    - Average: ~10 cycles
    - Critical path for resource protection
@@ -94,6 +99,7 @@ cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench -- --re
 **Requirement**: Track binary size metrics
 
 **Metrics Collected**:
+
 - `.text` section: Executable code size
 - `.rodata` section: Read-only data
 - `.data` section: Initialized data
@@ -101,7 +107,8 @@ cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench -- --re
 - Total binary size
 
 **Example Output**:
-```
+
+```text
 Code Size Metrics (REQ: PERFTEST-004)
 ----------------------------------------------------------------------------------------------------
 rustos-app           | .text:   6144 | .rodata:    512 | .data:    128 | .bss:    256 | Total:    7040
@@ -116,11 +123,13 @@ rustos-app           | .text:   6144 | .rodata:    512 | .data:    128 | .bss:  
 **Requirement**: Measure stack high-water marks
 
 **Implementation**:
+
 - Tracks maximum stack usage per task
 - Calculates usage percentage
 - Identifies stack overflow risks
 
 **Metrics**:
+
 ```
 idle_task    | Size: 512  | Used: 128 | High-water: 128 | Usage: 25%
 main_task    | Size: 2048 | Used: 672 | High-water: 672 | Usage: 32%
@@ -128,6 +137,7 @@ worker_task  | Size: 1024 | Used: 384 | High-water: 384 | Usage: 37%
 ```
 
 **Critical Thresholds**:
+
 - ⚠️  Warning: > 75% usage
 - 🚨 Critical: > 90% usage
 
@@ -138,18 +148,20 @@ worker_task  | Size: 1024 | Used: 384 | High-water: 384 | Usage: 37%
 **Requirement**: Detect performance regressions
 
 **Implementation**:
+
 1. **Baseline Capture**: Save current metrics as baseline
 2. **Comparison**: Compare new runs against baseline
 3. **Threshold**: Default 10% tolerance
 4. **Reporting**: Pass/fail with delta percentage
 
 **Example Output**:
-```
+
+```text
 Regression Testing (REQ: PERFTEST-006)
 ----------------------------------------------------------------------------------------------------
-✅ PASS | Context Switch        | Baseline:  50 | Current:  50 | Delta: +0 (+0.00%)
-✅ PASS | Interrupt Latency     | Baseline:  25 | Current:  25 | Delta: +0 (+0.00%)
-⚠️  FAIL | Mutex Lock/Unlock     | Baseline:  10 | Current:  12 | Delta: +2 (+20.00%)
+✅ PASS  | Context Switch        | Baseline:  50 | Current:  50 | Delta: +0 (+0.00%)
+✅ PASS  | Interrupt Latency     | Baseline:  25 | Current:  25 | Delta: +0 (+0.00%)
+⚠️ FAI L | Mutex Lock/Unlock     | Baseline:  10 | Current:  12 | Delta: +2 (+20.00%)
 ```
 
 **Code Reference**: `benchmark::regression` module
@@ -187,12 +199,14 @@ pub struct BenchmarkResult {
 ### Mock vs. Real Hardware
 
 **Mock Implementation** (x86_64-unknown-linux-gnu):
+
 - Uses `AtomicU64` for cycle counter
 - Simulated context switches with deterministic timing
 - Perfect for CI/CD regression testing
 - No hardware dependencies
 
 **Real Hardware** (riscv32imac-unknown-none-elf):
+
 - Uses actual `mcycle` CSR
 - Real interrupt latency measurements
 - True context switch overhead
@@ -267,7 +281,7 @@ cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench -- --re
 
 ## Module Organization
 
-```
+```text
 rustos-tests/
 ├── src/
 │   ├── benchmark.rs          # Main benchmark module
@@ -305,21 +319,25 @@ cargo test --target x86_64-unknown-linux-gnu --features bench benchmark::
 ## Future Enhancements
 
 ### PERFTEST-007: Memory Allocator Performance
+
 - Allocation/deallocation latency
 - Fragmentation analysis
 - Peak memory usage tracking
 
 ### PERFTEST-008: Scheduler Overhead
+
 - Task selection latency
 - Priority queue operations
 - Tick processing time
 
 ### PERFTEST-009: DMA Transfer Performance
+
 - Setup overhead
 - Transfer throughput
 - Completion notification latency
 
 ### PERFTEST-010: Power State Transitions
+
 - Enter/exit sleep mode latency
 - Peripheral enable/disable time
 - Wake-up latency
@@ -338,6 +356,7 @@ cargo test --target x86_64-unknown-linux-gnu --features bench benchmark::
 **Problem**: `error[E0463]: can't find crate for 'std'`
 
 **Solution**: Ensure you're building for x86_64-unknown-linux-gnu:
+
 ```bash
 cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench
 ```
@@ -345,6 +364,7 @@ cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench
 **Problem**: `error: target `bench` in package `rustos-tests` requires the features: `bench``
 
 **Solution**: Add `--features bench` flag:
+
 ```bash
 cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench
 ```
@@ -354,6 +374,7 @@ cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench
 **Problem**: Benchmarks show 0 cycles for all operations
 
 **Solution**: Verify MOCK_CSR is properly initialized:
+
 ```rust
 MOCK_CSR.mcycle.store(0, Ordering::Relaxed);
 ```
@@ -361,6 +382,7 @@ MOCK_CSR.mcycle.store(0, Ordering::Relaxed);
 **Problem**: Standard deviation is unexpectedly high
 
 **Solution**: Check for:
+
 - Background system load
 - CPU frequency scaling
 - Thermal throttling
@@ -369,4 +391,3 @@ MOCK_CSR.mcycle.store(0, Ordering::Relaxed);
 ## License
 
 MIT OR Apache-2.0
-

@@ -105,4 +105,3 @@ Licensed under either of Apache License, Version 2.0 or MIT license at your opti
 ## Requirements Traceability
 
 This kernel implements 800+ requirements from the RustOS specification v2.8.3. See individual modules and functions for requirement tags (e.g., REQ: SCHED-001).
-

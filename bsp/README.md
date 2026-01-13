@@ -222,7 +222,7 @@ Located at: `mbv_microblaze_v/standalone_mbv_microblaze_v/bsp/`
 All peripherals are accessed via AXI4-Lite interconnect (SmartConnect):
 
 | Address Range | Size | Peripheral | Driver | IRQ |
-||||||
+|-|-|-|-|-|
 | 0x40000000 - 0x4000FFFF | 64 KB | GPIO Shield Pins 0-19 | gpio v4.12 | Yes (IRQ 4) |
 | 0x40010000 - 0x4001FFFF | 64 KB | GPIO Shield Pins 26-41 | gpio v4.12 | Yes (IRQ 5) |
 | 0x40020000 - 0x4002FFFF | 64 KB | GPIO Push Buttons | gpio v4.12 | Yes (IRQ 6) |
@@ -249,7 +249,7 @@ All peripherals are accessed via AXI4-Lite interconnect (SmartConnect):
 **Interrupt Controller:** `mbv_axi_interrupt_controller` @ 0x41200000
 
 | IRQ # | Peripheral | Signal | Type |
-|||||
+|-|-|-|-|
 | 0 | FIT Timer 1ms | fit_timer_interrupt | Rising Edge |
 | 1 | Watchdog Timer | wdt_interrupt | Level |
 | 2 | UART Lite | interrupt | Rising Edge |
@@ -712,7 +712,7 @@ Pre-configured application examples (access via Vitis: File → New → Applicat
 **RISC-V General Purpose Registers (GPRs):**
 
 | Register | ABI Name | Description | Saver |
-|||||
+|-|-|-|-|
 | x0 | zero | Hard-wired zero | N/A |
 | x1 | ra | Return address | Caller |
 | x2 | sp | Stack pointer | Callee |
@@ -729,7 +729,7 @@ Pre-configured application examples (access via Vitis: File → New → Applicat
 **RISC-V CSRs (Control and Status Registers):**
 
 | CSR Address | Name | Description |
-|||||
+|-|-|-|
 | 0x300 | mstatus | Machine status register (MIE, MPIE, MPP bits) |
 | 0x301 | misa | Machine ISA register |
 | 0x302 | medeleg | Machine exception delegation |
@@ -790,7 +790,7 @@ Bit 11: MEIE/MEIP - Machine External Interrupt Enable/Pending
 **Exception Codes (mcause - synchronous):**
 
 | Code | Exception |
-|||||
+|-|-|
 | 0 | Instruction address misaligned |
 | 1 | Instruction access fault |
 | 2 | Illegal instruction |
@@ -809,7 +809,7 @@ Bit 11: MEIE/MEIP - Machine External Interrupt Enable/Pending
 **Interrupt Codes (mcause - asynchronous, MSB=1):**
 
 | Code (mcause) | Interrupt |
-|||||
+|-|-|
 | 0x80000003 | Machine software interrupt |
 | 0x80000007 | Machine timer interrupt |
 | 0x8000000B | Machine external interrupt |
@@ -865,7 +865,7 @@ SECTIONS
 **Startup Files (from libsrc/standalone/src/riscv/):**
 
 | File | Purpose |
-|||
+|-|-|
 | boot.S | Initial boot code, register initialization |
 | trap_handler.S | Exception and interrupt handling |
 | xil_exception.c | Exception registration API |
@@ -912,7 +912,7 @@ SECTIONS
 **Key Symbols for RTOS:**
 
 | Symbol | Description |
-|||||
+|-|-|
 | `_boot` | Reset entry point |
 | `__stack` | Stack top address (end of RAM) |
 | `_trap_handler` | Trap vector entry point |
@@ -1339,7 +1339,7 @@ The platform is built for the **rv32imacb_zicsr_zifencei_zbc** RISC-V ISA:
 ### Peripheral Base Addresses
 
 | Peripheral | Base Address | Size | IRQ |
-|||||
+|-|-|-|-|
 | BRAM (Memory) | 0x00000000 | 128 KB | - |
 | GPIO Shield 0-19 | 0x40000000 | 64 KB | 4 |
 | GPIO Shield 26-41 | 0x40010000 | 64 KB | 5 |
@@ -1359,7 +1359,7 @@ The platform is built for the **rv32imacb_zicsr_zifencei_zbc** RISC-V ISA:
 ### System Parameters
 
 | Parameter | Value |
-|||
+|-|-|
 | CPU Clock | 75 MHz |
 | AXI Clock | 75 MHz |
 | Memory Size | 128 KB |
@@ -1375,7 +1375,7 @@ The platform is built for the **rv32imacb_zicsr_zifencei_zbc** RISC-V ISA:
 ### GPIO Pin Widths
 
 | Instance | Width | Direction | Interrupt |
-|||||
+|-|-|-|-|
 | Shield Pins 0-19 | 20 bits | Bidirectional | Yes |
 | Shield Pins 26-41 | 16 bits | Bidirectional | Yes |
 | Push Buttons | 4 bits | Input only | Yes |
@@ -1387,7 +1387,7 @@ The platform is built for the **rv32imacb_zicsr_zifencei_zbc** RISC-V ISA:
 ### Timing Reference
 
 | Operation | Cycles | Time @ 75 MHz |
-|||||
+|-|-|-|
 | 1 microsecond | 75 | 1 µs |
 | 1 millisecond | 75,000 | 1 ms |
 | 1 second | 75,000,000 | 1 s |
@@ -1397,7 +1397,7 @@ The platform is built for the **rv32imacb_zicsr_zifencei_zbc** RISC-V ISA:
 ### Driver Versions
 
 | Driver | Version | Header File |
-|||||
+|-|-|-|
 | GPIO | v4.12 | xgpio.h |
 | UART Lite | v3.12 | xuartlite.h |
 | I2C (IIC) | v3.14 | xiic.h |
@@ -1447,7 +1447,7 @@ All register offsets are from the peripheral base address.
 #### AXI UART Lite Registers (0x40600000)
 
 | Offset | Register | Access | Description |
-|||||
+|-|-|-|-|
 | 0x00 | RX_FIFO | R | Receive FIFO (8-bit data in bits 0-7) |
 | 0x04 | TX_FIFO | W | Transmit FIFO (8-bit data in bits 0-7) |
 | 0x08 | STAT_REG | R | Status register |
@@ -1485,7 +1485,7 @@ Bit 4: ENABLE_INTR  - Enable interrupt
 #### AXI GPIO Registers (multiple instances)
 
 | Offset | Register | Access | Description |
-|||||
+|-|-|-|-|
 | 0x000 | GPIO_DATA | R/W | Channel 1 data register |
 | 0x004 | GPIO_TRI | R/W | Channel 1 tri-state (1=input, 0=output) |
 | 0x008 | GPIO2_DATA | R/W | Channel 2 data register (if dual-channel) |
@@ -1510,7 +1510,7 @@ Bit 1: Channel 2 interrupt
 #### AXI Interrupt Controller Registers (0x41200000)
 
 | Offset | Register | Access | Description |
-|||||
+|-|-|-|-|
 | 0x00 | ISR | R | Interrupt Status Register |
 | 0x04 | IPR | R | Interrupt Pending Register |
 | 0x08 | IER | R/W | Interrupt Enable Register |
@@ -1541,7 +1541,7 @@ IRQ 0,1,4,5,6,7,10 = Edge (Ethernet, WDT, GPIOs)
 #### AXI IIC (I2C) Registers (0x40800000)
 
 | Offset | Register | Access | Description |
-|||||
+|-|-|-|-|
 | 0x00 | GIE | R/W | Global interrupt enable |
 | 0x08 | ISR | R/TOW | Interrupt status register |
 | 0x0C | IER | R/W | Interrupt enable register |
@@ -1565,7 +1565,7 @@ IRQ 0,1,4,5,6,7,10 = Edge (Ethernet, WDT, GPIOs)
 #### AXI Quad SPI Registers (0x44A00000, 0x44A10000)
 
 | Offset | Register | Access | Description |
-|||||
+|-|-|-|-|
 | 0x1C | DGIER | R/W | Global interrupt enable |
 | 0x20 | IPISR | R/TOW | IP interrupt status |
 | 0x28 | IPIER | R/W | IP interrupt enable |
@@ -1596,7 +1596,7 @@ Bit 9: LSB_FIRST - LSB first transfer format
 #### AXI Ethernet Lite Registers (0x40E00000)
 
 | Offset | Register | Description |
-|||||
+|-|-|-|
 | 0x000-0x7FC | TX_BUFFER0 | TX Buffer 0 (2KB) |
 | 0x800-0xFFC | TX_BUFFER1 | TX Buffer 1 (2KB, ping-pong) |
 | 0x1000-0x17FC | RX_BUFFER0 | RX Buffer 0 (2KB) |
@@ -1624,7 +1624,7 @@ Bit 4: LOOPBACK - Internal loopback (TX only)
 #### AXI Timebase WDT Registers (0x41A00000)
 
 | Offset | Register | Access | Description |
-|||||
+|-|-|-|-|
 | 0x00 | TWCSR0 | R/W | Control/Status Register 0 |
 | 0x04 | TWCSR1 | R/W | Control/Status Register 1 |
 | 0x08 | TBR | R | Timebase Register |
@@ -1654,7 +1654,7 @@ The AXI Quad SPI controller supports external SPI flash memory access. This sect
 #### SPI Flash Command Reference
 
 | Command | Opcode | Address Bytes | Data | Description |
-|||||
+|-|-|-|-|-|
 | READ | 0x03 | 3 | 1+ | Read data (up to 25 MHz) |
 | FAST_READ | 0x0B | 3 + dummy | 1+ | Fast read (up to 50 MHz) |
 | RDID | 0x9F | 0 | 3 | Read JEDEC ID |
@@ -1793,7 +1793,7 @@ The Ethernet Lite controller includes an MDIO (Management Data Input/Output) int
 #### MDIO Register Map
 
 | Offset | Register | Description |
-|||||
+|-|-|-|
 | 0x07E4 | MDIO_ADDR | PHY address (bits 4:0) + Register address (bits 9:5) |
 | 0x07E8 | MDIO_WR | Write data (bits 15:0) |
 | 0x07EC | MDIO_RD | Read data (bits 15:0) |
@@ -1802,7 +1802,7 @@ The Ethernet Lite controller includes an MDIO (Management Data Input/Output) int
 #### Standard PHY Registers (IEEE 802.3)
 
 | Reg | Name | Description |
-|||||
+|-|-|-|
 | 0 | BMCR | Basic Mode Control Register |
 | 1 | BMSR | Basic Mode Status Register |
 | 2 | PHYID1 | PHY Identifier 1 |
@@ -2130,11 +2130,11 @@ Window WDT requires the watchdog to be refreshed within a specific time window -
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
-│                    Window WDT Timeline                       │
+│                    Window WDT Timeline                      │
 ├─────────────────────────────────────────────────────────────┤
 │  [First Window - Closed]  │  [Second Window - Open]  │Reset │
 │   Refresh NOT allowed     │   Refresh allowed here   │      │
-│◄─────────────────────────►│◄───────────────────────►│      │
+│◄─────────────────────────►│◄───────────────────────► |      │
 │       FWR value           │       SWR value          │      │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -2142,7 +2142,7 @@ Window WDT requires the watchdog to be refreshed within a specific time window -
 #### Window WDT Registers
 
 | Offset | Register | Description |
-||||
+|-|-|-|
 | 0x0C | FCR | Function Control Register |
 | 0x10 | FWR | First Window Register (closed window count) |
 | 0x14 | SWR | Second Window Register (open window count) |
@@ -2288,7 +2288,7 @@ The BSP provides timer functionality through the xiltimer library for delays and
 #### Available Timer APIs
 
 | Function | Description |
-|||
+|-|-|
 | `usleep(useconds)` | Sleep for specified microseconds |
 | `msleep(mseconds)` | Sleep for specified milliseconds |
 | `sleep(seconds)` | Sleep for specified seconds |
@@ -2298,7 +2298,7 @@ The BSP provides timer functionality through the xiltimer library for delays and
 #### Timing Calculations at 75 MHz
 
 | Duration | CPU Cycles | Timing |
-||||
+|-|-|-|
 | 1 µs | 75 | 13.33 ns/cycle |
 | 10 µs | 750 | - |
 | 100 µs | 7,500 | - |
@@ -2398,7 +2398,7 @@ The MicroBlaze Debug Module (MDM) provides JTAG-based debugging capabilities.
 #### Debug Features Available
 
 | Feature | Support |
-|||
+|-|-|
 | JTAG Connection | Yes |
 | Hardware Breakpoints | Yes (4 available) |
 | Software Breakpoints | Yes (via EBREAK) |
@@ -2431,7 +2431,7 @@ dscratch0/1 (0x7B2, 0x7B3) - Debug Scratch:
 #### Debug Entry Causes (dcsr.cause)
 
 | Value | Cause |
-|||
+|-|-|
 | 1 | EBREAK instruction |
 | 2 | Trigger module (breakpoint) |
 | 3 | Debug request (halt request) |
@@ -2722,4 +2722,3 @@ Hardware design and this documentation are part of the RustOS project.
 **Document Version:** 4.0
 **Last Updated:** 2025-01-11
 **Generated From:** Comprehensive BSP analysis with extended peripheral documentation including SPI Flash, Ethernet MDIO/PHY, I2C protocol details, Window WDT, timers, and debug interface reference
-

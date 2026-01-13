@@ -8,6 +8,7 @@
 ## REQ: CERT-001 - Documentation Preparation
 
 This document provides the foundation for future safety certification of RustOS under standards such as:
+
 - IEC 61508 (Functional Safety)
 - ISO 26262 (Automotive)
 - DO-178C (Aerospace)
@@ -38,6 +39,7 @@ RustOS is designed with safety-critical applications in mind. While not yet form
 ### 2.1 Coding Standard
 
 RustOS follows a strict coding standard based on:
+
 - **Rust API Guidelines** (rust-lang.github.io/api-guidelines)
 - **MISRA-like principles** adapted for Rust
 - **AUTOSAR C++14** concepts where applicable
@@ -60,6 +62,7 @@ RustOS follows a strict coding standard based on:
 ### 2.3 Unsafe Code Audit
 
 All uses of `unsafe` are documented with:
+
 1. Safety invariants that must be upheld
 2. Why safe alternatives are not possible
 3. Code review sign-off
@@ -133,7 +136,7 @@ All uses of `unsafe` are documented with:
 
 ### 4.3 Fault Tree Analysis
 
-```
+```text
 System Failure
 ├── Scheduler Failure
 │   ├── Context switch corrupted → Mitigated by atomic save/restore
@@ -175,11 +178,13 @@ System Failure
 ### 5.3 Requirements Traceability
 
 Every requirement has:
+
 1. Source code annotation (`// REQ: XXX-NNN`)
 2. Test case annotation (`test_XXX_NNN_description`)
 3. Entry in traceability matrix
 
 Coverage verification:
+
 ```bash
 # Generate traceability report
 grep -r "REQ:" rustos-*/src/ | wc -l  # Implementation tags
@@ -191,6 +196,7 @@ grep -r "test_" rustos-tests/src/ | wc -l  # Test cases
 ## 6. Certification Roadmap
 
 ### Phase 1: Current State (Complete)
+
 - ✅ Requirements specification (800 requirements)
 - ✅ Architecture documentation
 - ✅ Coding standards defined
@@ -198,12 +204,14 @@ grep -r "test_" rustos-tests/src/ | wc -l  # Test cases
 - ✅ Traceability matrix
 
 ### Phase 2: Gap Analysis (Future)
+
 - [ ] Independent code review
 - [ ] Static analysis (Clippy + additional tools)
 - [ ] MC/DC coverage analysis
 - [ ] Formal verification of critical paths
 
 ### Phase 3: Certification Preparation (Future)
+
 - [ ] Safety manual
 - [ ] V-model documentation
 - [ ] Independent assessment
@@ -237,11 +245,10 @@ grep -r "test_" rustos-tests/src/ | wc -l  # Test cases
 
 ---
 
-**Document Control**
+Document Control
 
 | Property | Value |
 |----------|-------|
 | Classification | Internal |
 | Review Status | Draft |
 | Next Review | 2026-Q2 |
-

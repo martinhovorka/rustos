@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Initial production release of RustOS - a preemptive, priority-based real-time operating system (RTOS) written in Rust for RISC-V embedded systems.
 
 **Release Readiness:**
+
 - ✅ 800/800 requirements implemented (100%)
 - ✅ 398/398 tests passing (100%)
 - ✅ 99.47% code coverage (exceeds 80% target)
@@ -22,6 +23,7 @@ Initial production release of RustOS - a preemptive, priority-based real-time op
 ### Added
 
 #### Kernel Core
+
 - Preemptive, priority-based scheduler with O(1) task selection (256 priority levels)
 - Task management supporting up to 16 concurrent tasks
 - Context switching with 144-byte context frame (34 registers)
@@ -30,6 +32,7 @@ Initial production release of RustOS - a preemptive, priority-based real-time op
 - Idle task with configurable WFI (Wait For Interrupt)
 
 #### Synchronization Primitives
+
 - Mutex with RAII guards and optional priority inheritance
 - Binary and counting semaphores
 - FIFO message queue with fixed capacity
@@ -37,12 +40,14 @@ Initial production release of RustOS - a preemptive, priority-based real-time op
 - Event flags with AND/OR wait conditions
 
 #### Time Management
+
 - System tick counter with 1 kHz resolution
 - Millisecond/tick conversion utilities
 - Delay functions (blocking and yielding)
 - Software timers with callback support (optional feature)
 
 #### Hardware Abstraction Layer (HAL)
+
 - UART driver with TX/RX buffering (64 bytes each), interrupt support
 - GPIO driver with edge/level interrupts, pin/port operations
 - Timer driver (wraps kernel time module)
@@ -53,6 +58,7 @@ Initial production release of RustOS - a preemptive, priority-based real-time op
 - Interrupt Controller (INTC) driver (IRQ management, handler registration)
 
 #### Debug & Diagnostics
+
 - GDB stub for hardware debugging
 - Semihosting support for debug output
 - Runtime profiler using performance counters
@@ -60,11 +66,13 @@ Initial production release of RustOS - a preemptive, priority-based real-time op
 - Stack overflow detection with canary values
 
 #### Security
+
 - Secure boot validation
 - Anti-rollback protection
 - Watchdog integration for system integrity
 
 #### Documentation
+
 - Comprehensive requirements specification (REQUIREMENTS.md v2.8.3, 800 requirements)
 - Architecture documentation (ARCHITECTURE.md)
 - Certification preparation guide (CERTIFICATION.md)
@@ -80,6 +88,7 @@ Initial production release of RustOS - a preemptive, priority-based real-time op
 - Examples (EXAMPLES.md)
 
 #### Testing & Verification
+
 - 387 comprehensive tests (unit, integration, acceptance)
 - 99.47% code coverage via cargo-llvm-cov
 - Requirements traceability with REQ tags throughout codebase
@@ -87,6 +96,7 @@ Initial production release of RustOS - a preemptive, priority-based real-time op
 - Host-based test infrastructure using x86_64 target
 
 #### Build & Configuration
+
 - Workspace structure with 6 crates (PAC→HAL→Kernel→Board→App→Tests)
 - Feature flags for optional functionality (statistics, diagnostics, timers, etc.)
 - MSRV: Rust 1.82.0 (required for stable `#[naked]` functions)
@@ -147,6 +157,7 @@ The following features are documented but not implemented in v1.0:
 ## Release Notes
 
 **Approved by:**
+
 - Technical Lead: Martin Hovorka (2026-01-13)
 - Quality Assurance: Martin Hovorka (2026-01-13)
 - Project Manager: Martin Hovorka (2026-01-13)

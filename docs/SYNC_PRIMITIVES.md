@@ -1,6 +1,6 @@
 # RustOS Synchronization Primitives Guide
 
-**REQ: DOC-012 - Synchronization Primitives Documentation**
+REQ: DOC-012 - Synchronization Primitives Documentation
 
 This guide covers the synchronization primitives available in RustOS for safe inter-task communication and resource sharing.
 
@@ -22,12 +22,14 @@ This guide covers the synchronization primitives available in RustOS for safe in
 ### Why Synchronization?
 
 In a multitasking system, tasks run concurrently and may need to:
+
 - Share data safely
 - Coordinate execution order
 - Signal events between tasks
 - Protect hardware resources
 
 **Without synchronization**, you get:
+
 - Race conditions
 - Data corruption
 - Unpredictable behavior
@@ -159,11 +161,13 @@ fn high_priority_task() -> ! {
 ### Best Practices
 
 ✅ **Do:**
+
 - Keep critical sections short
 - Always use RAII guards (no manual unlock)
 - Lock in consistent order to avoid deadlock
 
 ❌ **Don't:**
+
 - Hold locks while waiting/sleeping
 - Nest many mutex locks
 - Use in interrupt handlers (use try_lock instead)
@@ -175,6 +179,7 @@ fn high_priority_task() -> ! {
 ### What is a Semaphore?
 
 A **Semaphore** is a counter that controls access to resources. Tasks can:
+
 - **Wait**: Decrement counter (blocks if zero)
 - **Signal**: Increment counter
 
@@ -185,7 +190,7 @@ A **Semaphore** is a counter that controls access to resources. Tasks can:
 | Binary | 0 or 1 | Simple synchronization |
 | Counting | N | Pool of N resources |
 
-### API Reference
+### Semaphore API Reference
 
 ```rust
 use rustos_kernel::sync::Semaphore;
@@ -298,14 +303,16 @@ fn worker_task() -> ! {
 }
 ```
 
-### Best Practices
+### Semaphore Best Practices
 
 ✅ **Do:**
+
 - Balance wait/signal calls
 - Use for resource counting
 - Consider timeout for wait operations
 
 ❌ **Don't:**
+
 - Signal more times than you wait
 - Use for mutual exclusion (use Mutex instead)
 - Forget to signal (causes deadlock)
@@ -318,7 +325,7 @@ fn worker_task() -> ! {
 
 A **Queue** is a FIFO (First-In-First-Out) data structure for passing messages between tasks. Safe for concurrent access.
 
-### API Reference
+### Queue API Reference
 
 ```rust
 use rustos_kernel::sync::Queue;
@@ -442,14 +449,16 @@ fn logger_task() -> ! {
 }
 ```
 
-### Best Practices
+### Queue Best Practices
 
 ✅ **Do:**
+
 - Size queue for expected burst rate
 - Check return values of send
 - Use small message types (or pointers)
 
 ❌ **Don't:**
+
 - Block indefinitely waiting for messages
 - Put large data directly in queue (use pointers)
 - Assume messages are never lost
@@ -535,14 +544,16 @@ fn event_handler_task() -> ! {
 }
 ```
 
-### Best Practices
+### Priority Queue Best Practices
 
 ✅ **Do:**
+
 - Use for priority-based event handling
 - Keep priority values consistent (0 = highest)
 - Size queue for worst-case burst
 
 ❌ **Don't:**
+
 - Use when FIFO ordering is required (use Queue)
 - Starve low-priority messages indefinitely
 - Use large priority ranges unnecessarily
@@ -555,7 +566,7 @@ fn event_handler_task() -> ! {
 
 **Event Flags** are a set of bits that tasks can set, clear, and wait on. Useful for signaling multiple conditions.
 
-### API Reference
+### Event Flags API Reference
 
 ```rust
 use rustos_kernel::sync::EventFlags;
@@ -689,14 +700,16 @@ fn event_handler_task() -> ! {
 }
 ```
 
-### Best Practices
+### Event Flags Best Practices
 
 ✅ **Do:**
+
 - Use descriptive bit names
 - Clear flags after handling
 - Document flag meanings
 
 ❌ **Don't:**
+
 - Use more than 32 flags per EventFlags
 - Forget to clear flags
 - Use for data transfer (use Queue)
@@ -707,7 +720,7 @@ fn event_handler_task() -> ! {
 
 ### Decision Guide
 
-```
+```text
 Need to protect shared data?
     └─► YES → Use Mutex
 
@@ -739,6 +752,7 @@ Need to signal events/conditions?
 ### Anti-Patterns
 
 ❌ **Using Mutex for signaling**
+
 ```rust
 // Bad: Mutex for synchronization
 static DONE: Mutex<bool> = Mutex::new(false);
@@ -747,6 +761,7 @@ static DONE: Semaphore = Semaphore::new(0);
 ```
 
 ❌ **Using Queue for single values**
+
 ```rust
 // Bad: Queue for one value
 static VALUE: Queue<u32, 1> = Queue::new();
@@ -755,6 +770,7 @@ static VALUE: Mutex<u32> = Mutex::new(0);
 ```
 
 ❌ **Using Semaphore for exclusive access**
+
 ```rust
 // Bad: Binary semaphore for mutual exclusion
 static SEM: Semaphore = Semaphore::new(1);
@@ -835,6 +851,7 @@ fn isr_handler() {
 ### Performance Tips
 
 1. **Minimize lock duration**
+
    ```rust
    // Copy out quickly
    let data = { MUTEX.lock().clone() };
@@ -843,6 +860,7 @@ fn isr_handler() {
    ```
 
 2. **Use fine-grained locking**
+
    ```rust
    // Instead of one big lock
    static SENSORS: Mutex<AllSensors> = ...;
@@ -853,6 +871,7 @@ fn isr_handler() {
    ```
 
 3. **Consider lock-free alternatives**
+
    ```rust
    // For simple counters, use atomics
    use portable_atomic::AtomicU32;
@@ -874,4 +893,3 @@ fn isr_handler() {
 
 For practical examples, see [Example Applications](EXAMPLES.md).
 For task patterns, see [Task Programming Guide](TASK_PROGRAMMING.md).
-

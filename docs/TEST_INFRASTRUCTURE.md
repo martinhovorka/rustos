@@ -12,7 +12,7 @@ This document describes the comprehensive test infrastructure for the RustOS ker
 
 ### Structure
 
-```
+```text
 rustos-tests/
 ├── Cargo.toml          # Test package configuration
 ├── src/
@@ -245,24 +245,29 @@ cargo llvm-cov test --target x86_64-unknown-linux-gnu --lib --html
 ### Synchronization Tests (REQ: TEST-006)
 
 #### Mutex Tests
+
 - Lock/unlock basic functionality (MUTEX-001)
 - Double lock prevention
 - Concurrent access protection (10 threads)
 - Critical section integrity
 
 #### Semaphore Tests
-- Wait/signal operations (SEM-001)
+
+- Wait/signal operations
+-  (SEM-001)
 - Zero count handling
 - Maximum count enforcement
 - Concurrent semaphore access
 
 #### Queue Tests
+
 - FIFO ordering (QUEUE-002)
 - Enqueue/dequeue operations (QUEUE-001)
 - Full/empty conditions
 - Concurrent producer/consumer
 
 #### EventFlags Tests
+
 - Set/clear operations (EVENT-001)
 - Wait-all semantics (EVENT-003)
 - Wait-any semantics (EVENT-004)
@@ -320,18 +325,21 @@ The following code is excluded from coverage measurement:
 ## Future Enhancements
 
 ### Phase 1 (Current Release)
+
 - ✅ Host-based unit tests
 - ✅ Mock infrastructure
 - ✅ Concurrent testing patterns
 - ✅ Performance measurement utilities
 
 ### Phase 2 (Next Release)
+
 - ⚠️ Hardware-in-loop testing (HWTEST-001 to HWTEST-012)
 - ⚠️ Fault injection framework (TEST-011 to TEST-015)
 - ⚠️ Coverage reporting automation (COV-001)
 - ⚠️ Performance regression tracking (PERFTEST-006)
 
 ### Phase 3 (Future)
+
 - ⚠️ Formal verification integration (VER-009 to VER-011)
 - ⚠️ Continuous integration pipeline (CI-008)
 - ⚠️ Automated on-target testing
@@ -362,4 +370,3 @@ Hardware-dependent tests (HWTEST-*) will be implemented in Phase 2 when target h
 *Document Status: ✅ Complete
 Last Updated: 2026-01-13
 Next Review: Phase 2 planning*
-

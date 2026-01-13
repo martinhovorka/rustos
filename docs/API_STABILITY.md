@@ -15,6 +15,7 @@ This document describes the API stability policy for RustOS, following semantic 
 **Current Stable Modules** (as of 0.1.0):
 
 #### Core Kernel APIs
+
 - **`task`**: Task management
   - `Task`, `TaskId`, `TaskPriority`, `TaskState`
   - `Task::new()`, `TaskBuilder`
@@ -46,6 +47,7 @@ This document describes the API stability policy for RustOS, following semantic 
   - Critical section RAII guard
 
 #### Initialization APIs
+
 - **`init()`**: Kernel initialization
 - **`start()`**: Scheduler start
 
@@ -65,6 +67,7 @@ This document describes the API stability policy for RustOS, following semantic 
 | `priority-inheritance` | Priority inheritance | Stable | Mutex priority boosting |
 
 **Usage Example:**
+
 ```toml
 [dependencies]
 rustos-kernel = { version = "0.1", features = ["diagnostics", "statistics"] }
@@ -77,12 +80,14 @@ rustos-kernel = { version = "0.1", features = ["diagnostics", "statistics"] }
 **Current Status:** No APIs are currently deprecated.
 
 **Deprecation Policy (Post-1.0):**
+
 - Deprecated APIs will be marked with `#[deprecated]` attribute
 - Removal occurs in next major version (e.g., deprecated in 1.x, removed in 2.0)
 - Migration guide provided in deprecation message
 - Compile-time warnings issued
 
 **Example (future):**
+
 ```rust
 # [deprecated(since = "1.5.0", note = "Use `new_api()` instead. See migration guide.")]
 pub fn old_api() { }
@@ -91,12 +96,14 @@ pub fn old_api() { }
 ## Semantic Versioning Policy
 
 ### Pre-1.0 (Current: 0.x.x)
+
 - **Breaking changes** may occur in minor versions (0.1 → 0.2)
 - **New features** added in minor versions
 - **Bug fixes** in patch versions
 - Unstable APIs may change without notice
 
 ### Post-1.0 (Future: 1.x.x)
+
 - **Major version** (1.x → 2.x): Breaking changes allowed
   - API signature changes
   - Behavior changes
@@ -123,6 +130,7 @@ All `unsafe` functions **must** document:
 3. **Example usage** - Correct usage pattern
 
 **Example:**
+
 ```rust
 /// # Safety
 ///
@@ -173,9 +181,11 @@ All public APIs **must** include:
 ### Upgrading Between Versions
 
 #### 0.1.0 → 0.2.0 (Future)
-*No migration required yet - first release*
+
+No migration required yet - first release
 
 #### Pre-1.0 → 1.0.0 (Future)
+
 - All unstable APIs will be reviewed
 - Stable APIs finalized
 - Migration guide will be provided
@@ -183,6 +193,7 @@ All public APIs **must** include:
 ## API Review Process
 
 ### Before 1.0 Release
+
 1. Community feedback on unstable APIs
 2. Real-world usage validation
 3. Performance benchmarking
@@ -190,6 +201,7 @@ All public APIs **must** include:
 5. Documentation completeness check
 
 ### After 1.0 Release
+
 - New APIs start as unstable (feature-gated)
 - Stabilization requires:
   - Community review
@@ -203,29 +215,35 @@ All public APIs **must** include:
 ### What We Guarantee (Post-1.0)
 
 ✅ **Stable APIs:**
+
 - Function signatures won't change
 - Behavior remains consistent
 - Compile-time compatibility maintained
 
 ✅ **Error Types:**
+
 - Error variants may be added (non-exhaustive)
 - Existing variants won't be removed
 
 ✅ **Trait Implementations:**
+
 - New trait impls may be added
 - Existing impls won't be removed
 
 ### What We Don't Guarantee
 
 ❌ **Performance:**
+
 - Implementation may be optimized
 - Performance characteristics may change
 
 ❌ **Internal Implementation:**
+
 - Internal data structures may change
 - Private APIs may change
 
 ❌ **Unstable Features:**
+
 - Feature-gated APIs may change
 - No backwards compatibility
 
@@ -247,4 +265,3 @@ All public APIs **must** include:
 **REQ: API-014** - Deprecation markers
 **REQ: API-015** - Unstable API gates
 **REQ: API-016** - Safety documentation
-
