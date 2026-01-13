@@ -1,4 +1,5 @@
 # REQ: CI-001 - CI/CD Configuration for GitHub Actions
+# Integrates build.sh, test.sh, qa_maintenance.sh, qa_safety.sh, coverage.sh
 
 name: CI
 
@@ -10,81 +11,309 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
 
 jobs:
-  # REQ: CI-002 - Build job
+  # REQ: CI-002 - Build job using build.sh
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     
     - name: Install Rust
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@master
       with:
         toolchain: 1.82.0
-        target: riscv32imac-unknown-none-elf
-        override: true
+        targets: riscv32imac-unknown-none-elf
         components: rustfmt, clippy
     
-    - name: Build
-      run: cargo build --workspace --release
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-build-
     
-    - name: Build app
-      run: cd rustos-app && cargo build --release
+    - name: Make scripts executable
+      run: chmod +x build.sh test.sh clean.sh coverage.sh qa_maintenance.sh qa_safety.sh qa_lint.sh qa_security.sh
+    
+    - name: Build (via build.sh)
+      run: ./build.sh
+    
+    - name: Upload binary artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: rustos-app-elf
+        path: rustos-app.elf
+        retention-days: 7
 
-  # REQ: CI-003 - Test job
+  # REQ: CI-003 - Test job using test.sh
   test:
     runs-on: ubuntu-latest
+    needs: build
     steps:
     - uses: actions/checkout@v4
     
     - name: Install Rust
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@master
       with:
         toolchain: 1.82.0
-        override: true
     
-    - name: Run tests
-      run: cargo test --package rustos-tests
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-test-
+    
+    - name: Make scripts executable
+      run: chmod +x test.sh
+    
+    - name: Run tests (via test.sh)
+      run: ./test.sh
 
-  # REQ: CI-004 - Lint job
+  # REQ: CI-004 - Lint job using qa_lint.sh
   lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     
     - name: Install Rust
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@master
       with:
         toolchain: 1.82.0
+        targets: riscv32imac-unknown-none-elf
         components: rustfmt, clippy
-        override: true
     
-    - name: Check formatting
-      run: cargo fmt --all -- --check
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-lint-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-lint-
     
-    - name: Run clippy
-      run: cargo clippy --workspace -- -D warnings
+    - name: Make scripts executable
+      run: chmod +x qa_lint.sh
+    
+    - name: Run linter (via qa_lint.sh)
+      run: ./qa_lint.sh
 
-  # REQ: CI-005, COV-001 - Coverage job
-  coverage:
+  # REQ: CI-006 - Safety audit job using qa_safety.sh
+  safety:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     
     - name: Install Rust
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@master
       with:
         toolchain: 1.82.0
-        override: true
+        targets: riscv32imac-unknown-none-elf
     
-    - name: Install tarpaulin
-      run: cargo install cargo-tarpaulin
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-safety-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-safety-
+    
+    - name: Install cargo-geiger
+      run: cargo install cargo-geiger
+    
+    - name: Make scripts executable
+      run: chmod +x qa_safety.sh
+    
+    - name: Run SAFETY audit (via qa_safety.sh)
+      run: ./qa_safety.sh
+    
+    - name: Upload safety report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: safety-audit-report
+        path: safety_audit_*.txt
+        retention-days: 30
+
+  # REQ: CI-007 - Security audit job using qa_security.sh
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.82.0
+        targets: riscv32imac-unknown-none-elf
+        components: clippy
+    
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-security-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-security-
+    
+    - name: Install security tools
+      run: |
+        cargo install cargo-audit
+        cargo install cargo-geiger || true
+    
+    - name: Make scripts executable
+      run: chmod +x qa_security.sh
+    
+    - name: Run security audit (via qa_security.sh)
+      run: ./qa_security.sh --report security_report.md
+    
+    - name: Upload security report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-audit-report
+        path: security_report.md
+        retention-days: 30
+
+  # REQ: CI-005, COV-001 - Coverage job using coverage.sh
+  coverage:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.82.0
+        components: llvm-tools-preview
+    
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-coverage-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-coverage-
+    
+    - name: Install cargo-llvm-cov
+      run: cargo install cargo-llvm-cov
     
     - name: Generate coverage
-      run: cargo tarpaulin --out Xml --package rustos-tests
+      run: |
+        cargo llvm-cov clean --workspace
+        cargo llvm-cov \
+          -p rustos-tests \
+          --target x86_64-unknown-linux-gnu \
+          --codecov \
+          --output-path codecov.json \
+          -- --test-threads=1
     
-    - name: Upload coverage
-      uses: codecov/codecov-action@v3
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
       with:
-        files: ./cobertura.xml
+        files: codecov.json
+        fail_ci_if_error: false
+        verbose: true
+
+  # REQ: CI-008 - Documentation job
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.82.0
+        targets: riscv32imac-unknown-none-elf
+    
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-docs-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-docs-
+    
+    - name: Build documentation
+      run: cargo doc --workspace --no-deps --document-private-items
+    
+    - name: Upload documentation artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: rustdoc
+        path: target/riscv32imac-unknown-none-elf/doc
+        retention-days: 7
+
+  # REQ: CI-009 - Quality gate (runs all qa_maintenance.sh checks)
+  quality-gate:
+    runs-on: ubuntu-latest
+    needs: [build, test, lint, safety, security]
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust (stable)
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: 1.82.0
+        targets: riscv32imac-unknown-none-elf
+        components: rustfmt, clippy
+    
+    - name: Install Rust (nightly for udeps)
+      uses: dtolnay/rust-toolchain@nightly
+    
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-quality-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-quality-
+    
+    - name: Install quality tools
+      run: |
+        cargo install cargo-audit
+        cargo +nightly install cargo-udeps --locked
+        cargo install cargo-geiger
+    
+    - name: Make scripts executable
+      run: chmod +x qa_maintenance.sh qa_safety.sh qa_lint.sh qa_security.sh
+    
+    - name: Run quality maintenance (via qa_maintenance.sh)
+      run: ./qa_maintenance.sh
+    
+    - name: Upload QA logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: qa-maintenance-logs
+        path: logs/qa_maintenance/
+        retention-days: 30
