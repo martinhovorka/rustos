@@ -1,0 +1,71 @@
+# REQ: PROJ-001 - Workspace configuration
+# RustOS Workspace
+# A preemptive, priority-based real-time operating system (RTOS) written in Rust for RISC-V embedded systems.
+
+[workspace]
+resolver = "2"
+members = [
+    "rustos-pac",      # REQ: PROJ-002 - Peripheral Access Crate
+    "rustos-hal",      # REQ: PROJ-003 - Hardware Abstraction Layer
+    "rustos-kernel",   # REQ: PROJ-004 - RTOS Kernel
+    "rustos-board",    # REQ: PROJ-005 - Board Support Package
+    "rustos-app",      # REQ: PROJ-006 - Example Application
+    "rustos-tests",    # REQ: PROJ-007 - Test Suite
+]
+
+# REQ: DEP-001 - Shared workspace dependencies
+[workspace.dependencies]
+# Embedded ecosystem
+embedded-hal = "1.0.0"              # REQ: DEP-003 - HAL trait definitions
+critical-section = "1.1"            # REQ: DEP-004 - Critical section support
+
+# RISC-V support
+riscv = "0.11"                      # REQ: DEP-005 - RISC-V utilities
+riscv-rt = "0.12"                   # REQ: DEP-006 - Runtime support
+
+# Synchronization
+portable-atomic = { version = "1.6", default-features = false } # REQ: DEP-007 - Atomic operations
+
+# Configuration and features
+cfg-if = "1.0"                      # REQ: DEP-008 - Conditional compilation
+
+# Utility crates
+bitflags = "2.4"                    # REQ: DEP-009 - Bitfield operations
+heapless = "0.8"                    # REQ: DEP-010 - No-alloc data structures
+
+# Optional: coverage and testing
+# tarpaulin will be used for coverage (COV-001)
+
+# REQ: MSRV-001 - Minimum Supported Rust Version
+[workspace.package]
+rust-version = "1.82.0"  # Required for stable #[naked] functions
+edition = "2021"
+authors = ["RustOS Development Team"]
+license = "MIT OR Apache-2.0"  # REQ: DEP-002 - Dual licensing
+repository = "https://github.com/martinhovorka/rustos"
+
+# REQ: BUILD-001 - Workspace-level profiles
+[profile.dev]
+opt-level = 1
+debug = true
+lto = false
+codegen-units = 16
+
+[profile.release]
+opt-level = "z"     # REQ: BUILD-008 - Size optimization
+debug = false
+lto = true          # REQ: BUILD-009 - Link-time optimization
+codegen-units = 1   # REQ: BUILD-010 - Single codegen unit
+panic = "abort"     # REQ: BUILD-011 - Panic behavior
+strip = true        # Strip symbols for smaller binary
+
+# REQ: PERF-003 - Development profile with optimization
+[profile.dev-opt]
+inherits = "dev"
+opt-level = 2
+lto = "thin"
+
+# REQ: TEST-002 - Test profile
+[profile.test]
+opt-level = 0
+debug = true

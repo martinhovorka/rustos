@@ -1,0 +1,53 @@
+# REQ: HAL-001 - Hardware Abstraction Layer
+# rustos-hal: Hardware Abstraction Layer for RustOS
+
+[package]
+name = "rustos-hal"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Hardware Abstraction Layer for RustOS RTOS"
+
+[dependencies]
+# REQ: HAL-002 - Peripheral access
+rustos-pac = { path = "../rustos-pac" }
+
+# REQ: KERN-001 - Kernel time functions
+rustos-kernel = { path = "../rustos-kernel" }
+
+# REQ: DEP-003 - embedded-hal traits
+embedded-hal = { workspace = true }
+
+# REQ: HAL-003 - Critical sections
+critical-section = { workspace = true }
+
+# REQ: DEP-009 - Bitfield operations
+bitflags = { workspace = true }
+
+# REQ: DEP-010 - Heapless data structures
+heapless = { workspace = true }
+
+# REQ: DEP-007 - Atomic operations (for ethernet driver)
+portable-atomic = { workspace = true }
+
+[features]
+default = ["uart", "gpio", "timer"]
+uart = []   # REQ: UART-001 - UART driver feature
+gpio = []   # REQ: GPIO-001 - GPIO driver feature
+timer = []  # REQ: TMR-001 - Timer driver feature
+spi = []    # REQ: SPI-001 - SPI driver feature
+i2c = []    # REQ: I2C-001 - I2C driver feature
+ethernet = []  # REQ: ETH-001 - Ethernet driver feature
+wdt = []    # REQ: WDT-001 - Watchdog timer feature
+intc = []   # REQ: INT-001 - Interrupt controller feature
+
+# REQ: HAL-004 - No standard library
+[lib]
+name = "rustos_hal"
+path = "src/lib.rs"
+
+[package.metadata.docs.rs]
+all-features = true
