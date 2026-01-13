@@ -94,12 +94,12 @@ impl KernelError {
             Self::TaskNotFound => "Task not found",
             Self::InsufficientStack => "Insufficient stack space",
             Self::StackOverflow => "Stack overflow detected",
-            
+
             Self::SchedulerNotInitialized => "Scheduler not initialized",
             Self::SchedulerAlreadyRunning => "Scheduler is already running",
             Self::NoTasksReady => "No tasks ready to run",
             Self::ContextSwitchFailed => "Context switch operation failed",
-            
+
             Self::WouldBlock => "Operation would block",
             Self::NotOwner => "Caller is not the mutex owner",
             Self::Poisoned => "Mutex is poisoned",
@@ -108,13 +108,13 @@ impl KernelError {
             Self::QueueEmpty => "Message queue is empty",
             Self::Deadlock => "Deadlock detected",
             Self::Timeout => "Operation timed out",
-            
+
             Self::OutOfMemory => "Out of memory",
             Self::InvalidAlignment => "Invalid memory alignment",
             Self::NullPointer => "Null pointer dereference",
             Self::OutOfBounds => "Memory access out of bounds",
             Self::MemoryCorruption => "Memory corruption detected",
-            
+
             Self::NotInitialized => "Hardware not initialized",
             Self::Busy => "Hardware busy",
             Self::CommunicationError => "Communication error",
@@ -125,22 +125,22 @@ impl KernelError {
             Self::FramingError => "Framing error",
             Self::Overrun => "Data overrun",
             Self::Underrun => "Data underrun",
-            
+
             Self::InvalidInterrupt => "Invalid interrupt number",
             Self::InterruptAlreadyEnabled => "Interrupt already enabled",
             Self::InterruptStorm => "Interrupt storm detected",
             Self::NestedInterruptOverflow => "Too many nested interrupts",
-            
+
             Self::InvalidParameter => "Invalid parameter",
             Self::NotSupported => "Operation not supported",
             Self::PermissionDenied => "Permission denied",
             Self::ResourceUnavailable => "Resource unavailable",
             Self::NotReady => "System not ready",
-            
+
             Self::TimeOverflow => "Time counter overflow",
             Self::InvalidTime => "Invalid time value",
             Self::TimerExpired => "Timer expired",
-            
+
             Self::Unknown => "Unknown error",
         }
     }
@@ -245,8 +245,12 @@ fn test_error_codes_unique() {
         for err2 in all_errors.iter().skip(i + 1) {
             assert_test!(
                 err1.code() != err2.code(),
-                format!("Error codes must be unique: {:?} and {:?} both have code 0x{:04X}",
-                    err1, err2, err1.code())
+                format!(
+                    "Error codes must be unique: {:?} and {:?} both have code 0x{:04X}",
+                    err1,
+                    err2,
+                    err1.code()
+                )
             );
         }
     }
@@ -268,7 +272,10 @@ fn test_error_code_ranges() {
         let code = err.code();
         assert_test!(
             (0x1000..0x2000).contains(&code),
-            format!("{:?} code 0x{:04X} should be in 0x1000-0x1FFF range", err, code)
+            format!(
+                "{:?} code 0x{:04X} should be in 0x1000-0x1FFF range",
+                err, code
+            )
         );
     }
 
@@ -286,7 +293,10 @@ fn test_error_code_ranges() {
         let code = err.code();
         assert_test!(
             (0x3000..0x4000).contains(&code),
-            format!("{:?} code 0x{:04X} should be in 0x3000-0x3FFF range", err, code)
+            format!(
+                "{:?} code 0x{:04X} should be in 0x3000-0x3FFF range",
+                err, code
+            )
         );
     }
 }
@@ -309,45 +319,105 @@ fn test_error_descriptions_not_empty() {
     for err in all_errors.iter() {
         let desc = err.description();
         assert_test!(!desc.is_empty(), format!("{:?} has empty description", err));
-        assert_test!(desc.len() > 5, format!("{:?} description too short: {}", err, desc));
+        assert_test!(
+            desc.len() > 5,
+            format!("{:?} description too short: {}", err, desc)
+        );
     }
 }
 
 #[test]
 fn test_error_recoverable_classification() {
     // REQ: ERR-003 - Error recovery classification
-    
+
     // These should be unrecoverable
-    assert_test!(!KernelError::StackOverflow.is_recoverable(), "StackOverflow should not be recoverable");
-    assert_test!(!KernelError::MemoryCorruption.is_recoverable(), "MemoryCorruption should not be recoverable");
-    assert_test!(!KernelError::NullPointer.is_recoverable(), "NullPointer should not be recoverable");
-    assert_test!(!KernelError::ContextSwitchFailed.is_recoverable(), "ContextSwitchFailed should not be recoverable");
-    assert_test!(!KernelError::InterruptStorm.is_recoverable(), "InterruptStorm should not be recoverable");
+    assert_test!(
+        !KernelError::StackOverflow.is_recoverable(),
+        "StackOverflow should not be recoverable"
+    );
+    assert_test!(
+        !KernelError::MemoryCorruption.is_recoverable(),
+        "MemoryCorruption should not be recoverable"
+    );
+    assert_test!(
+        !KernelError::NullPointer.is_recoverable(),
+        "NullPointer should not be recoverable"
+    );
+    assert_test!(
+        !KernelError::ContextSwitchFailed.is_recoverable(),
+        "ContextSwitchFailed should not be recoverable"
+    );
+    assert_test!(
+        !KernelError::InterruptStorm.is_recoverable(),
+        "InterruptStorm should not be recoverable"
+    );
 
     // These should be recoverable
-    assert_test!(KernelError::WouldBlock.is_recoverable(), "WouldBlock should be recoverable");
-    assert_test!(KernelError::Timeout.is_recoverable(), "Timeout should be recoverable");
-    assert_test!(KernelError::QueueFull.is_recoverable(), "QueueFull should be recoverable");
-    assert_test!(KernelError::QueueEmpty.is_recoverable(), "QueueEmpty should be recoverable");
-    assert_test!(KernelError::Busy.is_recoverable(), "Busy should be recoverable");
-    assert_test!(KernelError::TaskNotFound.is_recoverable(), "TaskNotFound should be recoverable");
+    assert_test!(
+        KernelError::WouldBlock.is_recoverable(),
+        "WouldBlock should be recoverable"
+    );
+    assert_test!(
+        KernelError::Timeout.is_recoverable(),
+        "Timeout should be recoverable"
+    );
+    assert_test!(
+        KernelError::QueueFull.is_recoverable(),
+        "QueueFull should be recoverable"
+    );
+    assert_test!(
+        KernelError::QueueEmpty.is_recoverable(),
+        "QueueEmpty should be recoverable"
+    );
+    assert_test!(
+        KernelError::Busy.is_recoverable(),
+        "Busy should be recoverable"
+    );
+    assert_test!(
+        KernelError::TaskNotFound.is_recoverable(),
+        "TaskNotFound should be recoverable"
+    );
 }
 
 #[test]
 fn test_error_critical_classification() {
     // REQ: ERR-010 - Critical error identification
-    
+
     // These require immediate action
-    assert_test!(KernelError::StackOverflow.is_critical(), "StackOverflow should be critical");
-    assert_test!(KernelError::MemoryCorruption.is_critical(), "MemoryCorruption should be critical");
-    assert_test!(KernelError::ContextSwitchFailed.is_critical(), "ContextSwitchFailed should be critical");
-    assert_test!(KernelError::InterruptStorm.is_critical(), "InterruptStorm should be critical");
-    assert_test!(KernelError::Deadlock.is_critical(), "Deadlock should be critical");
+    assert_test!(
+        KernelError::StackOverflow.is_critical(),
+        "StackOverflow should be critical"
+    );
+    assert_test!(
+        KernelError::MemoryCorruption.is_critical(),
+        "MemoryCorruption should be critical"
+    );
+    assert_test!(
+        KernelError::ContextSwitchFailed.is_critical(),
+        "ContextSwitchFailed should be critical"
+    );
+    assert_test!(
+        KernelError::InterruptStorm.is_critical(),
+        "InterruptStorm should be critical"
+    );
+    assert_test!(
+        KernelError::Deadlock.is_critical(),
+        "Deadlock should be critical"
+    );
 
     // These do not require immediate action
-    assert_test!(!KernelError::WouldBlock.is_critical(), "WouldBlock should not be critical");
-    assert_test!(!KernelError::Timeout.is_critical(), "Timeout should not be critical");
-    assert_test!(!KernelError::InvalidParameter.is_critical(), "InvalidParameter should not be critical");
+    assert_test!(
+        !KernelError::WouldBlock.is_critical(),
+        "WouldBlock should not be critical"
+    );
+    assert_test!(
+        !KernelError::Timeout.is_critical(),
+        "Timeout should not be critical"
+    );
+    assert_test!(
+        !KernelError::InvalidParameter.is_critical(),
+        "InvalidParameter should not be critical"
+    );
 }
 
 #[test]
@@ -390,7 +460,10 @@ fn test_error_result_type() {
 
     let success = test_operation_success();
     assert_test!(success.is_ok(), "Success operation should return Ok");
-    assert_test!(success.unwrap() == 42, "Success should return correct value");
+    assert_test!(
+        success.unwrap() == 42,
+        "Success should return correct value"
+    );
 
     let failure = test_operation_failure();
     assert_test!(failure.is_err(), "Failure operation should return Err");
@@ -417,11 +490,17 @@ fn test_error_equality() {
 fn test_error_copy_clone() {
     // Test Copy and Clone derives
     let err1 = KernelError::InvalidTaskId;
-    let err2 = err1;  // Copy
-    let err3 = err1.clone();  // Clone
-    
-    assert_test!(err1.code() == err2.code(), "Copied error should have same code");
-    assert_test!(err1.code() == err3.code(), "Cloned error should have same code");
+    let err2 = err1; // Copy
+    let err3 = err1.clone(); // Clone
+
+    assert_test!(
+        err1.code() == err2.code(),
+        "Copied error should have same code"
+    );
+    assert_test!(
+        err1.code() == err3.code(),
+        "Cloned error should have same code"
+    );
 }
 
 #[test]
@@ -429,7 +508,7 @@ fn test_timeout_constants() {
     // REQ: ERR-002 - Timeout semantics
     const TIMEOUT_POLL: u32 = 0;
     const TIMEOUT_DEFAULT: u32 = 100;
-    
+
     assert_test!(TIMEOUT_POLL == 0, "TIMEOUT_POLL should be 0 (non-blocking)");
     assert_test!(TIMEOUT_DEFAULT == 100, "TIMEOUT_DEFAULT should be 100ms");
 }
@@ -453,10 +532,10 @@ fn test_error_handler_callback() {
 
     // Simulate registering handler
     let handler: fn(KernelError, &'static str) = test_handler;
-    
+
     // Simulate calling handler
     handler(KernelError::InvalidParameter, "test_context");
-    
+
     assert_test!(
         HANDLER_CALLED.load(Ordering::SeqCst) == 1,
         "Handler should be called once"

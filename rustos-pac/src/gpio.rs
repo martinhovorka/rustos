@@ -1,6 +1,6 @@
 //! REQ: PAC-027 - GPIO Register Definitions
-use core::ptr::{read_volatile, write_volatile};
 use core::cell::UnsafeCell;
+use core::ptr::{read_volatile, write_volatile};
 
 /// GPIO register block
 #[repr(C)]

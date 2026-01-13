@@ -1,5 +1,5 @@
 //! REQ: HAL-001 - Hardware Abstraction Layer for RustOS
-//! 
+//!
 //! Provides safe, high-level drivers for all peripherals.
 //!
 //! # Overview

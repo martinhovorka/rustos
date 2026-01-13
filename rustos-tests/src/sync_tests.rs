@@ -9,8 +9,8 @@ extern crate std;
 use crate::assert_test;
 use crate::utils::{boundary, concurrent};
 use core::option::Option::{self, None, Some};
-use std::sync::Arc;
 use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::Arc;
 use std::vec::Vec;
 
 /// Mock Mutex implementation for testing
@@ -72,7 +72,8 @@ impl MockSemaphore {
             if current == 0 {
                 return false; // Would block
             }
-            if self.count
+            if self
+                .count
                 .compare_exchange(current, current - 1, Ordering::Acquire, Ordering::Relaxed)
                 .is_ok()
             {
@@ -87,7 +88,8 @@ impl MockSemaphore {
             if current >= self.max_count {
                 return false; // At maximum
             }
-            if self.count
+            if self
+                .count
                 .compare_exchange(current, current + 1, Ordering::Release, Ordering::Relaxed)
                 .is_ok()
             {
@@ -198,7 +200,10 @@ fn test_mutex_lock_unlock() {
 
     // Unlock the mutex
     mutex.unlock();
-    assert_test!(!mutex.is_locked(), "Mutex should be unlocked after unlock()");
+    assert_test!(
+        !mutex.is_locked(),
+        "Mutex should be unlocked after unlock()"
+    );
 }
 
 #[test]
@@ -207,7 +212,10 @@ fn test_mutex_double_lock() {
     let mutex = MockMutex::new();
 
     assert_test!(mutex.try_lock(1), "First lock should succeed");
-    assert_test!(!mutex.try_lock(2), "Second lock should fail (already locked)");
+    assert_test!(
+        !mutex.try_lock(2),
+        "Second lock should fail (already locked)"
+    );
 
     mutex.unlock();
     assert_test!(mutex.try_lock(2), "Lock after unlock should succeed");
@@ -437,7 +445,10 @@ fn test_event_flags_wait_all() {
     flags.set(0x05); // Set bits 0 and 2
 
     assert_test!(flags.wait_all(0x05), "Wait for 0x05 should succeed");
-    assert_test!(!flags.wait_all(0x07), "Wait for 0x07 should fail (bit 1 not set)");
+    assert_test!(
+        !flags.wait_all(0x07),
+        "Wait for 0x07 should fail (bit 1 not set)"
+    );
 }
 
 #[test]
@@ -447,8 +458,14 @@ fn test_event_flags_wait_any() {
 
     flags.set(0x02); // Set bit 1
 
-    assert_test!(flags.wait_any(0x06), "Wait any for 0x06 should succeed (bit 1 is set)");
-    assert_test!(!flags.wait_any(0x01), "Wait any for 0x01 should fail (bit 0 not set)");
+    assert_test!(
+        flags.wait_any(0x06),
+        "Wait any for 0x06 should succeed (bit 1 is set)"
+    );
+    assert_test!(
+        !flags.wait_any(0x01),
+        "Wait any for 0x01 should fail (bit 0 not set)"
+    );
 }
 
 #[test]

@@ -21,7 +21,11 @@ macro_rules! assert_test {
 #[macro_export]
 macro_rules! assert_eq_test {
     ($left:expr, $right:expr, $msg:expr) => {
-        assert_eq!($left, $right, "Test failed: {} - Expected: {:?}, Got: {:?}", $msg, $right, $left);
+        assert_eq!(
+            $left, $right,
+            "Test failed: {} - Expected: {:?}, Got: {:?}",
+            $msg, $right, $left
+        );
     };
 }
 
@@ -29,7 +33,11 @@ macro_rules! assert_eq_test {
 #[macro_export]
 macro_rules! assert_ne_test {
     ($left:expr, $right:expr, $msg:expr) => {
-        assert_ne!($left, $right, "Test failed: {} - Values should not be equal: {:?}", $msg, $left);
+        assert_ne!(
+            $left, $right,
+            "Test failed: {} - Values should not be equal: {:?}",
+            $msg, $left
+        );
     };
 }
 
@@ -64,17 +72,17 @@ pub mod boundary {
     pub const MIN_USIZE: usize = 0;
     /// Test maximum value for usize (platform-dependent)
     pub const MAX_USIZE: usize = usize::MAX;
-    
+
     /// Test value near minimum
     pub const NEAR_MIN: u32 = 1;
     /// Test value near maximum
     pub const NEAR_MAX: u32 = u32::MAX - 1;
-    
+
     /// Test overflow behavior
     pub fn test_overflow_u32(value: u32, delta: u32) -> (u32, bool) {
         value.overflowing_add(delta)
     }
-    
+
     /// Test underflow behavior
     pub fn test_underflow_u32(value: u32, delta: u32) -> (u32, bool) {
         value.overflowing_sub(delta)
@@ -178,7 +186,7 @@ mod tests {
     #[test]
     fn test_boundary_values() {
         use boundary::*;
-        
+
         assert_eq!(MIN_U8, 0);
         assert_eq!(MAX_U8, 255);
         assert_eq!(MIN_U32, 0);
@@ -188,11 +196,11 @@ mod tests {
     #[test]
     fn test_overflow() {
         use boundary::*;
-        
+
         let (result, overflow) = test_overflow_u32(MAX_U32, 1);
         assert_eq!(result, 0);
         assert!(overflow);
-        
+
         let (result, overflow) = test_overflow_u32(100, 50);
         assert_eq!(result, 150);
         assert!(!overflow);
@@ -201,11 +209,11 @@ mod tests {
     #[test]
     fn test_underflow() {
         use boundary::*;
-        
+
         let (result, underflow) = test_underflow_u32(0, 1);
         assert_eq!(result, MAX_U32);
         assert!(underflow);
-        
+
         let (result, underflow) = test_underflow_u32(100, 50);
         assert_eq!(result, 50);
         assert!(!underflow);

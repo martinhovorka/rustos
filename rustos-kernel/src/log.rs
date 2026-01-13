@@ -91,7 +91,8 @@ pub fn get_log_level() -> LogLevel {
 // SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn set_module_log_level(module: &'static str, level: LogLevel) {
     // SAFETY: Reading MODULE_FILTERS during init phase, no concurrent access.
-    if MODULE_FILTER_COUNT < unsafe { core::ptr::addr_of!(MODULE_FILTERS).as_ref().unwrap().len() } {
+    if MODULE_FILTER_COUNT < unsafe { core::ptr::addr_of!(MODULE_FILTERS).as_ref().unwrap().len() }
+    {
         MODULE_FILTERS[MODULE_FILTER_COUNT] = (module, level);
         MODULE_FILTER_COUNT += 1;
     }
@@ -116,7 +117,7 @@ fn should_log_module(module: &str, level: LogLevel) -> bool {
 pub trait Logger: Send {
     /// Write a log message
     fn log(&mut self, record: &LogRecord);
-    
+
     /// Flush buffered output
     fn flush(&mut self);
 }
@@ -151,13 +152,7 @@ pub unsafe fn set_logger(logger: &'static mut dyn Logger) {
 
 /// REQ: LOG-002, LOG-007 - Log a message with full metadata
 #[doc(hidden)]
-pub fn __log_impl(
-    level: LogLevel,
-    module: &str,
-    file: &str,
-    line: u32,
-    args: fmt::Arguments,
-) {
+pub fn __log_impl(level: LogLevel, module: &str, file: &str, line: u32, args: fmt::Arguments) {
     // REQ: LOG-003 - Filter by level
     if !should_log_module(module, level) {
         return;
@@ -177,7 +172,11 @@ pub fn __log_impl(
 
     // SAFETY: LOGGER is only written during init via set_logger(), read-only after.
     // Safe for concurrent read access from multiple tasks.
-    if let Some(logger) = unsafe { core::ptr::addr_of_mut!(LOGGER).as_mut().and_then(|l| l.as_mut()) } {
+    if let Some(logger) = unsafe {
+        core::ptr::addr_of_mut!(LOGGER)
+            .as_mut()
+            .and_then(|l| l.as_mut())
+    } {
         logger.log(&record);
     }
 }
@@ -281,10 +280,7 @@ impl<W: Write + Send> Logger for ConsoleLogger<W> {
         let _ = write!(
             self.writer,
             "{} [{}:{}:{}] ",
-            record.level,
-            record.module,
-            record.file,
-            record.line
+            record.level, record.module, record.file, record.line
         );
 
         // Reset color

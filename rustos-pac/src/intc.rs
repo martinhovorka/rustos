@@ -1,9 +1,9 @@
 //! REQ: PAC-038 - Interrupt Controller Register Definitions
-//! 
+//!
 //! AXI Interrupt Controller register map based on PG099 - AXI Interrupt Controller Product Guide
-//! 
+//!
 //! # Register Map
-//! 
+//!
 //! | Offset | Register | Access | Description |
 //! |--------|----------|--------|-------------|
 //! | 0x00   | ISR      | R/TOW  | Interrupt Status Register |
@@ -17,8 +17,8 @@
 //! | 0x20   | IMR      | R/W    | Interrupt Mode Register |
 //! | 0x24   | ILR      | R      | Interrupt Level Register |
 
-use core::ptr::{read_volatile, write_volatile};
 use core::cell::UnsafeCell;
+use core::ptr::{read_volatile, write_volatile};
 
 /// REQ: PAC-039 - Interrupt Controller register block
 #[repr(C)]
@@ -93,7 +93,7 @@ impl Intc {
     }
 
     /// REQ: INT-007 - Acknowledge interrupt (write to IAR)
-    /// 
+    ///
     /// # Safety
     /// Must be called from interrupt context
     #[inline]

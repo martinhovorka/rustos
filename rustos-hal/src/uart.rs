@@ -1,13 +1,13 @@
 //! REQ: UART-001 - UART Driver
-//! 
+//!
 //! High-level UART driver with buffering and formatting support.
 
-use rustos_pac::{uart, UART_BASE};
 use crate::{HalError, Result};
-use heapless::Deque;
-use critical_section::Mutex;
 use core::cell::RefCell;
 use core::fmt;
+use critical_section::Mutex;
+use heapless::Deque;
+use rustos_pac::{uart, UART_BASE};
 
 /// REQ: UART-013 - TX buffer size (64 bytes)
 const TX_BUFFER_SIZE: usize = 64;
@@ -26,7 +26,7 @@ pub struct Uart {
 
 impl Uart {
     /// REQ: UART-001 - Initialize UART driver
-    /// 
+    ///
     /// # Safety
     /// Must be called only once for each UART instance
     // SAFETY: Function signature - see # Safety documentation above
@@ -34,13 +34,13 @@ impl Uart {
         // SAFETY: Casting UART base address to peripheral reference.
         // Caller ensures this is called only once per UART instance (singleton pattern).
         let periph = &*(UART_BASE as *const uart::Uart);
-        
+
         // REQ: UART-002 - Reset FIFOs
         periph.write_control(uart::UartControl::RST_TX | uart::UartControl::RST_RX);
-        
+
         // REQ: UART-011 - Enable interrupts
         periph.write_control(uart::UartControl::ENABLE_INTR);
-        
+
         Self {
             periph,
             tx_buffer: Mutex::new(RefCell::new(Deque::new())),
@@ -52,7 +52,7 @@ impl Uart {
     pub fn try_write_byte(&self, byte: u8) -> Result<()> {
         critical_section::with(|cs| {
             let mut tx_buf = self.tx_buffer.borrow_ref_mut(cs);
-            
+
             // Try to send directly if TX FIFO has space
             if !self.periph.is_tx_full() {
                 self.periph.write_tx(byte);
@@ -80,12 +80,12 @@ impl Uart {
     pub fn try_read_byte(&self) -> Result<u8> {
         critical_section::with(|cs| {
             let mut rx_buf = self.rx_buffer.borrow_ref_mut(cs);
-            
+
             // Check buffered data first
             if let Some(byte) = rx_buf.pop_front() {
                 return Ok(byte);
             }
-            
+
             // Check hardware FIFO
             if self.periph.is_rx_valid() {
                 Ok(self.periph.read_rx())
@@ -116,14 +116,14 @@ impl Uart {
     }
 
     /// REQ: UART-012 - Handle TX interrupt (flush buffer to FIFO)
-    /// 
+    ///
     /// # Safety
     /// Must be called from UART ISR
     // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn handle_tx_interrupt(&self) {
         critical_section::with(|cs| {
             let mut tx_buf = self.tx_buffer.borrow_ref_mut(cs);
-            
+
             // Transfer buffered bytes to HW FIFO
             while !self.periph.is_tx_full() {
                 if let Some(byte) = tx_buf.pop_front() {
@@ -136,14 +136,14 @@ impl Uart {
     }
 
     /// REQ: UART-012 - Handle RX interrupt (read FIFO to buffer)
-    /// 
+    ///
     /// # Safety
     /// Must be called from UART ISR
     // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn handle_rx_interrupt(&self) {
         critical_section::with(|cs| {
             let mut rx_buf = self.rx_buffer.borrow_ref_mut(cs);
-            
+
             // Transfer bytes from HW FIFO to buffer
             while self.periph.is_rx_valid() && !rx_buf.is_full() {
                 let byte = self.periph.read_rx();
@@ -177,7 +177,7 @@ impl fmt::Write for Uart {
 static mut CONSOLE: Option<Uart> = None;
 
 /// REQ: UART-008 - Initialize console UART
-/// 
+///
 /// # Safety
 /// Must be called only once during system initialization
 // SAFETY: Function signature - see # Safety documentation above

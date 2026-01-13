@@ -1,5 +1,5 @@
 //! REQ: EVT-001 - Event Flags Implementation
-//! 
+//!
 //! 32-bit event flags for task synchronization.
 
 use crate::critical::CriticalSection;
@@ -49,7 +49,7 @@ impl EventFlags {
     /// REQ: EVT-006 - Check if flags match condition
     pub fn check(&self, mask: u32, condition: WaitCondition) -> bool {
         let flags = self.flags.load(Ordering::Acquire);
-        
+
         match condition {
             WaitCondition::All => (flags & mask) == mask,
             WaitCondition::Any => (flags & mask) != 0,
@@ -59,7 +59,7 @@ impl EventFlags {
     /// REQ: EVT-007 - Wait for flags (non-blocking check)
     pub fn try_wait(&self, mask: u32, condition: WaitCondition, clear: bool) -> bool {
         let _cs = CriticalSection::new();
-        
+
         if self.check(mask, condition) {
             if clear {
                 self.clear(mask);

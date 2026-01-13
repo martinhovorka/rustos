@@ -55,25 +55,25 @@ pub mod time_tests;
 
 // REQ: TEST-008 - Additional kernel module tests
 #[cfg(test)]
-pub mod error_tests;
+pub mod context_tests;
 #[cfg(test)]
 pub mod critical_tests;
 #[cfg(test)]
-pub mod power_tests;
-#[cfg(test)]
 pub mod diagnostics_tests;
 #[cfg(test)]
-pub mod context_tests;
+pub mod error_tests;
+#[cfg(test)]
+pub mod power_tests;
 
 // REQ: TEST-008 - HAL and synchronization primitive tests
 #[cfg(test)]
 pub mod hal_tests;
 #[cfg(test)]
-pub mod sync_primitive_tests;
+pub mod interrupt_tests;
 #[cfg(test)]
 pub mod memory_tests;
 #[cfg(test)]
-pub mod interrupt_tests;
+pub mod sync_primitive_tests;
 
 // REQ: TEST-006 - Tests for newly implemented requirements
 // DBG-017, DBG-018, DBG-019, MQ-009, I2C-012, SEC-010, CERT-001-005

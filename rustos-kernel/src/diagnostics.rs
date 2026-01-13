@@ -47,9 +47,9 @@
 
 #![allow(unused)]
 
-use core::sync::atomic::{AtomicU32, Ordering};
-use crate::task::{TaskId, TaskState};
 use crate::sync::MutexId;
+use crate::task::{TaskId, TaskState};
+use core::sync::atomic::{AtomicU32, Ordering};
 
 /// REQ: DIAG-006 - Feature gate for diagnostics
 #[cfg(feature = "diagnostics")]
@@ -58,9 +58,9 @@ pub use enabled::*;
 #[cfg(feature = "diagnostics")]
 mod enabled {
     use super::*;
-    
+
     /// REQ: DIAG-001 - Query task state
-    /// 
+    ///
     /// Returns the current state of the specified task.
     /// Non-blocking, safe to call from ISR context.
     pub fn task_get_state(task_id: TaskId) -> Option<TaskState> {
@@ -69,7 +69,7 @@ mod enabled {
     }
 
     /// REQ: DIAG-002 - Query mutex owner
-    /// 
+    ///
     /// Returns the task ID that currently owns the specified mutex.
     /// Non-blocking, safe to call from ISR context.
     pub fn mutex_get_owner(mutex_id: MutexId) -> Option<TaskId> {
@@ -78,7 +78,7 @@ mod enabled {
     }
 
     /// REQ: DIAG-003 - Query queue message count
-    /// 
+    ///
     /// Returns the current number of messages in the specified queue.
     /// Non-blocking, safe to call from ISR context.
     pub fn queue_get_count(queue_id: u8) -> Option<usize> {
@@ -87,7 +87,7 @@ mod enabled {
     }
 
     /// REQ: DIAG-004 - Query interrupt occurrence count
-    /// 
+    ///
     /// Returns the total number of times the specified interrupt has occurred since boot.
     /// Non-blocking, safe to call from ISR context.
     pub fn irq_get_count(irq_num: u8) -> u32 {
@@ -96,7 +96,7 @@ mod enabled {
     }
 
     /// REQ: DIAG-005 - Query task stack usage
-    /// 
+    ///
     /// Returns the high-water mark (maximum observed usage) of the specified task's stack.
     /// Non-blocking, safe to call from ISR context.
     pub fn task_get_stack_usage(task_id: TaskId) -> Option<usize> {
@@ -104,7 +104,7 @@ mod enabled {
     }
 
     /// REQ: DIAG-004 - Record interrupt occurrence (called from ISR)
-    /// 
+    ///
     /// # Safety
     /// Must be called only from interrupt context
     // SAFETY: Function signature - see # Safety documentation above
@@ -117,14 +117,38 @@ mod enabled {
 
 /// REQ: DIAG-004 - Interrupt occurrence counters (32 IRQs supported)
 static IRQ_COUNTERS: [AtomicU32; 32] = [
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
 ];
 
 /// Legacy diagnostics structures (for performance monitoring)
@@ -392,7 +416,11 @@ pub unsafe fn get_diagnostics() -> &'static mut Diagnostics {
 /// # Safety
 /// Stack pointer must be valid for the given task
 // SAFETY: Function signature - see # Safety documentation above
-pub unsafe fn calculate_stack_usage(stack_bottom: *const u8, stack_top: *const u8, sp: *const u8) -> usize {
+pub unsafe fn calculate_stack_usage(
+    stack_bottom: *const u8,
+    stack_top: *const u8,
+    sp: *const u8,
+) -> usize {
     let stack_size = stack_bottom as usize - stack_top as usize;
     let used = stack_bottom as usize - sp as usize;
     used.min(stack_size)

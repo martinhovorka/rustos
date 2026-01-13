@@ -3,8 +3,8 @@
 //! This module provides mock implementations of hardware-specific functionality
 //! to enable testing on host systems (x86_64-unknown-linux-gnu).
 
-use core::sync::atomic::{AtomicU32, AtomicBool, Ordering};
 use core::ops::FnOnce;
+use core::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 
 // For host testing, use portable Atomic types (64-bit support available on x86_64)
 #[cfg(target_pointer_width = "64")]
@@ -30,6 +30,12 @@ pub struct MockCsr {
     pub mcause: AtomicU32,
     /// Machine trap value (mtval)
     pub mtval: AtomicU32,
+}
+
+impl Default for MockCsr {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl MockCsr {
@@ -102,8 +108,10 @@ impl MockCsr {
     pub fn tick_cycles(&self, cycles: u64) {
         let current = self.read_mcycle();
         let new_value = current.wrapping_add(cycles);
-        self.mcycle_lo.store((new_value & 0xFFFFFFFF) as u32, Ordering::Relaxed);
-        self.mcycle_hi.store((new_value >> 32) as u32, Ordering::Relaxed);
+        self.mcycle_lo
+            .store((new_value & 0xFFFFFFFF) as u32, Ordering::Relaxed);
+        self.mcycle_hi
+            .store((new_value >> 32) as u32, Ordering::Relaxed);
     }
 
     /// Read machine cause register
@@ -140,6 +148,7 @@ pub struct MockMmio {
 
 impl MockMmio {
     /// Create a new mock MMIO interface
+    #[allow(clippy::declare_interior_mutable_const)]
     pub const fn new(base_addr: u32) -> Self {
         // Create array of 256 atomic registers initialized to 0
         const ATOMIC_ZERO: AtomicU32 = AtomicU32::new(0);
@@ -186,6 +195,12 @@ pub struct MockIntc {
     pub pending: AtomicU32,
     /// Interrupt fired counter (for testing)
     pub fired_count: AtomicU32,
+}
+
+impl Default for MockIntc {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl MockIntc {
@@ -265,6 +280,12 @@ pub struct MockTimer {
     pub enabled: AtomicBool,
 }
 
+impl Default for MockTimer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MockTimer {
     /// Create a new mock timer
     pub const fn new() -> Self {
@@ -310,8 +331,10 @@ impl MockTimer {
     pub fn tick(&self) {
         let current = self.get_ticks();
         let new_value = current.wrapping_add(1);
-        self.ticks_lo.store((new_value & 0xFFFFFFFF) as u32, Ordering::Relaxed);
-        self.ticks_hi.store((new_value >> 32) as u32, Ordering::Relaxed);
+        self.ticks_lo
+            .store((new_value & 0xFFFFFFFF) as u32, Ordering::Relaxed);
+        self.ticks_hi
+            .store((new_value >> 32) as u32, Ordering::Relaxed);
     }
 
     /// Get current tick count
@@ -335,8 +358,10 @@ impl MockTimer {
 
     #[cfg(not(target_pointer_width = "64"))]
     pub fn set_interval(&self, cycles: u64) {
-        self.interval_lo.store((cycles & 0xFFFFFFFF) as u32, Ordering::Relaxed);
-        self.interval_hi.store((cycles >> 32) as u32, Ordering::Relaxed);
+        self.interval_lo
+            .store((cycles & 0xFFFFFFFF) as u32, Ordering::Relaxed);
+        self.interval_hi
+            .store((cycles >> 32) as u32, Ordering::Relaxed);
     }
 
     /// Get tick interval
@@ -380,14 +405,14 @@ mod tests {
     #[test]
     fn test_mock_csr_interrupts() {
         let csr = MockCsr::new();
-        
+
         // Initially disabled
         assert!(!csr.interrupts_enabled());
-        
+
         // Enable interrupts
         csr.enable_interrupts();
         assert!(csr.interrupts_enabled());
-        
+
         // Disable interrupts
         csr.disable_interrupts();
         assert!(!csr.interrupts_enabled());
@@ -396,12 +421,12 @@ mod tests {
     #[test]
     fn test_mock_csr_cycle_counter() {
         let csr = MockCsr::new();
-        
+
         assert_eq!(csr.read_mcycle(), 0);
-        
+
         csr.tick_cycles(100);
         assert_eq!(csr.read_mcycle(), 100);
-        
+
         csr.tick_cycles(50);
         assert_eq!(csr.read_mcycle(), 150);
     }
@@ -409,11 +434,11 @@ mod tests {
     #[test]
     fn test_mock_mmio() {
         let mmio = MockMmio::new(0x4000_0000);
-        
+
         // Write and read
         mmio.write(0, 0x1234);
         assert_eq!(mmio.read(0), 0x1234);
-        
+
         // Modify
         mmio.modify(0, |v| v | 0x8000);
         assert_eq!(mmio.read(0), 0x9234);
@@ -422,20 +447,20 @@ mod tests {
     #[test]
     fn test_mock_intc() {
         let intc = MockIntc::new();
-        
+
         // Enable IRQ 5
         intc.enable(5);
         assert!(intc.is_enabled(5));
-        
+
         // Trigger IRQ 5
         intc.trigger(5);
         assert!(intc.is_pending(5));
         assert_eq!(intc.get_fired_count(), 1);
-        
+
         // Clear IRQ 5
         intc.clear(5);
         assert!(!intc.is_pending(5));
-        
+
         // Reset
         intc.reset();
         assert!(!intc.is_enabled(5));
@@ -445,23 +470,23 @@ mod tests {
     #[test]
     fn test_mock_timer() {
         let timer = MockTimer::new();
-        
+
         // Initially stopped
         assert!(!timer.is_running());
         assert_eq!(timer.get_ticks(), 0);
-        
+
         // Start and tick
         timer.start();
         assert!(timer.is_running());
-        
+
         timer.tick();
         timer.tick();
         assert_eq!(timer.get_ticks(), 2);
-        
+
         // Stop
         timer.stop();
         assert!(!timer.is_running());
-        
+
         // Reset
         timer.reset();
         assert_eq!(timer.get_ticks(), 0);

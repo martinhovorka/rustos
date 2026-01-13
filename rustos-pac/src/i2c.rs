@@ -1,9 +1,9 @@
 //! REQ: PAC-053 - I2C Register Definitions
-//! 
+//!
 //! AXI IIC register map based on PG046 - AXI IIC Bus Interface Product Guide
 
-use core::ptr::{read_volatile, write_volatile};
 use core::cell::UnsafeCell;
+use core::ptr::{read_volatile, write_volatile};
 
 /// REQ: PAC-054 - I2C register block
 #[repr(C)]
@@ -68,14 +68,14 @@ impl I2c {
         let sr = unsafe { read_volatile(self.sr.get()) };
         (sr & 0x80) != 0
     }
-    
+
     /// Read status register
     #[inline]
     pub fn read_status(&self) -> u32 {
         // SAFETY: Reading from memory-mapped I2C status register.
         unsafe { read_volatile(self.sr.get()) }
     }
-    
+
     /// Write to TX FIFO
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -90,7 +90,7 @@ impl I2c {
         unsafe { write_volatile(self.tx_fifo.get(), value) };
         Ok(())
     }
-    
+
     /// Read from RX FIFO
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -104,7 +104,7 @@ impl I2c {
         // SAFETY: Reading from memory-mapped I2C RX FIFO register.
         Ok(unsafe { read_volatile(self.rx_fifo.get()) })
     }
-    
+
     /// Software reset
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -112,7 +112,7 @@ impl I2c {
         self.reset();
         Ok(())
     }
-    
+
     /// Set clock divisor
     #[inline]
     #[allow(clippy::result_unit_err)]

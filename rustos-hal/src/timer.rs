@@ -1,5 +1,5 @@
 //! REQ: TMR-001 - Timer Driver
-//! 
+//!
 //! System timer functionality.
 
 /// REQ: TMR-002 - System timer management

@@ -1,9 +1,9 @@
 //! REQ: PAC-057 - Watchdog Timer Register Definitions
-//! 
+//!
 //! AXI Timebase Watchdog Timer register map based on PG101 - AXI Timebase WDT Product Guide
 
-use core::ptr::{read_volatile, write_volatile};
 use core::cell::UnsafeCell;
+use core::ptr::{read_volatile, write_volatile};
 
 /// REQ: PAC-058 - Watchdog Timer register block
 #[repr(C)]
@@ -46,7 +46,7 @@ impl Wdt {
         let csr = unsafe { read_volatile(self.tbcsr.get()) };
         (csr & 0x100) != 0
     }
-    
+
     /// Set watchdog timeout
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -54,7 +54,7 @@ impl Wdt {
         // Configuration specific to hardware
         Ok(())
     }
-    
+
     /// Reset watchdog timer
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -62,14 +62,14 @@ impl Wdt {
         self.kick();
         Ok(())
     }
-    
+
     /// Set warning threshold
     #[inline]
     #[allow(clippy::result_unit_err)]
     pub fn set_warning_threshold(&self, _threshold_ms: u32) -> core::result::Result<(), ()> {
         Ok(())
     }
-    
+
     /// Enable warning interrupt
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -80,7 +80,7 @@ impl Wdt {
         unsafe { write_volatile(self.ssccsr.get(), csr | 0x10) };
         Ok(())
     }
-    
+
     /// Disable warning interrupt
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -91,27 +91,27 @@ impl Wdt {
         unsafe { write_volatile(self.ssccsr.get(), csr & !0x10) };
         Ok(())
     }
-    
+
     /// Set window start time
     #[inline]
     #[allow(clippy::result_unit_err)]
     pub fn set_window_start(&self, _window_start: u32) -> core::result::Result<(), ()> {
         Ok(())
     }
-    
+
     /// Read current counter value
     #[inline]
     pub fn read_counter(&self) -> u32 {
         // SAFETY: Reading from memory-mapped WDT time base count register.
         unsafe { read_volatile(self.tbcr.get()) }
     }
-    
+
     /// Check if expired
     #[inline]
     pub fn is_expired(&self) -> bool {
         self.is_event()
     }
-    
+
     /// Disable watchdog
     #[inline]
     #[allow(clippy::result_unit_err)]

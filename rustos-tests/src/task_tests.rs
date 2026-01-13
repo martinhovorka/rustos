@@ -5,14 +5,14 @@
 #![cfg(test)]
 
 use crate::assert_test;
-use crate::utils::{boundary, perf, concurrent};
 use crate::mock::MOCK_CSR;
-use std::sync::Arc;
+use crate::utils::{boundary, concurrent, perf};
 use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::Arc;
 
 /// Mock task control block for testing
 #[derive(Debug, Clone)]
-#[allow(dead_code)]  // Fields used for debugging and future test expansion
+#[allow(dead_code)] // Fields used for debugging and future test expansion
 struct MockTask {
     id: u32,
     priority: u8,
@@ -58,8 +58,8 @@ impl MockStack {
 /// Mock context for testing
 #[derive(Default)]
 struct MockContext {
-    pc: u32,     // Program counter
-    sp: u32,     // Stack pointer
+    pc: u32,         // Program counter
+    sp: u32,         // Stack pointer
     regs: [u32; 32], // General purpose registers
 }
 
@@ -106,7 +106,10 @@ fn test_task_state_transitions() {
 
     // Ready -> Terminated
     task.state = TaskState::Terminated;
-    assert_test!(task.state == TaskState::Terminated, "Task should be terminated");
+    assert_test!(
+        task.state == TaskState::Terminated,
+        "Task should be terminated"
+    );
 }
 
 #[test]
@@ -149,20 +152,23 @@ fn test_task_stack() {
 fn test_task_stack_overflow_detection() {
     // REQ: TEST-011 - Stack overflow detection
     let mut stack = MockStack::new(100);
-    
+
     // Simulate stack usage
     stack.used = 90;
     assert_test!(!stack.is_overflow(), "Stack should not overflow at 90%");
-    
+
     stack.used = 101;
-    assert_test!(stack.is_overflow(), "Stack should overflow when used > size");
+    assert_test!(
+        stack.is_overflow(),
+        "Stack should overflow when used > size"
+    );
 }
 
 #[test]
 fn test_task_context() {
     // Mock context save/restore
     let ctx = MockContext::default();
-    
+
     // Verify initial state
     assert_eq!(ctx.pc, 0);
     assert_eq!(ctx.sp, 0);
@@ -174,19 +180,18 @@ fn test_context_switch_simulation() {
     // REQ: PERFTEST-001 - Context switch measurement
     let mut task1 = MockTask::new(1, 10);
     let mut task2 = MockTask::new(2, 20);
-    
+
     task1.state = TaskState::Running;
     task2.state = TaskState::Ready;
-    
+
     // Simulate context switch
     let cycles = perf::measure_cycles(|| {
         task1.state = TaskState::Ready;
         task2.state = TaskState::Running;
         MOCK_CSR.tick_cycles(50); // Simulate save/restore
     });
-    
+
     assert_test!(cycles >= 50, "Context switch should take cycles");
     assert_eq!(task1.state, TaskState::Ready);
     assert_eq!(task2.state, TaskState::Running);
 }
-

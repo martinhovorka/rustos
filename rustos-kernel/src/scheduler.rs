@@ -1,5 +1,5 @@
 //! REQ: SCHED-001 - Preemptive Scheduler
-//! 
+//!
 //! Priority-based preemptive scheduler with O(1) task selection using a priority bitmap.
 //!
 //! # Algorithm
@@ -30,8 +30,8 @@
 //! in round-robin fashion.
 
 use crate::task::{Task, TaskId, TaskPriority, TaskState, MAX_TASKS};
-use portable_atomic::{AtomicU8, AtomicBool, AtomicPtr, Ordering};
 use core::ptr::null_mut;
+use portable_atomic::{AtomicBool, AtomicPtr, AtomicU8, Ordering};
 
 /// REQ: SCHED-011 - O(1) scheduler with priority bitmap
 static SCHEDULER: Scheduler = Scheduler::new();
@@ -61,7 +61,7 @@ impl Scheduler {
     const fn new() -> Self {
         const NULL_TASK: AtomicPtr<Task> = AtomicPtr::new(null_mut());
         const ATOMIC_ZERO: AtomicU32 = AtomicU32::new(0);
-        
+
         Self {
             tasks: [NULL_TASK; MAX_TASKS],
             task_count: AtomicU8::new(0),
@@ -96,7 +96,7 @@ impl Scheduler {
                 // Find first set bit (lowest numbered = highest priority)
                 let bit_pos = bits.trailing_zeros();
                 let priority = (word_idx * 32 + bit_pos as usize) as u8;
-                
+
                 // Find task with this priority in ready state
                 for (idx, task_ptr) in self.tasks.iter().enumerate() {
                     let task = task_ptr.load(Ordering::Acquire);
@@ -104,7 +104,9 @@ impl Scheduler {
                         // SAFETY: task pointer is loaded atomically and checked for null.
                         // Pointer validity is guaranteed by add_task which only stores valid static task references.
                         unsafe {
-                            if (*task).priority().0 == priority && (*task).state().contains(TaskState::READY) {
+                            if (*task).priority().0 == priority
+                                && (*task).state().contains(TaskState::READY)
+                            {
                                 return Some(TaskId(idx as u8));
                             }
                         }
@@ -116,7 +118,7 @@ impl Scheduler {
     }
 
     /// REQ: TASK-003 - Add task to scheduler
-    /// 
+    ///
     /// # Safety
     /// - Task must have static lifetime
     /// - Must be called with interrupts disabled
@@ -145,7 +147,7 @@ impl Scheduler {
     }
 
     /// REQ: SCHED-003 - Schedule next task
-    /// 
+    ///
     /// Returns the task ID to switch to, or None if no task is ready
     pub fn schedule(&self) -> Option<TaskId> {
         if !self.enabled.load(Ordering::Acquire) {
@@ -193,7 +195,7 @@ impl Scheduler {
     }
 
     /// Get mutable task by ID
-    /// 
+    ///
     /// # Safety
     /// Must be called with interrupts disabled
     // SAFETY: Function signature - see # Safety documentation above
@@ -235,7 +237,7 @@ pub(crate) unsafe fn init() {
 }
 
 /// REQ: SCHED-010 - Start scheduler (transfers control to first task)
-/// 
+///
 /// # Safety
 /// - Must be called after all tasks are added
 /// - Must be called with interrupts disabled
@@ -243,32 +245,32 @@ pub(crate) unsafe fn init() {
 // SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn start() -> ! {
     SCHEDULER.enable();
-    
+
     // Find first task to run
-    let first_task_id = SCHEDULER.schedule()
+    let first_task_id = SCHEDULER
+        .schedule()
         .expect("No tasks available to schedule");
-    
+
     SCHEDULER.set_current_task(first_task_id);
-    
-    let task = SCHEDULER.get_task(first_task_id)
-        .expect("Task must exist");
-    
+
+    let task = SCHEDULER.get_task(first_task_id).expect("Task must exist");
+
     // REQ: CTX-008 - Perform initial context switch
     // This will be implemented in context.rs
     crate::context::start_first_task(task.sp());
 }
 
 /// REQ: SCHED-004 - Perform task switch (called from timer ISR)
-/// 
+///
 /// # Safety
 /// Must be called from interrupt context with interrupts disabled
 // SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn yield_from_isr() {
     let current_id_opt = SCHEDULER.current_task();
-    
+
     // Select next task
     let next_id_opt = SCHEDULER.schedule();
-    
+
     if let (Some(current_id), Some(next_id)) = (current_id_opt, next_id_opt) {
         if current_id != next_id {
             // Update current task state
@@ -277,14 +279,14 @@ pub unsafe fn yield_from_isr() {
                     current_task.set_state(TaskState::READY);
                 }
             }
-            
+
             // Update next task state
             if let Some(next_task) = SCHEDULER.get_task_mut(next_id) {
                 next_task.set_state(TaskState::RUNNING);
             }
-            
+
             SCHEDULER.set_current_task(next_id);
-            
+
             // REQ: CTX-001, CTX-006 - Perform context switch
             // Actual context switch will be done in the trap handler
         }
@@ -310,11 +312,13 @@ pub fn get_context_switch_count() -> u32 {
 /// REQ: SCHED-015 - Increment context switch counter
 #[cfg(feature = "statistics")]
 pub(crate) fn increment_context_switches() {
-    SCHEDULER.context_switch_count.fetch_add(1, Ordering::Relaxed);
+    SCHEDULER
+        .context_switch_count
+        .fetch_add(1, Ordering::Relaxed);
 }
 
 /// REQ: DIAG-001 - Get task state (for diagnostics)
-/// 
+///
 /// Returns the current state of the specified task.
 /// Non-blocking, safe to call from ISR context.
 #[cfg(feature = "diagnostics")]
@@ -323,7 +327,7 @@ pub fn get_task_state(task_id: TaskId) -> Option<TaskState> {
 }
 
 /// REQ: DIAG-005 - Get task stack usage (for diagnostics)
-/// 
+///
 /// Returns the high-water mark (maximum observed usage) of the task's stack.
 /// Non-blocking, safe to call from ISR context.
 #[cfg(feature = "diagnostics")]
@@ -337,11 +341,11 @@ pub fn get() -> &'static Scheduler {
 }
 
 /// REQ: SCHED-014 - Enter tickless idle mode
-/// 
+///
 /// Suppresses system ticks when no tasks are ready to run and no timers
 /// are about to expire. This saves power by allowing the CPU to remain
 /// in a low-power state longer.
-/// 
+///
 /// # Safety
 /// - Must be called from idle task only
 /// - Interrupts should be enabled to wake from WFI
@@ -349,7 +353,7 @@ pub fn get() -> &'static Scheduler {
 // SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn enter_tickless_idle() {
     use crate::time::get_next_wake_ticks;
-    
+
     // Check if we can suppress ticks
     if let Some(ticks_until_wake) = get_next_wake_ticks() {
         if ticks_until_wake > 1 {
@@ -360,7 +364,7 @@ pub unsafe fn enter_tickless_idle() {
             // 3. Enter WFI (Wait For Interrupt)
             // 4. On wake, re-enable system tick
             // 5. Adjust tick count for time slept
-            
+
             // For now, just use WFI without tick suppression
             // SAFETY: WFI with interrupts enabled - will wake on any interrupt.
             core::arch::asm!("wfi");
@@ -373,10 +377,10 @@ pub unsafe fn enter_tickless_idle() {
 }
 
 /// REQ: SCHED-014 - Enter power-saving idle (WFI instruction)
-/// 
+///
 /// Simplified version that doesn't suppress ticks, just uses WFI.
 /// Safe for all configurations.
-/// 
+///
 /// # Safety
 /// Must be called from idle task with interrupts enabled
 // SAFETY: Function signature - see # Safety documentation above

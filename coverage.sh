@@ -13,7 +13,11 @@ if ! command -v cargo-llvm-cov &> /dev/null; then
     exit 1
 fi
 
-cargo install cargo-llvm-cov
+# Install cargo-llvm-cov if not present
+if ! command -v cargo-llvm-cov &> /dev/null; then
+    echo "Installing cargo-llvm-cov..."
+    cargo install cargo-llvm-cov
+fi
 
 # Clean previous coverage data
 echo "Cleaning previous coverage data..."

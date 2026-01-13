@@ -6,14 +6,14 @@
 
 extern crate std;
 
-use crate::{assert_test, assert_eq_test};
 use crate::mock::{MOCK_CSR, MOCK_TIMER};
 use crate::utils::{boundary, perf};
+use crate::{assert_eq_test, assert_test};
 use core::option::Option::{self, None, Some};
 
 /// Mock task for testing
 #[derive(Debug, Clone)]
-#[allow(dead_code)]  // Fields used for debugging and future test expansion
+#[allow(dead_code)] // Fields used for debugging and future test expansion
 struct MockTask {
     id: u32,
     priority: u8,
@@ -22,7 +22,7 @@ struct MockTask {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[allow(dead_code)]  // Variants needed for complete state machine representation
+#[allow(dead_code)] // Variants needed for complete state machine representation
 enum TaskState {
     Ready,
     Running,
@@ -91,14 +91,16 @@ impl MockScheduler {
         }
 
         // Find highest priority
-        let highest_priority = self.tasks.iter()
+        let highest_priority = self
+            .tasks
+            .iter()
             .filter(|t| t.state == TaskState::Ready)
             .map(|t| t.priority)
             .max()?;
 
         // Find next ready task with highest priority after current
         let start_idx = self.current_task.map(|i| i + 1).unwrap_or(0);
-        
+
         for offset in 0..self.tasks.len() {
             let idx = (start_idx + offset) % self.tasks.len();
             let task = &self.tasks[idx];
@@ -143,7 +145,11 @@ fn test_priority_ordering() {
 
     let next = scheduler.select_next();
     assert_test!(next.is_some(), "Should select a task");
-    assert_eq_test!(next.unwrap(), 2, "Should select highest priority task (ID 3, priority 30)");
+    assert_eq_test!(
+        next.unwrap(),
+        2,
+        "Should select highest priority task (ID 3, priority 30)"
+    );
 }
 
 #[test]
@@ -238,13 +244,13 @@ fn test_priority_boundary_values() {
     // REQ: TEST-008 - Boundary values test
     let mut scheduler = MockScheduler::new();
 
-    scheduler.add_task(MockTask::new(1, boundary::MIN_U8));     // Minimum priority
-    scheduler.add_task(MockTask::new(2, boundary::MAX_U8));     // Maximum priority
+    scheduler.add_task(MockTask::new(1, boundary::MIN_U8)); // Minimum priority
+    scheduler.add_task(MockTask::new(2, boundary::MAX_U8)); // Maximum priority
     scheduler.add_task(MockTask::new(3, boundary::MAX_U8 - 1)); // Near maximum
 
     let next = scheduler.select_next();
     assert_test!(next.is_some(), "Should select a task");
-    
+
     // Should select task with MAX_U8 priority
     let selected = next.unwrap();
     assert_test!(
@@ -279,7 +285,7 @@ fn test_scheduler_performance() {
 fn test_time_slice_expiry() {
     // REQ: SCHED-005 - Time slice management
     let task = MockTask::new(1, 10);
-    
+
     // Verify task has expected default time slice
     assert_eq_test!(task.time_slice, 10, "Default time slice should be 10");
     assert_eq_test!(task.priority, 10, "Priority should be 10");
@@ -302,7 +308,9 @@ fn test_time_slice_expiry() {
 #[test]
 fn test_context_switch_overhead() {
     // REQ: PERFTEST-001 - Context switch latency measurement
-    MOCK_CSR.mcycle.store(0, core::sync::atomic::Ordering::Relaxed);
+    MOCK_CSR
+        .mcycle
+        .store(0, core::sync::atomic::Ordering::Relaxed);
 
     // Simulate context switch
     let cycles = perf::measure_cycles(|| {
@@ -319,8 +327,8 @@ fn test_context_switch_overhead() {
 #[test]
 fn test_scheduler_concurrent_access() {
     // REQ: TEST-009 - Concurrent access patterns
-    use std::sync::{Arc, Mutex};
     use crate::utils::concurrent;
+    use std::sync::{Arc, Mutex};
 
     let scheduler = Arc::new(Mutex::new(MockScheduler::new()));
 

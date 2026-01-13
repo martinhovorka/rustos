@@ -1,9 +1,9 @@
 //! REQ: INT-001 - Interrupt Controller Driver
-//! 
+//!
 //! High-level interrupt controller management.
 
-use rustos_pac::{intc, INTC_BASE};
 use crate::{HalError, Result};
+use rustos_pac::{intc, INTC_BASE};
 
 /// Maximum number of interrupt handlers
 const MAX_HANDLERS: usize = 11;
@@ -19,17 +19,17 @@ pub struct InterruptController {
 
 impl InterruptController {
     /// REQ: INT-002 - Initialize interrupt controller
-    /// 
+    ///
     /// # Safety
     /// Must be called only once during system initialization
     // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn new() -> Self {
         let periph = &*(INTC_BASE as *const intc::Intc);
-        
+
         // Disable all interrupts initially
         periph.write_ier(0);
         periph.disable_master();
-        
+
         Self {
             periph,
             handlers: [None; MAX_HANDLERS],
@@ -41,7 +41,7 @@ impl InterruptController {
         if irq >= MAX_HANDLERS as u32 {
             return Err(HalError::InvalidParameter);
         }
-        
+
         self.handlers[irq as usize] = Some(handler);
         Ok(())
     }
@@ -67,21 +67,21 @@ impl InterruptController {
     }
 
     /// REQ: INT-008 - Handle interrupt (called from trap handler)
-    /// 
+    ///
     /// # Safety
     /// Must be called from interrupt context
     // SAFETY: Function signature - see # Safety documentation above
     pub unsafe fn handle_interrupt(&self) {
         // Read IVR to get interrupt ID
         let irq = self.periph.read_ivr();
-        
+
         // Call registered handler
         if (irq as usize) < MAX_HANDLERS {
             if let Some(handler) = self.handlers[irq as usize] {
                 handler();
             }
         }
-        
+
         // Acknowledge interrupt
         self.periph.acknowledge(1 << irq);
     }
@@ -91,7 +91,7 @@ impl InterruptController {
 static mut INTC: Option<InterruptController> = None;
 
 /// REQ: INT-009 - Initialize global interrupt controller
-/// 
+///
 /// # Safety
 /// Must be called only once during system initialization
 // SAFETY: Function signature - see # Safety documentation above

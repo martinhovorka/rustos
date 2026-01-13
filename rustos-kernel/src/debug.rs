@@ -1,5 +1,5 @@
 //! REQ: DBG-017, DBG-018, DBG-019 - Debug Infrastructure
-//! 
+//!
 //! Provides debugging facilities including GDB stub support, semihosting,
 //! and runtime profiling via hardware performance counters.
 //!
@@ -36,18 +36,18 @@ impl AtomicU64 {
             high: AtomicU32::new((val >> 32) as u32),
         }
     }
-    
+
     fn load(&self, order: Ordering) -> u64 {
         let low = self.low.load(order) as u64;
         let high = self.high.load(order) as u64;
         (high << 32) | low
     }
-    
+
     fn store(&self, val: u64, order: Ordering) {
         self.low.store(val as u32, order);
         self.high.store((val >> 32) as u32, order);
     }
-    
+
     fn fetch_add(&self, val: u64, order: Ordering) -> u64 {
         let old = self.load(order);
         self.store(old.wrapping_add(val), order);
@@ -75,7 +75,7 @@ pub enum GdbState {
 }
 
 /// REQ: DBG-017 - GDB stub for source-level debugging
-/// 
+///
 /// Implements a minimal GDB Remote Serial Protocol (RSP) stub
 /// for debugging via JTAG/UART.
 pub struct GdbStub {
@@ -121,17 +121,18 @@ impl GdbStub {
     }
 
     /// REQ: DBG-017 - Initialize GDB stub
-    /// 
+    ///
     /// Sets up the debug infrastructure for GDB connections.
     /// Should be called early in system initialization.
     pub fn init(&self) {
-        self.state.store(GdbState::Disconnected as u32, Ordering::SeqCst);
+        self.state
+            .store(GdbState::Disconnected as u32, Ordering::SeqCst);
         self.connected.store(false, Ordering::SeqCst);
         self.breakpoint_count.store(0, Ordering::SeqCst);
     }
 
     /// REQ: DBG-017 - Handle incoming GDB packet
-    /// 
+    ///
     /// Processes a GDB RSP packet and generates a response.
     /// Returns the response packet or None if no response is needed.
     pub fn handle_packet(&self, packet: &[u8]) -> Option<GdbResponse> {
@@ -141,7 +142,7 @@ impl GdbStub {
 
         // Parse packet type (first character after '$')
         let cmd = packet.first()?;
-        
+
         match cmd {
             b'?' => {
                 // Stop reason query
@@ -334,7 +335,7 @@ pub enum SemihostingSyscall {
 }
 
 /// REQ: DBG-018 - Semihosting support for host-based I/O
-/// 
+///
 /// Implements ARM-style semihosting via EBREAK instruction.
 /// When running under a debugger, this allows:
 /// - Console output to host terminal
@@ -344,7 +345,7 @@ pub struct Semihosting;
 
 impl Semihosting {
     /// REQ: DBG-018 - Write a string to the host console
-    /// 
+    ///
     /// Uses semihosting SYS_WRITE0 to output a null-terminated string.
     /// Only works when connected to a debugger with semihosting support.
     #[inline(never)]
@@ -352,17 +353,15 @@ impl Semihosting {
         if s.is_empty() {
             return Ok(());
         }
-        
+
         // Use WRITE0 for null-terminated strings
-        Self::syscall(SemihostingSyscall::Write0, s.as_ptr() as usize)
-            .map(|_| ())
+        Self::syscall(SemihostingSyscall::Write0, s.as_ptr() as usize).map(|_| ())
     }
 
     /// REQ: DBG-018 - Write a single character to host console
     pub fn write_char(c: char) -> Result<(), SemihostingError> {
         let ch = c as u32;
-        Self::syscall(SemihostingSyscall::WriteC, &ch as *const u32 as usize)
-            .map(|_| ())
+        Self::syscall(SemihostingSyscall::WriteC, &ch as *const u32 as usize).map(|_| ())
     }
 
     /// REQ: DBG-018 - Read a character from host console
@@ -373,12 +372,11 @@ impl Semihosting {
 
     /// REQ: DBG-018 - Get system time from host
     pub fn time() -> Result<u32, SemihostingError> {
-        Self::syscall(SemihostingSyscall::Time, 0)
-            .map(|t| t as u32)
+        Self::syscall(SemihostingSyscall::Time, 0).map(|t| t as u32)
     }
 
     /// REQ: DBG-018 - Exit to host (for testing)
-    /// 
+    ///
     /// Signals to the debugger that the program has finished.
     /// The exit code is passed to the host.
     pub fn exit(code: u32) -> ! {
@@ -386,7 +384,7 @@ impl Semihosting {
         const APPLICATION_EXIT: u32 = 0x20026;
         let block: [u32; 2] = [APPLICATION_EXIT, code];
         let _ = Self::syscall(SemihostingSyscall::Exit, block.as_ptr() as usize);
-        
+
         // If semihosting is not active, loop forever
         loop {
             #[cfg(target_arch = "riscv32")]
@@ -398,7 +396,7 @@ impl Semihosting {
     }
 
     /// REQ: DBG-018 - Perform a semihosting syscall
-    /// 
+    ///
     /// On RISC-V, semihosting uses:
     /// - a0 = operation number
     /// - a1 = parameter block pointer
@@ -422,7 +420,7 @@ impl Semihosting {
                 lateout("a0") result,
             );
         }
-        
+
         if result == usize::MAX {
             Err(SemihostingError::Failed)
         } else {
@@ -463,7 +461,7 @@ pub enum SemihostingError {
 // ============================================================================
 
 /// REQ: DBG-019 - Hardware performance event types
-/// 
+///
 /// These correspond to the 13 hardware performance event counters
 /// available in the RISC-V debug specification.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -553,7 +551,7 @@ impl Profiler {
     }
 
     /// REQ: DBG-019 - Start profiling
-    /// 
+    ///
     /// Returns a guard that stops profiling when dropped.
     pub fn start(name: &'static str) -> ProfileGuard {
         let start = Self::read_cycle_counter();
@@ -566,7 +564,8 @@ impl Profiler {
     /// Enable continuous profiling
     pub fn enable(&self) {
         self.enabled.store(true, Ordering::SeqCst);
-        self.start_cycles.store(Self::read_cycle_counter(), Ordering::SeqCst);
+        self.start_cycles
+            .store(Self::read_cycle_counter(), Ordering::SeqCst);
     }
 
     /// Disable continuous profiling
@@ -574,7 +573,8 @@ impl Profiler {
         if self.enabled.load(Ordering::SeqCst) {
             let end = Self::read_cycle_counter();
             let start = self.start_cycles.load(Ordering::SeqCst);
-            self.total_cycles.fetch_add(end.saturating_sub(start), Ordering::SeqCst);
+            self.total_cycles
+                .fetch_add(end.saturating_sub(start), Ordering::SeqCst);
             self.sample_count.fetch_add(1, Ordering::SeqCst);
             self.enabled.store(false, Ordering::SeqCst);
         }
@@ -618,7 +618,7 @@ impl Profiler {
             cycles: Self::read_cycle_counter(),
             instructions: Self::read_instret_counter(),
             time_us: Self::read_time_counter(),
-            loads: 0,      // Would read from HPM counters
+            loads: 0, // Would read from HPM counters
             stores: 0,
             branches: 0,
             mispredictions: 0,

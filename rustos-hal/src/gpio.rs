@@ -1,9 +1,9 @@
 //! REQ: GPIO-001 - GPIO Driver
-//! 
+//!
 //! High-level GPIO driver with pin abstraction and interrupt support.
 
-use rustos_pac::gpio;
 use crate::{HalError, Result};
+use rustos_pac::gpio;
 
 /// REQ: GPIO-020 - GPIO pin mode
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -36,7 +36,7 @@ pub struct GpioPort {
 
 impl GpioPort {
     /// Create a new GPIO port driver
-    /// 
+    ///
     /// # Safety
     /// Must ensure exclusive access to the peripheral
     // SAFETY: Function signature - see # Safety documentation above
@@ -92,7 +92,7 @@ impl GpioPort {
         if pin >= 32 {
             return Err(HalError::InvalidParameter);
         }
-        
+
         // REQ: GPIO-008, GPIO-009 - Configure interrupt mode
         let mode_val = match mode {
             InterruptMode::RisingEdge => 0,
@@ -102,42 +102,42 @@ impl GpioPort {
             InterruptMode::LowLevel => 4,
         };
         self.periph.configure_interrupt_mode(pin, mode_val)?;
-        
+
         // REQ: GPIO-007 - Enable interrupt for this pin
         self.periph.enable_pin_interrupt(pin)?;
-        
+
         // REQ: GPIO-007 - Enable global GPIO interrupt
         self.periph.enable_global_interrupt();
-        
+
         Ok(())
     }
-    
+
     /// REQ: GPIO-010 - Disable interrupt for specific pin
     pub fn disable_pin_interrupt(&self, pin: u32) -> Result<()> {
         if pin >= 32 {
             return Err(HalError::InvalidParameter);
         }
-        
+
         self.periph.disable_pin_interrupt(pin)?;
         Ok(())
     }
-    
+
     /// REQ: GPIO-010 - Disable all GPIO interrupts
     pub fn disable_all_interrupts(&self) {
         self.periph.disable_global_interrupt();
     }
-    
+
     /// REQ: GPIO-007 - Check which pin triggered interrupt
     pub fn get_interrupt_status(&self) -> u32 {
         self.periph.read_interrupt_status()
     }
-    
+
     /// REQ: GPIO-007 - Clear interrupt flag for pin
     pub fn clear_interrupt(&self, pin: u32) -> Result<()> {
         if pin >= 32 {
             return Err(HalError::InvalidParameter);
         }
-        
+
         self.periph.clear_interrupt(pin)?;
         Ok(())
     }

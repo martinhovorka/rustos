@@ -5,23 +5,32 @@
 #![cfg(test)]
 
 use crate::assert_test;
-use crate::mock::{MOCK_TIMER, MOCK_CSR};
-use crate::utils::{boundary, perf, concurrent};
-use std::sync::Arc;
+use crate::mock::{MOCK_CSR, MOCK_TIMER};
+use crate::utils::{boundary, concurrent, perf};
 use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::Arc;
 
 #[test]
 fn test_timer_start_stop() {
     // REQ: TIME-001 - Timer control
     MOCK_TIMER.reset();
 
-    assert_test!(!MOCK_TIMER.is_running(), "Timer should initially be stopped");
+    assert_test!(
+        !MOCK_TIMER.is_running(),
+        "Timer should initially be stopped"
+    );
 
     MOCK_TIMER.start();
-    assert_test!(MOCK_TIMER.is_running(), "Timer should be running after start()");
+    assert_test!(
+        MOCK_TIMER.is_running(),
+        "Timer should be running after start()"
+    );
 
     MOCK_TIMER.stop();
-    assert_test!(!MOCK_TIMER.is_running(), "Timer should be stopped after stop()");
+    assert_test!(
+        !MOCK_TIMER.is_running(),
+        "Timer should be stopped after stop()"
+    );
 }
 
 #[test]
@@ -46,7 +55,10 @@ fn test_timer_interval() {
 
     // Default interval is 1000 cycles for testing
     let default_interval = MOCK_TIMER.get_interval();
-    assert_eq!(default_interval, 1000, "Default interval should be 1000 cycles");
+    assert_eq!(
+        default_interval, 1000,
+        "Default interval should be 1000 cycles"
+    );
 
     // Can be configured to hardware-specific values (e.g., 75000 cycles for 1ms at 75 MHz per HWTEST-011)
     MOCK_TIMER.set_interval(75_000);
@@ -81,10 +93,10 @@ fn test_delay_simulation() {
     MOCK_CSR.mcycle.store(0, Ordering::Relaxed);
 
     let start = MOCK_CSR.read_mcycle();
-    
+
     // Simulate delay of 1000 cycles
     MOCK_CSR.tick_cycles(1000);
-    
+
     let end = MOCK_CSR.read_mcycle();
     let elapsed = end - start;
 
@@ -111,7 +123,7 @@ fn test_timer_accuracy() {
 
     // Set the timer to the expected hardware value
     MOCK_TIMER.set_interval(expected_cycles);
-    
+
     let measured = MOCK_TIMER.get_interval();
     let delta = if measured > expected_cycles {
         measured - expected_cycles
@@ -121,7 +133,10 @@ fn test_timer_accuracy() {
 
     assert_test!(
         delta <= tolerance,
-        format!("Timer accuracy within tolerance: delta={}, tolerance={}", delta, tolerance)
+        format!(
+            "Timer accuracy within tolerance: delta={}, tolerance={}",
+            delta, tolerance
+        )
     );
 }
 
@@ -144,10 +159,14 @@ fn test_timer_concurrent_access() {
 
     let final_ticks = MOCK_TIMER.get_ticks();
     let ticks_added = final_ticks - initial_ticks;
-    
+
     assert_test!(
         ticks_added >= 10 || tick_count.load(Ordering::Relaxed) == 10,
-        format!("Timer ticks added: {}, threads completed: {}", ticks_added, tick_count.load(Ordering::Relaxed))
+        format!(
+            "Timer ticks added: {}, threads completed: {}",
+            ticks_added,
+            tick_count.load(Ordering::Relaxed)
+        )
     );
 }
 
@@ -176,14 +195,17 @@ fn test_cycle_counter_overflow() {
     // Overflow behavior (wraps around in real hardware)
     MOCK_CSR.tick_cycles(10);
     let result = MOCK_CSR.read_mcycle();
-    assert_test!(result > max_u64, "Cycle counter should continue incrementing");
+    assert_test!(
+        result > max_u64,
+        "Cycle counter should continue incrementing"
+    );
 }
 
 #[test]
 fn test_timer_callback_simulation() {
     // REQ: TIME-006 - Timer callbacks
     let callback_count = Arc::new(AtomicU32::new(0));
-    
+
     // Simulate timer callbacks
     for _ in 0..5 {
         MOCK_TIMER.tick();
@@ -208,7 +230,7 @@ fn test_periodic_timer() {
         MOCK_CSR.tick_cycles(MOCK_TIMER.get_interval());
         MOCK_TIMER.tick();
         let cycles_after = MOCK_CSR.read_mcycle();
-        
+
         tick_times.push(cycles_after - cycles_before);
     }
 
@@ -240,7 +262,7 @@ fn test_timer_reset() {
     // REQ: TIME-009 - Timer reset
     MOCK_TIMER.reset();
     MOCK_TIMER.start();
-    
+
     for _ in 0..10 {
         MOCK_TIMER.tick();
     }
@@ -249,7 +271,10 @@ fn test_timer_reset() {
 
     MOCK_TIMER.reset();
     assert_eq!(MOCK_TIMER.get_ticks(), 0);
-    assert_test!(!MOCK_TIMER.is_running(), "Timer should be stopped after reset");
+    assert_test!(
+        !MOCK_TIMER.is_running(),
+        "Timer should be stopped after reset"
+    );
 }
 
 #[test]
@@ -260,7 +285,10 @@ fn test_time_measurement_overhead() {
     });
 
     // Overhead should be minimal
-    assert_test!(overhead < 100, format!("Measurement overhead: {} cycles", overhead));
+    assert_test!(
+        overhead < 100,
+        format!("Measurement overhead: {} cycles", overhead)
+    );
 }
 
 #[test]
@@ -276,7 +304,7 @@ fn test_timer_boundaries() {
     let large_interval = 1_000_000_000u64;
     MOCK_TIMER.set_interval(large_interval);
     assert_eq!(MOCK_TIMER.get_interval(), large_interval);
-    
+
     // Reset to default for other tests
     MOCK_TIMER.set_interval(1000);
 }
@@ -285,11 +313,11 @@ fn test_timer_boundaries() {
 fn test_tick_rate_calculation() {
     // REQ: TIME-001 - 1kHz tick rate (1ms period)
     const CPU_FREQ_HZ: u64 = 75_000_000; // 75 MHz
-    const TICK_RATE_HZ: u64 = 1000;       // 1 kHz (1ms)
+    const TICK_RATE_HZ: u64 = 1000; // 1 kHz (1ms)
     const CYCLES_PER_TICK: u64 = CPU_FREQ_HZ / TICK_RATE_HZ;
 
     assert_eq!(CYCLES_PER_TICK, 75_000);
-    
+
     MOCK_TIMER.set_interval(CYCLES_PER_TICK);
     assert_eq!(MOCK_TIMER.get_interval(), 75_000);
 }

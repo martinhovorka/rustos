@@ -10,8 +10,8 @@
 //! REQ: SPI-008 - SPI status checking
 //! REQ: SPI-009 - SPI transfer timeout
 
-use rustos_pac::spi::*;
 use core::ptr::{read_volatile, write_volatile};
+use rustos_pac::spi::*;
 
 /// REQ: SPI-004 - SPI clock polarity
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -100,7 +100,7 @@ impl Spi {
     pub fn init_master(&mut self, mode: SpiMode, clock_div: u8) -> Result<(), SpiError> {
         // REQ: SPI-004 - Configure SPI mode
         let mut ctrl = SpiControl::empty();
-        
+
         if mode.polarity() == ClockPolarity::IdleHigh {
             ctrl |= SpiControl::CPOL;
         }
@@ -110,7 +110,7 @@ impl Spi {
 
         // REQ: SPI-001 - Enable master mode
         ctrl |= SpiControl::MASTER_MODE;
-        
+
         // REQ: SPI-002 - Set clock divider
         ctrl |= SpiControl::from_bits_truncate((clock_div as u32) << 8);
 
@@ -218,7 +218,7 @@ impl Spi {
     /// REQ: SPI-003 - Transfer a byte (write and read simultaneously)
     pub fn transfer_byte(&mut self, data: u8) -> Result<u8, SpiError> {
         self.write_byte(data)?;
-        
+
         // Wait for transfer to complete
         let mut timeout = 10000;
         while self.is_busy() {
@@ -244,7 +244,7 @@ impl Spi {
         for &byte in data {
             self.write_byte(byte)?;
         }
-        
+
         // Wait for transfer to complete
         let mut timeout = 10000;
         while self.is_busy() {
@@ -280,9 +280,9 @@ impl Spi {
     pub fn get_errors(&self) -> Option<SpiError> {
         // SAFETY: Reading from memory-mapped SPI status register to check error flags.
         unsafe {
-            let status = SpiStatus::from_bits_truncate(
-                read_volatile((self.base_addr + STATUS_REG_OFFSET) as *const u32)
-            );
+            let status = SpiStatus::from_bits_truncate(read_volatile(
+                (self.base_addr + STATUS_REG_OFFSET) as *const u32,
+            ));
 
             if status.contains(SpiStatus::TX_OVERRUN) {
                 Some(SpiError::TxOverrun)
@@ -338,4 +338,3 @@ pub fn spi_flash() -> Spi {
     // SAFETY: Creating SPI instance with valid flash SPI base address
     unsafe { Spi::new(rustos_pac::spi::SPI_BASE_ADDR) }
 }
-

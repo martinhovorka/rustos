@@ -1,5 +1,5 @@
 //! REQ: TASK-001 - Task Management
-//! 
+//!
 //! Provides task control block (TCB) and task management functionality.
 //!
 //! # Overview
@@ -132,14 +132,14 @@ pub struct TaskStats {
 
 impl Task {
     /// REQ: TASK-003 - Create a new task
-    /// 
+    ///
     /// # Arguments
     /// * `id` - Unique task identifier
     /// * `name` - Task name for debugging
     /// * `priority` - Task priority
     /// * `entry` - Task entry point function
     /// * `stack` - Stack memory slice
-    /// 
+    ///
     /// # Safety
     /// - Stack must be valid for the lifetime of the task
     /// - Entry function must never return (fn() -> !)
@@ -155,13 +155,13 @@ impl Task {
         // We initialize stack canary, setup stack frame, and store pointers.
         let stack_size = stack.len();
         let stack_base = stack.as_mut_ptr();
-        
+
         // REQ: TASK-005 - Initialize stack canary
         const STACK_CANARY: u32 = 0xDEADBEEF;
-        
+
         // REQ: CTX-008 - Setup initial stack frame
         let sp = Self::init_stack(stack, entry);
-        
+
         Task {
             id,
             name,
@@ -181,7 +181,7 @@ impl Task {
     }
 
     /// REQ: CTX-008 - Initialize task stack with context frame
-    /// 
+    ///
     /// Sets up the initial stack frame so the task can be context-switched to.
     // SAFETY: Function signature - manipulates raw stack pointers, see inline SAFETY comments
     unsafe fn init_stack(stack: &mut [u8], entry: extern "C" fn() -> !) -> *mut usize {
@@ -189,33 +189,33 @@ impl Task {
         // Pointer arithmetic is within stack bounds. Stack frame layout matches
         // the context switcher's expectations (36 words = 144 bytes).
         let stack_top = stack.as_mut_ptr().add(stack.len()) as *mut usize;
-        
+
         // REQ: CTX-007 - Align stack pointer to 16 bytes
         let sp = (stack_top as usize & !0xF) as *mut usize;
-        
+
         // REQ: CTX-013 - Context frame size is 144 bytes (36 words)
         let sp = sp.sub(36);
-        
+
         // REQ: CTX-011 - Initialize context frame
         // Registers x1, x3-x31 (30 registers total) + CSRs
-        
+
         // Clear all GPRs
         for i in 0..30 {
             sp.add(i).write(0);
         }
-        
+
         // REQ: CTX-003 - Set mepc to task entry point
-        sp.add(30).write(entry as usize);  // mepc
-        
+        sp.add(30).write(entry as usize); // mepc
+
         // REQ: CTX-004 - Set initial mstatus (MIE=0, MPIE=1)
-        sp.add(31).write(0x1880);  // mstatus: MPP=11 (M-mode), MPIE=1
-        
+        sp.add(31).write(0x1880); // mstatus: MPP=11 (M-mode), MPIE=1
+
         // mcause = 0
         sp.add(32).write(0);
-        
+
         // mtval = 0
         sp.add(33).write(0);
-        
+
         sp
     }
 
@@ -250,7 +250,7 @@ impl Task {
     }
 
     /// REQ: SCHED-015, MTX-008 - Set task priority (for priority inheritance)
-    /// 
+    ///
     /// Changes the task's priority. Used by priority inheritance protocol
     /// to temporarily boost or restore a task's priority.
     #[inline]
@@ -323,16 +323,12 @@ impl TaskBuilder {
     }
 
     /// REQ: TASK-003 - Build the task with the given entry point and stack
-    /// 
+    ///
     /// # Safety
     /// - Stack must be valid for the lifetime of the task
     /// - Entry function must never return
     // SAFETY: Function signature - see # Safety documentation above
-    pub unsafe fn build(
-        self,
-        entry: extern "C" fn() -> !,
-        stack: &'static mut [u8],
-    ) -> Task {
+    pub unsafe fn build(self, entry: extern "C" fn() -> !, stack: &'static mut [u8]) -> Task {
         // SAFETY: We forward the safety contract to Task::new().
         // Caller guarantees stack validity and entry function properties.
         Task::new(self.id, self.name, self.priority, entry, stack)

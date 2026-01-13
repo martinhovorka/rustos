@@ -1,5 +1,5 @@
 //! REQ: SEC-010 - Secure Boot Validation
-//! 
+//!
 //! Provides secure boot infrastructure including:
 //! - Image integrity verification (CRC-32, SHA-256)
 //! - Signature verification (RSA, ECDSA)
@@ -23,7 +23,7 @@
 use core::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 
 /// REQ: SEC-010 - Boot image header structure
-/// 
+///
 /// This header is placed at the beginning of each boot image
 /// and contains metadata for verification.
 #[repr(C)]
@@ -56,29 +56,29 @@ pub struct ImageHeader {
 impl ImageHeader {
     /// Expected magic number
     pub const MAGIC: u32 = 0x52555354; // "RUST" in little-endian
-    
+
     /// Current header version
     pub const VERSION: u32 = 1;
-    
+
     /// Header size in bytes
     pub const SIZE: usize = core::mem::size_of::<Self>();
-    
+
     /// Flag: image is signed
     pub const FLAG_SIGNED: u32 = 0x01;
-    
+
     /// Flag: image is encrypted
     pub const FLAG_ENCRYPTED: u32 = 0x02;
-    
+
     /// Check if header is valid
     pub fn is_valid(&self) -> bool {
         self.magic == Self::MAGIC && self.version <= Self::VERSION
     }
-    
+
     /// Check if image is signed
     pub fn is_signed(&self) -> bool {
         (self.flags & Self::FLAG_SIGNED) != 0
     }
-    
+
     /// Check if image is encrypted
     pub fn is_encrypted(&self) -> bool {
         (self.flags & Self::FLAG_ENCRYPTED) != 0
@@ -164,7 +164,7 @@ impl SecureBoot {
     }
 
     /// REQ: SEC-010 - Verify boot image at given address
-    /// 
+    ///
     /// Performs full verification including:
     /// 1. Header validation
     /// 2. CRC-32 integrity check
@@ -173,63 +173,64 @@ impl SecureBoot {
     /// 5. Anti-rollback check
     pub fn verify_image(&self, image_addr: usize) -> Result<(), SecureBootError> {
         self.boot_attempts.fetch_add(1, Ordering::SeqCst);
-        
+
         // Step 1: Verify header
         self.set_state(SecureBootState::VerifyingHeader);
         let header = self.read_header(image_addr)?;
-        
+
         if !header.is_valid() {
             self.set_state(SecureBootState::Failed);
             return Err(SecureBootError::InvalidHeader);
         }
-        
+
         // Step 2: Verify CRC-32
         self.set_state(SecureBootState::ComputingHash);
         let image_start = image_addr + ImageHeader::SIZE;
         let computed_crc = self.compute_crc32(image_start, header.image_size as usize);
-        
+
         if computed_crc != header.crc32 {
             self.set_state(SecureBootState::Failed);
             return Err(SecureBootError::CrcMismatch);
         }
-        
+
         // Step 3: Verify signature (if signed)
         if header.is_signed() {
             self.set_state(SecureBootState::VerifyingSignature);
-            
+
             // Compute SHA-256 hash
             let computed_hash = self.compute_sha256(image_start, header.image_size as usize);
-            
+
             if computed_hash != header.hash {
                 self.set_state(SecureBootState::Failed);
                 return Err(SecureBootError::HashMismatch);
             }
-            
+
             // Verify signature
             if !self.verify_signature(&header.hash, &header.signature) {
                 self.set_state(SecureBootState::Failed);
                 return Err(SecureBootError::SignatureFailed);
             }
         }
-        
+
         // Step 4: Anti-rollback check
         self.set_state(SecureBootState::CheckingVersion);
         let min_ver = self.min_version.load(Ordering::SeqCst);
-        
+
         if header.image_version < min_ver {
             self.set_state(SecureBootState::Failed);
             return Err(SecureBootError::RollbackDetected);
         }
-        
+
         // Update minimum version for future boots
         if header.image_version > min_ver {
-            self.min_version.store(header.image_version, Ordering::SeqCst);
+            self.min_version
+                .store(header.image_version, Ordering::SeqCst);
         }
-        
+
         // Success!
         self.set_state(SecureBootState::Success);
         self.validated.store(true, Ordering::SeqCst);
-        
+
         Ok(())
     }
 
@@ -237,35 +238,35 @@ impl SecureBoot {
     fn read_header(&self, addr: usize) -> Result<ImageHeader, SecureBootError> {
         // Safety: Caller must ensure addr points to valid memory
         let header_ptr = addr as *const ImageHeader;
-        
+
         // Basic bounds check
         if addr < 0x1000 {
             return Err(SecureBootError::MemoryError);
         }
-        
+
         // SAFETY: Reading image header from validated memory address with bounds check
         let header = unsafe { core::ptr::read_volatile(header_ptr) };
-        
+
         if header.magic != ImageHeader::MAGIC {
             return Err(SecureBootError::BadMagic);
         }
-        
+
         Ok(header)
     }
 
     /// REQ: SEC-010 - Compute CRC-32 checksum
     fn compute_crc32(&self, addr: usize, len: usize) -> u32 {
         const CRC32_TABLE: [u32; 256] = SecureBoot::generate_crc32_table();
-        
+
         let mut crc: u32 = 0xFFFFFFFF;
-        
+
         for i in 0..len {
             // SAFETY: Reading byte from firmware image address range
             let byte = unsafe { *((addr + i) as *const u8) };
             let index = ((crc ^ byte as u32) & 0xFF) as usize;
             crc = (crc >> 8) ^ CRC32_TABLE[index];
         }
-        
+
         !crc
     }
 
@@ -274,7 +275,7 @@ impl SecureBoot {
         const POLY: u32 = 0xEDB88320;
         let mut table = [0u32; 256];
         let mut i = 0;
-        
+
         while i < 256 {
             let mut crc = i as u32;
             let mut j = 0;
@@ -289,7 +290,7 @@ impl SecureBoot {
             table[i] = crc;
             i += 1;
         }
-        
+
         table
     }
 
@@ -343,7 +344,7 @@ impl Default for SecureBoot {
 pub static SECURE_BOOT: SecureBoot = SecureBoot::new();
 
 /// REQ: SEC-010 - Quick verification function
-/// 
+///
 /// Convenience function for verifying boot image.
 pub fn verify_boot_image(image_addr: usize) -> bool {
     SECURE_BOOT.verify_image(image_addr).is_ok()
@@ -398,11 +399,11 @@ mod tests {
             hash: [0; 32],
             signature: [0; 64],
         };
-        
+
         assert!(header.is_valid());
         assert!(header.is_signed());
         assert!(header.is_encrypted());
-        
+
         header.flags = 0;
         assert!(!header.is_signed());
         assert!(!header.is_encrypted());

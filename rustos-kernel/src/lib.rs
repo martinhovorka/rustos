@@ -1,5 +1,5 @@
 //! REQ: KERN-001 - RustOS Kernel
-//! 
+//!
 //! A preemptive, priority-based real-time operating system kernel for RISC-V RV32IMAC.
 //!
 //! # Overview
@@ -8,7 +8,7 @@
 //! The kernel uses static memory allocation and provides guaranteed O(1) scheduling performance.
 //!
 //! # Core Features
-//! 
+//!
 //! - **Preemptive Multitasking** (REQ: SCHED-001): Round-robin scheduling within same priority
 //! - **Priority Scheduling** (REQ: SCHED-002): 256 priority levels (0 = highest, 255 = lowest)
 //! - **Task Management** (REQ: SCHED-005): Up to 16 concurrent tasks
@@ -24,7 +24,7 @@
 //! ```no_run
 //! #![no_std]
 //! #![no_main]
-//! 
+//!
 //! use rustos_kernel::{init, scheduler};
 //! use rustos_kernel::task::{Task, TaskPriority};
 //!
@@ -82,44 +82,44 @@
 #![deny(missing_docs)]
 #![deny(warnings)]
 
-pub mod task;
-pub mod scheduler;
+pub mod config; // REQ: CFG-001 - Configuration system
 pub mod context;
-pub mod sync;
-pub mod time;
 pub mod critical;
-pub mod power;      // REQ: PWR-001 - Power management
-pub mod panic;      // REQ: PAN-001 - Panic handler
-pub mod error;      // REQ: ERR-001 - Formal error handling
-pub mod log;        // REQ: LOG-001 - Logging infrastructure
-pub mod config;     // REQ: CFG-001 - Configuration system
+pub mod debug; // REQ: DBG-017, DBG-018, DBG-019 - Debug infrastructure
 pub mod diagnostics; // REQ: DIAG-001 - Runtime diagnostics
-pub mod stability;  // REQ: API-013 - API stability markers
-pub mod debug;      // REQ: DBG-017, DBG-018, DBG-019 - Debug infrastructure
-pub mod security;   // REQ: SEC-010 - Secure boot validation
+pub mod error; // REQ: ERR-001 - Formal error handling
+pub mod log; // REQ: LOG-001 - Logging infrastructure
+pub mod panic; // REQ: PAN-001 - Panic handler
+pub mod power; // REQ: PWR-001 - Power management
+pub mod scheduler;
+pub mod security;
+pub mod stability; // REQ: API-013 - API stability markers
+pub mod sync;
+pub mod task;
+pub mod time; // REQ: SEC-010 - Secure boot validation
 
-pub use task::{Task, TaskId, TaskPriority, TaskState};
-pub use scheduler::Scheduler;
-pub use sync::{Mutex, Semaphore, MessageQueue, EventFlags};
-pub use error::{KernelError, Result};
 pub use config::KernelConfig;
-pub use debug::{GdbStub, Semihosting, Profiler};
-pub use security::{SecureBoot, ImageHeader};
+pub use debug::{GdbStub, Profiler, Semihosting};
+pub use error::{KernelError, Result};
+pub use scheduler::Scheduler;
+pub use security::{ImageHeader, SecureBoot};
+pub use sync::{EventFlags, MessageQueue, Mutex, Semaphore};
+pub use task::{Task, TaskId, TaskPriority, TaskState};
 
 /// REQ: KERN-003 - Kernel initialization
-/// 
+///
 /// Initializes all kernel subsystems and data structures.
 /// Must be called once at system startup before any kernel services are used.
 ///
 /// # Safety
 ///
 /// REQ: API-016 - Safety requirements:
-/// 
+///
 /// - **Must be called exactly once** during system initialization
 /// - **Must be called with interrupts disabled** (mstatus.MIE = 0)
 /// - **Must be called from main thread** before creating any tasks
 /// - **No other kernel functions** may be called before init() completes
-/// 
+///
 /// Violating these requirements results in undefined behavior, including:
 /// - Race conditions on global data structures
 /// - Incorrect scheduler state
@@ -154,7 +154,7 @@ pub unsafe fn init() {
 }
 
 /// REQ: SCHED-010 - Start the scheduler
-/// 
+///
 /// Begins executing tasks. This function never returns.
 /// Transfers control to the highest-priority ready task.
 ///

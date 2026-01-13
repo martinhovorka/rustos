@@ -15,14 +15,38 @@ extern crate std;
 
 /// Mock interrupt counters (32 IRQs)
 static IRQ_COUNTERS: [AtomicU32; 32] = [
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
 ];
 
 /// Mock context switch counter
@@ -74,11 +98,11 @@ fn tick_idle() {
 fn get_cpu_utilization() -> u8 {
     let uptime = UPTIME_TICKS.load(Ordering::Relaxed);
     let idle = IDLE_TICKS.load(Ordering::Relaxed);
-    
+
     if uptime == 0 {
         return 0;
     }
-    
+
     let busy = uptime - idle;
     ((busy * 100) / uptime) as u8
 }
@@ -167,11 +191,9 @@ impl CpuStats {
         let uptime = UPTIME_TICKS.load(Ordering::Relaxed);
         let idle = IDLE_TICKS.load(Ordering::Relaxed);
         let context_switches = CONTEXT_SWITCH_COUNT.load(Ordering::Relaxed);
-        
-        let interrupt_count: u32 = IRQ_COUNTERS.iter()
-            .map(|c| c.load(Ordering::Relaxed))
-            .sum();
-        
+
+        let interrupt_count: u32 = IRQ_COUNTERS.iter().map(|c| c.load(Ordering::Relaxed)).sum();
+
         Self {
             uptime_ticks: uptime,
             idle_ticks: idle,
@@ -216,29 +238,35 @@ impl InterruptStats {
 fn test_irq_counter_basic() {
     // REQ: DIAG-004 - Query interrupt occurrence count
     reset_mock_state();
-    
+
     assert_test!(irq_get_count(7) == 0, "IRQ count should be 0 initially");
-    
+
     record_irq(7);
-    assert_test!(irq_get_count(7) == 1, "IRQ count should be 1 after one interrupt");
-    
+    assert_test!(
+        irq_get_count(7) == 1,
+        "IRQ count should be 1 after one interrupt"
+    );
+
     record_irq(7);
     record_irq(7);
-    assert_test!(irq_get_count(7) == 3, "IRQ count should be 3 after three interrupts");
+    assert_test!(
+        irq_get_count(7) == 3,
+        "IRQ count should be 3 after three interrupts"
+    );
 }
 
 #[test]
 fn test_irq_counter_multiple_irqs() {
     // Test multiple different IRQs
     reset_mock_state();
-    
-    record_irq(0);  // Timer
+
+    record_irq(0); // Timer
     record_irq(0);
-    record_irq(5);  // UART
+    record_irq(5); // UART
     record_irq(10); // SPI
     record_irq(10);
     record_irq(10);
-    
+
     assert_test!(irq_get_count(0) == 2, "Timer IRQ count should be 2");
     assert_test!(irq_get_count(5) == 1, "UART IRQ count should be 1");
     assert_test!(irq_get_count(10) == 3, "SPI IRQ count should be 3");
@@ -249,15 +277,15 @@ fn test_irq_counter_multiple_irqs() {
 fn test_irq_counter_boundary() {
     // Test IRQ number boundaries
     reset_mock_state();
-    
-    record_irq(0);   // First valid
-    record_irq(31);  // Last valid
-    
+
+    record_irq(0); // First valid
+    record_irq(31); // Last valid
+
     assert_test!(irq_get_count(0) == 1, "First IRQ should be counted");
     assert_test!(irq_get_count(31) == 1, "Last IRQ should be counted");
-    
+
     // Out of bounds should be ignored (not crash)
-    record_irq(32);  // Out of bounds
+    record_irq(32); // Out of bounds
     record_irq(255); // Way out of bounds
 }
 
@@ -265,65 +293,88 @@ fn test_irq_counter_boundary() {
 fn test_context_switch_counter() {
     // Test context switch counting
     reset_mock_state();
-    
-    assert_test!(get_context_switch_count() == 0, "Context switches should be 0 initially");
-    
+
+    assert_test!(
+        get_context_switch_count() == 0,
+        "Context switches should be 0 initially"
+    );
+
     record_context_switch();
-    assert_test!(get_context_switch_count() == 1, "Context switch count should be 1");
-    
+    assert_test!(
+        get_context_switch_count() == 1,
+        "Context switch count should be 1"
+    );
+
     for _ in 0..100 {
         record_context_switch();
     }
-    assert_test!(get_context_switch_count() == 101, "Context switch count should be 101");
+    assert_test!(
+        get_context_switch_count() == 101,
+        "Context switch count should be 101"
+    );
 }
 
 #[test]
 fn test_cpu_utilization() {
     // Test CPU utilization calculation
     // Note: This test uses shared static state, so we test the logic in isolation
-    
+
     // Test utility calculation function directly without touching global state
     fn calc_utilization(uptime: u64, idle: u64) -> u8 {
-        if uptime == 0 { return 0; }
+        if uptime == 0 {
+            return 0;
+        }
         let busy = uptime - idle;
         ((busy * 100) / uptime) as u8
     }
-    
+
     // No time passed = 0% utilization
-    assert_test!(calc_utilization(0, 0) == 0, "Utilization should be 0% with no time");
-    
+    assert_test!(
+        calc_utilization(0, 0) == 0,
+        "Utilization should be 0% with no time"
+    );
+
     // 100% busy (no idle)
-    assert_test!(calc_utilization(100, 0) == 100, "Utilization should be 100% when always busy");
-    
+    assert_test!(
+        calc_utilization(100, 0) == 100,
+        "Utilization should be 100% when always busy"
+    );
+
     // 50% busy (half idle)
     assert_test!(calc_utilization(100, 50) == 50, "Utilization should be 50%");
-    
+
     // 25% busy (75% idle)
     assert_test!(calc_utilization(100, 75) == 25, "Utilization should be 25%");
-    
+
     // 0% busy (all idle)
-    assert_test!(calc_utilization(100, 100) == 0, "Utilization should be 0% when all idle");
+    assert_test!(
+        calc_utilization(100, 100) == 0,
+        "Utilization should be 0% when all idle"
+    );
 }
 
 #[test]
 fn test_task_stats_basic() {
     // REQ: DIAG-001 - Per-task statistics
     let stats = TaskStats::new(TaskId(1), 2048);
-    
+
     assert_test!(stats.task_id == TaskId(1), "Task ID should match");
     assert_test!(stats.stack_size == 2048, "Stack size should be 2048");
     assert_test!(stats.cpu_time == 0, "CPU time should be 0 initially");
-    assert_test!(stats.schedule_count == 0, "Schedule count should be 0 initially");
+    assert_test!(
+        stats.schedule_count == 0,
+        "Schedule count should be 0 initially"
+    );
 }
 
 #[test]
 fn test_task_stats_scheduling() {
     // Test schedule tracking
     let mut stats = TaskStats::new(TaskId(1), 2048);
-    
+
     stats.record_schedule();
     assert_test!(stats.schedule_count == 1, "Schedule count should be 1");
-    
+
     for _ in 0..10 {
         stats.record_schedule();
     }
@@ -334,11 +385,11 @@ fn test_task_stats_scheduling() {
 fn test_task_stats_cpu_time() {
     // Test CPU time tracking
     let mut stats = TaskStats::new(TaskId(1), 2048);
-    
+
     stats.record_cpu_time(100);
     assert_test!(stats.cpu_time == 100, "CPU time should be 100");
     assert_test!(stats.last_run_time == 100, "Last run time should be 100");
-    
+
     stats.record_cpu_time(50);
     assert_test!(stats.cpu_time == 150, "CPU time should be 150 (cumulative)");
     assert_test!(stats.last_run_time == 50, "Last run time should be 50");
@@ -348,15 +399,15 @@ fn test_task_stats_cpu_time() {
 fn test_task_stats_stack_usage() {
     // REQ: DIAG-005 - Query task stack usage
     let mut stats = TaskStats::new(TaskId(1), 2048);
-    
+
     stats.update_stack_usage(500);
     assert_test!(stats.stack_used == 500, "Stack used should be 500");
     assert_test!(stats.stack_peak == 500, "Stack peak should be 500");
-    
+
     stats.update_stack_usage(800);
     assert_test!(stats.stack_used == 800, "Stack used should be 800");
     assert_test!(stats.stack_peak == 800, "Stack peak should be 800");
-    
+
     // Lower usage shouldn't lower peak
     stats.update_stack_usage(300);
     assert_test!(stats.stack_used == 300, "Stack used should be 300");
@@ -367,10 +418,10 @@ fn test_task_stats_stack_usage() {
 fn test_task_stats_preemption() {
     // Test preemption tracking
     let mut stats = TaskStats::new(TaskId(1), 2048);
-    
+
     stats.record_preemption();
     assert_test!(stats.preempt_count == 1, "Preempt count should be 1");
-    
+
     for _ in 0..5 {
         stats.record_preemption();
     }
@@ -381,7 +432,7 @@ fn test_task_stats_preemption() {
 fn test_cpu_stats_snapshot() {
     // REQ: DIAG-002 - System-wide CPU statistics
     reset_mock_state();
-    
+
     // Setup some activity
     for _ in 0..1000 {
         tick_uptime();
@@ -395,13 +446,16 @@ fn test_cpu_stats_snapshot() {
     record_irq(0);
     record_irq(5);
     record_irq(5);
-    
+
     let stats = CpuStats::snapshot();
-    
+
     assert_test!(stats.uptime_ticks == 1000, "Uptime should be 1000");
     assert_test!(stats.idle_ticks == 250, "Idle ticks should be 250");
     assert_test!(stats.utilization == 75, "Utilization should be 75%");
-    assert_test!(stats.context_switches == 50, "Context switches should be 50");
+    assert_test!(
+        stats.context_switches == 50,
+        "Context switches should be 50"
+    );
     assert_test!(stats.interrupt_count == 3, "Total interrupts should be 3");
 }
 
@@ -409,13 +463,13 @@ fn test_cpu_stats_snapshot() {
 fn test_interrupt_stats() {
     // REQ: DIAG-004 - Interrupt statistics
     reset_mock_state();
-    
+
     record_irq(7);
     record_irq(7);
     record_irq(7);
-    
+
     let stats = InterruptStats::new(7);
-    
+
     assert_test!(stats.irq_number == 7, "IRQ number should be 7");
     assert_test!(stats.count == 3, "Count should be 3");
 }
@@ -425,19 +479,25 @@ fn test_diagnostics_concurrent() {
     // REQ: DIAG-006 - Non-blocking from ISR context
     // Test that concurrent access to atomics doesn't cause issues
     // Uses local counters to avoid interference from parallel tests
-    
-    use std::thread;
-    use std::sync::Arc;
+
     use std::sync::atomic::AtomicU32;
-    
+    use std::sync::Arc;
+    use std::thread;
+
     // Use thread-local counters for this test
     let counters: Arc<[AtomicU32; 8]> = Arc::new([
-        AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-        AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+        AtomicU32::new(0),
+        AtomicU32::new(0),
+        AtomicU32::new(0),
+        AtomicU32::new(0),
+        AtomicU32::new(0),
+        AtomicU32::new(0),
+        AtomicU32::new(0),
+        AtomicU32::new(0),
     ]);
-    
+
     let mut handles = vec![];
-    
+
     // Simulate concurrent ISR and diagnostic queries
     for i in 0..10 {
         let irq_num = (i % 8) as usize;
@@ -445,19 +505,22 @@ fn test_diagnostics_concurrent() {
         handles.push(thread::spawn(move || {
             for _ in 0..100 {
                 counters_clone[irq_num].fetch_add(1, Ordering::SeqCst);
-                let _ = counters_clone[irq_num].load(Ordering::SeqCst);  // Query shouldn't block
+                let _ = counters_clone[irq_num].load(Ordering::SeqCst); // Query shouldn't block
             }
         }));
     }
-    
+
     for handle in handles {
         handle.join().unwrap();
     }
-    
+
     // All IRQs should have been counted - each thread does 100 iterations
     let total: u32 = counters.iter().map(|c| c.load(Ordering::SeqCst)).sum();
     // 10 threads, 100 iterations each = 1000 total
-    assert_test!(total == 1000, format!("Total IRQ count should be 1000, got {}", total));
+    assert_test!(
+        total == 1000,
+        format!("Total IRQ count should be 1000, got {}", total)
+    );
 }
 
 // ============================================================================
@@ -476,10 +539,10 @@ struct MemoryStats {
 impl MemoryStats {
     fn mock() -> Self {
         Self {
-            total_ram: 128 * 1024,  // 128KB
-            used_ram: 32 * 1024,    // 32KB used
-            free_ram: 96 * 1024,    // 96KB free
-            largest_free_block: 64 * 1024,  // Largest contiguous
+            total_ram: 128 * 1024,         // 128KB
+            used_ram: 32 * 1024,           // 32KB used
+            free_ram: 96 * 1024,           // 96KB free
+            largest_free_block: 64 * 1024, // Largest contiguous
         }
     }
 }
@@ -487,10 +550,14 @@ impl MemoryStats {
 #[test]
 fn test_memory_stats() {
     let stats = MemoryStats::mock();
-    
+
     assert_test!(stats.total_ram == 128 * 1024, "Total RAM should be 128KB");
-    assert_test!(stats.used_ram + stats.free_ram == stats.total_ram, 
-        "Used + Free should equal Total");
-    assert_test!(stats.largest_free_block <= stats.free_ram,
-        "Largest block should be <= free RAM");
+    assert_test!(
+        stats.used_ram + stats.free_ram == stats.total_ram,
+        "Used + Free should equal Total"
+    );
+    assert_test!(
+        stats.largest_free_block <= stats.free_ram,
+        "Largest block should be <= free RAM"
+    );
 }

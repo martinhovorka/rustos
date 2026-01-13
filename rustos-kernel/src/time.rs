@@ -1,5 +1,5 @@
 //! REQ: TIME-001 - Time Management
-//! 
+//!
 //! System tick, timers, and time tracking functionality.
 //!
 //! # Overview
@@ -87,13 +87,13 @@ pub(crate) fn init() {
 }
 
 /// REQ: SCHED-004, TIME-002 - Increment tick count (called from timer ISR)
-/// 
+///
 /// # Safety
 /// Must be called from timer interrupt handler
 // SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn tick() {
     let ticks = TICK_COUNT.fetch_add(1, Ordering::Relaxed);
-    
+
     // REQ: TIME-003 - Update uptime counter
     if (ticks & 0xFF) == 0 {
         // Update every 256 ticks to reduce atomic overhead
@@ -127,7 +127,7 @@ pub const fn ms_to_ticks(ms: u32) -> u32 {
 }
 
 /// REQ: TIME-009 - Delay for specified number of ticks
-/// 
+///
 /// Busy-wait delay. In a full RTOS implementation, this would
 /// block the task and reschedule.
 pub fn delay_ticks(ticks: u32) {
@@ -155,14 +155,14 @@ pub fn elapsed_since(start_time: u32) -> u32 {
 }
 
 /// REQ: TIME-009, TIME-010, SCHED-014 - Get ticks until next scheduled wake event
-/// 
+///
 /// Returns the number of ticks until the next timer or scheduled event.
 /// Used for tickless idle mode to suppress unnecessary ticks.
-/// 
+///
 /// Returns:
 /// - Some(ticks): Wake in `ticks` system ticks
 /// - None: No scheduled events, can sleep indefinitely
-/// 
+///
 /// Note: This is a simplified implementation that returns None (indefinite sleep).
 /// A full implementation would track all active software timers in a registry
 /// and return the minimum time until any timer expires.
@@ -175,7 +175,7 @@ pub fn get_next_wake_ticks() -> Option<u32> {
 }
 
 /// REQ: TIME-008 - Get elapsed ticks since a reference time
-/// 
+///
 /// Calculates the number of ticks that have elapsed since the given
 /// reference time, handling wrap-around correctly.
 #[inline]
@@ -246,7 +246,7 @@ impl Timer {
     }
 
     /// REQ: TIME-005 - Reset timer for periodic mode
-    /// 
+    ///
     /// Call this after is_expired() returns true for periodic timers.
     /// Returns true if timer was reset, false if not periodic/active.
     #[cfg(feature = "timers")]
@@ -314,13 +314,13 @@ impl CallbackTimer {
     }
 
     /// Check if timer has expired and invoke callback if set
-    /// 
+    ///
     /// Returns true if callback was invoked
     pub fn poll(&mut self) -> bool {
         if self.timer.is_expired() {
             if let Some(callback) = self.callback {
                 callback();
-                
+
                 if self.timer.is_periodic() {
                     self.timer.reset();
                 } else {

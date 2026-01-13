@@ -1,9 +1,9 @@
 //! REQ: PAC-051 - SPI Register Definitions
-//! 
+//!
 //! AXI Quad SPI register map based on PG153 - AXI Quad SPI Product Guide
 
-use core::ptr::{read_volatile, write_volatile};
 use core::cell::UnsafeCell;
+use core::ptr::{read_volatile, write_volatile};
 
 /// REQ: PAC-052 - SPI register block
 #[repr(C)]

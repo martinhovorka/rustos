@@ -10,7 +10,7 @@ use crate::assert_test;
 use core::marker::{Send, Sync};
 use core::option::Option::{self, None, Some};
 use core::result::Result::{self, Err, Ok};
-use std::sync::atomic::{AtomicU32, AtomicBool, AtomicI32, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicI32, AtomicU32, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
@@ -22,8 +22,8 @@ use std::vec::Vec;
 
 struct MockMutex {
     locked: AtomicBool,
-    owner: AtomicI32,  // -1 = no owner, otherwise thread/task ID
-    lock_count: AtomicU32,  // For recursive locks
+    owner: AtomicI32,      // -1 = no owner, otherwise thread/task ID
+    lock_count: AtomicU32, // For recursive locks
     contention_count: AtomicU32,
 }
 
@@ -44,12 +44,10 @@ impl MockMutex {
             return true;
         }
 
-        match self.locked.compare_exchange(
-            false,
-            true,
-            Ordering::SeqCst,
-            Ordering::SeqCst,
-        ) {
+        match self
+            .locked
+            .compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
+        {
             Ok(_) => {
                 self.owner.store(task_id, Ordering::SeqCst);
                 self.lock_count.store(1, Ordering::SeqCst);
@@ -64,7 +62,7 @@ impl MockMutex {
 
     fn unlock(&self, task_id: i32) -> bool {
         if self.owner.load(Ordering::SeqCst) != task_id {
-            return false;  // Not the owner
+            return false; // Not the owner
         }
 
         let count = self.lock_count.fetch_sub(1, Ordering::SeqCst);
@@ -98,12 +96,12 @@ unsafe impl Sync for MockMutex {}
 #[test]
 fn test_mutex_lock_unlock() {
     let mutex = MockMutex::new();
-    
+
     assert_test!(!mutex.is_locked(), "Mutex should be unlocked initially");
     assert_test!(mutex.try_lock(1), "Lock should succeed");
     assert_test!(mutex.is_locked(), "Mutex should be locked");
     assert_test!(mutex.get_owner() == 1, "Owner should be task 1");
-    
+
     assert_test!(mutex.unlock(1), "Unlock should succeed");
     assert_test!(!mutex.is_locked(), "Mutex should be unlocked");
 }
@@ -111,10 +109,10 @@ fn test_mutex_lock_unlock() {
 #[test]
 fn test_mutex_contention() {
     let mutex = MockMutex::new();
-    
+
     assert_test!(mutex.try_lock(1), "Task 1 should get lock");
     assert_test!(!mutex.try_lock(2), "Task 2 should fail to get lock");
-    
+
     mutex.unlock(1);
     assert_test!(mutex.try_lock(2), "Task 2 should get lock after release");
 }
@@ -122,7 +120,7 @@ fn test_mutex_contention() {
 #[test]
 fn test_mutex_wrong_owner_unlock() {
     let mutex = MockMutex::new();
-    
+
     mutex.try_lock(1);
     assert_test!(!mutex.unlock(2), "Task 2 should not be able to unlock");
     assert_test!(mutex.is_locked(), "Mutex should still be locked");
@@ -131,14 +129,17 @@ fn test_mutex_wrong_owner_unlock() {
 #[test]
 fn test_mutex_recursive() {
     let mutex = MockMutex::new();
-    
+
     assert_test!(mutex.try_lock(1), "First lock should succeed");
     assert_test!(mutex.try_lock(1), "Second lock (recursive) should succeed");
-    assert_test!(mutex.lock_count.load(Ordering::SeqCst) == 2, "Lock count should be 2");
-    
+    assert_test!(
+        mutex.lock_count.load(Ordering::SeqCst) == 2,
+        "Lock count should be 2"
+    );
+
     assert_test!(mutex.unlock(1), "First unlock should succeed");
     assert_test!(mutex.is_locked(), "Mutex should still be locked (count=1)");
-    
+
     assert_test!(mutex.unlock(1), "Second unlock should succeed");
     assert_test!(!mutex.is_locked(), "Mutex should be unlocked (count=0)");
 }
@@ -147,31 +148,36 @@ fn test_mutex_recursive() {
 fn test_mutex_multithread() {
     let mutex = Arc::new(MockMutex::new());
     let counter = Arc::new(AtomicU32::new(0));
-    
-    let handles: Vec<_> = (0..4).map(|id| {
-        let mutex = Arc::clone(&mutex);
-        let counter = Arc::clone(&counter);
-        
-        thread::spawn(move || {
-            for _ in 0..100 {
-                while !mutex.try_lock(id) {
-                    thread::yield_now();
+
+    let handles: Vec<_> = (0..4)
+        .map(|id| {
+            let mutex = Arc::clone(&mutex);
+            let counter = Arc::clone(&counter);
+
+            thread::spawn(move || {
+                for _ in 0..100 {
+                    while !mutex.try_lock(id) {
+                        thread::yield_now();
+                    }
+
+                    // Critical section
+                    let val = counter.load(Ordering::SeqCst);
+                    counter.store(val + 1, Ordering::SeqCst);
+
+                    mutex.unlock(id);
                 }
-                
-                // Critical section
-                let val = counter.load(Ordering::SeqCst);
-                counter.store(val + 1, Ordering::SeqCst);
-                
-                mutex.unlock(id);
-            }
+            })
         })
-    }).collect();
-    
+        .collect();
+
     for handle in handles {
         handle.join().unwrap();
     }
-    
-    assert_test!(counter.load(Ordering::SeqCst) == 400, "Counter should be 400");
+
+    assert_test!(
+        counter.load(Ordering::SeqCst) == 400,
+        "Counter should be 400"
+    );
 }
 
 // ============================================================================
@@ -199,7 +205,7 @@ impl MockSemaphore {
             if current <= 0 {
                 return false;
             }
-            
+
             match self.count.compare_exchange(
                 current,
                 current - 1,
@@ -207,7 +213,7 @@ impl MockSemaphore {
                 Ordering::SeqCst,
             ) {
                 Ok(_) => return true,
-                Err(_) => continue,  // Retry
+                Err(_) => continue, // Retry
             }
         }
     }
@@ -216,9 +222,9 @@ impl MockSemaphore {
         loop {
             let current = self.count.load(Ordering::SeqCst);
             if current >= self.max_count {
-                return false;  // Would exceed max
+                return false; // Would exceed max
             }
-            
+
             match self.count.compare_exchange(
                 current,
                 current + 1,
@@ -226,7 +232,7 @@ impl MockSemaphore {
                 Ordering::SeqCst,
             ) {
                 Ok(_) => return true,
-                Err(_) => continue,  // Retry
+                Err(_) => continue, // Retry
             }
         }
     }
@@ -242,30 +248,30 @@ unsafe impl Sync for MockSemaphore {}
 #[test]
 fn test_semaphore_counting() {
     let sem = MockSemaphore::new(3, 5);
-    
+
     assert_test!(sem.get_count() == 3, "Initial count should be 3");
-    
+
     assert_test!(sem.try_acquire(), "First acquire should succeed");
     assert_test!(sem.get_count() == 2, "Count should be 2");
-    
+
     assert_test!(sem.try_acquire(), "Second acquire should succeed");
     assert_test!(sem.get_count() == 1, "Count should be 1");
-    
+
     assert_test!(sem.try_acquire(), "Third acquire should succeed");
     assert_test!(sem.get_count() == 0, "Count should be 0");
-    
+
     assert_test!(!sem.try_acquire(), "Fourth acquire should fail");
 }
 
 #[test]
 fn test_semaphore_release() {
     let sem = MockSemaphore::new(0, 2);
-    
+
     assert_test!(!sem.try_acquire(), "Acquire should fail with count 0");
-    
+
     assert_test!(sem.release(), "Release should succeed");
     assert_test!(sem.get_count() == 1, "Count should be 1");
-    
+
     assert_test!(sem.try_acquire(), "Acquire should succeed");
     assert_test!(sem.get_count() == 0, "Count should be 0");
 }
@@ -273,33 +279,33 @@ fn test_semaphore_release() {
 #[test]
 fn test_semaphore_max() {
     let sem = MockSemaphore::new(2, 2);
-    
+
     assert_test!(!sem.release(), "Release should fail at max");
     assert_test!(sem.get_count() == 2, "Count should still be 2");
 }
 
 #[test]
 fn test_semaphore_binary() {
-    let sem = MockSemaphore::new(1, 1);  // Binary semaphore (like mutex)
-    
+    let sem = MockSemaphore::new(1, 1); // Binary semaphore (like mutex)
+
     assert_test!(sem.try_acquire(), "First acquire should succeed");
     assert_test!(!sem.try_acquire(), "Second acquire should fail");
-    
+
     sem.release();
     assert_test!(sem.try_acquire(), "Acquire after release should succeed");
 }
 
 #[test]
 fn test_semaphore_producer_consumer() {
-    let sem_empty = Arc::new(MockSemaphore::new(5, 5));  // 5 empty slots
-    let sem_full = Arc::new(MockSemaphore::new(0, 5));   // 0 full slots
+    let sem_empty = Arc::new(MockSemaphore::new(5, 5)); // 5 empty slots
+    let sem_full = Arc::new(MockSemaphore::new(0, 5)); // 0 full slots
     let produced = Arc::new(AtomicU32::new(0));
     let consumed = Arc::new(AtomicU32::new(0));
-    
+
     let sem_empty_prod = Arc::clone(&sem_empty);
     let sem_full_prod = Arc::clone(&sem_full);
     let produced_prod = Arc::clone(&produced);
-    
+
     // Producer
     let producer = thread::spawn(move || {
         for _ in 0..10 {
@@ -310,7 +316,7 @@ fn test_semaphore_producer_consumer() {
             sem_full_prod.release();
         }
     });
-    
+
     // Consumer
     let consumer = thread::spawn(move || {
         for _ in 0..10 {
@@ -321,11 +327,14 @@ fn test_semaphore_producer_consumer() {
             sem_empty.release();
         }
     });
-    
+
     producer.join().unwrap();
     consumer.join().unwrap();
-    
-    assert_test!(produced.load(Ordering::SeqCst) == 10, "Should produce 10 items");
+
+    assert_test!(
+        produced.load(Ordering::SeqCst) == 10,
+        "Should produce 10 items"
+    );
 }
 
 // ============================================================================
@@ -352,27 +361,28 @@ impl MockCondVar {
         if !mutex.unlock(task_id) {
             return false;
         }
-        
+
         self.waiters.fetch_add(1, Ordering::SeqCst);
-        
+
         // Wait for signal (simplified - real impl would block)
-        while self.signal_count.load(Ordering::SeqCst) == 0 
-              && self.broadcast_count.load(Ordering::SeqCst) == 0 {
+        while self.signal_count.load(Ordering::SeqCst) == 0
+            && self.broadcast_count.load(Ordering::SeqCst) == 0
+        {
             thread::yield_now();
         }
-        
+
         // Consume signal
         if self.signal_count.load(Ordering::SeqCst) > 0 {
             self.signal_count.fetch_sub(1, Ordering::SeqCst);
         }
-        
+
         self.waiters.fetch_sub(1, Ordering::SeqCst);
-        
+
         // Re-acquire mutex
         while !mutex.try_lock(task_id) {
             thread::yield_now();
         }
-        
+
         true
     }
 
@@ -405,34 +415,34 @@ fn test_condvar_signal() {
     let mutex = Arc::new(MockMutex::new());
     let condvar = Arc::new(MockCondVar::new());
     let data = Arc::new(AtomicU32::new(0));
-    
+
     let mutex_waiter = Arc::clone(&mutex);
     let condvar_waiter = Arc::clone(&condvar);
     let data_waiter = Arc::clone(&data);
-    
+
     let waiter = thread::spawn(move || {
         while !mutex_waiter.try_lock(1) {
             thread::yield_now();
         }
-        
+
         while data_waiter.load(Ordering::SeqCst) == 0 {
             condvar_waiter.wait(&mutex_waiter, 1);
         }
-        
+
         let val = data_waiter.load(Ordering::SeqCst);
         mutex_waiter.unlock(1);
         val
     });
-    
+
     thread::sleep(Duration::from_millis(10));
-    
+
     while !mutex.try_lock(2) {
         thread::yield_now();
     }
     data.store(42, Ordering::SeqCst);
     mutex.unlock(2);
     condvar.signal();
-    
+
     let result = waiter.join().unwrap();
     assert_test!(result == 42, "Waiter should receive 42");
 }
@@ -458,14 +468,14 @@ impl MockBarrier {
 
     fn wait(&self) -> bool {
         let gen = self.generation.load(Ordering::SeqCst);
-        
+
         let arrived = self.count.fetch_add(1, Ordering::SeqCst) + 1;
-        
+
         if arrived == self.threshold {
             // Last one - release all
             self.count.store(0, Ordering::SeqCst);
             self.generation.fetch_add(1, Ordering::SeqCst);
-            true  // Leader
+            true // Leader
         } else {
             // Wait for others
             while self.generation.load(Ordering::SeqCst) == gen {
@@ -483,22 +493,24 @@ unsafe impl Sync for MockBarrier {}
 fn test_barrier() {
     let barrier = Arc::new(MockBarrier::new(4));
     let counter = Arc::new(AtomicU32::new(0));
-    
-    let handles: Vec<_> = (0..4).map(|_| {
-        let barrier = Arc::clone(&barrier);
-        let counter = Arc::clone(&counter);
-        
-        thread::spawn(move || {
-            // Phase 1
-            counter.fetch_add(1, Ordering::SeqCst);
-            barrier.wait();
-            
-            // All threads should have incremented by now
-            let val = counter.load(Ordering::SeqCst);
-            assert!(val >= 4, "All threads should have reached barrier");
+
+    let handles: Vec<_> = (0..4)
+        .map(|_| {
+            let barrier = Arc::clone(&barrier);
+            let counter = Arc::clone(&counter);
+
+            thread::spawn(move || {
+                // Phase 1
+                counter.fetch_add(1, Ordering::SeqCst);
+                barrier.wait();
+
+                // All threads should have incremented by now
+                let val = counter.load(Ordering::SeqCst);
+                assert!(val >= 4, "All threads should have reached barrier");
+            })
         })
-    }).collect();
-    
+        .collect();
+
     for handle in handles {
         handle.join().unwrap();
     }
@@ -522,24 +534,20 @@ impl MockSpinlock {
     }
 
     fn lock(&self) {
-        while self.locked.compare_exchange_weak(
-            false,
-            true,
-            Ordering::Acquire,
-            Ordering::Relaxed,
-        ).is_err() {
+        while self
+            .locked
+            .compare_exchange_weak(false, true, Ordering::Acquire, Ordering::Relaxed)
+            .is_err()
+        {
             self.spin_count.fetch_add(1, Ordering::Relaxed);
             core::hint::spin_loop();
         }
     }
 
     fn try_lock(&self) -> bool {
-        self.locked.compare_exchange(
-            false,
-            true,
-            Ordering::Acquire,
-            Ordering::Relaxed,
-        ).is_ok()
+        self.locked
+            .compare_exchange(false, true, Ordering::Acquire, Ordering::Relaxed)
+            .is_ok()
     }
 
     fn unlock(&self) {
@@ -557,12 +565,12 @@ unsafe impl Sync for MockSpinlock {}
 #[test]
 fn test_spinlock_lock_unlock() {
     let lock = MockSpinlock::new();
-    
+
     assert_test!(!lock.is_locked(), "Should be unlocked initially");
-    
+
     lock.lock();
     assert_test!(lock.is_locked(), "Should be locked");
-    
+
     lock.unlock();
     assert_test!(!lock.is_locked(), "Should be unlocked");
 }
@@ -570,10 +578,10 @@ fn test_spinlock_lock_unlock() {
 #[test]
 fn test_spinlock_try_lock() {
     let lock = MockSpinlock::new();
-    
+
     assert_test!(lock.try_lock(), "Try lock should succeed");
     assert_test!(!lock.try_lock(), "Second try lock should fail");
-    
+
     lock.unlock();
     assert_test!(lock.try_lock(), "Try lock should succeed after unlock");
 }
@@ -582,26 +590,31 @@ fn test_spinlock_try_lock() {
 fn test_spinlock_multithread() {
     let lock = Arc::new(MockSpinlock::new());
     let counter = Arc::new(AtomicU32::new(0));
-    
-    let handles: Vec<_> = (0..4).map(|_| {
-        let lock = Arc::clone(&lock);
-        let counter = Arc::clone(&counter);
-        
-        thread::spawn(move || {
-            for _ in 0..1000 {
-                lock.lock();
-                let val = counter.load(Ordering::SeqCst);
-                counter.store(val + 1, Ordering::SeqCst);
-                lock.unlock();
-            }
+
+    let handles: Vec<_> = (0..4)
+        .map(|_| {
+            let lock = Arc::clone(&lock);
+            let counter = Arc::clone(&counter);
+
+            thread::spawn(move || {
+                for _ in 0..1000 {
+                    lock.lock();
+                    let val = counter.load(Ordering::SeqCst);
+                    counter.store(val + 1, Ordering::SeqCst);
+                    lock.unlock();
+                }
+            })
         })
-    }).collect();
-    
+        .collect();
+
     for handle in handles {
         handle.join().unwrap();
     }
-    
-    assert_test!(counter.load(Ordering::SeqCst) == 4000, "Counter should be 4000");
+
+    assert_test!(
+        counter.load(Ordering::SeqCst) == 4000,
+        "Counter should be 4000"
+    );
 }
 
 // ============================================================================
@@ -626,18 +639,17 @@ impl MockRwLock {
     fn read_lock(&self) {
         loop {
             // Wait for no writer and no waiting writer
-            while self.writer.load(Ordering::SeqCst) 
-                  || self.writer_waiting.load(Ordering::SeqCst) {
+            while self.writer.load(Ordering::SeqCst) || self.writer_waiting.load(Ordering::SeqCst) {
                 thread::yield_now();
             }
-            
+
             self.readers.fetch_add(1, Ordering::SeqCst);
-            
+
             // Double-check no writer acquired
             if !self.writer.load(Ordering::SeqCst) {
                 return;
             }
-            
+
             // Writer got in, back off
             self.readers.fetch_sub(1, Ordering::SeqCst);
         }
@@ -649,22 +661,21 @@ impl MockRwLock {
 
     fn write_lock(&self) {
         self.writer_waiting.store(true, Ordering::SeqCst);
-        
+
         // Wait for no other writers
-        while self.writer.compare_exchange(
-            false,
-            true,
-            Ordering::SeqCst,
-            Ordering::SeqCst,
-        ).is_err() {
+        while self
+            .writer
+            .compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
+            .is_err()
+        {
             thread::yield_now();
         }
-        
+
         // Wait for all readers to finish
         while self.readers.load(Ordering::SeqCst) > 0 {
             thread::yield_now();
         }
-        
+
         self.writer_waiting.store(false, Ordering::SeqCst);
     }
 
@@ -680,21 +691,23 @@ unsafe impl Sync for MockRwLock {}
 fn test_rwlock_read() {
     let lock = Arc::new(MockRwLock::new());
     let data = Arc::new(AtomicU32::new(42));
-    
+
     // Multiple readers can read simultaneously
-    let handles: Vec<_> = (0..4).map(|_| {
-        let lock = Arc::clone(&lock);
-        let data = Arc::clone(&data);
-        
-        thread::spawn(move || {
-            lock.read_lock();
-            let val = data.load(Ordering::SeqCst);
-            thread::sleep(Duration::from_millis(1));
-            lock.read_unlock();
-            val
+    let handles: Vec<_> = (0..4)
+        .map(|_| {
+            let lock = Arc::clone(&lock);
+            let data = Arc::clone(&data);
+
+            thread::spawn(move || {
+                lock.read_lock();
+                let val = data.load(Ordering::SeqCst);
+                thread::sleep(Duration::from_millis(1));
+                lock.read_unlock();
+                val
+            })
         })
-    }).collect();
-    
+        .collect();
+
     for handle in handles {
         let val = handle.join().unwrap();
         assert_test!(val == 42, "All readers should see 42");
@@ -705,23 +718,25 @@ fn test_rwlock_read() {
 fn test_rwlock_write() {
     let lock = Arc::new(MockRwLock::new());
     let data = Arc::new(AtomicU32::new(0));
-    
+
     // Writers are exclusive
-    let handles: Vec<_> = (0..4).map(|_| {
-        let lock = Arc::clone(&lock);
-        let data = Arc::clone(&data);
-        
-        thread::spawn(move || {
-            lock.write_lock();
-            let val = data.load(Ordering::SeqCst);
-            data.store(val + 1, Ordering::SeqCst);
-            lock.write_unlock();
+    let handles: Vec<_> = (0..4)
+        .map(|_| {
+            let lock = Arc::clone(&lock);
+            let data = Arc::clone(&data);
+
+            thread::spawn(move || {
+                lock.write_lock();
+                let val = data.load(Ordering::SeqCst);
+                data.store(val + 1, Ordering::SeqCst);
+                lock.write_unlock();
+            })
         })
-    }).collect();
-    
+        .collect();
+
     for handle in handles {
         handle.join().unwrap();
     }
-    
+
     assert_test!(data.load(Ordering::SeqCst) == 4, "Data should be 4");
 }

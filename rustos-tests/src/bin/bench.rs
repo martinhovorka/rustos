@@ -1,15 +1,15 @@
 //! Performance Benchmark Runner
 //!
 //! This binary runs comprehensive performance benchmarks for RustOS kernel.
-//! 
+//!
 //! Usage:
 //!   cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench
 //!   cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench -- --iterations 1000
 //!   cargo run --target x86_64-unknown-linux-gnu --bin bench --features bench -- --regression baseline.json
 
+use core::sync::atomic::Ordering;
 use rustos_tests::benchmark::*;
 use rustos_tests::mock::MOCK_CSR;
-use core::sync::atomic::Ordering;
 
 fn main() {
     println!("{}", "=".repeat(100));
@@ -24,8 +24,10 @@ fn main() {
     let iterations = 1000;
 
     // Header
-    println!("{:<30} | {:>6} | {:>8} | {:>8} | {:>8} | {:>8}", 
-             "Benchmark", "Iter", "Avg", "Min", "Max", "StdDev");
+    println!(
+        "{:<30} | {:>6} | {:>8} | {:>8} | {:>8} | {:>8}",
+        "Benchmark", "Iter", "Avg", "Min", "Max", "StdDev"
+    );
     println!("{}", "-".repeat(100));
 
     // REQ: PERFTEST-001 - Context switch latency
@@ -55,8 +57,10 @@ fn main() {
     // REQ: PERFTEST-004 - Code size measurement
     println!("Code Size Metrics (REQ: PERFTEST-004)");
     println!("{}", "-".repeat(100));
-    
-    if let Ok(metrics) = code_size::measure_binary_size("target/riscv32imac-unknown-none-elf/release/rustos-app") {
+
+    if let Ok(metrics) =
+        code_size::measure_binary_size("target/riscv32imac-unknown-none-elf/release/rustos-app")
+    {
         println!("{}", metrics.display());
     }
 
@@ -104,7 +108,11 @@ fn main() {
     } else {
         println!("⚠️  Performance regressions detected!");
         let failed_count = regression_results.iter().filter(|r| !r.passed).count();
-        println!("   {} of {} metrics exceeded regression threshold", failed_count, regression_results.len());
+        println!(
+            "   {} of {} metrics exceeded regression threshold",
+            failed_count,
+            regression_results.len()
+        );
     }
 
     println!();

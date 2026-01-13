@@ -1,5 +1,5 @@
 //! REQ: MQ-009 - Priority Queue Implementation
-//! 
+//!
 //! A priority-based message queue where messages are ordered by priority.
 //! Higher priority messages (lower numeric value) are dequeued first.
 //!
@@ -92,12 +92,12 @@ impl<T: Copy, const N: usize> PriorityQueueStorage<T, N> {
         }
 
         let msg = self.items[0].take();
-        
+
         // Shift remaining elements forward
         for i in 0..self.count - 1 {
             self.items[i] = self.items[i + 1].take();
         }
-        
+
         self.count -= 1;
         msg
     }
@@ -121,7 +121,7 @@ impl<T: Copy, const N: usize> PriorityQueueStorage<T, N> {
 }
 
 /// REQ: MQ-009 - Priority-based message queue
-/// 
+///
 /// Messages are ordered by priority, with lower numeric values having
 /// higher priority. When receiving, the highest priority message is
 /// returned first.
@@ -145,19 +145,15 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
     }
 
     /// REQ: MQ-009 - Send a message with specified priority
-    /// 
+    ///
     /// Messages with lower priority values are dequeued first.
     /// Returns the message if queue is full.
     pub fn send(&self, data: T, priority: Priority) -> Result<(), T> {
         let _cs = CriticalSection::new();
-        
+
         let msg = PriorityMessage::new(data, priority);
         // SAFETY: Access protected by critical section - no concurrent modification.
-        unsafe {
-            (*self.storage.get())
-                .insert(msg)
-                .map_err(|m| m.data)
-        }
+        unsafe { (*self.storage.get()).insert(msg).map_err(|m| m.data) }
     }
 
     /// REQ: MQ-009 - Send with default priority (middle = 128)
@@ -166,55 +162,39 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
     }
 
     /// REQ: MQ-009 - Receive highest priority message
-    /// 
+    ///
     /// Returns the message with the lowest priority number (highest priority).
     pub fn receive(&self) -> Option<T> {
         let _cs = CriticalSection::new();
-        
+
         // SAFETY: Access protected by critical section - no concurrent modification.
-        unsafe {
-            (*self.storage.get())
-                .remove()
-                .map(|m| m.data)
-        }
+        unsafe { (*self.storage.get()).remove().map(|m| m.data) }
     }
 
     /// REQ: MQ-009 - Receive with priority info
-    /// 
+    ///
     /// Returns both the message and its priority.
     pub fn receive_with_priority(&self) -> Option<(T, Priority)> {
         let _cs = CriticalSection::new();
-        
+
         // SAFETY: Access protected by critical section - no concurrent modification.
-        unsafe {
-            (*self.storage.get())
-                .remove()
-                .map(|m| (m.data, m.priority))
-        }
+        unsafe { (*self.storage.get()).remove().map(|m| (m.data, m.priority)) }
     }
 
     /// REQ: MQ-009 - Peek at highest priority message
     pub fn peek(&self) -> Option<T> {
         let _cs = CriticalSection::new();
-        
+
         // SAFETY: Access protected by critical section.
-        unsafe {
-            (*self.storage.get())
-                .peek()
-                .map(|m| m.data)
-        }
+        unsafe { (*self.storage.get()).peek().map(|m| m.data) }
     }
 
     /// REQ: MQ-009 - Peek with priority info
     pub fn peek_with_priority(&self) -> Option<(T, Priority)> {
         let _cs = CriticalSection::new();
-        
+
         // SAFETY: Access protected by critical section.
-        unsafe {
-            (*self.storage.get())
-                .peek()
-                .map(|m| (m.data, m.priority))
-        }
+        unsafe { (*self.storage.get()).peek().map(|m| (m.data, m.priority)) }
     }
 
     /// Check if queue is empty
@@ -246,7 +226,7 @@ impl<T: Copy, const N: usize> PriorityQueue<T, N> {
     /// Clear all messages from queue
     pub fn clear(&self) {
         let _cs = CriticalSection::new();
-        
+
         // SAFETY: Access protected by critical section - no concurrent modification.
         unsafe {
             let storage = &mut *self.storage.get();
@@ -280,13 +260,13 @@ mod tests {
     #[test]
     fn test_priority_queue_send_receive() {
         let queue: PriorityQueue<u32, 8> = PriorityQueue::new();
-        
+
         assert!(queue.send(100, 5).is_ok());
         assert!(queue.send(200, 1).is_ok());
         assert!(queue.send(300, 3).is_ok());
-        
+
         assert_eq!(queue.len(), 3);
-        
+
         // Should receive in priority order: 200, 300, 100
         assert_eq!(queue.receive(), Some(200));
         assert_eq!(queue.receive(), Some(300));
@@ -297,14 +277,14 @@ mod tests {
     #[test]
     fn test_priority_queue_peek() {
         let queue: PriorityQueue<u32, 8> = PriorityQueue::new();
-        
+
         queue.send(100, 5).ok();
         queue.send(200, 1).ok();
-        
+
         // Peek should return highest priority without removing
         assert_eq!(queue.peek(), Some(200));
         assert_eq!(queue.len(), 2);
-        
+
         // Peek with priority
         assert_eq!(queue.peek_with_priority(), Some((200, 1)));
     }
@@ -312,14 +292,14 @@ mod tests {
     #[test]
     fn test_priority_queue_full() {
         let queue: PriorityQueue<u32, 4> = PriorityQueue::new();
-        
+
         assert!(queue.send(1, 1).is_ok());
         assert!(queue.send(2, 2).is_ok());
         assert!(queue.send(3, 3).is_ok());
         assert!(queue.send(4, 4).is_ok());
-        
+
         assert!(queue.is_full());
-        
+
         // Should fail when full
         assert!(queue.send(5, 5).is_err());
     }
@@ -327,12 +307,12 @@ mod tests {
     #[test]
     fn test_priority_queue_clear() {
         let queue: PriorityQueue<u32, 8> = PriorityQueue::new();
-        
+
         queue.send(100, 1).ok();
         queue.send(200, 2).ok();
-        
+
         queue.clear();
-        
+
         assert!(queue.is_empty());
         assert_eq!(queue.len(), 0);
     }
@@ -340,12 +320,12 @@ mod tests {
     #[test]
     fn test_priority_queue_same_priority() {
         let queue: PriorityQueue<u32, 8> = PriorityQueue::new();
-        
+
         // Same priority - should maintain FIFO order
         queue.send(100, 5).ok();
         queue.send(200, 5).ok();
         queue.send(300, 5).ok();
-        
+
         assert_eq!(queue.receive(), Some(100));
         assert_eq!(queue.receive(), Some(200));
         assert_eq!(queue.receive(), Some(300));

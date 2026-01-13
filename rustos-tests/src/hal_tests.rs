@@ -9,17 +9,29 @@ extern crate std;
 use crate::assert_test;
 use core::option::Option::{self, None, Some};
 use core::result::Result::{self, Err, Ok};
-use std::sync::atomic::{AtomicU32, AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 
 // ============================================================================
 // Mock UART Driver
 // ============================================================================
 
 static UART_TX_BUFFER: [AtomicU32; 16] = [
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
-    AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0), AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
+    AtomicU32::new(0),
 ];
 static UART_TX_HEAD: AtomicU32 = AtomicU32::new(0);
 static UART_TX_TAIL: AtomicU32 = AtomicU32::new(0);
@@ -61,7 +73,7 @@ impl MockUart {
         let tail = UART_TX_TAIL.load(Ordering::SeqCst) as usize;
         let head = UART_TX_HEAD.load(Ordering::SeqCst) as usize;
         if tail == head {
-            return None;  // Empty
+            return None; // Empty
         }
         let byte = UART_TX_BUFFER[tail].load(Ordering::SeqCst) as u8;
         UART_TX_TAIL.store(((tail + 1) % 16) as u32, Ordering::SeqCst);
@@ -83,11 +95,14 @@ impl MockUart {
 #[test]
 fn test_uart_init() {
     MockUart::reset();
-    
+
     assert_test!(MockUart::init(115200).is_ok(), "UART init should succeed");
-    assert_test!(UART_BAUD_RATE.load(Ordering::SeqCst) == 115200, "Baud rate should be set");
+    assert_test!(
+        UART_BAUD_RATE.load(Ordering::SeqCst) == 115200,
+        "Baud rate should be set"
+    );
     assert_test!(MockUart::init(9600).is_err(), "Double init should fail");
-    
+
     MockUart::reset();
 }
 
@@ -95,11 +110,11 @@ fn test_uart_init() {
 fn test_uart_write() {
     MockUart::reset();
     MockUart::init(115200).unwrap();
-    
+
     assert_test!(MockUart::write_byte(b'H').is_ok(), "Write should succeed");
     assert_test!(MockUart::write_byte(b'i').is_ok(), "Write should succeed");
     assert_test!(!MockUart::is_tx_empty(), "TX buffer should not be empty");
-    
+
     MockUart::reset();
 }
 
@@ -107,23 +122,29 @@ fn test_uart_write() {
 fn test_uart_read() {
     MockUart::reset();
     MockUart::init(115200).unwrap();
-    
+
     MockUart::write_byte(b'A').unwrap();
     MockUart::write_byte(b'B').unwrap();
-    
+
     assert_test!(MockUart::read_byte() == Some(b'A'), "Should read 'A'");
     assert_test!(MockUart::read_byte() == Some(b'B'), "Should read 'B'");
     assert_test!(MockUart::read_byte().is_none(), "Should be empty");
-    
+
     MockUart::reset();
 }
 
 #[test]
 fn test_uart_not_initialized() {
     MockUart::reset();
-    
-    assert_test!(MockUart::write_byte(b'X').is_err(), "Write should fail if not initialized");
-    assert_test!(MockUart::read_byte().is_none(), "Read should return None if not initialized");
+
+    assert_test!(
+        MockUart::write_byte(b'X').is_err(),
+        "Write should fail if not initialized"
+    );
+    assert_test!(
+        MockUart::read_byte().is_none(),
+        "Read should return None if not initialized"
+    );
 }
 
 // ============================================================================
@@ -132,7 +153,7 @@ fn test_uart_not_initialized() {
 
 static GPIO_OUTPUT: AtomicU32 = AtomicU32::new(0);
 static GPIO_INPUT: AtomicU32 = AtomicU32::new(0);
-static GPIO_DIRECTION: AtomicU32 = AtomicU32::new(0);  // 1 = output
+static GPIO_DIRECTION: AtomicU32 = AtomicU32::new(0); // 1 = output
 static GPIO_INTERRUPT_ENABLE: AtomicU32 = AtomicU32::new(0);
 static GPIO_INTERRUPT_PENDING: AtomicU32 = AtomicU32::new(0);
 
@@ -160,7 +181,7 @@ impl MockGpio {
     fn read_pin(pin: u8) -> bool {
         let dir = GPIO_DIRECTION.load(Ordering::SeqCst);
         let mask = 1u32 << pin;
-        
+
         if dir & mask != 0 {
             // Output pin - read output value
             (GPIO_OUTPUT.load(Ordering::SeqCst) & mask) != 0
@@ -220,10 +241,10 @@ impl MockGpio {
 #[test]
 fn test_gpio_direction() {
     MockGpio::reset();
-    
-    MockGpio::set_direction(0, true);  // Output
+
+    MockGpio::set_direction(0, true); // Output
     MockGpio::set_direction(1, false); // Input
-    
+
     let dir = GPIO_DIRECTION.load(Ordering::SeqCst);
     assert_test!((dir & 0x01) != 0, "Pin 0 should be output");
     assert_test!((dir & 0x02) == 0, "Pin 1 should be input");
@@ -232,11 +253,11 @@ fn test_gpio_direction() {
 #[test]
 fn test_gpio_write() {
     MockGpio::reset();
-    
+
     MockGpio::set_direction(0, true);
     MockGpio::write_pin(0, true);
     assert_test!(MockGpio::read_pin(0), "Pin 0 should be high");
-    
+
     MockGpio::write_pin(0, false);
     assert_test!(!MockGpio::read_pin(0), "Pin 0 should be low");
 }
@@ -244,26 +265,29 @@ fn test_gpio_write() {
 #[test]
 fn test_gpio_toggle() {
     MockGpio::reset();
-    
+
     MockGpio::set_direction(0, true);
     MockGpio::write_pin(0, false);
-    
+
     MockGpio::toggle_pin(0);
     assert_test!(MockGpio::read_pin(0), "Pin 0 should be high after toggle");
-    
+
     MockGpio::toggle_pin(0);
-    assert_test!(!MockGpio::read_pin(0), "Pin 0 should be low after second toggle");
+    assert_test!(
+        !MockGpio::read_pin(0),
+        "Pin 0 should be low after second toggle"
+    );
 }
 
 #[test]
 fn test_gpio_input() {
     MockGpio::reset();
-    
-    MockGpio::set_direction(0, false);  // Input
-    
+
+    MockGpio::set_direction(0, false); // Input
+
     MockGpio::simulate_input(0, true);
     assert_test!(MockGpio::read_pin(0), "Should read simulated high input");
-    
+
     MockGpio::simulate_input(0, false);
     assert_test!(!MockGpio::read_pin(0), "Should read simulated low input");
 }
@@ -271,17 +295,26 @@ fn test_gpio_input() {
 #[test]
 fn test_gpio_interrupt() {
     MockGpio::reset();
-    
-    MockGpio::set_direction(0, false);  // Input
+
+    MockGpio::set_direction(0, false); // Input
     MockGpio::enable_interrupt(0);
-    
-    assert_test!(!MockGpio::is_interrupt_pending(0), "No interrupt pending initially");
-    
-    MockGpio::simulate_input(0, true);  // Rising edge
-    assert_test!(MockGpio::is_interrupt_pending(0), "Interrupt should be pending");
-    
+
+    assert_test!(
+        !MockGpio::is_interrupt_pending(0),
+        "No interrupt pending initially"
+    );
+
+    MockGpio::simulate_input(0, true); // Rising edge
+    assert_test!(
+        MockGpio::is_interrupt_pending(0),
+        "Interrupt should be pending"
+    );
+
     MockGpio::clear_interrupt(0);
-    assert_test!(!MockGpio::is_interrupt_pending(0), "Interrupt should be cleared");
+    assert_test!(
+        !MockGpio::is_interrupt_pending(0),
+        "Interrupt should be cleared"
+    );
 }
 
 // ============================================================================
@@ -317,7 +350,7 @@ impl MockTimer {
         if !TIMER_RUNNING.load(Ordering::SeqCst) {
             return;
         }
-        
+
         let count = TIMER_COUNT.load(Ordering::SeqCst);
         if count <= 1 {
             // Decrement to 0 (or already 0) and fire
@@ -354,12 +387,18 @@ impl MockTimer {
 #[test]
 fn test_timer_configure() {
     MockTimer::reset();
-    
+
     MockTimer::configure(1000, 8);
-    
-    assert_test!(TIMER_RELOAD.load(Ordering::SeqCst) == 1000, "Reload should be 1000");
+
+    assert_test!(
+        TIMER_RELOAD.load(Ordering::SeqCst) == 1000,
+        "Reload should be 1000"
+    );
     assert_test!(MockTimer::get_count() == 1000, "Count should be 1000");
-    assert_test!(TIMER_PRESCALER.load(Ordering::SeqCst) == 8, "Prescaler should be 8");
+    assert_test!(
+        TIMER_PRESCALER.load(Ordering::SeqCst) == 8,
+        "Prescaler should be 8"
+    );
 }
 
 #[test]
@@ -367,20 +406,23 @@ fn test_timer_countdown() {
     MockTimer::reset();
     MockTimer::configure(5, 1);
     MockTimer::start();
-    
+
     // 5 ticks: 5->4->3->2->1->expired
     MockTimer::tick(); // 4
-    assert_test!(MockTimer::get_count() == 4, format!("Count should be 4, got {}", MockTimer::get_count()));
+    assert_test!(
+        MockTimer::get_count() == 4,
+        format!("Count should be 4, got {}", MockTimer::get_count())
+    );
     MockTimer::tick(); // 3
     MockTimer::tick(); // 2
     MockTimer::tick(); // 1 -> expired on this tick, reloads to 5
-    
+
     // After the 4th tick from count 5, we should expire when reaching 1
     // Actually the tick() when count=1 will expire and reload
     // So 5->4->3->2->1->expired+reload
     // Let's tick once more to ensure expiry
     MockTimer::tick(); // Was 1, now expired + reloaded
-    
+
     assert_test!(MockTimer::is_expired(), "Timer should be expired");
 }
 
@@ -389,22 +431,28 @@ fn test_timer_auto_reload() {
     MockTimer::reset();
     MockTimer::configure(3, 1);
     MockTimer::start();
-    
+
     // Count down: 3->2->1->expired+reload to 3
     MockTimer::tick(); // 3->2
-    assert_test!(MockTimer::get_count() == 2, "Count should be 2 after first tick");
-    
+    assert_test!(
+        MockTimer::get_count() == 2,
+        "Count should be 2 after first tick"
+    );
+
     MockTimer::tick(); // 2->1
-    assert_test!(MockTimer::get_count() == 1, "Count should be 1 after second tick");
+    assert_test!(
+        MockTimer::get_count() == 1,
+        "Count should be 1 after second tick"
+    );
     assert_test!(!MockTimer::is_expired(), "Should not be expired yet");
-    
+
     MockTimer::tick(); // 1->expired+reload to 3
     assert_test!(MockTimer::is_expired(), "Should be expired");
     assert_test!(MockTimer::get_count() == 3, "Should have reloaded to 3");
-    
+
     MockTimer::clear_expired();
     MockTimer::tick(); // 3->2
-    
+
     assert_test!(MockTimer::get_count() == 2, "Should have counted down to 2");
 }
 
@@ -413,15 +461,18 @@ fn test_timer_stop() {
     MockTimer::reset();
     MockTimer::configure(10, 1);
     MockTimer::start();
-    
+
     MockTimer::tick();
     MockTimer::tick();
     assert_test!(MockTimer::get_count() == 8, "Count should be 8");
-    
+
     MockTimer::stop();
     MockTimer::tick();
     MockTimer::tick();
-    assert_test!(MockTimer::get_count() == 8, "Count should still be 8 (stopped)");
+    assert_test!(
+        MockTimer::get_count() == 8,
+        "Count should still be 8 (stopped)"
+    );
 }
 
 // ============================================================================
@@ -432,7 +483,7 @@ static SPI_TX_DATA: AtomicU32 = AtomicU32::new(0);
 static SPI_RX_DATA: AtomicU32 = AtomicU32::new(0);
 static SPI_BUSY: AtomicBool = AtomicBool::new(false);
 static SPI_CS_ACTIVE: AtomicBool = AtomicBool::new(false);
-static SPI_MODE: AtomicU32 = AtomicU32::new(0);  // CPOL/CPHA
+static SPI_MODE: AtomicU32 = AtomicU32::new(0); // CPOL/CPHA
 
 struct MockSpi;
 
@@ -452,10 +503,10 @@ impl MockSpi {
     fn transfer(tx: u8) -> u8 {
         SPI_BUSY.store(true, Ordering::SeqCst);
         SPI_TX_DATA.store(tx as u32, Ordering::SeqCst);
-        
+
         // Simulate transfer (in real hardware, this would shift data)
         let rx = SPI_RX_DATA.load(Ordering::SeqCst) as u8;
-        
+
         SPI_BUSY.store(false, Ordering::SeqCst);
         rx
     }
@@ -480,36 +531,45 @@ impl MockSpi {
 #[test]
 fn test_spi_configure() {
     MockSpi::reset();
-    MockSpi::configure(3);  // Mode 3 (CPOL=1, CPHA=1)
-    
+    MockSpi::configure(3); // Mode 3 (CPOL=1, CPHA=1)
+
     assert_test!(SPI_MODE.load(Ordering::SeqCst) == 3, "SPI mode should be 3");
 }
 
 #[test]
 fn test_spi_chip_select() {
     MockSpi::reset();
-    
-    assert_test!(!SPI_CS_ACTIVE.load(Ordering::SeqCst), "CS should be inactive initially");
-    
+
+    assert_test!(
+        !SPI_CS_ACTIVE.load(Ordering::SeqCst),
+        "CS should be inactive initially"
+    );
+
     MockSpi::cs_assert();
     assert_test!(SPI_CS_ACTIVE.load(Ordering::SeqCst), "CS should be active");
-    
+
     MockSpi::cs_deassert();
-    assert_test!(!SPI_CS_ACTIVE.load(Ordering::SeqCst), "CS should be inactive");
+    assert_test!(
+        !SPI_CS_ACTIVE.load(Ordering::SeqCst),
+        "CS should be inactive"
+    );
 }
 
 #[test]
 fn test_spi_transfer() {
     MockSpi::reset();
-    
-    MockSpi::set_rx_data(0xAB);  // Simulate device response
+
+    MockSpi::set_rx_data(0xAB); // Simulate device response
     MockSpi::cs_assert();
-    
+
     let rx = MockSpi::transfer(0x55);
-    
-    assert_test!(SPI_TX_DATA.load(Ordering::SeqCst) == 0x55, "TX data should be 0x55");
+
+    assert_test!(
+        SPI_TX_DATA.load(Ordering::SeqCst) == 0x55,
+        "TX data should be 0x55"
+    );
     assert_test!(rx == 0xAB, "RX data should be 0xAB");
-    
+
     MockSpi::cs_deassert();
 }
 
@@ -537,15 +597,19 @@ impl MockI2c {
             return Err(I2cError::Busy);
         }
         I2C_BUSY.store(true, Ordering::SeqCst);
-        
-        let addr = if read { (address << 1) | 1 } else { address << 1 };
+
+        let addr = if read {
+            (address << 1) | 1
+        } else {
+            address << 1
+        };
         I2C_ADDRESS.store(addr as u32, Ordering::SeqCst);
-        
+
         if !I2C_ACK.load(Ordering::SeqCst) {
             I2C_BUSY.store(false, Ordering::SeqCst);
             return Err(I2cError::Nack);
         }
-        
+
         Ok(())
     }
 
@@ -585,30 +649,36 @@ impl MockI2c {
 #[test]
 fn test_i2c_start_write() {
     MockI2c::reset();
-    
-    let result = MockI2c::start(0x50, false);  // Write to address 0x50
+
+    let result = MockI2c::start(0x50, false); // Write to address 0x50
     assert_test!(result.is_ok(), "Start should succeed");
-    assert_test!(I2C_ADDRESS.load(Ordering::SeqCst) == 0xA0, "Address should be 0xA0 (0x50 << 1)");
-    
+    assert_test!(
+        I2C_ADDRESS.load(Ordering::SeqCst) == 0xA0,
+        "Address should be 0xA0 (0x50 << 1)"
+    );
+
     MockI2c::stop();
 }
 
 #[test]
 fn test_i2c_start_read() {
     MockI2c::reset();
-    
-    let result = MockI2c::start(0x50, true);  // Read from address 0x50
+
+    let result = MockI2c::start(0x50, true); // Read from address 0x50
     assert_test!(result.is_ok(), "Start should succeed");
-    assert_test!(I2C_ADDRESS.load(Ordering::SeqCst) == 0xA1, "Address should be 0xA1 (0x50 << 1 | 1)");
-    
+    assert_test!(
+        I2C_ADDRESS.load(Ordering::SeqCst) == 0xA1,
+        "Address should be 0xA1 (0x50 << 1 | 1)"
+    );
+
     MockI2c::stop();
 }
 
 #[test]
 fn test_i2c_nack() {
     MockI2c::reset();
-    MockI2c::set_ack(false);  // Simulate NACK
-    
+    MockI2c::set_ack(false); // Simulate NACK
+
     let result = MockI2c::start(0x50, false);
     assert_test!(result == Err(I2cError::Nack), "Should return NACK error");
 }
@@ -617,22 +687,25 @@ fn test_i2c_nack() {
 fn test_i2c_write_data() {
     MockI2c::reset();
     MockI2c::start(0x50, false).unwrap();
-    
+
     let result = MockI2c::write(0x42);
     assert_test!(result.is_ok(), "Write should succeed");
-    assert_test!(I2C_DATA.load(Ordering::SeqCst) == 0x42, "Data should be 0x42");
-    
+    assert_test!(
+        I2C_DATA.load(Ordering::SeqCst) == 0x42,
+        "Data should be 0x42"
+    );
+
     MockI2c::stop();
 }
 
 #[test]
 fn test_i2c_read_data() {
     MockI2c::reset();
-    MockI2c::set_data(0x55);  // Simulate device data
+    MockI2c::set_data(0x55); // Simulate device data
     MockI2c::start(0x50, true).unwrap();
-    
-    let data = MockI2c::read(true);  // ACK
+
+    let data = MockI2c::read(true); // ACK
     assert_test!(data == 0x55, "Should read 0x55");
-    
+
     MockI2c::stop();
 }

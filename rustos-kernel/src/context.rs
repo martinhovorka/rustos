@@ -1,15 +1,15 @@
 //! REQ: CTX-001 - Context Switching
-//! 
+//!
 //! Low-level context switching for RISC-V RV32IMAC.
 
 /// REQ: CTX-013 - Context frame size (144 bytes = 36 words)
 pub const CONTEXT_FRAME_SIZE: usize = 144;
 
 /// REQ: CTX-008, CTX-011 - Start first task
-/// 
+///
 /// Loads context from the given stack pointer and jumps to the task.
 /// This function does not return.
-/// 
+///
 /// # Safety
 /// - sp must point to a valid context frame
 /// - Must be called with interrupts disabled
@@ -20,7 +20,6 @@ pub unsafe extern "C" fn start_first_task(sp: *mut usize) -> ! {
     core::arch::naked_asm!(
         // Load stack pointer from argument (a0)
         "mv sp, a0",
-        
         // REQ: CTX-011 - Restore context frame
         // Restore general-purpose registers
         "lw x1,  0(sp)",   // ra
@@ -53,28 +52,24 @@ pub unsafe extern "C" fn start_first_task(sp: *mut usize) -> ! {
         "lw x29, 108(sp)", // t4
         "lw x30, 112(sp)", // t5
         "lw x31, 116(sp)", // t6
-        
         // REQ: CTX-012 - Restore CSRs
-        "lw t0, 120(sp)",  // mepc
+        "lw t0, 120(sp)", // mepc
         "csrw mepc, t0",
-        
-        "lw t0, 124(sp)",  // mstatus
+        "lw t0, 124(sp)", // mstatus
         "csrw mstatus, t0",
-        
         // REQ: CTX-013 - Adjust stack pointer past frame
         "addi sp, sp, 144",
-        
         // REQ: CTX-003 - Return from exception (jumps to mepc)
         "mret"
     )
 }
 
 /// REQ: CTX-001, CTX-006 - Save and restore context during task switch
-/// 
+///
 /// # Arguments
 /// - a0: pointer to current task's SP storage location
 /// - a1: new task's SP value
-/// 
+///
 /// # Safety
 /// Must be called from trap handler with interrupts disabled
 // SAFETY: Naked function for context switching - saves current task context, loads next task context.
@@ -84,7 +79,6 @@ pub unsafe extern "C" fn switch_context(current_sp_ptr: *mut *mut usize, new_sp:
         // REQ: CTX-002 - Save context of current task
         // Allocate space on stack for context frame
         "addi sp, sp, -144",
-        
         // Save general-purpose registers (x1, x3-x31)
         "sw x1,  0(sp)",   // ra
         "sw x3,  4(sp)",   // gp
@@ -116,26 +110,19 @@ pub unsafe extern "C" fn switch_context(current_sp_ptr: *mut *mut usize, new_sp:
         "sw x29, 108(sp)", // t4
         "sw x30, 112(sp)", // t5
         "sw x31, 116(sp)", // t6
-        
         // REQ: CTX-004, CTX-005 - Save CSRs
         "csrr t0, mepc",
-        "sw t0, 120(sp)",  // mepc
-        
+        "sw t0, 120(sp)", // mepc
         "csrr t0, mstatus",
-        "sw t0, 124(sp)",  // mstatus
-        
+        "sw t0, 124(sp)", // mstatus
         "csrr t0, mcause",
-        "sw t0, 128(sp)",  // mcause
-        
+        "sw t0, 128(sp)", // mcause
         "csrr t0, mtval",
-        "sw t0, 132(sp)",  // mtval
-        
+        "sw t0, 132(sp)", // mtval
         // Save current SP to *current_sp_ptr
         "sw sp, 0(a0)",
-        
         // Load new task's SP
         "mv sp, a1",
-        
         // REQ: CTX-002 - Restore context of new task
         // Restore general-purpose registers
         "lw x1,  0(sp)",   // ra
@@ -168,17 +155,13 @@ pub unsafe extern "C" fn switch_context(current_sp_ptr: *mut *mut usize, new_sp:
         "lw x29, 108(sp)", // t4
         "lw x30, 112(sp)", // t5
         "lw x31, 116(sp)", // t6
-        
         // Restore CSRs
-        "lw t0, 120(sp)",  // mepc
+        "lw t0, 120(sp)", // mepc
         "csrw mepc, t0",
-        
-        "lw t0, 124(sp)",  // mstatus
+        "lw t0, 124(sp)", // mstatus
         "csrw mstatus, t0",
-        
         // Adjust stack pointer
         "addi sp, sp, 144",
-        
         // Return
         "ret"
     )

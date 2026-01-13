@@ -1,12 +1,12 @@
 //! REQ: PAC-001 - Peripheral Access Crate for MicroBlaze V RISC-V
-//! 
+//!
 //! This crate provides type-safe, low-level access to all hardware peripherals
 //! on the MicroBlaze V RISC-V processor targeting the Digilent Arty A7-35 board.
 //!
 //! # Memory Map
-//! 
+//!
 //! REQ: PAC-006 - Memory map derived from hardware/artifacts/address_segments/
-//! 
+//!
 //! - 0x0000_0000 - 0x0001_FFFF: Local BRAM (128 KB)
 //! - 0x4000_0000 - 0x4000_FFFF: GPIO Shield Pins 0-19
 //! - 0x4001_0000 - 0x4001_FFFF: GPIO Shield Pins 26-41
@@ -28,12 +28,12 @@
 #![deny(warnings)]
 
 // REQ: PAC-002 - Type-safe register definitions
-pub mod uart;
+pub mod ethernet;
 pub mod gpio;
+pub mod i2c;
 pub mod intc;
 pub mod spi;
-pub mod i2c;
-pub mod ethernet;
+pub mod uart;
 pub mod wdt;
 
 // REQ: PAC-003 - Base address constants

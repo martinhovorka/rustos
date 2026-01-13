@@ -11,12 +11,12 @@
 //! REQ: ERR-014 - Error handler registration
 //!
 //! # Timeout Semantics (REQ: ERR-002)
-//! 
+//!
 //! All synchronization primitives follow consistent timeout semantics:
 //! - `timeout_ticks = 0`: Non-blocking poll (try once, return immediately)
 //! - `timeout_ticks = n`: Block for up to n system ticks
 //! - `timeout_ticks = None`: Block indefinitely (wait forever)
-//! 
+//!
 //! Example:
 //! ```no_run
 //! # use rustos_kernel::sync::Semaphore;
@@ -172,12 +172,12 @@ impl KernelError {
             Self::TaskNotFound => "Task not found",
             Self::InsufficientStack => "Insufficient stack space",
             Self::StackOverflow => "Stack overflow detected",
-            
+
             Self::SchedulerNotInitialized => "Scheduler not initialized",
             Self::SchedulerAlreadyRunning => "Scheduler is already running",
             Self::NoTasksReady => "No tasks ready to run",
             Self::ContextSwitchFailed => "Context switch operation failed",
-            
+
             Self::WouldBlock => "Operation would block",
             Self::NotOwner => "Caller is not the mutex owner",
             Self::Poisoned => "Mutex is poisoned",
@@ -186,13 +186,13 @@ impl KernelError {
             Self::QueueEmpty => "Message queue is empty",
             Self::Deadlock => "Deadlock detected",
             Self::Timeout => "Operation timed out",
-            
+
             Self::OutOfMemory => "Out of memory",
             Self::InvalidAlignment => "Invalid memory alignment",
             Self::NullPointer => "Null pointer dereference",
             Self::OutOfBounds => "Memory access out of bounds",
             Self::MemoryCorruption => "Memory corruption detected",
-            
+
             Self::NotInitialized => "Hardware not initialized",
             Self::Busy => "Hardware busy",
             Self::CommunicationError => "Communication error",
@@ -203,22 +203,22 @@ impl KernelError {
             Self::FramingError => "Framing error",
             Self::Overrun => "Data overrun",
             Self::Underrun => "Data underrun",
-            
+
             Self::InvalidInterrupt => "Invalid interrupt number",
             Self::InterruptAlreadyEnabled => "Interrupt already enabled",
             Self::InterruptStorm => "Interrupt storm detected",
             Self::NestedInterruptOverflow => "Too many nested interrupts",
-            
+
             Self::InvalidParameter => "Invalid parameter",
             Self::NotSupported => "Operation not supported",
             Self::PermissionDenied => "Permission denied",
             Self::ResourceUnavailable => "Resource unavailable",
             Self::NotReady => "System not ready",
-            
+
             Self::TimeOverflow => "Time counter overflow",
             Self::InvalidTime => "Invalid time value",
             Self::TimerExpired => "Timer expired",
-            
+
             Self::Unknown => "Unknown error",
         }
     }
@@ -314,7 +314,7 @@ mod tests {
             KernelError::WouldBlock,
             KernelError::OutOfMemory,
         ];
-        
+
         for (i, err1) in errors.iter().enumerate() {
             for err2 in errors.iter().skip(i + 1) {
                 assert_ne!(err1.code(), err2.code(), "Error codes must be unique");

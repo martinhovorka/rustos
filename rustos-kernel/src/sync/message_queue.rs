@@ -1,5 +1,5 @@
 //! REQ: MQ-001 - Message Queue Implementation
-//! 
+//!
 //! Fixed-size message queue for inter-task communication.
 
 use crate::critical::CriticalSection;
@@ -34,22 +34,17 @@ impl<T, const N: usize> MessageQueue<T, N> {
     /// REQ: MQ-003 - Send message (non-blocking)
     pub fn try_send(&self, msg: T) -> Result<(), T> {
         let _cs = CriticalSection::new();
-        
+
         // SAFETY: Access protected by critical section - no concurrent modification.
-        unsafe {
-            (*self.queue.get())
-                .push_back(msg)
-        }
+        unsafe { (*self.queue.get()).push_back(msg) }
     }
 
     /// REQ: MQ-004 - Receive message (non-blocking)
     pub fn try_receive(&self) -> Option<T> {
         let _cs = CriticalSection::new();
-        
+
         // SAFETY: Access protected by critical section - no concurrent modification.
-        unsafe {
-            (*self.queue.get()).pop_front()
-        }
+        unsafe { (*self.queue.get()).pop_front() }
     }
 
     /// Check if queue is full

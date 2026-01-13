@@ -1,5 +1,5 @@
 //! REQ: MTX-001, SEM-001, MQ-001, EVT-001 - Synchronization Primitives
-//! 
+//!
 //! Provides mutex, semaphore, message queue, and event flags for task synchronization.
 //!
 //! # Overview
@@ -62,17 +62,17 @@
 //! }
 //! ```
 
-pub mod mutex;
-pub mod semaphore;
-pub mod message_queue;
 pub mod event_flags;
-pub mod priority_queue;  // REQ: MQ-009 - Priority-based message queue
+pub mod message_queue;
+pub mod mutex;
+pub mod priority_queue;
+pub mod semaphore; // REQ: MQ-009 - Priority-based message queue
 
-pub use mutex::Mutex;
-pub use semaphore::Semaphore;
-pub use message_queue::MessageQueue;
 pub use event_flags::EventFlags;
+pub use message_queue::MessageQueue;
+pub use mutex::Mutex;
 pub use priority_queue::PriorityQueue;
+pub use semaphore::Semaphore;
 
 #[cfg(feature = "diagnostics")]
 use crate::task::TaskId;
@@ -83,7 +83,7 @@ use crate::task::TaskId;
 pub struct MutexId(pub u8);
 
 /// REQ: DIAG-002 - Get mutex owner (for diagnostics)
-/// 
+///
 /// Returns None if mutex ID is invalid or mutex is not locked.
 /// Safe to call from ISR context.
 #[cfg(feature = "diagnostics")]
@@ -94,7 +94,7 @@ pub fn get_mutex_owner(_mutex_id: MutexId) -> Option<TaskId> {
 }
 
 /// REQ: DIAG-003 - Get queue message count (for diagnostics)
-/// 
+///
 /// Returns None if queue ID is invalid.
 /// Safe to call from ISR context.
 #[cfg(feature = "diagnostics")]
@@ -103,4 +103,3 @@ pub fn get_queue_count(_queue_id: u8) -> Option<usize> {
     // For now, return None - queues are created inline, not registered
     None
 }
-

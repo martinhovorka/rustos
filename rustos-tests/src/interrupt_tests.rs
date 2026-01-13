@@ -9,7 +9,7 @@ extern crate std;
 use crate::assert_test;
 use core::marker::{Send, Sync};
 use core::option::Option::{self, None, Some};
-use std::sync::atomic::{AtomicU32, AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use std::sync::Arc;
 use std::thread;
 
@@ -20,11 +20,11 @@ use std::thread;
 const MAX_IRQS: usize = 32;
 
 struct MockPlic {
-    pending: AtomicU32,          // Pending interrupts
-    enabled: AtomicU32,          // Enabled interrupts
-    priority: [AtomicU32; MAX_IRQS],  // Priority per IRQ
-    threshold: AtomicU32,        // Priority threshold
-    claimed: AtomicU32,          // Currently claimed IRQ
+    pending: AtomicU32,              // Pending interrupts
+    enabled: AtomicU32,              // Enabled interrupts
+    priority: [AtomicU32; MAX_IRQS], // Priority per IRQ
+    threshold: AtomicU32,            // Priority threshold
+    claimed: AtomicU32,              // Currently claimed IRQ
     global_enable: AtomicBool,
 }
 
@@ -139,12 +139,12 @@ unsafe impl Sync for MockPlic {}
 #[test]
 fn test_plic_enable_disable() {
     let plic = MockPlic::new();
-    
+
     assert_test!(!plic.is_enabled(5), "IRQ 5 should not be enabled initially");
-    
+
     plic.enable_irq(5);
     assert_test!(plic.is_enabled(5), "IRQ 5 should be enabled");
-    
+
     plic.disable_irq(5);
     assert_test!(!plic.is_enabled(5), "IRQ 5 should be disabled");
 }
@@ -152,9 +152,9 @@ fn test_plic_enable_disable() {
 #[test]
 fn test_plic_trigger_pending() {
     let plic = MockPlic::new();
-    
+
     assert_test!(!plic.is_pending(3), "IRQ 3 should not be pending initially");
-    
+
     plic.trigger_irq(3);
     assert_test!(plic.is_pending(3), "IRQ 3 should be pending");
 }
@@ -162,37 +162,40 @@ fn test_plic_trigger_pending() {
 #[test]
 fn test_plic_claim() {
     let plic = MockPlic::new();
-    
+
     plic.enable_global();
     plic.enable_irq(5);
     plic.set_priority(5, 1);
     plic.trigger_irq(5);
-    
+
     let claimed = plic.claim();
     assert_test!(claimed == Some(5), "Should claim IRQ 5");
-    assert_test!(!plic.is_pending(5), "IRQ 5 should not be pending after claim");
-    
+    assert_test!(
+        !plic.is_pending(5),
+        "IRQ 5 should not be pending after claim"
+    );
+
     plic.complete(5);
 }
 
 #[test]
 fn test_plic_priority() {
     let plic = MockPlic::new();
-    
+
     plic.enable_global();
     plic.enable_irq(3);
     plic.enable_irq(5);
     plic.set_priority(3, 2);
-    plic.set_priority(5, 5);  // Higher priority
-    
+    plic.set_priority(5, 5); // Higher priority
+
     plic.trigger_irq(3);
     plic.trigger_irq(5);
-    
+
     // Should claim higher priority first
     let first = plic.claim();
     assert_test!(first == Some(5), "Should claim higher priority IRQ 5 first");
     plic.complete(5);
-    
+
     let second = plic.claim();
     assert_test!(second == Some(3), "Should claim IRQ 3 second");
     plic.complete(3);
@@ -201,14 +204,14 @@ fn test_plic_priority() {
 #[test]
 fn test_plic_threshold() {
     let plic = MockPlic::new();
-    
+
     plic.enable_global();
     plic.enable_irq(3);
     plic.set_priority(3, 2);
-    plic.set_threshold(5);  // Threshold higher than IRQ priority
-    
+    plic.set_threshold(5); // Threshold higher than IRQ priority
+
     plic.trigger_irq(3);
-    
+
     let claimed = plic.claim();
     assert_test!(claimed.is_none(), "Should not claim IRQ below threshold");
 }
@@ -216,15 +219,15 @@ fn test_plic_threshold() {
 #[test]
 fn test_plic_global_disable() {
     let plic = MockPlic::new();
-    
+
     // Don't enable global
     plic.enable_irq(5);
     plic.set_priority(5, 1);
     plic.trigger_irq(5);
-    
+
     let claimed = plic.claim();
     assert_test!(claimed.is_none(), "Should not claim when global disabled");
-    
+
     plic.enable_global();
     let claimed = plic.claim();
     assert_test!(claimed == Some(5), "Should claim after global enable");
@@ -279,24 +282,30 @@ fn get_handler_count(irq: u32) -> u32 {
 #[test]
 fn test_irq_handler_registration() {
     reset_handlers();
-    
+
     // Simulate interrupt handling
     irq_handler(5);
-    
+
     assert_test!(was_handler_called(5), "Handler 5 should have been called");
-    assert_test!(!was_handler_called(3), "Handler 3 should not have been called");
+    assert_test!(
+        !was_handler_called(3),
+        "Handler 3 should not have been called"
+    );
 }
 
 #[test]
 fn test_irq_handler_count() {
     reset_handlers();
-    
+
     // Multiple interrupts
     irq_handler(5);
     irq_handler(5);
     irq_handler(5);
-    
-    assert_test!(get_handler_count(5) == 3, "Handler 5 should have been called 3 times");
+
+    assert_test!(
+        get_handler_count(5) == 3,
+        "Handler 5 should have been called 3 times"
+    );
 }
 
 // ============================================================================
@@ -330,22 +339,28 @@ fn reset_nesting() {
 #[test]
 fn test_irq_nesting() {
     reset_nesting();
-    
-    assert_test!(get_nesting_depth() == 0, "Initial nesting depth should be 0");
-    
+
+    assert_test!(
+        get_nesting_depth() == 0,
+        "Initial nesting depth should be 0"
+    );
+
     enter_isr();
     assert_test!(get_nesting_depth() == 1, "Nesting depth should be 1");
-    
-    enter_isr();  // Nested interrupt
+
+    enter_isr(); // Nested interrupt
     assert_test!(get_nesting_depth() == 2, "Nesting depth should be 2");
-    
+
     exit_isr();
     assert_test!(get_nesting_depth() == 1, "Nesting depth should be 1");
-    
+
     exit_isr();
     assert_test!(get_nesting_depth() == 0, "Nesting depth should be 0");
-    
-    assert_test!(MAX_NESTING_DEPTH.load(Ordering::SeqCst) == 2, "Max depth should be 2");
+
+    assert_test!(
+        MAX_NESTING_DEPTH.load(Ordering::SeqCst) == 2,
+        "Max depth should be 2"
+    );
 }
 
 // ============================================================================
@@ -381,10 +396,13 @@ fn get_latency() -> u32 {
 fn test_irq_latency_measurement() {
     trigger_timed_irq();
     handle_timed_irq();
-    
+
     let latency = get_latency();
     // Latency should be very small (microseconds)
-    assert_test!(latency < 1000, format!("Latency {} should be < 1000 us", latency));
+    assert_test!(
+        latency < 1000,
+        format!("Latency {} should be < 1000 us", latency)
+    );
 }
 
 // ============================================================================
@@ -413,15 +431,27 @@ fn reset_software_irq() {
 #[test]
 fn test_software_irq() {
     reset_software_irq();
-    
-    assert_test!(!SOFTWARE_IRQ_PENDING.load(Ordering::SeqCst), "No pending software IRQ initially");
-    
+
+    assert_test!(
+        !SOFTWARE_IRQ_PENDING.load(Ordering::SeqCst),
+        "No pending software IRQ initially"
+    );
+
     trigger_software_irq();
-    assert_test!(SOFTWARE_IRQ_PENDING.load(Ordering::SeqCst), "Software IRQ should be pending");
-    
+    assert_test!(
+        SOFTWARE_IRQ_PENDING.load(Ordering::SeqCst),
+        "Software IRQ should be pending"
+    );
+
     handle_software_irq();
-    assert_test!(!SOFTWARE_IRQ_PENDING.load(Ordering::SeqCst), "Software IRQ should be cleared");
-    assert_test!(SOFTWARE_IRQ_HANDLER_CALLED.load(Ordering::SeqCst), "Handler should have been called");
+    assert_test!(
+        !SOFTWARE_IRQ_PENDING.load(Ordering::SeqCst),
+        "Software IRQ should be cleared"
+    );
+    assert_test!(
+        SOFTWARE_IRQ_HANDLER_CALLED.load(Ordering::SeqCst),
+        "Handler should have been called"
+    );
 }
 
 // ============================================================================
@@ -435,7 +465,7 @@ static TIMER_COUNTER: AtomicU32 = AtomicU32::new(0);
 fn timer_tick() {
     let counter = TIMER_COUNTER.fetch_add(1, Ordering::SeqCst) + 1;
     let compare = TIMER_COMPARE.load(Ordering::SeqCst);
-    
+
     if counter >= compare && compare > 0 {
         TIMER_IRQ_COUNT.fetch_add(1, Ordering::SeqCst);
         // Reset for periodic mode
@@ -456,24 +486,33 @@ fn reset_timer() {
 #[test]
 fn test_timer_interrupt() {
     reset_timer();
-    
+
     set_timer_compare(10);
-    
+
     // Tick 9 times - no interrupt
     for _ in 0..9 {
         timer_tick();
     }
-    assert_test!(TIMER_IRQ_COUNT.load(Ordering::SeqCst) == 0, "No timer IRQ yet");
-    
+    assert_test!(
+        TIMER_IRQ_COUNT.load(Ordering::SeqCst) == 0,
+        "No timer IRQ yet"
+    );
+
     // 10th tick triggers interrupt
     timer_tick();
-    assert_test!(TIMER_IRQ_COUNT.load(Ordering::SeqCst) == 1, "Timer IRQ should fire");
-    
+    assert_test!(
+        TIMER_IRQ_COUNT.load(Ordering::SeqCst) == 1,
+        "Timer IRQ should fire"
+    );
+
     // Counter reset, tick 10 more for another interrupt
     for _ in 0..10 {
         timer_tick();
     }
-    assert_test!(TIMER_IRQ_COUNT.load(Ordering::SeqCst) == 2, "Second timer IRQ should fire");
+    assert_test!(
+        TIMER_IRQ_COUNT.load(Ordering::SeqCst) == 2,
+        "Second timer IRQ should fire"
+    );
 }
 
 // ============================================================================
@@ -517,11 +556,23 @@ impl ExternalIrqSource {
 
 #[test]
 fn test_external_irq_mapping() {
-    assert_test!(ExternalIrqSource::Uart.to_irq_num() == 1, "UART should be IRQ 1");
-    assert_test!(ExternalIrqSource::Ethernet.to_irq_num() == 5, "Ethernet should be IRQ 5");
-    
-    assert_test!(ExternalIrqSource::from_irq_num(1) == Some(ExternalIrqSource::Uart), "IRQ 1 should be UART");
-    assert_test!(ExternalIrqSource::from_irq_num(99).is_none(), "Unknown IRQ should return None");
+    assert_test!(
+        ExternalIrqSource::Uart.to_irq_num() == 1,
+        "UART should be IRQ 1"
+    );
+    assert_test!(
+        ExternalIrqSource::Ethernet.to_irq_num() == 5,
+        "Ethernet should be IRQ 5"
+    );
+
+    assert_test!(
+        ExternalIrqSource::from_irq_num(1) == Some(ExternalIrqSource::Uart),
+        "IRQ 1 should be UART"
+    );
+    assert_test!(
+        ExternalIrqSource::from_irq_num(99).is_none(),
+        "Unknown IRQ should return None"
+    );
 }
 
 // ============================================================================
@@ -571,25 +622,37 @@ impl IrqPriorityManager {
 #[test]
 fn test_irq_priority_boost() {
     let manager = IrqPriorityManager::new();
-    
+
     manager.set_base_priority(5);
-    assert_test!(manager.effective_priority() == 5, "Effective priority should be 5");
-    
+    assert_test!(
+        manager.effective_priority() == 5,
+        "Effective priority should be 5"
+    );
+
     manager.boost_priority(10);
-    assert_test!(manager.effective_priority() == 10, "Effective priority should be boosted to 10");
-    
+    assert_test!(
+        manager.effective_priority() == 10,
+        "Effective priority should be boosted to 10"
+    );
+
     manager.restore_priority();
-    assert_test!(manager.effective_priority() == 5, "Effective priority should be restored to 5");
+    assert_test!(
+        manager.effective_priority() == 5,
+        "Effective priority should be restored to 5"
+    );
 }
 
 #[test]
 fn test_irq_priority_no_boost_below() {
     let manager = IrqPriorityManager::new();
-    
+
     manager.set_base_priority(10);
-    manager.boost_priority(5);  // Lower than base
-    
-    assert_test!(manager.effective_priority() == 10, "Should not boost to lower priority");
+    manager.boost_priority(5); // Lower than base
+
+    assert_test!(
+        manager.effective_priority() == 10,
+        "Should not boost to lower priority"
+    );
 }
 
 // ============================================================================
@@ -600,23 +663,26 @@ fn test_irq_priority_no_boost_below() {
 fn test_concurrent_irq_handling() {
     let plic = Arc::new(MockPlic::new());
     let handled = Arc::new(AtomicU32::new(0));
-    
+
     plic.enable_global();
     for i in 0..8 {
         plic.enable_irq(i);
         plic.set_priority(i, i + 1);
     }
-    
+
     // Trigger all interrupts
     for i in 0..8 {
         plic.trigger_irq(i);
     }
-    
+
     // Claim and complete all
     while let Some(irq) = plic.claim() {
         handled.fetch_add(1, Ordering::SeqCst);
         plic.complete(irq);
     }
-    
-    assert_test!(handled.load(Ordering::SeqCst) == 8, "All 8 IRQs should be handled");
+
+    assert_test!(
+        handled.load(Ordering::SeqCst) == 8,
+        "All 8 IRQs should be handled"
+    );
 }

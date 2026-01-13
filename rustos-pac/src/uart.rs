@@ -1,9 +1,9 @@
 //! REQ: PAC-007 - UART Register Definitions
-//! 
+//!
 //! AXI UART Lite register map based on PG142 - AXI UART Lite Product Guide
-//! 
+//!
 //! # Register Map
-//! 
+//!
 //! | Offset | Register | Access | Description |
 //! |--------|----------|--------|-------------|
 //! | 0x00   | RX_FIFO  | R      | Receive FIFO |
@@ -11,8 +11,8 @@
 //! | 0x08   | STAT_REG | R      | Status Register |
 //! | 0x0C   | CTRL_REG | R/W    | Control Register |
 
-use core::ptr::{read_volatile, write_volatile};
 use core::cell::UnsafeCell;
+use core::ptr::{read_volatile, write_volatile};
 
 /// REQ: PAC-008 - UART register block  
 #[repr(C)]

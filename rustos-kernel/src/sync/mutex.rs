@@ -1,12 +1,12 @@
 //! REQ: MTX-001 - Mutex Implementation
-//! 
+//!
 //! Provides mutual exclusion for shared resources.
-//! 
+//!
 //! # Priority Inheritance (Optional)
-//! 
+//!
 //! When the `priority-inheritance` feature is enabled, the mutex implements
 //! the priority inheritance protocol to prevent priority inversion:
-//! 
+//!
 //! - When a high-priority task blocks on a mutex held by a lower-priority task,
 //!   the holding task's priority is temporarily boosted to the blocked task's priority
 //! - When the mutex is released, the holding task's priority is restored
@@ -67,7 +67,7 @@ impl<T> Mutex<T> {
     /// REQ: MTX-003 - Try to lock the mutex (non-blocking)
     pub fn try_lock(&self) -> Option<MutexGuard<'_, T>> {
         let _cs = CriticalSection::new();
-        
+
         if self.locked.swap(true, Ordering::Acquire) {
             // Already locked
             None
@@ -79,7 +79,8 @@ impl<T> Mutex<T> {
                 {
                     // Store original priority for restoration on unlock
                     if let Some(task) = crate::scheduler::get().get_task(current_task) {
-                        self.original_priority.store(task.priority().0, Ordering::Release);
+                        self.original_priority
+                            .store(task.priority().0, Ordering::Release);
                     }
                 }
             }
@@ -89,7 +90,7 @@ impl<T> Mutex<T> {
 
     /// REQ: MTX-004 - Lock the mutex (blocking)
     /// REQ: MTX-008, SCHED-015 - With priority inheritance support
-    /// 
+    ///
     /// Note: This is a simplified implementation. A full RTOS would block
     /// the task and reschedule when the mutex becomes available.
     pub fn lock(&self) -> MutexGuard<'_, T> {
@@ -97,32 +98,32 @@ impl<T> Mutex<T> {
             if let Some(guard) = self.try_lock() {
                 return guard;
             }
-            
+
             #[cfg(feature = "priority-inheritance")]
             {
                 // Boost owner's priority to prevent priority inversion
                 self.boost_owner_priority();
             }
-            
+
             // In a full implementation, would call scheduler to yield
             core::hint::spin_loop();
         }
     }
 
     /// REQ: MTX-005 - Unlock the mutex
-    /// 
+    ///
     /// # Safety
     /// Must only be called by the owning task
     // SAFETY: Function signature - see # Safety documentation above
     unsafe fn unlock(&self) {
         let _cs = CriticalSection::new();
-        
+
         #[cfg(feature = "priority-inheritance")]
         {
             // Restore original priority
             self.restore_owner_priority();
         }
-        
+
         self.owner.store(0xFF, Ordering::Release);
         self.locked.store(false, Ordering::Release);
     }
@@ -141,12 +142,12 @@ impl<T> Mutex<T> {
     #[cfg(feature = "priority-inheritance")]
     fn boost_owner_priority(&self) {
         let _cs = CriticalSection::new();
-        
+
         let owner_id = self.owner.load(Ordering::Acquire);
         if owner_id == 0xFF {
             return;
         }
-        
+
         // Get waiting task's priority (current task)
         let waiter_priority = if let Some(current_id) = crate::scheduler::get().current_task() {
             if let Some(task) = crate::scheduler::get().get_task(current_id) {
@@ -157,10 +158,11 @@ impl<T> Mutex<T> {
         } else {
             return;
         };
-        
+
         // Boost owner's priority if waiter has higher priority (lower number)
         // SAFETY: Called within critical section. owner_id validated above.
-        if let Some(owner_task) = unsafe { crate::scheduler::get().get_task_mut(TaskId(owner_id)) } {
+        if let Some(owner_task) = unsafe { crate::scheduler::get().get_task_mut(TaskId(owner_id)) }
+        {
             let owner_priority = owner_task.priority();
             if waiter_priority.0 < owner_priority.0 {
                 // Boost: Higher priority = lower number
@@ -176,18 +178,19 @@ impl<T> Mutex<T> {
         if owner_id == 0xFF {
             return;
         }
-        
+
         let original = self.original_priority.load(Ordering::Acquire);
         if original == 0xFF {
             return;
         }
-        
+
         // Restore original priority
         // SAFETY: Called within critical section (via unlock). owner_id validated above.
-        if let Some(owner_task) = unsafe { crate::scheduler::get().get_task_mut(TaskId(owner_id)) } {
+        if let Some(owner_task) = unsafe { crate::scheduler::get().get_task_mut(TaskId(owner_id)) }
+        {
             owner_task.set_priority(TaskPriority(original));
         }
-        
+
         self.original_priority.store(0xFF, Ordering::Release);
     }
 }

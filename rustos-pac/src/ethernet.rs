@@ -1,9 +1,9 @@
 //! REQ: PAC-055 - Ethernet Register Definitions
-//! 
+//!
 //! AXI Ethernet Lite register map based on PG090 - AXI Ethernet Lite MAC Product Guide
 
-use core::ptr::{read_volatile, write_volatile};
 use core::cell::UnsafeCell;
+use core::ptr::{read_volatile, write_volatile};
 
 /// REQ: PAC-056 - Ethernet register block
 #[repr(C)]
@@ -49,7 +49,7 @@ impl Ethernet {
         // SAFETY: Writing to memory-mapped Ethernet TX control register to initiate transmission.
         unsafe { write_volatile(self.tx_ping_ctrl.get(), (length as u32) << 16 | 0x01) }
     }
-    
+
     /// Set MAC address
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -57,7 +57,7 @@ impl Ethernet {
         // MAC address typically configured via registers
         Ok(())
     }
-    
+
     /// Enable Ethernet controller
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -65,7 +65,7 @@ impl Ethernet {
         // Enable TX/RX
         Ok(())
     }
-    
+
     /// Write packet to TX buffer
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -73,19 +73,18 @@ impl Ethernet {
         if data.len() > 1514 {
             return Err(());
         }
-        
+
         // Copy data to TX buffer
         // SAFETY: Creating slice from TX buffer base address with known size (2048 bytes).
         // Hardware buffer is guaranteed to exist at this memory-mapped location.
-        let tx_buf = unsafe { core::slice::from_raw_parts_mut(
-            &self.tx_ping_buffer as *const u32 as *mut u8,
-            2048
-        ) };
+        let tx_buf = unsafe {
+            core::slice::from_raw_parts_mut(&self.tx_ping_buffer as *const u32 as *mut u8, 2048)
+        };
         tx_buf[..data.len()].copy_from_slice(data);
-        
+
         Ok(())
     }
-    
+
     /// Start transmission
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -93,7 +92,7 @@ impl Ethernet {
         self.start_tx(1514); // Max size, actual size in buffer
         Ok(())
     }
-    
+
     /// Read RX buffer
     #[inline]
     #[allow(clippy::result_unit_err)]
@@ -101,47 +100,46 @@ impl Ethernet {
         // SAFETY: Reading from memory-mapped Ethernet RX control register.
         let ctrl = unsafe { read_volatile(self.rx_ping_ctrl.get()) };
         let len = ((ctrl >> 16) & 0xFFFF) as usize;
-        
+
         if len > buffer.len() {
             return Err(());
         }
-        
+
         // Copy from RX buffer
         // SAFETY: Creating slice from RX buffer base address with known size (2048 bytes).
         // Hardware buffer is guaranteed to exist at this memory-mapped location.
-        let rx_buf = unsafe { core::slice::from_raw_parts(
-            &self.rx_ping_buffer as *const u32 as *const u8,
-            2048
-        ) };
+        let rx_buf = unsafe {
+            core::slice::from_raw_parts(&self.rx_ping_buffer as *const u32 as *const u8, 2048)
+        };
         buffer[..len].copy_from_slice(&rx_buf[..len]);
-        
+
         // Clear RX ready flag
         // SAFETY: Writing to memory-mapped Ethernet RX control register to acknowledge receipt.
         unsafe { write_volatile(self.rx_ping_ctrl.get(), 0) };
-        
+
         Ok(len)
     }
-    
+
     /// Check if link is up
     #[inline]
     pub fn is_link_up(&self) -> bool {
         // Link status check
         true // Placeholder
     }
-    
+
     /// Enable interrupts
     #[inline]
     #[allow(clippy::result_unit_err)]
     pub fn enable_interrupts(&self) -> core::result::Result<(), ()> {
         Ok(())
     }
-    
+
     /// Read interrupt status
     #[inline]
     pub fn read_interrupt_status(&self) -> u32 {
         0 // Placeholder
     }
-    
+
     /// Clear interrupts
     #[inline]
     #[allow(clippy::result_unit_err)]

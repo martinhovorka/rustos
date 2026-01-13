@@ -1,11 +1,11 @@
 //! REQ: TRAP-001 - Trap and Interrupt Handling
-//! 
+//!
 //! RISC-V trap handler for exceptions and interrupts.
 
 use core::arch::asm;
 
 /// REQ: INIT-006, INIT-016 - Initialize trap handler
-/// 
+///
 /// Sets up mtvec to point to our trap handler in direct mode.
 ///
 /// # Safety
@@ -17,9 +17,9 @@ pub unsafe fn init_trap_handler() {
     extern "C" {
         fn _trap_handler();
     }
-    
+
     let trap_addr = _trap_handler as usize;
-    
+
     // REQ: INIT-016 - Set mtvec to direct mode (MODE=0)
     // SAFETY: Writing mtvec with valid handler address in machine mode.
     // Handler is properly aligned (.trap section ensures alignment).
@@ -31,9 +31,9 @@ pub unsafe fn init_trap_handler() {
 }
 
 /// REQ: TRAP-002, ISR-001 - Main trap handler
-/// 
+///
 /// Handles all exceptions and interrupts.
-/// 
+///
 /// # Safety
 /// Must preserve all registers and return via mret
 #[link_section = ".trap"]
@@ -51,21 +51,16 @@ pub unsafe extern "C" fn trap_handler() -> ! {
         "sw t0, 4(sp)",
         "sw t1, 8(sp)",
         "sw t2, 12(sp)",
-        
         // Read mcause to determine trap type
         "csrr t0, mcause",
-        
         // Check if interrupt (MSB set)
         "bltz t0, 1f",
-        
         // Exception handling
         "call handle_exception",
         "j 2f",
-        
         // Interrupt handling
         "1:",
         "call handle_interrupt",
-        
         // Restore context
         "2:",
         "lw ra, 0(sp)",
@@ -73,14 +68,13 @@ pub unsafe extern "C" fn trap_handler() -> ! {
         "lw t1, 8(sp)",
         "lw t2, 12(sp)",
         "addi sp, sp, 16",
-        
         // Return from trap
         "mret",
     )
 }
 
 /// REQ: EXC-002, EXC-003 - Handle exceptions
-/// 
+///
 /// # Safety
 /// Called from trap handler
 #[no_mangle]
@@ -89,7 +83,7 @@ unsafe extern "C" fn handle_exception() {
     let mcause: usize;
     let mepc: usize;
     let mtval: usize;
-    
+
     // SAFETY: Reading CSRs in exception handler context.
     // Values are diagnostic only, no side effects.
     asm!(
@@ -100,13 +94,16 @@ unsafe extern "C" fn handle_exception() {
         out(reg) mepc,
         out(reg) mtval,
     );
-    
+
     // REQ: PAN-001, ERR-001 - Panic on exception
-    panic!("Exception: mcause={:#x}, mepc={:#x}, mtval={:#x}", mcause, mepc, mtval);
+    panic!(
+        "Exception: mcause={:#x}, mepc={:#x}, mtval={:#x}",
+        mcause, mepc, mtval
+    );
 }
 
 /// REQ: ISR-002 - Handle interrupts
-/// 
+///
 /// # Safety
 /// Called from trap handler
 #[no_mangle]

@@ -9,11 +9,11 @@
 use crate::mock::MOCK_CSR;
 
 // This module requires std
-use std::vec::Vec;
-use std::string::String;
-use std::format;
-use std::vec;
 use core::iter::Iterator;
+use std::format;
+use std::string::String;
+use std::vec;
+use std::vec::Vec;
 
 /// Benchmark result containing performance metrics
 #[derive(Debug, Clone)]
@@ -38,15 +38,24 @@ impl BenchmarkResult {
         let min_cycles = *samples.iter().min().unwrap_or(&0);
         let max_cycles = *samples.iter().max().unwrap_or(&0);
         let sum: u64 = samples.iter().sum();
-        let avg_cycles = if samples.is_empty() { 0 } else { sum / samples.len() as u64 };
-        
+        let avg_cycles = if samples.is_empty() {
+            0
+        } else {
+            sum / samples.len() as u64
+        };
+
         // Simplified standard deviation calculation
         let variance = if samples.is_empty() {
             0
         } else {
-            let sq_diffs: u64 = samples.iter()
+            let sq_diffs: u64 = samples
+                .iter()
                 .map(|&x| {
-                    let diff = if x > avg_cycles { x - avg_cycles } else { avg_cycles - x };
+                    let diff = if x > avg_cycles {
+                        x - avg_cycles
+                    } else {
+                        avg_cycles - x
+                    };
                     diff * diff
                 })
                 .sum();
@@ -69,7 +78,12 @@ impl BenchmarkResult {
     pub fn display(&self) -> String {
         format!(
             "{:<30} | {:>6} iter | {:>8} avg | {:>8} min | {:>8} max | {:>8} stddev",
-            self.name, self.iterations, self.avg_cycles, self.min_cycles, self.max_cycles, self.std_dev
+            self.name,
+            self.iterations,
+            self.avg_cycles,
+            self.min_cycles,
+            self.max_cycles,
+            self.std_dev
         )
     }
 }
@@ -84,13 +98,13 @@ pub mod context_switch {
 
         for _ in 0..iterations {
             let start = MOCK_CSR.read_mcycle();
-            
+
             // Simulate context switch operations:
             // 1. Save current context (registers)
             // 2. Update scheduler state
             // 3. Load next context
             MOCK_CSR.tick_cycles(50); // Typical context switch: 50-100 cycles
-            
+
             let end = MOCK_CSR.read_mcycle();
             samples.push(end - start);
         }
@@ -109,14 +123,14 @@ pub mod interrupt_latency {
 
         for _ in 0..iterations {
             let start = MOCK_CSR.read_mcycle();
-            
+
             // Simulate interrupt latency:
             // 1. GPIO edge detection
             // 2. Interrupt controller processing
             // 3. CPU interrupt handling
             // 4. ISR entry
             MOCK_CSR.tick_cycles(25); // Typical IRQ latency: 20-40 cycles
-            
+
             let end = MOCK_CSR.read_mcycle();
             samples.push(end - start);
         }
@@ -135,13 +149,13 @@ pub mod sync_overhead {
 
         for _ in 0..iterations {
             let start = MOCK_CSR.read_mcycle();
-            
+
             // Simulate mutex operations:
             // 1. Atomic compare-exchange for lock
             // 2. Store owner ID
             // 3. Atomic store for unlock
             MOCK_CSR.tick_cycles(10); // Uncontended mutex: 8-15 cycles
-            
+
             let end = MOCK_CSR.read_mcycle();
             samples.push(end - start);
         }
@@ -155,12 +169,12 @@ pub mod sync_overhead {
 
         for _ in 0..iterations {
             let start = MOCK_CSR.read_mcycle();
-            
+
             // Simulate semaphore operations:
             // 1. Atomic decrement for wait
             // 2. Atomic increment for signal
             MOCK_CSR.tick_cycles(8); // Semaphore: 6-12 cycles
-            
+
             let end = MOCK_CSR.read_mcycle();
             samples.push(end - start);
         }
@@ -174,14 +188,14 @@ pub mod sync_overhead {
 
         for _ in 0..iterations {
             let start = MOCK_CSR.read_mcycle();
-            
+
             // Simulate queue operations:
             // 1. Lock acquisition
             // 2. Memory copy
             // 3. Pointer update
             // 4. Lock release
             MOCK_CSR.tick_cycles(20); // Queue operation: 15-30 cycles
-            
+
             let end = MOCK_CSR.read_mcycle();
             samples.push(end - start);
         }
@@ -199,11 +213,11 @@ pub mod code_size {
     #[derive(Debug, Clone)]
     pub struct CodeSizeMetrics {
         pub crate_name: &'static str,
-        pub text_bytes: usize,      // Code size
-        pub rodata_bytes: usize,    // Read-only data
-        pub data_bytes: usize,      // Initialized data
-        pub bss_bytes: usize,       // Uninitialized data
-        pub total_bytes: usize,     // Total size
+        pub text_bytes: usize,   // Code size
+        pub rodata_bytes: usize, // Read-only data
+        pub data_bytes: usize,   // Initialized data
+        pub bss_bytes: usize,    // Uninitialized data
+        pub total_bytes: usize,  // Total size
     }
 
     impl CodeSizeMetrics {
@@ -247,10 +261,10 @@ pub mod code_size {
         // For now, return example metrics
         Ok(CodeSizeMetrics::new(
             "rustos-app",
-            6144,  // .text
-            512,   // .rodata
-            128,   // .data
-            256,   // .bss
+            6144, // .text
+            512,  // .rodata
+            128,  // .data
+            256,  // .bss
         ))
     }
 }
@@ -299,7 +313,7 @@ pub mod stack_usage {
     }
 
     /// Measure stack usage via high-water-mark pattern
-    /// 
+    ///
     /// Stack is filled with a pattern (e.g., 0xDEADBEEF) at initialization,
     /// then scanned to find how much has been overwritten.
     pub fn measure_stack_usage(_stack_base: usize, stack_size: usize) -> usize {
@@ -312,9 +326,9 @@ pub mod stack_usage {
 /// REQ: PERFTEST-006 - Performance regression testing
 pub mod regression {
     use super::*;
+    use super::*;
     use core::result::Result;
     use core::result::Result::Ok;
-    use super::*;
 
     /// Baseline performance metrics
     #[derive(Debug, Clone)]
@@ -410,7 +424,10 @@ pub mod regression {
 
     /// Run regression tests against baseline
     #[cfg(any(test, feature = "bench"))]
-    pub fn run_regression_tests(baseline: &BaselineMetrics, threshold_percent: f64) -> Vec<RegressionResult> {
+    pub fn run_regression_tests(
+        baseline: &BaselineMetrics,
+        threshold_percent: f64,
+    ) -> Vec<RegressionResult> {
         let mut results = vec![];
 
         // Context switch
@@ -468,10 +485,12 @@ mod tests {
 
     #[test]
     fn test_context_switch_benchmark() {
-        MOCK_CSR.mcycle.store(0, core::sync::atomic::Ordering::Relaxed);
-        
+        MOCK_CSR
+            .mcycle
+            .store(0, core::sync::atomic::Ordering::Relaxed);
+
         let result = context_switch::benchmark(10);
-        
+
         assert_eq!(result.name, "Context Switch");
         assert_eq!(result.iterations, 10);
         assert!(result.avg_cycles >= 50);
@@ -479,22 +498,26 @@ mod tests {
 
     #[test]
     fn test_interrupt_latency_benchmark() {
-        MOCK_CSR.mcycle.store(0, core::sync::atomic::Ordering::Relaxed);
-        
+        MOCK_CSR
+            .mcycle
+            .store(0, core::sync::atomic::Ordering::Relaxed);
+
         let result = interrupt_latency::benchmark(10);
-        
+
         assert_eq!(result.name, "Interrupt Latency");
         assert!(result.avg_cycles >= 25);
     }
 
     #[test]
     fn test_sync_overhead_benchmarks() {
-        MOCK_CSR.mcycle.store(0, core::sync::atomic::Ordering::Relaxed);
-        
+        MOCK_CSR
+            .mcycle
+            .store(0, core::sync::atomic::Ordering::Relaxed);
+
         let mutex = sync_overhead::benchmark_mutex(10);
         let sem = sync_overhead::benchmark_semaphore(10);
         let queue = sync_overhead::benchmark_queue(10);
-        
+
         assert!(mutex.avg_cycles >= 10);
         assert!(sem.avg_cycles >= 8);
         assert!(queue.avg_cycles >= 20);
@@ -503,7 +526,7 @@ mod tests {
     #[test]
     fn test_code_size_metrics() {
         let metrics = code_size::CodeSizeMetrics::new("test", 1000, 100, 50, 50);
-        
+
         assert_eq!(metrics.text_bytes, 1000);
         assert_eq!(metrics.total_bytes, 1200);
     }
@@ -511,7 +534,7 @@ mod tests {
     #[test]
     fn test_stack_usage_metrics() {
         let metrics = stack_usage::StackUsageMetrics::new("test_task", 2048, 512);
-        
+
         assert_eq!(metrics.stack_size, 2048);
         assert_eq!(metrics.high_water_mark, 512);
         assert_eq!(metrics.usage_percent, 25);
@@ -521,16 +544,22 @@ mod tests {
 
     #[test]
     fn test_regression_testing() {
-        MOCK_CSR.mcycle.store(0, core::sync::atomic::Ordering::Relaxed);
-        
+        MOCK_CSR
+            .mcycle
+            .store(0, core::sync::atomic::Ordering::Relaxed);
+
         let baseline = regression::BaselineMetrics::capture();
         let results = regression::run_regression_tests(&baseline, 10.0);
-        
+
         assert_eq!(results.len(), 5);
-        
+
         // All should pass since we're using the same baseline
         for result in &results {
-            assert!(result.passed, "Regression test failed: {}", result.metric_name);
+            assert!(
+                result.passed,
+                "Regression test failed: {}",
+                result.metric_name
+            );
         }
     }
 
@@ -538,7 +567,7 @@ mod tests {
     fn test_benchmark_result_statistics() {
         let samples = vec![45, 50, 48, 52, 49, 51, 47, 50, 50, 48];
         let result = BenchmarkResult::new("Test", 10, &samples);
-        
+
         assert_eq!(result.min_cycles, 45);
         assert_eq!(result.max_cycles, 52);
         assert_eq!(result.avg_cycles, 49);
