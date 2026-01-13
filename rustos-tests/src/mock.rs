@@ -403,6 +403,15 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_mock_csr_default() {
+        // Test the Default trait implementation for MockCsr
+        let csr: MockCsr = Default::default();
+        assert_eq!(csr.read_mstatus(), 0);
+        assert!(!csr.interrupts_enabled());
+        assert_eq!(csr.read_mcycle(), 0);
+    }
+
+    #[test]
     fn test_mock_csr_interrupts() {
         let csr = MockCsr::new();
 
@@ -432,6 +441,30 @@ mod tests {
     }
 
     #[test]
+    fn test_mock_csr_mcause_mtval() {
+        // Test the machine cause and trap value registers
+        let csr = MockCsr::new();
+
+        // Initially zero
+        assert_eq!(csr.read_mcause(), 0);
+        assert_eq!(csr.read_mtval(), 0);
+
+        // Write mcause (e.g., interrupt cause = 0x8000_0007 for machine timer interrupt)
+        csr.write_mcause(0x8000_0007);
+        assert_eq!(csr.read_mcause(), 0x8000_0007);
+
+        // Write mtval (e.g., faulting address for memory exceptions)
+        csr.write_mtval(0x1234_5678);
+        assert_eq!(csr.read_mtval(), 0x1234_5678);
+
+        // Overwrite with different values
+        csr.write_mcause(0x0000_0002); // Illegal instruction exception
+        csr.write_mtval(0xDEAD_BEEF);
+        assert_eq!(csr.read_mcause(), 0x0000_0002);
+        assert_eq!(csr.read_mtval(), 0xDEAD_BEEF);
+    }
+
+    #[test]
     fn test_mock_mmio() {
         let mmio = MockMmio::new(0x4000_0000);
 
@@ -442,6 +475,33 @@ mod tests {
         // Modify
         mmio.modify(0, |v| v | 0x8000);
         assert_eq!(mmio.read(0), 0x9234);
+    }
+
+    #[test]
+    fn test_mock_mmio_out_of_bounds() {
+        // Test MMIO out-of-bounds access behavior
+        let mmio = MockMmio::new(0x4000_0000);
+
+        // Out-of-bounds read should return 0
+        assert_eq!(mmio.read(256), 0);
+        assert_eq!(mmio.read(1000), 0);
+        assert_eq!(mmio.read(usize::MAX), 0);
+
+        // Out-of-bounds write should be silently ignored
+        mmio.write(256, 0xDEAD_BEEF);
+        mmio.write(1000, 0x1234_5678);
+        // No panic, value is not stored
+
+        // Out-of-bounds modify should be silently ignored
+        mmio.modify(256, |v| v | 0x1234);
+        mmio.modify(1000, |v| v.wrapping_add(1));
+        // No panic, value is not modified
+
+        // Verify boundary case: offset 255 is valid (last index)
+        mmio.write(255, 0xCAFE_BABE);
+        assert_eq!(mmio.read(255), 0xCAFE_BABE);
+        mmio.modify(255, |v| v & 0xFFFF_0000);
+        assert_eq!(mmio.read(255), 0xCAFE_0000);
     }
 
     #[test]
@@ -468,6 +528,56 @@ mod tests {
     }
 
     #[test]
+    fn test_mock_intc_disable() {
+        // Test the disable function for MockIntc
+        let intc = MockIntc::new();
+
+        // Enable multiple IRQs
+        intc.enable(0);
+        intc.enable(3);
+        intc.enable(7);
+        intc.enable(31);
+
+        assert!(intc.is_enabled(0));
+        assert!(intc.is_enabled(3));
+        assert!(intc.is_enabled(7));
+        assert!(intc.is_enabled(31));
+
+        // Disable some IRQs
+        intc.disable(3);
+        assert!(intc.is_enabled(0));
+        assert!(!intc.is_enabled(3));  // Should be disabled now
+        assert!(intc.is_enabled(7));
+        assert!(intc.is_enabled(31));
+
+        // Disable another
+        intc.disable(7);
+        assert!(intc.is_enabled(0));
+        assert!(!intc.is_enabled(3));
+        assert!(!intc.is_enabled(7));  // Should be disabled now
+        assert!(intc.is_enabled(31));
+
+        // Disable an already-disabled IRQ (should be no-op)
+        intc.disable(3);
+        assert!(!intc.is_enabled(3));
+
+        // Disable all remaining
+        intc.disable(0);
+        intc.disable(31);
+        assert!(!intc.is_enabled(0));
+        assert!(!intc.is_enabled(31));
+    }
+
+    #[test]
+    fn test_mock_intc_default() {
+        // Test the Default trait implementation for MockIntc
+        let intc: MockIntc = Default::default();
+        assert_eq!(intc.get_fired_count(), 0);
+        assert!(!intc.is_enabled(0));
+        assert!(!intc.is_pending(0));
+    }
+
+    #[test]
     fn test_mock_timer() {
         let timer = MockTimer::new();
 
@@ -490,5 +600,54 @@ mod tests {
         // Reset
         timer.reset();
         assert_eq!(timer.get_ticks(), 0);
+    }
+
+    #[test]
+    fn test_mock_timer_default() {
+        // Test the Default trait implementation for MockTimer
+        let timer: MockTimer = Default::default();
+        assert!(!timer.is_running());
+        assert_eq!(timer.get_ticks(), 0);
+        assert_eq!(timer.get_interval(), 1000); // Default interval
+    }
+
+    #[test]
+    fn test_mock_timer_interval() {
+        // Test timer interval get/set
+        let timer = MockTimer::new();
+
+        // Default interval
+        assert_eq!(timer.get_interval(), 1000);
+
+        // Set custom interval
+        timer.set_interval(500);
+        assert_eq!(timer.get_interval(), 500);
+
+        // Set large interval (test 64-bit value handling)
+        timer.set_interval(0xFFFF_FFFF_FFFF_FFFF);
+        assert_eq!(timer.get_interval(), 0xFFFF_FFFF_FFFF_FFFF);
+
+        // Reset should restore default interval
+        timer.reset();
+        assert_eq!(timer.get_interval(), 1000);
+    }
+
+    #[test]
+    fn test_mock_timer_multiple_ticks() {
+        // Test multiple ticks and potential overflow behavior
+        let timer = MockTimer::new();
+
+        // Tick many times
+        for _ in 0..1000 {
+            timer.tick();
+        }
+        assert_eq!(timer.get_ticks(), 1000);
+
+        // Test tick count near u64::MAX (wrapping behavior)
+        timer.reset();
+        // Note: Can't test actual overflow without billions of ticks,
+        // but we can verify the tick mechanism works correctly
+        timer.tick();
+        assert_eq!(timer.get_ticks(), 1);
     }
 }

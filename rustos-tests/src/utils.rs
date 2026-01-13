@@ -236,6 +236,33 @@ mod tests {
     }
 
     #[test]
+    fn test_concurrent_staggered_execution() {
+        use concurrent::*;
+        use std::sync::atomic::{AtomicU32, Ordering};
+        use std::sync::Arc;
+        use std::time::Instant;
+
+        let counter = Arc::new(AtomicU32::new(0));
+        let counter_clone = Arc::clone(&counter);
+        let order = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let order_clone = Arc::clone(&order);
+
+        let start = Instant::now();
+        run_concurrent_staggered(3, 10, move |i| {
+            counter_clone.fetch_add(1, Ordering::Relaxed);
+            order_clone.lock().unwrap().push(i);
+        });
+        let elapsed = start.elapsed();
+
+        // Should have run all 3 threads
+        assert_eq!(counter.load(Ordering::Relaxed), 3);
+
+        // Due to staggered start with 10ms delay between each thread,
+        // total time should be at least 20ms (for 3 threads: 0ms, 10ms, 20ms)
+        assert!(elapsed.as_millis() >= 20);
+    }
+
+    #[test]
     fn test_cycle_measurement() {
         use perf::*;
 
@@ -245,6 +272,38 @@ mod tests {
         });
 
         assert!(cycles >= 100);
+    }
+
+    #[test]
+    fn test_benchmark_function() {
+        use perf::*;
+
+        // Benchmark a simple function that increments the cycle counter
+        let avg_cycles = benchmark(5, || {
+            crate::mock::MOCK_CSR.tick_cycles(10);
+        });
+
+        // Each iteration adds 10 cycles, so average should be around 10
+        // Allow some variance due to measurement overhead
+        assert!(avg_cycles >= 10);
+    }
+
+    #[test]
+    fn test_benchmark_with_varying_work() {
+        use perf::*;
+        use std::sync::atomic::{AtomicU32, Ordering};
+
+        // Track how many times the function was called
+        static CALL_COUNT: AtomicU32 = AtomicU32::new(0);
+        CALL_COUNT.store(0, Ordering::Relaxed);
+
+        let _avg = benchmark(10, || {
+            CALL_COUNT.fetch_add(1, Ordering::Relaxed);
+            crate::mock::MOCK_CSR.tick_cycles(5);
+        });
+
+        // Should have been called exactly 10 times
+        assert_eq!(CALL_COUNT.load(Ordering::Relaxed), 10);
     }
 
     #[test]
