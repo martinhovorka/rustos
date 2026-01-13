@@ -308,10 +308,17 @@ fn test_semaphore_concurrent() {
         let sem = Arc::clone(&sem);
         let success_count = Arc::clone(&success_count);
         move |_| {
-            if sem.wait() {
-                success_count.fetch_add(1, Ordering::Relaxed);
-                std::thread::sleep(std::time::Duration::from_micros(10));
-                sem.signal();
+            // Retry loop: threads that fail initial wait will retry until successful
+            // This simulates blocking behavior that a real RTOS would provide
+            loop {
+                if sem.wait() {
+                    success_count.fetch_add(1, Ordering::Relaxed);
+                    std::thread::sleep(std::time::Duration::from_micros(10));
+                    sem.signal();
+                    break;
+                }
+                // Small delay before retrying to avoid spinning
+                std::thread::sleep(std::time::Duration::from_micros(1));
             }
         }
     });
