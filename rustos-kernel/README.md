@@ -100,7 +100,7 @@ The kernel minimizes unsafe code to critical sections: context switching, interr
 
 ## License
 
-See LICENSE file in the repository root.
+Licensed under either of Apache License, Version 2.0 or MIT license at your option. See the [LICENSE-APACHE](../LICENSE-APACHE) and [LICENSE-MIT](../LICENSE-MIT) files for details.
 
 ## Requirements Traceability
 
