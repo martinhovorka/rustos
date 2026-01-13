@@ -20,6 +20,8 @@ cargo build --release --all --target riscv32imac-unknown-none-elf
 
 readonly ELF_PATH="target/riscv32imac-unknown-none-elf/release/rustos-app"
 readonly ELF="./rustos-app.elf"
+readonly ARTIFACTS_DIR="./artifacts"
+readonly ARTIFACT_ELF="$ARTIFACTS_DIR/rustos-app.elf"
 
 echo ""
 echo "Build complete!"
@@ -33,5 +35,15 @@ rust-size $ELF_PATH 2>/dev/null || \
     echo "  (size tool not available)"
 
 echo
+# Create artifacts directory if it doesn't exist
+mkdir -p "$ARTIFACTS_DIR"
+
+# Copy to workspace root for convenience
 cp -v --remove-destination "$ELF_PATH" "$ELF"
+
+# Copy to artifacts directory for archival
+cp -v --remove-destination "$ELF_PATH" "$ARTIFACT_ELF"
+
+echo "Artifacts:"
 sha256sum $ELF
+sha256sum $ARTIFACT_ELF
