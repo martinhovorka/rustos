@@ -410,6 +410,7 @@ RustOS v1.0.0 is designed and documented to support future certification under:
 | IEC 62443 | Industrial Cybersecurity | ✅ Secure boot implemented |
 
 **Key Certification Assets:**
+
 - CERTIFICATION.md with safety case documentation
 - TRACEABILITY_MATRIX.md with 100% requirement coverage
 - 99.47% code coverage (exceeds certification requirements)
@@ -422,4 +423,3 @@ RustOS v1.0.0 is designed and documented to support future certification under:
 **Review Conducted:** 2026-01-13
 **Document Version:** 1.0
 **Classification:** Internal
-

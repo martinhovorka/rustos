@@ -56,6 +56,9 @@ jobs:
     - name: Make scripts executable
       run: chmod +x build.sh test.sh clean.sh coverage.sh qa.sh
     
+    - name: Clean (via clean.sh)
+      run: ./clean.sh
+    
     - name: Build (via build.sh)
       run: ./build.sh
     
@@ -90,7 +93,10 @@ jobs:
           ${{ runner.os }}-cargo-test-
     
     - name: Make scripts executable
-      run: chmod +x test.sh
+      run: chmod +x test.sh clean.sh
+    
+    - name: Clean (via clean.sh)
+      run: ./clean.sh
     
     - name: Run tests (via test.sh)
       run: ./test.sh
@@ -254,7 +260,13 @@ jobs:
     - name: Install cargo-llvm-cov
       run: cargo install cargo-llvm-cov
     
-    - name: Generate coverage
+    - name: Make scripts executable
+      run: chmod +x coverage.sh clean.sh
+    
+    - name: Clean (via clean.sh)
+      run: ./clean.sh
+    
+    - name: Generate coverage (via coverage.sh + codecov output)
       run: |
         cargo llvm-cov clean --workspace
         cargo llvm-cov \
@@ -332,9 +344,12 @@ jobs:
           ${{ runner.os }}-cargo-binary-
     
     - name: Make scripts executable
-      run: chmod +x qa.sh build.sh
+      run: chmod +x qa.sh build.sh clean.sh
     
-    - name: Build release binary
+    - name: Clean (via clean.sh)
+      run: ./clean.sh
+    
+    - name: Build release binary (via build.sh)
       run: ./build.sh
     
     - name: Check binary size (via qa.sh --section 11)
@@ -365,9 +380,12 @@ jobs:
           ${{ runner.os }}-cargo-rtos-
     
     - name: Make scripts executable
-      run: chmod +x qa.sh build.sh
+      run: chmod +x qa.sh build.sh clean.sh
     
-    - name: Build release binary
+    - name: Clean (via clean.sh)
+      run: ./clean.sh
+    
+    - name: Build release binary (via build.sh)
       run: ./build.sh
     
     - name: Run RTOS-specific checks (via qa.sh --section 13)
@@ -409,7 +427,10 @@ jobs:
         cargo install cargo-llvm-cov
     
     - name: Make scripts executable
-      run: chmod +x qa.sh
+      run: chmod +x qa.sh clean.sh
+    
+    - name: Clean (via clean.sh)
+      run: ./clean.sh
     
     - name: Run comprehensive QA (via qa.sh)
       run: ./qa.sh --report
