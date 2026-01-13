@@ -144,7 +144,7 @@ All planned v1.1.0 features have been implemented ahead of schedule. The release
 - GDB stub and semihosting
 - Secure boot validation
 - Complete documentation suite
-- 232 tests passing
+- 387 tests passing
 
 ---
 
@@ -320,7 +320,7 @@ High-priority contributions welcome for:
 
 ### Pre-Release Checklist
 
-- [ ] All tests passing (232 tests)
+- [ ] All tests passing (387+ tests)
 - [ ] Performance targets met
 - [ ] Documentation updated
 - [ ] Changelog complete

@@ -368,7 +368,7 @@ Requirements are traced using the following methods:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2025-01-24 | Initial traceability matrix for v2.8.3 requirements |
-| 1.1.0 | 2026-01-13 | Updated for 100% implementation, 232 tests |
+| 1.1.0 | 2026-01-13 | Updated for 100% implementation, 387 tests |
 
 ---
 

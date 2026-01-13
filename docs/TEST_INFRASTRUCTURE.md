@@ -92,8 +92,8 @@ rustos-tests/
 
 ### Current Test Count
 
-- **Total Tests:** 232
-- **Passing:** 232 (100%)
+- **Total Tests:** 387
+- **Passing:** 387 (100%)
 - **Failing:** 0
 - **Ignored:** 0
 

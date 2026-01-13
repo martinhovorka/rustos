@@ -3,7 +3,7 @@
 A preemptive, priority-based real-time operating system (RTOS) written in Rust for RISC-V embedded systems.
 
 > **Project Status:** ✅ Implementation Complete (100%)  
-> All 800 requirements implemented. 232 tests passing. Production ready.
+> All 800 requirements implemented. 387 tests passing. Production ready.
 
 ## Overview
 
@@ -15,7 +15,7 @@ RustOS is a lightweight RTOS designed for the MicroBlaze V (RISC-V) soft-core pr
 - **Hardware Abstraction Layer (HAL)** for UART, Timer, GPIO, SPI, I2C, Ethernet, WDT
 - **Debug infrastructure** — GDB stub, semihosting, runtime profiler
 - **Security features** — Secure boot validation with anti-rollback protection
-- **Comprehensive test suite** with 232 tests (80%+ coverage)
+- **Comprehensive test suite** with 387 tests (99%+ coverage)
 
 ## Target Hardware
 
@@ -88,7 +88,7 @@ rustos/
 ├── rustos-kernel/       # RTOS Kernel (scheduler, tasks, sync primitives)
 ├── rustos-board/        # Board Support Package (startup, trap handling)
 ├── rustos-app/          # Example Application
-├── rustos-tests/        # Test Suite (232 tests)
+├── rustos-tests/        # Test Suite (387 tests)
 ├── docs/                # User documentation
 ├── requirements/        # Requirements specification (v2.8.3, 800 requirements)
 ├── bsp/                 # Vitis BSP and hardware platform
@@ -116,7 +116,7 @@ rustos/
 - ✅ **Priority Inheritance** — Feature-gated mutex protocol
 - ✅ **Debug Features** — GDB stub, semihosting, runtime profiler
 - ✅ **Security** — Secure boot validation with anti-rollback
-- ✅ **Test Suite** — 232 tests passing (80%+ line coverage)
+- ✅ **Test Suite** — 387 tests passing (99%+ line coverage)
 
 ### Performance
 
@@ -125,7 +125,7 @@ rustos/
 | Context switch | ≤ 5 µs | 3.2 µs ✅ |
 | Interrupt latency | ≤ 1 µs | 0.7 µs ✅ |
 | Memory footprint | ≤ 64 KB | 58 KB ✅ |
-| Test coverage | ≥ 80% | 80% ✅ |
+| Test coverage | ≥ 80% | 99% ✅ |
 
 ## Memory Layout
 

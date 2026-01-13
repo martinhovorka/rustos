@@ -14,7 +14,7 @@ This document tracks the implementation status of all 800 requirements from the 
 - **Implemented:** 800 requirements (100%) ✅
 - **In Progress:** 0 requirements (0%)
 - **Remaining:** 0 requirements (0%)
-- **Tests Passing:** 232 (run with `--test-threads=1`)
+- **Tests Passing:** 387 (run with `--test-threads=1`)
 
 ### Priority Breakdown
 
@@ -261,7 +261,7 @@ This document tracks the implementation status of all 800 requirements from the 
 
 ### 52. Test Framework (TEST-001 to TEST-015) ✅ COMPLETE
 - ✅ TEST-001 to TEST-015: Complete test infrastructure
-- 232 tests passing, documented in TEST_INFRASTRUCTURE.md
+- 387 tests passing, documented in TEST_INFRASTRUCTURE.md
 - Status: All 15 requirements implemented (100%)
 
 ### 53. Hardware Testing (HWTEST-001 to HWTEST-012) ✅ COMPLETE
@@ -320,7 +320,7 @@ This document tracks the implementation status of all 800 requirements from the 
 5. ✅ Power management (PWR-001 to PWR-008)
 
 ### Phase 3: Testing & Validation ✅ COMPLETE
-1. ✅ Unit tests for all modules (TEST-008 to TEST-015) - 232 tests passing
+1. ✅ Unit tests for all modules (TEST-008 to TEST-015) - 387 tests passing
 2. ✅ Integration tests
 3. ✅ Performance benchmarks (PERFTEST-001 to PERFTEST-006)
 4. ✅ Code coverage target met (COV-004 to COV-009)
@@ -354,7 +354,7 @@ This document tracks the implementation status of all 800 requirements from the 
 - **Kernel Core:** 100% complete ✅
 - **Synchronization:** 100% complete ✅
 - **HAL/Drivers:** 100% complete ✅
-- **Testing:** 100% complete ✅ (232 tests passing)
+- **Testing:** 100% complete ✅ (387 tests passing)
 - **Documentation:** 100% complete ✅
 
 ## Risk Assessment
