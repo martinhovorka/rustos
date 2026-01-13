@@ -38,7 +38,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         targets: riscv32imac-unknown-none-elf
         components: rustfmt, clippy
     
@@ -79,7 +79,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
     
     - name: Cache cargo registry
       uses: actions/cache@v4
@@ -110,7 +110,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         components: rustfmt
     
     - name: Make scripts executable
@@ -129,7 +129,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         targets: riscv32imac-unknown-none-elf
         components: rustfmt, clippy
     
@@ -159,7 +159,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         targets: riscv32imac-unknown-none-elf
     
     - name: Cache cargo registry
@@ -199,7 +199,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         targets: riscv32imac-unknown-none-elf
         components: clippy
     
@@ -243,7 +243,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         components: llvm-tools-preview
     
     - name: Cache cargo registry
@@ -292,7 +292,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         targets: riscv32imac-unknown-none-elf
     
     - name: Cache cargo registry
@@ -329,7 +329,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         targets: riscv32imac-unknown-none-elf
     
     - name: Cache cargo registry
@@ -365,7 +365,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         targets: riscv32imac-unknown-none-elf
     
     - name: Cache cargo registry
@@ -401,7 +401,7 @@ jobs:
     - name: Install Rust (stable)
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: 1.82.0
+        toolchain: 1.92.0
         targets: riscv32imac-unknown-none-elf
         components: rustfmt, clippy
     
