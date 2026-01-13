@@ -242,18 +242,44 @@ pub(crate) unsafe fn init() {
 /// - Must be called after all tasks are added
 /// - Must be called with interrupts disabled
 /// - Never returns
+///
+/// # Panics
+/// Panics in debug builds if no tasks are available. In release builds,
+/// uses unreachable_unchecked for performance-critical startup path.
+/// REQ: RUST-009 - Critical startup assertions are documented as panics.
 // SAFETY: Function signature - see # Safety documentation above
 pub unsafe fn start() -> ! {
     SCHEDULER.enable();
 
-    // Find first task to run
-    let first_task_id = SCHEDULER
-        .schedule()
-        .expect("No tasks available to schedule");
+    // REQ: RUST-009 - Find first task to run with proper error handling
+    // This is a critical invariant: at least one task must exist at startup.
+    // If no tasks exist, this is a programming error that cannot be recovered.
+    let first_task_id = match SCHEDULER.schedule() {
+        Some(id) => id,
+        None => {
+            // SAFETY: If we reach here, the caller violated the safety contract
+            // by calling start() without adding any tasks. This is a fatal error.
+            #[cfg(debug_assertions)]
+            panic!("FATAL: No tasks available to schedule - add tasks before calling start()");
+            #[cfg(not(debug_assertions))]
+            core::hint::unreachable_unchecked()
+        }
+    };
 
     SCHEDULER.set_current_task(first_task_id);
 
-    let task = SCHEDULER.get_task(first_task_id).expect("Task must exist");
+    // REQ: RUST-009 - Task existence is guaranteed by successful schedule()
+    let task = match SCHEDULER.get_task(first_task_id) {
+        Some(t) => t,
+        None => {
+            // SAFETY: If schedule() returned an ID, the task must exist.
+            // This branch is unreachable in correct operation.
+            #[cfg(debug_assertions)]
+            panic!("FATAL: Scheduled task does not exist - internal scheduler error");
+            #[cfg(not(debug_assertions))]
+            core::hint::unreachable_unchecked()
+        }
+    };
 
     // REQ: CTX-008 - Perform initial context switch
     // This will be implemented in context.rs
