@@ -201,6 +201,7 @@ impl MockGpio {
         GPIO_INTERRUPT_ENABLE.fetch_or(mask, Ordering::SeqCst);
     }
 
+    #[allow(dead_code)]
     fn disable_interrupt(pin: u8) {
         let mask = 1u32 << pin;
         GPIO_INTERRUPT_ENABLE.fetch_and(!mask, Ordering::SeqCst);
@@ -511,6 +512,7 @@ impl MockSpi {
         rx
     }
 
+    #[allow(dead_code)]
     fn is_busy() -> bool {
         SPI_BUSY.load(Ordering::SeqCst)
     }
@@ -585,6 +587,7 @@ static I2C_ACK: AtomicBool = AtomicBool::new(true);
 struct MockI2c;
 
 #[derive(Debug, PartialEq)]
+#[allow(dead_code)]
 enum I2cError {
     Nack,
     Busy,

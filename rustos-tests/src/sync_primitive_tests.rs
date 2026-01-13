@@ -8,8 +8,7 @@ extern crate std;
 
 use crate::assert_test;
 use core::marker::{Send, Sync};
-use core::option::Option::{self, None, Some};
-use core::result::Result::{self, Err, Ok};
+use core::result::Result::{Err, Ok};
 use std::sync::atomic::{AtomicBool, AtomicI32, AtomicU32, Ordering};
 use std::sync::Arc;
 use std::thread;
@@ -81,6 +80,7 @@ impl MockMutex {
         self.owner.load(Ordering::SeqCst)
     }
 
+    #[allow(dead_code)]
     fn reset(&self) {
         self.locked.store(false, Ordering::SeqCst);
         self.owner.store(-1, Ordering::SeqCst);
@@ -187,6 +187,7 @@ fn test_mutex_multithread() {
 struct MockSemaphore {
     count: AtomicI32,
     max_count: i32,
+    #[allow(dead_code)]
     waiters: AtomicU32,
 }
 
@@ -392,6 +393,7 @@ impl MockCondVar {
         }
     }
 
+    #[allow(dead_code)]
     fn broadcast(&self) {
         let waiters = self.waiters.load(Ordering::SeqCst);
         if waiters > 0 {
@@ -400,6 +402,7 @@ impl MockCondVar {
         }
     }
 
+    #[allow(dead_code)]
     fn reset(&self) {
         self.waiters.store(0, Ordering::SeqCst);
         self.signal_count.store(0, Ordering::SeqCst);

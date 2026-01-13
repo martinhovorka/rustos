@@ -7,7 +7,7 @@
 extern crate std;
 
 use crate::assert_test;
-use core::result::Result::{self, Err, Ok};
+use core::result::Result::{Err, Ok};
 
 // Error code constants matching rustos-kernel/src/error.rs
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

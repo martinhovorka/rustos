@@ -219,6 +219,7 @@ mod mock {
         boot_attempts: AtomicU32,
     }
 
+    #[allow(dead_code)]
     #[derive(Debug, Clone, Copy, PartialEq)]
     pub enum SecureBootError {
         InvalidHeader,
@@ -283,7 +284,9 @@ mod mock {
         pub duration_us: u32,
         pub clock_pulses: u32,
         pub success: bool,
+        #[allow(dead_code)]
         pub sda_stuck: bool,
+        #[allow(dead_code)]
         pub scl_stuck: bool,
     }
 

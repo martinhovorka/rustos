@@ -79,3 +79,13 @@ pub mod sync_primitive_tests;
 // DBG-017, DBG-018, DBG-019, MQ-009, I2C-012, SEC-010, CERT-001-005
 #[cfg(test)]
 pub mod new_requirements_tests;
+
+// REQ: TEST-008 - Additional coverage tests for kernel modules
+// Covers config, security, power, diagnostics, debug, PAC, HAL
+#[cfg(test)]
+pub mod kernel_coverage_tests;
+
+// REQ: TEST-008 - Additional coverage tests for remaining kernel modules
+// Covers log, stability, panic, priority bitmap, WDT, Ethernet, INTC, Timer
+#[cfg(test)]
+pub mod additional_coverage_tests;

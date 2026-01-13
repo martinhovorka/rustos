@@ -11,7 +11,6 @@ use core::marker::{Send, Sync};
 use core::option::Option::{self, None, Some};
 use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use std::sync::Arc;
-use std::thread;
 
 // ============================================================================
 // Mock Interrupt Controller (PLIC-like)
@@ -62,6 +61,7 @@ impl MockPlic {
         self.global_enable.store(true, Ordering::SeqCst);
     }
 
+    #[allow(dead_code)]
     fn disable_global(&self) {
         self.global_enable.store(false, Ordering::SeqCst);
     }
@@ -121,6 +121,7 @@ impl MockPlic {
         (self.enabled.load(Ordering::SeqCst) & (1 << irq)) != 0
     }
 
+    #[allow(dead_code)]
     fn reset(&self) {
         self.pending.store(0, Ordering::SeqCst);
         self.enabled.store(0, Ordering::SeqCst);

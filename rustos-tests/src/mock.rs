@@ -546,7 +546,7 @@ mod tests {
         // Disable some IRQs
         intc.disable(3);
         assert!(intc.is_enabled(0));
-        assert!(!intc.is_enabled(3));  // Should be disabled now
+        assert!(!intc.is_enabled(3)); // Should be disabled now
         assert!(intc.is_enabled(7));
         assert!(intc.is_enabled(31));
 
@@ -554,7 +554,7 @@ mod tests {
         intc.disable(7);
         assert!(intc.is_enabled(0));
         assert!(!intc.is_enabled(3));
-        assert!(!intc.is_enabled(7));  // Should be disabled now
+        assert!(!intc.is_enabled(7)); // Should be disabled now
         assert!(intc.is_enabled(31));
 
         // Disable an already-disabled IRQ (should be no-op)

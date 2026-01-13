@@ -18,6 +18,9 @@ heapless = { workspace = true }
 # REQ: DEP-007 - Atomic operations for tests
 portable-atomic = { workspace = true }
 
+# REQ: DEP-011 - Bitflags for register definitions
+bitflags = "2.4"
+
 [dev-dependencies]
 
 [features]

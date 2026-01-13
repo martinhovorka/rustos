@@ -11,8 +11,8 @@ use core::alloc::Layout;
 use core::cell::UnsafeCell;
 use core::marker::{Send, Sync};
 use core::option::Option::{self, None, Some};
-use core::result::Result::{self, Err, Ok};
-use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+use core::result::Result::{Err, Ok};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::vec::Vec;
@@ -87,10 +87,12 @@ impl MockHeap {
         self.free_count.store(0, Ordering::SeqCst);
     }
 
+    #[allow(dead_code)]
     fn allocated_bytes(&self) -> usize {
         self.allocated.load(Ordering::SeqCst)
     }
 
+    #[allow(dead_code)]
     fn free_bytes(&self) -> usize {
         HEAP_SIZE - self.next_free.load(Ordering::SeqCst)
     }
